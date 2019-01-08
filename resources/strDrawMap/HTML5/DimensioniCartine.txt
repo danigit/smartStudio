@@ -1,0 +1,13 @@
+La dimensione delle cartine deve essere 1080x546
+
+Il bordo deve essere di 30px per lato
+
+
+19px
+
+1080 - 30 - 30 = 1020
+
+1001px = 38.6  3933 larghezza
+
+745 * 473
+ 

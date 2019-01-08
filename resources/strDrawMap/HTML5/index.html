@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Smart Track - Draw maps</title>
+ <script src="ZLibrary/ZDateFunct.js"></script>
+ <script src="ZLibrary/ZStringFunct.js"></script>
+ <script src="ZLibrary/ZCanvasFunct.js"></script>
+ <script src="ZLibrary/ZPieGraph.js"></script>
+ <script src="MarkerClusterer/markerclusterer.js"></script>
+ <script src="Settings.js"></script>
+ <script src="strDrawMap.js"></script>
+	<link href="strDrawMap.css" rel="stylesheet">
+ <link rel="shortcut icon" href="FavIcon.ico" />
+</head>
+
+<body>
+
+<div class="wrapper">
+
+	<header class="header">
+      <div style= "padding-left:25px">
+        <div style="float:left"><img src="LogoSinistra.png"></div>
+        <div id="MainHTMLTitle" style="color:white;font-size:30px;padding-top:40px;font-weight:bold;float:left;">
+           
+        </div>
+        <div style="float:right"><img src="LogoDestra.png"></div>
+      </div>
+	</header><!-- .header-->
+    
+ <nav class="navigator">
+   <div style="float:left; width:1110px;padding-left:4px;">
+        <button id="BtnEnableEditing">Modifica</button>
+        <button id="BtnCambiaPassword">Cambia password</button>
+        <button id="BtnPosizioneAncore">Ancore</button>
+        <button id="BtnPosizioneZone" style="display:none">Zone</button>
+        <button id="BtnDimensioniMappa">Proprietà piano</button>
+        <button id="BtnSelezionaPiano" style="display:none">Selezione piano</button>
+        <button id="BtnAnagraficaTag">Anagrafica</button>
+        <button id="BtnDoveSiTrova" style="display:none">Cerca WeTAG</button>
+        <button id="BtnAllarmiAttivi">Allarmi attivi</button>
+        <button id="BtnStorico">Storico</button>
+   </div>
+   <div>
+       <button id="BtnLogout">Logout</button>
+   </div>
+ </nav>
+    
+	<main class="content">
+        <div>
+            <div id="PanelMap">
+               <div id="PanelDimensioniMappa">&nbsp</div> 
+               <div id="PanelCntMap">
+                   <div id="divCanvas"><canvas id="trkPianta" width="600" height="300" style="background:#AEAEAE"></canvas></div>
+                   <div id="divGoogleMap" style="width:600px;height:300px;background-color:red;display:none"></div>
+               </div>
+               <div id="PanelCursorPosition" style="text-align: right">
+                  <p id="mapYPos" style="float:right" class="MeterLabel">-</p>
+                  <p style="float:right;color:white;font-weight:bold;">&nbsp&nbspPosizione Y:&nbsp</p> 
+                  <p id="mapXPos" style="float:right" class="MeterLabel">-</p>
+                  <p style="float:right;color:white;font-weight:bold;">&nbsp&nbspPosizione X:&nbsp</p> 
+                  <p id="mapPiano" style="float:right" class="MeterLabel">-</p>
+                  <p id="LbPiano" style="float:right;color:white;font-weight:bold;">&nbsp&nbspPiano:&nbsp</p>
+               </div>
+            </div>
+            
+            <div id="PanelEmpty" class="SidePanel"> 
+            </div>
+            
+            <div id="PanelDati" class="SidePanel" > 
+              <div style="height:35px">&nbsp</div>
+              <div style="display:none" id="AlarmEngineOff">
+                 <img width="100"  src="AlarmEngineOff.png">
+              </div>
+              <div>
+                <canvas id="grpGraficoEmergency" style="display:none" width="98%" height="155px"></canvas>
+                <canvas id="grpGraficoAncore" width="98%" height="155px"></canvas>
+                <canvas id="grpGraficoTag" width="98%" height="170px"></canvas>
+                <img id="BtnEvacuazione" src="Evacuazione.png" AlarmOn="0">
+              </div>              
+            </div>
+
+            <div id="PanelCmd" class="SidePanel">
+              <div id="PanelHeaderCmd">&nbsp </div>
+              <div id="PanelButton">
+                  <div style="height:20px"> </div>
+                  <img id="CkOrizzontale" width="32" height="32" src="">&nbsp
+                  <img id="CkVerticale" width="32" height="32" src=""><br/>
+                  <img id="CkNormale" width="32" height="32" src="">&nbsp
+                  <img id="CkErasePoint" width="32" height="32" src=""><br/>
+                  <img id="AggiungiAncora" width="32" height="32" src="">&nbsp
+                  <div style="padding-bottom:4px">
+                    <span id="DescrizioneIdAncora" style="font-weight:bold;display:none">ID Ancora</span> 
+                    <input id="NomeAncora" type="number" style="text-align:left;width:30px;display:none;" min="0">
+                  </div>
+                  <div style="padding-bottom:2px"><button id="BtnConfermaModifiche" class="ButtonConfAnnulla">Conferma</button></div>
+                  <div><button id="BtnAnnullaModifiche" class="ButtonConfAnnulla">Annulla</button></div>
+              </div>
+            </div>
+            <div id="PanelFooterCmd">&nbsp </div>
+        </div>
+        
+        <div id="DlgAncore">
+            <div style="height:20px">&nbsp</div>
+            <div> 
+              <div style="text-align:center"><img src="MediumLogo.png"></div>
+              <div style="text-align:left;padding:10px">
+                <div id="HeaderAncore" style="height:35px;text-align:right;padding-right:10px">
+                  <div style="padding-top: 6px;width:80px;float:left"> 
+                      <span style="font-weight:bold"><!--Nr. ancore-->&nbsp</span>
+                  </div>
+                  <div>
+                    <input id="NumeroAncore" type="number" style="visibility:hidden;text-align:left;width:80px" value="2" min="2">
+                    <div id="SeparatoreAncore" style="width:240px;display:inline-block">&nbsp</div>
+                    <button id="BtnPagAncorePrecedenti" style="height:25px;padding-top:5px">&lt&lt</button>
+                    <button id="BtnPagAncoreSuccessive" style="height:25px;padding-top:5px">&gt&gt</button>
+                  </div>
+                </div>
+                <div>
+                  <div style="width:80px;float:left"><span style="font-weight:bold">Id. Ancora</span></div>
+                  <div style="width:110px;text-align:left;float:left">Nome</div>
+                  <div style="width:75px;text-align:left;float:left">xPos[cm]</div>
+                  <div style="width:75px;text-align:left;float:left">yPos[cm]</div>
+                  <div style="width:75px;text-align:left;float:left">zPos[cm]</div>
+                  <div style="width:75px;text-align:left;float:left">Raggio[cm]</div>
+                  <div id="LbPianoAncore" style="width:60px;text-align:left;float:left">Piano</div>
+                  <div id="LbZonaAncore" style="width:110px;text-align:left;float:left">Zona</div>
+                  <div style="width:120px;text-align:left;float:left">IP</div>
+                  <div style="width:70px;text-align:left;float:left">RSSI</div>
+                  <div style="text-align:left;float:left">Proximity</div>
+                </div>
+                <div style="clear:both;padding-top:2px" id="RigaAncora1">
+                  <div style="width:80px;float:left;padding-top:5px"><span id="LbAncora1" style="font-weight:bold">Ancora nr. 1</span></div>
+                  <div style="width:110px;text-align:left;float:left"><input id="ancNome1"   type="text"   style="text-align:left;width:100px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancXPos1"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancYPos1"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancZPos1"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancRaggio1" type="number" style="text-align:left;width:65px"></div>
+                  <div id="LbPianoAncore1" style="width:60px;text-align:left;float:left"><input id="ancPiano1"  type="number" style="text-align:left;width:50px"></div>
+                  <div id="LbZonaAncore1" style="width:110px;text-align:left;float:left"><input id="ancZona1"   type="text" style="text-align:left;width:100px"></div>
+                  <div style="width:120px;text-align:left;float:left"><input id="ancIP1"     type="text"   style="text-align:left;width:110px"></div>
+                  <div style="width:70px;text-align:left;float:left"><input id="ancRSSI1"   type="number" style="text-align:left;width:60px"></div>
+                  <div style="text-align:left;float:left">
+                       <select id="ancProximity1" style="width:120px">
+                          <option value="0">Finger printing</option>
+                          <option value="1">Proximity</option>
+                       </select>
+                  </div>
+                </div>
+                <div style="clear:both;padding-top:2px" id="RigaAncora2">
+                  <div style="width:80px;float:left;padding-top:5px"><span id="LbAncora2" style="font-weight:bold">Ancora nr. 1</span></div>
+                  <div style="width:110px;text-align:left;float:left"><input id="ancNome2"   type="text"   style="text-align:left;width:100px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancXPos2"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancYPos2"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancZPos2"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancRaggio2" type="number" style="text-align:left;width:65px"></div>
+                  <div id="LbPianoAncore2" style="width:60px;text-align:left;float:left"><input id="ancPiano2"  type="number" style="text-align:left;width:50px"></div>
+                  <div id="LbZonaAncore2" style="width:110px;text-align:left;float:left"><input id="ancZona2"   type="text" style="text-align:left;width:100px"></div>
+                  <div style="width:120px;text-align:left;float:left"><input id="ancIP2"     type="text"   style="text-align:left;width:110px"></div>
+                  <div style="width:70px;text-align:left;float:left"><input id="ancRSSI2"   type="number" style="text-align:left;width:60px"></div>
+                  <div style="text-align:left;float:left">
+                       <select id="ancProximity2" style="width:120px">
+                          <option value="0">Finger printing</option>
+                          <option value="1">Proximity</option>
+                       </select>
+                  </div>
+                </div>
+                <div style="clear:both;padding-top:2px" id="RigaAncora3">
+                  <div style="width:80px;float:left;padding-top:5px"><span id="LbAncora3" style="font-weight:bold">Ancora nr. 1</span></div>
+                  <div style="width:110px;text-align:left;float:left"><input id="ancNome3"   type="text"   style="text-align:left;width:100px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancXPos3"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancYPos3"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancZPos3"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancRaggio3" type="number" style="text-align:left;width:65px"></div>
+                  <div id="LbPianoAncore3" style="width:60px;text-align:left;float:left"><input id="ancPiano3"  type="number" style="text-align:left;width:50px"></div>
+                  <div id="LbZonaAncore3" style="width:110px;text-align:left;float:left"><input id="ancZona3"   type="text" style="text-align:left;width:100px"></div>
+                  <div style="width:120px;text-align:left;float:left"><input id="ancIP3"     type="text"   style="text-align:left;width:110px"></div>
+                  <div style="width:70px;text-align:left;float:left"><input id="ancRSSI3"   type="number" style="text-align:left;width:60px"></div>
+                  <div style="text-align:left;float:left">
+                       <select id="ancProximity3" style="width:120px">
+                          <option value="0">Finger printing</option>
+                          <option value="1">Proximity</option>
+                       </select>
+                  </div>
+                </div>
+                <div style="clear:both;padding-top:2px" id="RigaAncora4">
+                  <div style="width:80px;float:left;padding-top:5px"><span id="LbAncora4" style="font-weight:bold">Ancora nr. 1</span></div>
+                  <div style="width:110px;text-align:left;float:left"><input id="ancNome4"   type="text"   style="text-align:left;width:100px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancXPos4"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancYPos4"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancZPos4"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancRaggio4" type="number" style="text-align:left;width:65px"></div>
+                  <div id="LbPianoAncore4" style="width:60px;text-align:left;float:left"><input id="ancPiano4"  type="number" style="text-align:left;width:50px"></div>
+                  <div id="LbZonaAncore4" style="width:110px;text-align:left;float:left"><input id="ancZona4"   type="text" style="text-align:left;width:100px"></div>
+                  <div style="width:120px;text-align:left;float:left"><input id="ancIP4"     type="text"   style="text-align:left;width:110px"></div>
+                  <div style="width:70px;text-align:left;float:left"><input id="ancRSSI4"   type="number" style="text-align:left;width:60px"></div>
+                  <div style="text-align:left;float:left">
+                       <select id="ancProximity4" style="width:120px">
+                          <option value="0">Finger printing</option>
+                          <option value="1">Proximity</option>
+                       </select>
+                  </div>
+                </div>
+                <div style="clear:both;padding-top:2px" id="RigaAncora5">
+                  <div style="width:80px;float:left;padding-top:5px"><span id="LbAncora5" style="font-weight:bold">Ancora nr. 1</span></div>
+                  <div style="width:110px;text-align:left;float:left"><input id="ancNome5"   type="text"   style="text-align:left;width:100px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancXPos5"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancYPos5"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancZPos5"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancRaggio5" type="number" style="text-align:left;width:65px"></div>
+                  <div id="LbPianoAncore5" style="width:60px;text-align:left;float:left"><input id="ancPiano5"  type="number" style="text-align:left;width:50px"></div>
+                  <div id="LbZonaAncore5" style="width:110px;text-align:left;float:left"><input id="ancZona5"   type="text" style="text-align:left;width:100px"></div>
+                  <div style="width:120px;text-align:left;float:left"><input id="ancIP5"     type="text"   style="text-align:left;width:110px"></div>
+                  <div style="width:70px;text-align:left;float:left"><input id="ancRSSI5"   type="number" style="text-align:left;width:60px"></div>
+                  <div style="text-align:left;float:left">
+                       <select id="ancProximity5" style="width:120px">
+                          <option value="0">Finger printing</option>
+                          <option value="1">Proximity</option>
+                       </select>
+                  </div>
+                </div>
+                <div style="clear:both;padding-top:2px" id="RigaAncora6">
+                  <div style="width:80px;float:left;padding-top:5px"><span id="LbAncora6" style="font-weight:bold">Ancora nr. 1</span></div>
+                  <div style="width:110px;text-align:left;float:left"><input id="ancNome6"   type="text"   style="text-align:left;width:100px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancXPos6"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancYPos6"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancZPos6"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancRaggio6" type="number" style="text-align:left;width:65px"></div>
+                  <div id="LbPianoAncore6" style="width:60px;text-align:left;float:left"><input id="ancPiano6"  type="number" style="text-align:left;width:50px"></div>
+                  <div id="LbZonaAncore6" style="width:110px;text-align:left;float:left"><input id="ancZona6"   type="text" style="text-align:left;width:100px"></div>
+                  <div style="width:120px;text-align:left;float:left"><input id="ancIP6"     type="text"   style="text-align:left;width:110px"></div>
+                  <div style="width:70px;text-align:left;float:left"><input id="ancRSSI6"   type="number" style="text-align:left;width:60px"></div>
+                  <div style="text-align:left;float:left">
+                       <select id="ancProximity6" style="width:120px">
+                          <option value="0">Finger printing</option>
+                          <option value="1">Proximity</option>
+                       </select>
+                  </div>
+                </div>
+                <div style="clear:both;padding-top:2px" id="RigaAncora7">
+                  <div style="width:80px;float:left;padding-top:5px"><span id="LbAncora7" style="font-weight:bold">Ancora nr. 1</span></div>
+                  <div style="width:110px;text-align:left;float:left"><input id="ancNome7"   type="text"   style="text-align:left;width:100px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancXPos7"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancYPos7"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancZPos7"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancRaggio7" type="number" style="text-align:left;width:65px"></div>
+                  <div id="LbPianoAncore7" style="width:60px;text-align:left;float:left"><input id="ancPiano7"  type="number" style="text-align:left;width:50px"></div>
+                  <div id="LbZonaAncore7" style="width:110px;text-align:left;float:left"><input id="ancZona7"   type="text" style="text-align:left;width:100px"></div>
+                  <div style="width:120px;text-align:left;float:left"><input id="ancIP7"     type="text"   style="text-align:left;width:110px"></div>
+                  <div style="width:70px;text-align:left;float:left"><input id="ancRSSI7"   type="number" style="text-align:left;width:60px"></div>
+                  <div style="text-align:left;float:left">
+                       <select id="ancProximity7" style="width:120px">
+                          <option value="0">Finger printing</option>
+                          <option value="1">Proximity</option>
+                       </select>
+                  </div>
+                </div>
+                <div style="clear:both;padding-top:2px" id="RigaAncora8">
+                  <div style="width:80px;float:left;padding-top:5px"><span id="LbAncora8" style="font-weight:bold">Ancora nr. 1</span></div>
+                  <div style="width:110px;text-align:left;float:left"><input id="ancNome8"   type="text"   style="text-align:left;width:100px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancXPos8"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancYPos8"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancZPos8"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancRaggio8" type="number" style="text-align:left;width:65px"></div>
+                  <div id="LbPianoAncore8" style="width:60px;text-align:left;float:left"><input id="ancPiano8"  type="number" style="text-align:left;width:50px"></div>
+                  <div id="LbZonaAncore8" style="width:110px;text-align:left;float:left"><input id="ancZona8"   type="text" style="text-align:left;width:100px"></div>
+                  <div style="width:120px;text-align:left;float:left"><input id="ancIP8"     type="text"   style="text-align:left;width:110px"></div>
+                  <div style="width:70px;text-align:left;float:left"><input id="ancRSSI8"   type="number" style="text-align:left;width:60px"></div>
+                  <div style="text-align:left;float:left">
+                       <select id="ancProximity8" style="width:120px">
+                          <option value="0">Finger printing</option>
+                          <option value="1">Proximity</option>
+                       </select>
+                  </div>
+                </div>
+                <div style="clear:both;padding-top:2px" id="RigaAncora9">
+                  <div style="width:80px;float:left;padding-top:5px"><span id="LbAncora9" style="font-weight:bold">Ancora nr. 1</span></div>
+                  <div style="width:110px;text-align:left;float:left"><input id="ancNome9"   type="text"   style="text-align:left;width:100px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancXPos9"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancYPos9"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancZPos9"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancRaggio9" type="number" style="text-align:left;width:65px"></div>
+                  <div id="LbPianoAncore9" style="width:60px;text-align:left;float:left"><input id="ancPiano9"  type="number" style="text-align:left;width:50px"></div>
+                  <div id="LbZonaAncore9" style="width:110px;text-align:left;float:left"><input id="ancZona9"   type="text" style="text-align:left;width:100px"></div>
+                  <div style="width:120px;text-align:left;float:left"><input id="ancIP9"     type="text"   style="text-align:left;width:110px"></div>
+                  <div style="width:70px;text-align:left;float:left"><input id="ancRSSI9"   type="number" style="text-align:left;width:60px"></div>
+                  <div style="text-align:left;float:left">
+                       <select id="ancProximity9" style="width:120px">
+                          <option value="0">Finger printing</option>
+                          <option value="1">Proximity</option>
+                       </select>
+                  </div>
+                </div>
+                <div style="clear:both;padding-top:2px" id="RigaAncora10">
+                  <div style="width:80px;float:left;padding-top:5px"><span id="LbAncora10" style="font-weight:bold">Ancora nr. 1</span></div>
+                  <div style="width:110px;text-align:left;float:left"><input id="ancNome10"   type="text"   style="text-align:left;width:100px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancXPos10"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancYPos10"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancZPos10"   type="number" style="text-align:left;width:65px"></div>
+                  <div style="width:75px;text-align:left;float:left"><input id="ancRaggio10" type="number" style="text-align:left;width:65px"></div>
+                  <div id="LbPianoAncore10" style="width:60px;text-align:left;float:left"><input id="ancPiano10"  type="number" style="text-align:left;width:50px"></div>
+                  <div id="LbZonaAncore10" style="width:110px;text-align:left;float:left"><input id="ancZona10"   type="text" style="text-align:left;width:100px"></div>
+                  <div style="width:120px;text-align:left;float:left"><input id="ancIP10"     type="text"   style="text-align:left;width:110px"></div>
+                  <div style="width:70px;text-align:left;float:left"><input id="ancRSSI10"   type="number" style="text-align:left;width:60px"></div>
+                  <div style="text-align:left;float:left">
+                       <select id="ancProximity10" style="width:120px">
+                          <option value="0">Finger printing</option>
+                          <option value="1">Proximity</option>
+                       </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="height:3px;clear:both">&nbsp</div>
+            <div style="text-align:right;padding-right:10px;padding-top padding-bottom:2px">
+               <button id="BtnConfermaAncore" style="width:100px">Cambia</button>
+               <button id="BtnAnnullaAncore" style="width:100px">Annulla</button><br/>
+            </div>
+            <div style="height:7px;clear:both">&nbsp</div>
+        </div>
+
+        <div id="DlgZone">
+            <div style="height:20px">&nbsp</div>
+            <div> 
+              <div style="text-align:center"><img src="MediumLogo.png"></div>
+              <div style="text-align:left;padding:10px">
+                <div id="HeaderZone">
+                  <div style="padding-top: 6px;width:80px;float:left"> 
+                      <span style="font-weight:bold">Nr. zone</span>
+                  </div>
+                  <div style="height:35px">
+                    <input id="NumeroZone" type="number" style="text-align:left;width:80px" value="2" min="2">
+                    <div style="width:140px;display:inline-block">&nbsp</div>
+                    <button id="BtnPagZonePrecedenti" style="height:25px;padding-top:5px">&lt&lt</button>
+                    <button id="BtnPagZoneSuccessive" style="height:25px;padding-top:5px">&gt&gt</button>
+                  </div>
+                </div>
+                <div>
+                  <div style="width:80px;float:left"> <span style="font-weight:bold">Id. Zona</span></div>
+                  <div style="width:80px;text-align:right;float:left">x Left[cm]&nbsp&nbsp</div>
+                  <div style="width:80px;text-align:right;float:left">x Right[cm]&nbsp</div>
+                  <div style="width:80px;text-align:right;float:left">y Up[cm]</div>
+                  <div style="width:60px;text-align:right;float:left">yDown</div>
+                </div>
+                <div id="RigaZona1">
+                  <div style="padding-top: 6px;width:80px;float:left"> <span id="LbZona1" style="font-weight:bold">Zona nr. 1</span></div>
+                  <div><input id="zonXLeft1" type="number" style="text-align:left;width:80px">
+                       <input id="zonXRight1" type="number" style="text-align:left;width:80px">
+                       <input id="zonYUp1" type="number" style="text-align:left;width:80px">
+                       <input id="zonYDown1" type="number" style="text-align:left;width:80px">
+                  </div>
+                </div>
+                <div id="RigaZona2">
+                  <div style="padding-top: 6px;width:80px;float:left"> <span id="LbZona2" style="font-weight:bold">Zona nr. 2</span></div>
+                  <div><input id="zonXLeft2" type="number" style="text-align:left;width:80px">
+                       <input id="zonXRight2" type="number" style="text-align:left;width:80px">
+                       <input id="zonYUp2" type="number" style="text-align:left;width:80px">
+                       <input id="zonYDown2" type="number" style="text-align:left;width:80px">
+                  </div>
+                </div>
+                <div id="RigaZona3">
+                  <div style="padding-top: 6px;width:80px;float:left"> <span id="LbZona3" style="font-weight:bold">Zona nr. 3</span></div>
+                  <div><input id="zonXLeft3" type="number" style="text-align:left;width:80px">
+                       <input id="zonXRight3" type="number" style="text-align:left;width:80px">
+                       <input id="zonYUp3" type="number" style="text-align:left;width:80px">
+                       <input id="zonYDown3" type="number" style="text-align:left;width:80px">
+                  </div>
+                </div>
+                <div id="RigaZona4">
+                  <div style="padding-top: 6px;width:80px;float:left"> <span id="LbZona4" style="font-weight:bold">Zona nr. 4</span></div>
+                  <div><input id="zonXLeft4" type="number" style="text-align:left;width:80px">
+                       <input id="zonXRight4" type="number" style="text-align:left;width:80px">
+                       <input id="zonYUp4" type="number" style="text-align:left;width:80px">
+                       <input id="zonYDown4" type="number" style="text-align:left;width:80px">
+                  </div>
+                </div>
+                <div id="RigaZona5">
+                  <div style="padding-top: 6px;width:80px;float:left"> <span id="LbZona5" style="font-weight:bold">Zona nr. 5</span></div>
+                  <div><input id="zonXLeft5" type="number" style="text-align:left;width:80px">
+                       <input id="zonXRight5" type="number" style="text-align:left;width:80px">
+                       <input id="zonYUp5" type="number" style="text-align:left;width:80px">
+                       <input id="zonYDown5" type="number" style="text-align:left;width:80px">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="height:5px"></div>
+            <div style="text-align:right;padding-right: 10px">
+               <button id="BtnConfermaZone" style="width:100px">Cambia</button>
+               <button id="BtnAnnullaZone" style="width:100px">Annulla</button><br/>
+            </div>
+            <div style="height:20px">&nbsp</div>
+        </div>        
+        
+		<div id="DlgLogin">
+            <div style="height:20px">&nbsp</div>
+            <div> 
+              <div style="text-align:center"><img src="MediumLogo.png"></div>
+              <div style="text-align:left;padding:10px">
+                 <span style="font-weight:bold">Account</span><br/>
+                 <input id="logUserName" style="text-align:left;width:300px"><br/>
+                 <span style="font-weight:bold">Password</span><br/>
+                 <input type="password" id="logPassword" style="text-align:left;width:300px">
+              </div>
+            </div>
+            <div style="height:5px"></div>
+            <div style="text-align:right;margin-right:7px"><button id="BtnLogin" style="width:100px">Entra</button><br/></div>
+        </div>
+        
+		<div id="DlgShowMessage">
+            <div style="height:20px">&nbsp</div>
+            <div> 
+              <div style="text-align:center"><img src="MediumLogo.png"></div>
+              <div id="ShowMessageContent"style="text-align:left;padding:10px;height:280px;overflow-y:auto;">
+              </div>
+            </div>
+            <div style="height:10px"></div>
+            <div style="text-align:right;margin-right:7px"><button id="BtnShowMsgChiudi" style="width:100px">Chiudi</button><br/></div>
+        </div>
+        
+		<div id="DlgDimensioni">
+            <div style="height:20px">&nbsp</div>
+            <div> 
+              <div style="text-align:center"><img src="MediumLogo.png"></div>
+              <div style="text-align:left;padding:10px">
+                <span style="font-weight:bold">Nome del piano</span><br/>
+                 <input id="NamePiani" style="text-align:left;width:300px"><br/>
+                 <div id="NomePiani"></div>
+                 <span style="font-weight:bold">Larghezza [cm]</span><br/>
+                 <input id="dimLarghezza" style="text-align:left;width:300px"><br/>
+                 <span style="font-weight:bold">Tacca [cm]</span><br/>
+                 <input id="dimTacca" style="text-align:left;width:300px">
+              </div>
+              <div style="text-align:left;padding-left:7px">
+                <label for="immagine" class="custom-file-upload">Seleziona mappa</label>
+                <input id="immagine" class="FileButton" type="file"/>
+              </div>
+            </div>
+            <div style="height:20px"></div>
+            <div style="text-align:right;margin-right:7px">
+                  <button id="BtnConfermaDimMappa" class="ButtonConfAnnulla">Conferma</button>
+                  <button id="BtnAnnullaDimMappa" class="ButtonConfAnnulla">Annulla</button><br/>
+            </div>
+        </div>
+
+        <div id="DlgStorico">
+            <div style="height:5px">&nbsp</div>
+            <div> 
+              <div style="text-align:center;height:140px"><img src="MediumLogo.png"></div>
+              <div style="text-align:right;padding:10px">
+                    <div style="margin-bottom:3px">
+                      Dal <input type="date" id="StoricoDalData" style="width:125px"><input type="time" id="StoricoDalOra"> 
+                      al <input type="date" id="StoricoAlData" style="width:125px"><input type="time" id="StoricoAlOra">
+                    </div>
+                    <div>
+                      WeTAG <select id="StoricoTag" style="width:150px"></select>&nbsp&nbsp&nbsp
+                      Evento <select id="StoricoDescrEvento" style="width:150px"></select>
+                      <button id="BtnRefreshStorico" class="ButtonConfAnnulla">Aggiorna</button>
+                    </div>
+              </div>
+            </div>
+            <div id="ListaStorico" style="overflow-y:scroll;margin-right:10px;margin-left:10px;height:250px">
+            </div>
+            <div style="height:5px">&nbsp</div>
+            <div style="text-align:right;margin-right:7px">
+                  <button id="BtnConfermaStorico" class="ButtonConfAnnulla">Chiudi</button>
+            </div>
+        </div>
+        
+		<div id="DlgSelectPiano">
+            <div style="height:20px">&nbsp</div>
+            <div> 
+              <div style="text-align:center"><img src="MediumLogo.png"></div>
+              <div style="text-align:left;padding:10px">
+                 <span style="font-weight:bold">Piano</span><br/>
+                 <select id="PianoSelezionato" style="width:300px">
+                 </select>
+              </div>
+            </div>
+            <div style="height:5px"></div>
+            <div style="text-align:right;margin-right:7px">
+                  <button id="BtnConfermaPianoSelezionato" class="ButtonConfAnnulla">Conferma</button>
+                  <button id="BtnAnnullaPianoSelezionato" class="ButtonConfAnnulla">Annulla</button><br/>
+            </div>
+        </div>
+
+		<div id="DlgTrovaBeacon">
+            <div style="height:20px">&nbsp</div>
+            <div> 
+              <div style="text-align:center"><img src="MediumLogo.png"></div>
+              <div style="text-align:left;padding:10px">
+                 <span style="font-weight:bold">WeTAG da trovare</span><br/>
+                 <select id="FaroSelezionato" style="width:300px">
+                 </select>
+              </div>
+            </div>
+            <div style="height:5px"></div>
+            <div style="text-align:right;margin-right:7px">
+                  <button id="BtnConfermaFaroDaTrovare" class="ButtonConfAnnulla">Conferma</button>
+                  <button id="BtnAnnullaFaroDaTrovare" class="ButtonConfAnnulla">Annulla</button><br/>
+            </div>
+        </div>
+        <div id="DlgAnagraficaTag">
+            <div style="height:20px">&nbsp</div>
+            <div> 
+              <div style="text-align:center"><img src="MediumLogo.png"></div>
+              <div style="text-align:left;padding:10px">
+                 <span style="font-weight:bold">WeTAG da rinominare</span><br/>
+                 <select id="FaroSelezionato2" style="width:300px">
+                 </select>
+                 <br/><span style="font-weight:bold">Nome WeTAG</span><br/>
+                 <input type="text" id="nomeTag" style="width:300px"><br/>
+              </div>
+            </div>
+            <div style="height:5px"></div>
+            <div style="text-align:right;margin-right:7px">
+                  <button id="BtnConfermaAnagraficaTag" class="ButtonConfAnnulla">Conferma</button>
+                  <button id="BtnAnnullaAnagraficaTag" class="ButtonConfAnnulla">Annulla</button><br/>
+            </div>
+        </div>
+
+		<div id="DlgChangePassword">
+            <div style="height:20px">&nbsp</div>
+            <div style="text-align:center"><img src="MediumLogo.png"></div>
+            <div style="text-align:left;padding:10px"> 
+                 <span style="font-weight:bold">Vecchia</span><br/>
+                 <input type="password" id="pwdOldPassword" style="text-align:left;width:300px"><br/>
+                 <span style="font-weight:bold">Nuova</span><br/>
+                 <input type="password" id="pwdNuovaPassword" style="text-align:left;width:300px"><br/>
+                 <span style="font-weight:bold">Ridigita</span><br/>
+                 <input type="password" id="pwdCheckPassword" style="text-align:left;width:300px"><br/>
+            </div>
+            <div style="height:5px"></div>
+            <div style="text-align:right;margin-right:7px">
+               <button id="BtnConfermaPassword" style="width:100px">Cambia</button>
+               <button id="BtnAnnullaPassword" style="width:100px">Annulla</button><br/>
+            </div>
+        </div>
+
+        <div id="DlgLockAll">
+            <div>
+               <div style="height:20px">&nbsp</div>
+               <div style="text-align:center"><img src="MediumLogo.png"></div>
+               <div> 
+                  <p id="msgErrore">----</p> 
+                  <p><button id="BtnCloseMessage">Chiudi</button><br/><br/></p>
+              </div> 
+            </div>
+        </div>
+        
+	</main><!-- .content -->
+    <footer class="footer">
+	   <div id="MainHTMLFooter" style="padding-top:5px"></div>
+    </footer><!-- .footer -->
+
+</div><!-- .wrapper -->
+
+
+<script>
+  InitGUI();
+  var DrawPianta = new TDrawPianta('trkPianta','ws://localhost:8080');
+  function initMap()
+  {
+    GlobalGoogleMap = new google.maps.Map(document.getElementById('divGoogleMap'), 
+                                              {
+                                                center : {lat: 50, lng: 50},
+                                                zoom: 5
+                                              });
+  }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRkPToSWF3vruJ_sY_OpaK15QB-pNuaZs&callback=initMap" 
+        type="text/javascript"></script>
+
+</body>
+</html>
