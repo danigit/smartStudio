@@ -4,6 +4,11 @@ DIMENSIONS
 .height-100-vh{
     height: 100vh;
 }
+
+
+
+
+
 /******************************************************************
 FONTS
  */
@@ -16,18 +21,31 @@ FONTS
 }
 
 .font-x-large{
-    font-size: xx-large;
+    font-size: x-large;
 }
-/******************************************************************
-COLORS
- */
-.background-lightblue{
-    background-color: #6AB8C3;
+
+.font-medium{
+    font-size: medium;
 }
+
+.text-center{
+    text-align: center;
+}
+
+
+
+
+
 
 /******************************************************************
 FRAMEWORK
  */
+
+
+
+
+
+
 
 /******************************************************************
 MARGINS
@@ -40,6 +58,12 @@ MARGINS
     margin-bottom: 10% !important;
 }
 
+
+
+
+
+
+
 /******************************************************************
 PADDING
  */
@@ -50,6 +74,12 @@ PADDING
 .padding-40-px{
     padding: 40px;
 }
+
+
+
+
+
+
 
 /******************************************************************
 BORDER
@@ -62,6 +92,10 @@ BORDER
     border: 1px solid lightgrey;
 }
 
+.border-1-red{
+    border: 1px solid #E12315;
+}
+
 .border-radius-20-px{
     border-radius: 20px;
 }
@@ -70,6 +104,12 @@ BORDER
     border-radius: 50%;
 }
 
+
+
+
+
+
+
 /******************************************************************
 COLOR
  */
@@ -77,13 +117,35 @@ COLOR
     color: #FFFFFF;
 }
 
+.color-red{
+    color: #E12315;
+}
+
+
+
+
+
+
+
 /******************************************************************
 OTHER
  */
 
+
+
+
+
+
+
 /******************************************************************
 DISPLAY
  */
+
+
+
+
+
+
 
 /******************************************************************
 SHADOW
@@ -93,12 +155,35 @@ SHADOW
 }
 
 
+
+
+
+
+
 /******************************************************************
 BACKGROUND
  */
+.background-transparent{
+    background-color: transparent;
+}
+
+.background-transparent-white{
+    background-color: #ffffff0f;
+}
+
 .background-lightottanio{
     background-color:rgba(120,144,156,0.2);
 }
+
+.background-lightblue{
+    background-color: #6AB8C3;
+}
+
+
+
+
+
+
 
 /******************************************************************
 ELEMENTS

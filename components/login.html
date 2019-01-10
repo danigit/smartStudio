@@ -1,9 +1,10 @@
 <div ng-controller="loginController">
     <div layout="row" layout-sm="row" layout-xs="row" layout-align="center center" layout-wrap class="height-100-vh">
-        <div id="login-container" flex="40" flex-lg="40" flex-xl="20" flex-sm="100" flex-xs="100" class="border-radius-20-px padding-40-px background-lightottanio box-shadow-40-4-white">
+        <div id="login-container" flex="40" flex-lg="40" flex-xl="20" flex-sm="100" flex-xs="100" class="border-radius-20-px
+            padding-40-px background-lightottanio box-shadow-40-4-white">
             <form id="loginForm" name="loginForm">
                 <div layout="row" layout-align="center center">
-                    <img src="../img/avatar.png" class="avatar-image border-radius-50" alt="Smart Studio">
+                    <img src="../smartStudio/img/avatar.png" class="avatar-image border-radius-50" alt="Smart Studio">
                 </div>
                 <div layout="column">
                     <div layout="row" layout-align="center center" class="padding-bottom-1o">
@@ -24,9 +25,11 @@
                             <div ng-message="required">Inserire una password</div>
                         </div>
                     </md-input-container>
-                    <md-subheader class="background-transparent color-red font-medium" ng-show="">Utente non registrato o password errata</md-subheader>
-                    <md-subheader class="background-transparent color-red font-medium" ng-show="">Impossibile communicare con il server</md-subheader>
-                    <md-button id="loginButton" ng-click="" class="md-raised">Login</md-button>
+                    <md-subheader class="background-transparent-white text-center color-white font-medium border-1-red
+                        border-radius-20-px" ng-show="errorHandeling.wrongData">Utente non registrato o password errata</md-subheader>
+                    <md-subheader class="background-transparent-white color-white font-medium border-radius-20-px"
+                        ng-show="errorHandeling.noConnection">Impossibile communicare con il server</md-subheader>
+                    <md-button id="loginButton" ng-click="login(loginForm)" class="md-raised">Login</md-button>
                 </div>
             </form>
         </div>
