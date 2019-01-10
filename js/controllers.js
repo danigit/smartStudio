@@ -45,8 +45,9 @@
      * Function that manges the home page functionalities
      * @type {string[]}
      */
-    homeController.$inject = ['$scope', 'homeService', '$location'];
-    function homeController($scope, homeService, $location) {
+    homeController.$inject = ['$scope', 'homeService', '$location', '$timeout', '$mdSidenav'];
+    function homeController($scope, homeService, $location, $timeout, $mdSidenav) {
+        initMap();
 
         //function that makes the logout of the user
         $scope.logout = function () {
@@ -58,6 +59,15 @@
                         $location.path('/');
                 }
             )
+        };
+
+        $scope.toggleLeft = buildToggler('left');
+
+        function buildToggler(componentId) {
+            console.log('toggle');
+            return function () {
+                $mdSidenav(componentId).toggle();
+            }
         }
     }
 })();

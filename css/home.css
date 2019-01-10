@@ -1,0 +1,25 @@
+#map-div{
+    width: 100%;
+    height: 100vh;
+}
+
+.gmnoprint{
+    display: none!important;
+}
+
+#open-menu-button{
+    background-color: #263238;
+    position: absolute;
+    left: 0;
+    top: 15px;
+    /*padding: 10px 5px 10px 5px;*/
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    z-index: 10;
+}
+
+#open-menu-icon{
+    width: 42px;
+    padding-top: 5px;
+    padding-right: 5px;
+}

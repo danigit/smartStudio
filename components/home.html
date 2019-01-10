@@ -1,11 +1,28 @@
     <div ng-controller="homeController">
-        <md-content class="md-padding">
-            <md-nav-bar md-no-ink-bar="disableInkBar"
-                        md-selected-nav-item="currentNavItem"
-                        nav-bar-aria-label="navigation links">
-                <md-nav-item md-nav-click="logout()" name="updatePatient">
-                    Logout
-                </md-nav-item>
-            </md-nav-bar>
-        </md-content>
+        <div id="map-div"></div>
+
+        <div layout="row" layout-sm="row" layout-xs="row" layout-align="center center" layout-wrap class="height-100-vh">
+            <div id="login-container" flex="100">
+                <div id="open-menu-button" ng-click="toggleLeft()" class="border-2-lightbalck cursor-pointer outline-none">
+                    <img id="open-menu-icon" src="../smartStudio/img/open-menu.png">
+                </div>
+                <section layout="row" flex>
+                    <md-sidenav id="menu-panel" class="md-sidenav-left" mode="push" md-component-id="left" md-disable-backdrop md-whiteframe="4">
+                        <md-toolbar class="background-ottanio" layout="row" layout-align="center center">
+                            <h1 class="md-toolbar-tools">Menu</h1>
+                            <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
+                                <img src="../smartStudio/img/close-menu.gif">
+                            </div>
+                        </md-toolbar>
+                        <md-content layout-margin>
+                            <p>This sidenav is not showing any backdrop, where users can click on it, to close the sidenav.</p>
+                            <md-button ng-click="toggleLeft()" class="md-accent">
+                                Close this Sidenav
+                            </md-button>
+                        </md-content>
+                    </md-sidenav>
+                </section>
+            </div>
+        </div>
+
     </div>
