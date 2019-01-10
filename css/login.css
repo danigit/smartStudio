@@ -1,0 +1,20 @@
+.avatar-image{
+    width: 100px;
+    height: 100px;
+}
+
+#loginButton{
+    margin: 10% 0 10% 0!important;;
+}
+
+/**
+FRAMEWORK
+ */
+#loginForm md-input-container label{
+    color: #FFFFFF!important;
+}
+
+#loginForm .md-input{
+    color: #FFFFFF;
+    border-color: #FFFFFF!important;
+}

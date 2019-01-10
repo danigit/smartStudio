@@ -1,0 +1,108 @@
+/******************************************************************
+DIMENSIONS
+ */
+.height-100-vh{
+    height: 100vh;
+}
+/******************************************************************
+FONTS
+ */
+.font-oswald{
+    font-family: 'Oswald', sans-serif;
+}
+
+.font-iceberg{
+    font-family: 'Iceberg', sans-serif;
+}
+
+.font-x-large{
+    font-size: xx-large;
+}
+/******************************************************************
+COLORS
+ */
+.background-lightblue{
+    background-color: #6AB8C3;
+}
+
+/******************************************************************
+FRAMEWORK
+ */
+
+/******************************************************************
+MARGINS
+ */
+.margin-none{
+    margin: 0!important;
+}
+
+.margin-bottom-10{
+    margin-bottom: 10% !important;
+}
+
+/******************************************************************
+PADDING
+ */
+.padding-bottom-1o{
+    padding-bottom: 10%;
+}
+
+.padding-40-px{
+    padding: 40px;
+}
+
+/******************************************************************
+BORDER
+ */
+.border-1-black{
+    border: 1px solid black;
+}
+
+.border-1-gray{
+    border: 1px solid lightgrey;
+}
+
+.border-radius-20-px{
+    border-radius: 20px;
+}
+
+.border-radius-50{
+    border-radius: 50%;
+}
+
+/******************************************************************
+COLOR
+ */
+.color-white{
+    color: #FFFFFF;
+}
+
+/******************************************************************
+OTHER
+ */
+
+/******************************************************************
+DISPLAY
+ */
+
+/******************************************************************
+SHADOW
+ */
+.box-shadow-40-4-white{
+    box-shadow: 0 0 40px 4px #fff;
+}
+
+
+/******************************************************************
+BACKGROUND
+ */
+.background-lightottanio{
+    background-color:rgba(120,144,156,0.2);
+}
+
+/******************************************************************
+ELEMENTS
+ */
+body{
+    background-color: #263238;
+}

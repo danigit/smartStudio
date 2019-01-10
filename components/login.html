@@ -1,0 +1,34 @@
+<div ng-controller="loginController">
+    <div layout="row" layout-sm="row" layout-xs="row" layout-align="center center" layout-wrap class="height-100-vh">
+        <div id="login-container" flex="40" flex-lg="40" flex-xl="20" flex-sm="100" flex-xs="100" class="border-radius-20-px padding-40-px background-lightottanio box-shadow-40-4-white">
+            <form id="loginForm" name="loginForm">
+                <div layout="row" layout-align="center center">
+                    <img src="../img/avatar.png" class="avatar-image border-radius-50" alt="Smart Studio">
+                </div>
+                <div layout="column">
+                    <div layout="row" layout-align="center center" class="padding-bottom-1o">
+                        <h1 class="color-white font-iceberg font-x-large">LOGIN</h1>
+                    </div>
+                    <md-input-container>
+                        <label for="usernameInput">Username</label>
+                        <input required type="text" id="usernameInput" name="usernameInput" ng-model="user.username" title="">
+                        <div ng-messages="loginForm.usernameInput.$error || loginForm.$submitted" role="alert">
+                            <div ng-message=" required">Inserire un username</div>
+                        </div>
+                    </md-input-container>
+                    <br>
+                    <md-input-container>
+                        <label for="passwordInput">Password</label>
+                        <input required type="password" id="passwordInput" name="passwordInput" ng-model="user.password" title="">
+                        <div ng-messages="loginForm.passwordInput.$error || loginForm.$submitted">
+                            <div ng-message="required">Inserire una password</div>
+                        </div>
+                    </md-input-container>
+                    <md-subheader class="background-transparent color-red font-medium" ng-show="">Utente non registrato o password errata</md-subheader>
+                    <md-subheader class="background-transparent color-red font-medium" ng-show="">Impossibile communicare con il server</md-subheader>
+                    <md-button id="loginButton" ng-click="" class="md-raised">Login</md-button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

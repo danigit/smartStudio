@@ -8,5 +8,5 @@
    // BLUE TOOTH
    define('MYSQLDBASE','ble');
    define('MYSQLACCOUNT', 'root');
-   define('MYSQLPASSWORD', '');
+   define('MYSQLPASSWORD', 'password');
 ?>
