@@ -4,7 +4,7 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="12">
+          <list size="15">
             <item index="0" class="java.lang.String" itemvalue="layout" />
             <item index="1" class="java.lang.String" itemvalue="layout-align" />
             <item index="2" class="java.lang.String" itemvalue="layout-xs" />
@@ -17,6 +17,9 @@
             <item index="9" class="java.lang.String" itemvalue="flex-xs" />
             <item index="10" class="java.lang.String" itemvalue="flex-lg" />
             <item index="11" class="java.lang.String" itemvalue="flex-xl" />
+            <item index="12" class="java.lang.String" itemvalue="md-component-id" />
+            <item index="13" class="java.lang.String" itemvalue="md-disable-backdrop" />
+            <item index="14" class="java.lang.String" itemvalue="layout-margin" />
           </list>
         </value>
       </option>
