@@ -32,10 +32,17 @@ FONTS
     font-size: small;
 }
 
+.font-x-smal{
+    font-size: x-small!important;
+}
+
 .text-center{
     text-align: center;
 }
 
+.text-underlined{
+    text-decoration: underline;
+}
 
 
 
@@ -68,6 +75,40 @@ MARGINS
 .margin-right-10-px{
     margin-right: 10px;
 }
+
+.margin-left--10px{
+    margin-left: -10px;
+}
+
+.margin-bottom-0{
+    margin-bottom: 0;
+}
+
+.margin-top-0{
+    margin-top: 0;
+}
+
+.margin-top-10{
+    margin-top: 10% !important;
+}
+
+.margint-top-5-px{
+    margin-top: 5px!important;
+}
+
+.margin-bottom-10-px{
+    margin-bottom: 10px!important;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -135,6 +176,10 @@ COLOR
     color: #E12315;
 }
 
+.color-ottanio{
+    color: #29353A;
+}
+
 
 
 
@@ -152,6 +197,10 @@ OTHER
     outline: none;
 }
 
+.menu-list-icon{
+    width: 15px;
+    height: 15px;
+}
 
 
 
@@ -202,6 +251,27 @@ BACKGROUND
 .background-lightblue{
     background-color: #6AB8C3;
 }
+
+
+
+
+
+
+
+/******************************************************************
+POSITION
+ */
+.float-right{
+    float: right;
+}
+
+
+
+
+
+
+
+
 
 
 
