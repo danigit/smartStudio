@@ -24,14 +24,15 @@
                             <div ng-message="required">Inserire una password</div>
                         </div>
                     </md-input-container>
-                    <md-subheader class="background-transparent-white text-center color-white font-x-smal border-1-red
-                        border-radius-20-px margint-top-5-px margin-bottom-10-px" ng-show="errorHandeling.wrongData">Utente non registrato o password errata</md-subheader>
-                    <md-subheader class="background-transparent-white color-white font-medium border-radius-20-px"
-                        ng-show="errorHandeling.noConnection">Impossibile communicare con il server</md-subheader>
+                    <div class="background-transparent-white text-center color-white font-x-smal border-1-red
+                        border-radius-20-px margint-top-5-px margin-bottom-10-px padding-10-px" ng-show="errorHandeling.wrongData">Utente non registrato o password errata</div>
+                    <div class="background-transparent-white text-center color-white font-x-smal border-1-red
+                        border-radius-20-px margint-top-5-px margin-bottom-10-px padding-10-px"
+                        ng-show="errorHandeling.noConnection">Impossibile communicare con il server</div>
                     <md-button id="loginButton" ng-click="login(loginForm)" class="md-raised margin-top-0">Login</md-button>
                 </div>
             </form>
-            <div class="float-right color-white font-smal cursor-pointer">
+            <div ng-click="recoverPassword()" class="float-right color-white font-smal cursor-pointer">
                 <p class="text-underlined">Recupera password</p>
             </div>
         </div>

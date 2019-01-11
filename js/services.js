@@ -8,6 +8,7 @@
     //SERVICES
     main.service('loginService', loginService);
     main.service('homeService', homeService);
+    main.service('recoverPassService', recoverPassService);
 
     /**
      * Function that manage the login requests and login business logic
@@ -50,5 +51,26 @@
                 url   : smartPath + 'php/ajax/logout.php',
             });
         };
+    }
+
+    recoverPassService.$inject = ['$http'];
+    function recoverPassService($http) {
+        let service = this;
+
+        service.recoverPassword = function (email) {
+            return $http({
+                method: 'POST',
+                url: smartPath + 'php/ajax/recover_password.php',
+                params: {email: email}
+            })
+        };
+
+        service.resetPassword = function (code, username, password, repassword) {
+            return $http({
+                method: 'POST',
+                url: smartPath + 'php/ajax/reset_password.php',
+                params: {code: code, username: username, password: password, repassword: repassword}
+            })
+        }
     }
 })();

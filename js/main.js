@@ -38,7 +38,13 @@
                     },
                 },
                 templateUrl: mainPath + 'components/home.html',
-                controller: 'homeController'
+                controller: 'homeController'})
+            .when('/recover-password',{
+                templateUrl: mainPath + 'components/recover-password.html',
+                controller: 'recoverPassController'})
+            .when('/recover-password-code',{
+                templateUrl: mainPath + 'components/recover-password-code.html',
+                controller: 'recoverPassController'
             })
     });
 })();

@@ -11,12 +11,13 @@ class db_errors
     public static $ERROR_ON_EXECUTE = 0;
     public static $ERROR_ON_TEST = 1;
     public static $ERROR_ON_EMAIL_DUPLICATE_ENTRY = 2;
-    public static $ERROR_ON_REGISTER_USER = 3;
-    public static $ERROR_ON_LOGIN = 4;
-    public static $ERROR_ON_INSERTING_PATIENT = 5;
-    public static $ERROR_ON_UPDATING_PATIENT = 6;
-    public static $ERROR_ON_DELETING_PATIENT = 7;
-    public static $ERROR_ON_INSERTING_INVOICE = 8;
+    public static $ERROR_ON_USERNAME_DUPLICATE_ENTRY = 3;
+    public static $ERROR_ON_REGISTER_USER = 4;
+    public static $ERROR_ON_LOGIN = 5;
+    public static $ERROR_EMAIL_NOT_FOUND = 6;
+    public static $ERROR_ON_CHANGING_PASSWORD = 7;
+    public static $ERROR_CODE_NOT_FOUND = 8;
+    public static $ERROR_USER_NOT_FOUND = 9;
 
     private $error;
 
@@ -52,17 +53,19 @@ class db_errors
             case 2:
                 return 'ERROR_ON_EMAIL_DUPLICATE_ENTRY';
             case 3:
-                return 'ERROR_ON_REGISTER_USER';
+                return 'ERROR_ON_USERNAME_DUPLICATE_ENTRY';
             case 4:
-                return 'ERROR_ON_LOGIN';
+                return 'ERROR_ON_REGISTER_USER';
             case 5:
-                return 'ERROR_ON_INSERTING_PATIENT';
+                return 'ERROR_ON_LOGIN';
             case 6:
-                return 'ERROR_ON_UPDATING_PATIENT';
+                return 'ERROR_EMAIL_NOT_FOUND';
             case 7:
-                return 'ERROR_ON_DELETING_PATIENT';
+                return 'ERROR_ON_CHANGING_PASSWORD';
             case 8:
-                return 'ERROR_ON_INSERTING_INVOICE';
+                return 'ERROR_CODE_NOT_FOUND';
+            case 9:
+                return 'ERROR_USER_NOT_FOUND';
             default:
                 return 'UNKNOWN_ERROR';
         }

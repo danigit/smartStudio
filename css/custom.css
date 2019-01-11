@@ -5,7 +5,9 @@ DIMENSIONS
     height: 100vh;
 }
 
-
+.height-90{
+    height: 90%;
+}
 
 
 
@@ -126,6 +128,9 @@ PADDING
     padding: 40px;
 }
 
+.padding-10-px{
+    padding: 10px;
+}
 
 
 

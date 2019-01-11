@@ -77,6 +77,116 @@ class Connection{
     }
 
     /**
+     * Function that control if the email passed as parameter exist in user table and insert the email and code in recover_password table
+     * @param $email - the email to be controlled
+     * @param $code - the code to be inserted
+     * @return array|db_errors
+     */
+    function control_email($email, $code){
+        $this->connection->autocommit(false);
+        $errors = array();
+
+        $this->query = 'SELECT id  FROM user WHERE  email = ?';
+        $statement = $this->execute_selecting($this->query, 's', $email);
+
+        if ($statement instanceof db_errors)
+            array_push($errors, 'db_error');
+        else if ($statement == false)
+            array_push($errors, 'false');
+
+        $statement->bind_result($res_id);
+        $fetch = $statement->fetch();
+
+        if ($fetch)
+            $this->result = array('result' => $res_id);
+
+        $statement->close();
+
+        $this->query = 'INSERT INTO recover_password (email, code) VALUES (?, ?)';
+        $result = $this->execute_inserting($this->query, 'ss', $email, $code);
+
+        if ($result instanceof db_errors)
+            array_push($errors, 'db_error');
+        else if ($result == false)
+            array_push($errors, 'false');
+
+
+        if(!empty($errors)){
+            $this->connection->rollback();
+            return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+        }
+
+        $this->connection->commit();
+
+        return $this->result;
+    }
+
+    /**
+     * Function thar change the password of the user passed as parameter with the password passed as parameter also
+     * @param $code - code that verifies the user
+     * @param $username - user to be updated
+     * @param $password - new password to be setted
+     * @return db_errors|int
+     */
+    function reset_password($code, $username, $password){
+        $hash_password = password_hash($password, PASSWORD_BCRYPT);
+        $email = '';
+        $this->connection->autocommit(false);
+        $errors = array();
+
+        $this->query = 'SELECT email  FROM recover_password WHERE  code = ?';
+        $statement = $this->execute_selecting($this->query, 's', strtoupper($code));
+
+        if ($statement instanceof db_errors)
+            $errors['db'] = 'db_error';
+        else if ($statement == false)
+            $errors['statement'] = 'statement false';
+
+        $statement->bind_result($res_email);
+        $fetch = $statement->fetch();
+
+        if ($fetch) {
+            $email = $res_email;
+        }else{
+            $errors['fetch'] = 'wrong_code';
+        }
+
+        $statement->close();
+
+        $this->query = "UPDATE user SET password = ? WHERE email = ? AND username = ?";
+        $statement = $this->execute_selecting($this->query, 'sss', $hash_password, $email, $username);
+
+        if ($statement instanceof db_errors)
+            array_push($errors, 'db_error');
+        else if ($statement == false)
+            array_push($errors, 'false');
+
+        $this->result =  $this->connection->affected_rows;
+
+        if ($this->result == '0'){
+            $errors['update'] = 'username';
+        }
+
+        if(!empty($errors)){
+            $this->connection->rollback();
+            if ($errors['fetch'])
+                return new db_errors(db_errors::$ERROR_CODE_NOT_FOUND);
+            else if ($errors['update'])
+                return new db_errors(db_errors::$ERROR_USER_NOT_FOUND);
+
+            return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+        }
+
+        $this->query = 'TRUNCATE recover_password';
+        $this->connection->query($this->query);
+
+
+        $this->connection->commit();
+
+        return $this->result;
+    }
+
+    /**
      * Function that uses the execute statement to execute a query with the prepare statement
      * @param $query - the query to be executed
      * @param $bind_string - the string containing the types of the parameters of the query

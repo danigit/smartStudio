@@ -48,3 +48,24 @@ function set_session_variables($id, $username, $is_secure){
     $_SESSION['secure'] = $is_secure;
     session_write_close();
 }
+
+/**
+ * Function that generates a random code of 6 characters, that has letters an numbers in it
+ * @return string - the generated code
+ */
+function generateRandomCode() {
+    $chars = "abcdefghijkmnopqrstuvwxyz0123456789";
+    srand((double)microtime()*1000000);
+    $i = 0;
+    $code = '' ;
+
+    while ($i < 6) {
+        $num = rand() % 33;
+        $tmp = substr($chars, $num, 1);
+        $code = $code . $tmp;
+        $i++;
+    }
+
+    return $code;
+
+}

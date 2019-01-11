@@ -19,6 +19,8 @@ function parse_errors($errors){
         $column = parse_string($errno);
         if ($column === "'email'")
             return new db_errors(db_errors::$ERROR_ON_EMAIL_DUPLICATE_ENTRY);
+        if ($column === "'username'")
+            return new db_errors(db_errors::$ERROR_ON_USERNAME_DUPLICATE_ENTRY);
     }
 
     return new db_errors(db_errors::$ERROR_ON_EXECUTE);

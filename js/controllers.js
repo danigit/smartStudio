@@ -7,6 +7,7 @@
     //CONTROLLERS
     main.controller('loginController', loginController);
     main.controller('homeController', homeController);
+    main.controller('recoverPassController', recoverPassController);
 
     /**
      * Function that manage the user login functionalities
@@ -38,6 +39,10 @@
                     $scope.errorHandeling.noConnection = true;
                 }
             )
+        };
+
+        $scope.recoverPassword = function () {
+          $location.path('/recover-password');
         }
     }
 
@@ -67,6 +72,72 @@
             console.log('toggle');
             return function () {
                 $mdSidenav(componentId).toggle();
+            }
+        }
+    }
+
+    /**
+     * Funciton that handles the change password request
+     * @type {string[]}
+     */
+    recoverPassController.$inject = ['$scope', 'recoverPassService', '$location'];
+    function recoverPassController($scope, recoverPassService, $location) {
+        $scope.email = '';
+        $scope.code = '';
+        $scope.username = '';
+        $scope.password = '';
+        $scope.rePassword = '';
+        $scope.error = '';
+        $scope.errorHandeling = {noConnection: false, wrongData: false, passwordNotMatch: false };
+
+        $scope.sendRecoverPassword = function (form) {
+            form.$submitted = 'true';
+            $scope.errorHandeling.noConnection = false;
+            $scope.errorHandeling.wrongData = false;
+
+            let promise = recoverPassService.recoverPassword($scope.email);
+
+            promise.then(
+                function (response) {
+                    if (response.data.response){
+                        $location.path('/recover-password-code')
+                    }else {
+                        $scope.errorHandeling.wrongData = true;
+                    }
+                }
+            ).catch(
+                function () {
+                    $scope.errorHandeling.noConnection = true;
+                }
+            )
+        };
+        
+        $scope.resetPassword = function (form) {
+            form.$submitted = 'true';
+            $scope.errorHandeling.noConnection = false;
+            $scope.errorHandeling.wrongData = false;
+            $scope.errorHandeling.passwordNotMatch = false;
+
+            if ($scope.password !== $scope.rePassword){
+                $scope.errorHandeling.passwordNotMatch = true;
+            }else {
+
+                let promise = recoverPassService.resetPassword($scope.code, $scope.username, $scope.password, $scope.rePassword);
+
+                promise.then(
+                    function (response) {
+                        if (response.data.response) {
+                            $location.path('/');
+                        } else {
+                            $scope.errorHandeling.wrongData = true;
+                            $scope.error = response.data.message;
+                        }
+                    }
+                ).catch(
+                    function () {
+                        $scope.errorHandeling.noConnection = true;
+                    }
+                )
             }
         }
     }
