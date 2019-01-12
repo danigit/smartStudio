@@ -1,13 +1,13 @@
 <div ng-controller="loginController">
-    <div layout="row" layout-sm="row" layout-xs="row" layout-align="center center" layout-wrap class="height-100-vh">
-        <div id="login-container" flex="20" flex-lg="20" flex-xl="20" flex-sm="40" flex-xs="100" class="">
+    <div layout="row" layout-sm="row" layout-xs="row" layout-align="center center" layout-wrap class="height-100-vh" style="z-index: 100">
+        <div id="login-container" flex="25" flex-lg="25" flex-xl="20" flex-sm="40" flex-xs="100" class="">
             <form id="loginForm" name="loginForm">
                 <div layout="row" layout-align="center center">
-                    <img src="../smartStudio/img/avatar.png" class="avatar-image border-radius-50" alt="Smart Studio">
+                    <img src="../smartStudio/img/login-icon.png" class="avatar-image border-radius-50" alt="Smart Studio">
                 </div>
                 <div layout="column">
-                    <div layout="row" layout-align="center center" class="padding-bottom-1o">
-                        <h1 class="color-white font-iceberg font-x-large">SMART STUDIO</h1>
+                    <div layout="row" layout-align="center center" class="padding-bottom-10 padding-top-5">
+                        <h1 class=" font-iceberg font-x-large">SAFETY IoT PLATFORM</h1>
                     </div>
                     <md-input-container class="margin-bottom-0">
                         <label for="usernameInput" class="font-smal">Username</label>
@@ -24,16 +24,16 @@
                             <div ng-message="required">Inserire una password</div>
                         </div>
                     </md-input-container>
-                    <div class="background-transparent-white text-center color-white font-x-smal border-1-red
-                        border-radius-20-px margint-top-5-px margin-bottom-10-px padding-10-px" ng-show="errorHandeling.wrongData">Utente non registrato o password errata</div>
+                    <div class="background-transparent-white text-center color-red font-smal
+                        margint-top-5-px margin-bottom-10-px padding-10-px" ng-show="errorHandeling.wrongData">Utente non registrato o password errata</div>
                     <div class="background-transparent-white text-center color-white font-x-smal border-1-red
                         border-radius-20-px margint-top-5-px margin-bottom-10-px padding-10-px"
                         ng-show="errorHandeling.noConnection">Impossibile communicare con il server</div>
-                    <md-button id="loginButton" ng-click="login(loginForm)" class="md-raised margin-top-0">Login</md-button>
+                    <md-button id="loginButton" ng-click="login(loginForm)" class="md-raised">Login</md-button>
                 </div>
             </form>
-            <div ng-click="recoverPassword()" class="float-right color-white font-smal cursor-pointer">
-                <p class="text-underlined">Recupera password</p>
+            <div ng-click="recoverPassword()" class="float-right  font-smal cursor-pointer background-transparent-white padding-10-px">
+                <p class="text-underlined margin-none">Recupera password</p>
             </div>
         </div>
     </div>

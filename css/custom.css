@@ -78,8 +78,8 @@ MARGINS
     margin-right: 10px;
 }
 
-.margin-left--10px{
-    margin-left: -10px;
+.margin-left--25-px{
+    margin-left: -25px;
 }
 
 .margin-bottom-0{
@@ -120,7 +120,7 @@ MARGINS
 /******************************************************************
 PADDING
  */
-.padding-bottom-1o{
+.padding-bottom-10{
     padding-bottom: 10%;
 }
 
@@ -132,6 +132,9 @@ PADDING
     padding: 10px;
 }
 
+.padding-top-5{
+    padding-top: 5%;
+}
 
 
 
@@ -185,7 +188,9 @@ COLOR
     color: #29353A;
 }
 
-
+.color-black{
+    color: #000000;
+}
 
 
 
@@ -242,7 +247,7 @@ BACKGROUND
 }
 
 .background-transparent-white{
-    background-color: #ffffff0f;
+    background-color: #ffffff5c;
 }
 
 .background-lightottanio{
@@ -257,6 +262,9 @@ BACKGROUND
     background-color: #6AB8C3;
 }
 
+.background-darkcyan{
+    background-color: #0093c4!important;
+}
 
 
 
@@ -288,5 +296,7 @@ POSITION
 ELEMENTS
  */
 body{
-    background-color: #263238;
+    background-image: url("../img/login-background.jpg");
+    background-position: top;
+    background-size: cover;
 }

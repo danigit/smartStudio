@@ -1,20 +1,27 @@
 .avatar-image{
-    width: 100px;
-    height: 100px;
+    width: 130px;
+    height: 130px;
 }
 
 #loginButton{
-    margin: 0 0 10% 0!important;;
+    margin: 10% 0 10% 0!important;;
 }
 
 /**
 FRAMEWORK
  */
 #loginForm md-input-container label{
-    color: #FFFFFF!important;
+    color: #000000!important;
 }
 
 #loginForm .md-input{
-    color: #FFFFFF;
-    border-color: #FFFFFF!important;
+    color: #000000;
+    border-color: #000000!important;
+}
+
+#login-container {
+    background: #00000014;
+    padding: 40px;
+    box-shadow: 0 0 110px 30px #00000026;
+    border-radius: 20px;
 }
