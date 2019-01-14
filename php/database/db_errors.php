@@ -18,6 +18,7 @@ class db_errors
     public static $ERROR_ON_CHANGING_PASSWORD = 7;
     public static $ERROR_CODE_NOT_FOUND = 8;
     public static $ERROR_USER_NOT_FOUND = 9;
+    public static $ERROR_ON_GETTING_MARKERS = 10;
 
     private $error;
 
@@ -66,6 +67,8 @@ class db_errors
                 return 'ERROR_CODE_NOT_FOUND';
             case 9:
                 return 'ERROR_USER_NOT_FOUND';
+            case 10:
+                return 'ERROR_ON_GETTING_MARKERS';
             default:
                 return 'UNKNOWN_ERROR';
         }

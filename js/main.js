@@ -2,7 +2,7 @@
     'use strict';
 
     //loading the angular framework and the dependencies
-    let main = angular.module('main', ['ngMaterial', 'ngRoute', 'ngMessages']);
+    let main = angular.module('main', ['ngMaterial', 'ngRoute', 'ngMessages', 'ngWebsocket', 'ngMap']);
 
     //Configuring the router and the angular initial data
     main.config(function ($routeProvider) {
@@ -38,7 +38,7 @@
                     },
                 },
                 templateUrl: mainPath + 'components/home.html',
-                controller: 'homeController'})
+                controller: 'mapController'})
             .when('/recover-password',{
                 templateUrl: mainPath + 'components/recover-password.html',
                 controller: 'recoverPassController'})

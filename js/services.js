@@ -9,6 +9,7 @@
     main.service('loginService', loginService);
     main.service('homeService', homeService);
     main.service('recoverPassService', recoverPassService);
+    main.service('mapService', mapService);
 
     /**
      * Function that manage the login requests and login business logic
@@ -53,6 +54,26 @@
         };
     }
 
+    /**
+     * Function that handles the requests for the map
+     * @type {string[]}
+     */
+    mapService.$imject = ['$http'];
+    function mapService($http){
+        let service = this;
+
+        service.getMapMarkers = function () {
+            return $http({
+                method: 'GET',
+                url: smartPath + 'php/ajax/get_markers.php',
+            })
+        }
+    }
+
+    /**
+     * Function that handles the recover password requests
+     * @type {string[]}
+     */
     recoverPassService.$inject = ['$http'];
     function recoverPassService($http) {
         let service = this;

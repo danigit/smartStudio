@@ -186,6 +186,29 @@ class Connection{
         return $this->result;
     }
 
+    function get_markers(){
+        $query = 'SELECT name, latitude, longitude, icon FROM location';
+
+        $result = $this->connection->query($query);
+
+        if ($result instanceof db_errors)
+            return $result;
+        else if ($result == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+
+        $result_array = array();
+
+        while ($row = mysqli_fetch_assoc($result)) {
+            $position = array();
+            $position[] = $row['latitude'];
+            $position[] = $row['longitude'];
+
+            $result_array[] = array('name' => $row['name'], 'position' => $position, "icon" => $row['icon']);
+        }
+
+        return $result_array;
+    }
+
     /**
      * Function that uses the execute statement to execute a query with the prepare statement
      * @param $query - the query to be executed

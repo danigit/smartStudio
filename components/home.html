@@ -1,8 +1,21 @@
     <div ng-controller="homeController">
         <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
-            <div id="map-div"></div>
+            <div ng-controller="mapController" id="map-div">
+                <ng-map center="[41.87194, 12.56738]" zoom="7" mape-type-id="TERRAIN" class="height-100-vh">
+                    <custom-marker ng-repeat="marker in markers track by $index"
+                        id="custom-marker-{{$index}}"
+                        position="{{marker.position}}">
+                        <div>
+                            <img ng-src="../smartStudio/img/{{marker.icon}}" alt="">
+                        </div>
+                    </custom-marker>
+                </ng-map>
+                    <!--<md-list ng-repeat="marker in markers">-->
+                        <!--<md-list-item>{{marker}}</md-list-item>-->
+                    <!--</md-list>-->
+            </div>
 
-            <div id="login-container" flex="100">
+            <div flex="100">
                 <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--25-px cursor-pointer outline-none">
                     <img id="open-menu-icon" src="../smartStudio/img/open-menu.png" alt="">
                 </div>

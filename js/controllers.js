@@ -8,6 +8,7 @@
     main.controller('loginController', loginController);
     main.controller('homeController', homeController);
     main.controller('recoverPassController', recoverPassController);
+    main.controller('mapController', mapController);
 
     /**
      * Function that manage the user login functionalities
@@ -50,9 +51,11 @@
      * Function that manges the home page functionalities
      * @type {string[]}
      */
-    homeController.$inject = ['$scope', 'homeService', '$location', '$timeout', '$mdSidenav'];
-    function homeController($scope, homeService, $location, $timeout, $mdSidenav) {
-        initMap();
+    homeController.$inject = ['$scope', '$websocket', 'homeService', '$location', '$timeout', '$mdSidenav'];
+    function homeController($scope, $websocket, homeService, $location, $timeout, $mdSidenav) {
+        let webSocket = $websocket.$new({'url': 'ws:/localhost:8080', 'protocols': []});
+
+        // let map = initMap();
 
         //function that makes the logout of the user
         $scope.logout = function () {
@@ -74,6 +77,28 @@
                 $mdSidenav(componentId).toggle();
             }
         }
+    }
+
+    /**
+     * Function that manages the login map
+     * @type {string[]}
+     */
+    mapController.$inject = ['$scope', 'NgMap', 'mapService'];
+    function mapController($scope, NgMap, mapService) {
+        let map = NgMap.getMap();
+        $scope.markers = [];
+
+        let promise = mapService.getMapMarkers();
+
+        promise.then(
+            function (response) {
+                if (response.data.response) {
+                    console.log('markers: ');
+                    console.log(response.data.result);
+                    $scope.markers = response.data.result;
+                }
+            }
+        )
     }
 
     /**
