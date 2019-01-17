@@ -1325,7 +1325,7 @@ function TDrawPianta(NomeCanvas, WebSocketCoordinates) {
             img.src = FImgMappa;
         }
         if (img == null) FContext.clearRect(0, 0, FCanvas.width, FCanvas.height);
-        else FContext.drawImage(img, 0, 0, FCanvas.width, FCanvas.height);
+        else FContext.drawImage(img, 0, 0);
 
         // Svuota lo sfondo
 

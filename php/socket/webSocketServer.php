@@ -9,13 +9,16 @@
 
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+require_once '../database/connection.php';
 
 class webSocketServer implements MessageComponentInterface{
     protected $clients;
+    private $connection;
 
     public function __construct(){
         echo "SERVER IS LISTENING...\n\n";
-        $this->clients = new \SplObjectStorage;
+        $this->clients = [];
+        $this->connection = new Connection();
     }
 
     /**
@@ -26,7 +29,8 @@ class webSocketServer implements MessageComponentInterface{
     function onOpen(ConnectionInterface $conn){
         // TODO: Implement onOpen() method.
         echo "CONNECTION ESTABLISHED WITH ({$conn->resourceId})!\n";
-        $this->clients->attach($conn);
+        $this->clients[$conn->resourceId] = $conn;
+        $conn->send(json_encode(array('connectionId' => $conn->resourceId)));
     }
 
     /**
@@ -36,7 +40,7 @@ class webSocketServer implements MessageComponentInterface{
      */
     function onClose(ConnectionInterface $conn){
         // TODO: Implement onClose() method.
-        $this->clients->detach($conn);
+        unset($this->clients[$conn->resourceId]);
     }
 
     /**
@@ -61,14 +65,23 @@ class webSocketServer implements MessageComponentInterface{
      */
     function onMessage(ConnectionInterface $from, $msg){
         // TODO: Implement onMessage() method.
-        $numRecv = count($this->clients) - 1;
-        echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
-            , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
-        foreach ($this->clients as $client) {
-                // The sender is not the receiver, send to each client connected
-                echo "Sending message to: " . $client->resourceId . "\n";
-                $client->send($msg);
+        echo sprintf('Connection %d has send message: "%s"' . "\n", $from->resourceId, $msg);
+
+        $decoded_message = json_decode($msg, true);
+
+        switch ($decoded_message['action']){
+            case 'get_floor_image':{
+                $result = array('action' => 'get_floor_image');
+                $query = $this->connection->get_floor_image($decoded_message['location'], $decoded_message['floor']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            default:
+                $this->clients[$from->resourceId]->send(json_encode(array('result' => 'no_action')));
         }
     }
 }

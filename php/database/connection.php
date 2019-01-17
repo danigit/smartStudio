@@ -186,7 +186,12 @@ class Connection{
         return $this->result;
     }
 
+    /**
+     * Function tha retrieve the markers from the database
+     * @return array|bool|db_errors|mysqli_result
+     */
     function get_markers(){
+        //TODO retrieve only the markers of the logged user
         $query = 'SELECT name, latitude, longitude, icon FROM location';
 
         $result = $this->connection->query($query);
@@ -207,6 +212,31 @@ class Connection{
         }
 
         return $result_array;
+    }
+
+    /**
+     * Function that retrieve the image of the floor passed as the parameter on the location passed as parameter
+     * @param $location - the location where the floor is
+     * @param $floor - the floor for witch to retrieve the map
+     * @return db_errors|mysqli_stmt
+     */
+    function get_floor_image($location, $floor){
+        $this->query = 'SELECT image_map FROM floor JOIN location ON location_id = location.id WHERE  location.name = ? AND floor.name = ?';
+
+        $statement = $this->execute_selecting($this->query, 'ss', $location, $floor);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
+
+        $statement->bind_result($res_floor_image);
+        $fetch = $statement->fetch();
+
+        if ($fetch)
+            return $res_floor_image;
+
+        return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
     }
 
     /**

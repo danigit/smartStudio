@@ -28,10 +28,12 @@ class Test{
                 break;
             case 'login': var_dump($this->conn->login('danis', 'dani'));
                 break;
+            case 'get_floor_image': var_dump($this->conn->get_floor_image('Ospedale Bolzano', 'floor 1'));
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('login');
+$test->test_function('get_floor_image');

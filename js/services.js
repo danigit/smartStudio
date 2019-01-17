@@ -8,8 +8,11 @@
     //SERVICES
     main.service('loginService', loginService);
     main.service('homeService', homeService);
+    main.service('menuService', menuService);
     main.service('recoverPassService', recoverPassService);
     main.service('mapService', mapService);
+    main.service('canvasService', canvasService);
+    main.service('socketService', socketService);
 
     /**
      * Function that manage the login requests and login business logic
@@ -71,6 +74,37 @@
     }
 
     /**
+     * Function that retrieve the data for the canvas page
+     * @type {string[]}
+     */
+    canvasService.$inject = [];
+    function canvasService(){
+        let service = this;
+    }
+
+    /**
+     * Function thai initialize a websocket chanel
+     * @type {Array}
+     */
+    socketService.$inject = [];
+    function socketService(){
+        let service = this;
+
+        service.getSocket = function(){
+            return new Promise(function (resolve, reject) {
+                let server = new WebSocket('ws://localhost:8090');
+                server.onopen = function () {
+                    resolve(server);
+                };
+
+                server.onerror = function (error) {
+                    reject(error);
+                };
+            });
+        };
+    }
+
+    /**
      * Function that handles the recover password requests
      * @type {string[]}
      */
@@ -92,6 +126,21 @@
                 url: smartPath + 'php/ajax/reset_password.php',
                 params: {code: code, username: username, password: password, repassword: repassword}
             })
+        }
+    }
+
+    /**
+     * Function that handle the menu
+     * @type {string[]}
+     */
+    menuService.$inject = ['$mdSidenav'];
+    function menuService($mdSidenav) {
+        let service = this;
+
+        service.toggleLeft = function (componentId) {
+            return function () {
+                $mdSidenav(componentId).toggle();
+            }
         }
     }
 })();

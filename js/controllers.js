@@ -9,6 +9,7 @@
     main.controller('homeController', homeController);
     main.controller('recoverPassController', recoverPassController);
     main.controller('mapController', mapController);
+    main.controller('canvasController', canvasController);
 
     /**
      * Function that manage the user login functionalities
@@ -51,10 +52,8 @@
      * Function that manges the home page functionalities
      * @type {string[]}
      */
-    homeController.$inject = ['$scope', '$websocket', 'homeService', '$location', '$timeout', '$mdSidenav'];
-    function homeController($scope, $websocket, homeService, $location, $timeout, $mdSidenav) {
-        let webSocket = $websocket.$new({'url': 'ws:/localhost:8080', 'protocols': []});
-
+    homeController.$inject = ['$scope', 'homeService', '$location', 'menuService'];
+    function homeController($scope, homeService, $location, menuService) {
         // let map = initMap();
 
         //function that makes the logout of the user
@@ -69,22 +68,15 @@
             )
         };
 
-        $scope.toggleLeft = buildToggler('left');
-
-        function buildToggler(componentId) {
-            console.log('toggle');
-            return function () {
-                $mdSidenav(componentId).toggle();
-            }
-        }
+        $scope.toggleLeft = menuService.toggleLeft('left');
     }
 
     /**
      * Function that manages the login map
      * @type {string[]}
      */
-    mapController.$inject = ['$scope', 'NgMap', 'mapService'];
-    function mapController($scope, NgMap, mapService) {
+    mapController.$inject = ['$scope', '$location', 'NgMap', 'mapService'];
+    function mapController($scope, $location, NgMap, mapService) {
         let map = NgMap.getMap();
         $scope.markers = [];
 
@@ -93,12 +85,63 @@
         promise.then(
             function (response) {
                 if (response.data.response) {
-                    console.log('markers: ');
-                    console.log(response.data.result);
                     $scope.markers = response.data.result;
                 }
             }
-        )
+        );
+
+        $scope.clickLocation = function (e, index) {
+            localStorage.setItem('location', $scope.markers[index].name);
+            $location.path('/canvas');
+        }
+    }
+
+    /**
+     * Function that handles the canvas interaction
+     * @type {string[]}
+     */
+    canvasController.$inject = ['$scope', 'canvasService', 'socketService', 'menuService'];
+    function canvasController($scope, canvasService, socketService, menuService){
+        $scope.toggleLeft = menuService.toggleLeft('left');
+
+        let canvas = document.querySelector('#canvas-id');
+        let context = canvas.getContext('2d');
+
+        socketService.getSocket().then(function (socket) {
+            socket.send(JSON.stringify({action: 'get_floor_image', location: localStorage.getItem('location'), floor: 'floor 1'}));
+
+            socket.onmessage = function (message) {
+
+                let parsedMessage = JSON.parse(message.data);
+                if (parsedMessage.action !== undefined) {
+                    switch (parsedMessage.action) {
+                        case 'get_floor_image': {
+
+                            let img = new Image();
+
+                            img.src = '../smartStudio/img/floors/' + parsedMessage.result;
+
+                            img.onload = function() {
+                                canvas.width = this.naturalWidth;
+                                canvas.height = this.naturalHeight;
+                                context.drawImage(img, 0, 0);
+
+                                drawCanvasBorder(canvas, context);
+
+                            };
+                            break;
+                        }
+                        case 'no_action':
+                            console.log('No action sended');
+                            break;
+                        default:
+                            console.log('No action received');
+                    }
+                }
+            };
+        });
+
+
     }
 
     /**
