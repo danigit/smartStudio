@@ -133,10 +133,12 @@
             context.clearRect(15, 15, canvas.width, canvas.height);
             updateCanvas(canvas, context, $scope.floor.image);
 
-            //drawing vertical
-            drawDashedLine(canvas, canvas.height,[5, 5], newValue, 'vertical');
-            //drawing horizontal lines
-            drawDashedLine(canvas, canvas.width,[5, 5], newValue, 'horizontal')
+            if ($scope.floor.width !== undefined) {
+                //drawing vertical
+                drawDashedLine(canvas, canvas.height, [5, 5], newValue, $scope.floor.width, 'vertical');
+                //drawing horizontal lines
+                drawDashedLine(canvas, canvas.width, [5, 5], newValue, $scope.floor.width, 'horizontal');
+            }
         });
 
         socketService.getSocket().then(function (socket) {
@@ -150,6 +152,7 @@
                     case 'get_floor_info': {
                         $scope.floor.name = result.name;
                         $scope.floor.spacing = result.map_spacing;
+                        $scope.floor.width = result.map_width;
                         $scope.speedDial.gridSpacing = result.map_spacing;
                         $scope.$apply();
 
@@ -165,10 +168,10 @@
                             updateCanvas(canvas, context, img);
 
                             //drawing vertical
-                            drawDashedLine(canvas, canvas.height, [5, 5], result.map_spacing, 'vertical');
+                            drawDashedLine(canvas, canvas.height, [5, 5], $scope.floor.spacing, $scope.floor.width, 'vertical');
 
                             //drawing horizontal lines
-                            drawDashedLine(canvas, canvas.width, [5, 5], result.map_spacing, 'horizontal')
+                            drawDashedLine(canvas, canvas.width, [5, 5], $scope.floor.spacing, $scope.floor.width, 'horizontal')
 
                             //TODO load anchors
 

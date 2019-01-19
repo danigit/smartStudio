@@ -22,12 +22,13 @@ function encodeRequest(action, data) {
     return JSON.stringify({action: action, data: data});
 }
 
-function drawDashedLine(canvas, length, pattern, spacing, direction) {
+function drawDashedLine(canvas, length, pattern, spacing, width, direction) {
     let context = canvas.getContext('2d');
+    let virtualWidth = ((spacing*100)/width) * (canvas.width/100);
     context.strokeStyle = 'lightgray';
 
     if (direction === 'horizontal') {
-        for (let i = 25; i < canvas.height - 25; i += spacing){
+        for (let i = 25; i < canvas.height - 25; i += virtualWidth){
             context.beginPath();
             context.setLineDash(pattern);
             console.log('drawing: ');
@@ -38,7 +39,7 @@ function drawDashedLine(canvas, length, pattern, spacing, direction) {
 
     }else if (direction === 'vertical'){
         console.log('drawing vertical');
-        for (let i = 25; i < canvas.width - 25; i += spacing){
+        for (let i = 25; i < canvas.width - 25; i += virtualWidth){
             context.beginPath();
             context.setLineDash(pattern);
             context.moveTo(i, 25);
