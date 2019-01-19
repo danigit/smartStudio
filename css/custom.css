@@ -263,13 +263,16 @@ BACKGROUND
 }
 
 .background-lightblue{
-    background-color: #6AB8C3;
+    background-color: #6AB8C3!important;
 }
 
 .background-darkcyan{
     background-color: #0093c4!important;
 }
 
+.background-white{
+    background-color: #FFFFFF;
+}
 
 
 
@@ -282,7 +285,11 @@ POSITION
     float: right;
 }
 
-
+.top-corner{
+    position: absolute;
+    top: 15px;
+    right: 0;
+}
 
 
 

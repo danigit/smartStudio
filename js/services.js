@@ -61,16 +61,31 @@
      * Function that handles the requests for the map
      * @type {string[]}
      */
-    mapService.$imject = ['$http'];
-    function mapService($http){
+    mapService.$imject = ['$http', 'loginService', 'socketService'];
+    function mapService($http, loginService, socketService){
         let service = this;
 
-        service.getMapMarkers = function () {
-            return $http({
-                method: 'GET',
-                url: smartPath + 'php/ajax/get_markers.php',
-            })
-        }
+        let promise = socketService.getSocket();
+
+        service.getMapMarkers = function() {
+            loginService.isLogged().then(
+                function (response) {
+                    if (response.data.response) {
+                        promise.then(
+                            function (socket) {
+                                console.log(response.data.username);
+                                socket.send(encodeRequest('get_markers', {username: response.data.username}));
+                                socket.onmessage = function(response) {
+                                    if (response.action === 'get_markers') {
+                                        return response.data;
+                                    }
+                                }
+                            }
+                        );
+                    }
+                }
+            );
+        };
     }
 
     /**

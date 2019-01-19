@@ -4,7 +4,7 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="20">
+          <list size="23">
             <item index="0" class="java.lang.String" itemvalue="layout" />
             <item index="1" class="java.lang.String" itemvalue="layout-align" />
             <item index="2" class="java.lang.String" itemvalue="layout-xs" />
@@ -25,6 +25,25 @@
             <item index="17" class="java.lang.String" itemvalue="mape-type-id" />
             <item index="18" class="java.lang.String" itemvalue="position" />
             <item index="19" class="java.lang.String" itemvalue="on-click" />
+            <item index="20" class="java.lang.String" itemvalue="md-open" />
+            <item index="21" class="java.lang.String" itemvalue="md-direction" />
+            <item index="22" class="java.lang.String" itemvalue="ng-model" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="7">
+            <item index="0" class="java.lang.String" itemvalue="nobr" />
+            <item index="1" class="java.lang.String" itemvalue="noembed" />
+            <item index="2" class="java.lang.String" itemvalue="comment" />
+            <item index="3" class="java.lang.String" itemvalue="noscript" />
+            <item index="4" class="java.lang.String" itemvalue="embed" />
+            <item index="5" class="java.lang.String" itemvalue="script" />
+            <item index="6" class="java.lang.String" itemvalue="md-fab-trigger" />
           </list>
         </value>
       </option>

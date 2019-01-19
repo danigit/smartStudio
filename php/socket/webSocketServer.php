@@ -7,6 +7,8 @@
  * Time: 19.58
  */
 
+ini_set('session.save_handler', 'memcached');
+ini_set('session.save_path', 'localhost:8090');
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 require_once '../database/connection.php';
@@ -30,7 +32,7 @@ class webSocketServer implements MessageComponentInterface{
         // TODO: Implement onOpen() method.
         echo "CONNECTION ESTABLISHED WITH ({$conn->resourceId})!\n";
         $this->clients[$conn->resourceId] = $conn;
-        $conn->send(json_encode(array('connectionId' => $conn->resourceId)));
+//        $conn->send(json_encode(array('connectionId' => $conn->resourceId)));
     }
 
     /**
@@ -71,9 +73,19 @@ class webSocketServer implements MessageComponentInterface{
         $decoded_message = json_decode($msg, true);
 
         switch ($decoded_message['action']){
-            case 'get_floor_image':{
-                $result = array('action' => 'get_floor_image');
-                $query = $this->connection->get_floor_image($decoded_message['location'], $decoded_message['floor']);
+            case 'get_markers':{
+                $result = array('action' => 'get_markers');
+                echo $decoded_message['data']['username'];
+                $query = $this->connection->get_markers($decoded_message['data']['username']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'get_floor_info':{
+                $result = array('action' => 'get_floor_info');
+                $query = $this->connection->get_floor_info($decoded_message['data']['location'], $decoded_message['data']['floor']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

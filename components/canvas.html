@@ -1,6 +1,34 @@
 <div>
-    <div layout="row"  class="height-100-vh">
-        <div layout="column"  layout-align="center center" class="parent-size">
+    <div layout="column"  class="height-100-vh">
+        <div class="top-corner">
+            <md-fab-speed-dial md-open="isOpen" md-direction="{{speedDial.selectedDirection}}"
+                               ng-class="speedDial.mode">
+                <md-fab-trigger>
+                    <md-button aria-label="menu" class="md-fab background-darkcyan">
+                        <img src="../smartStudio/img/icons/setting.png" class="setting-image" alt="">
+                    </md-button>
+                </md-fab-trigger>
+
+                <md-fab-actions>
+                    <div layout="column" style="width: 200px;">
+                        <div flex="100" layout layout-align="center center">
+                            <span class="font-medium">Spaziatura griglia</span>
+                        </div>
+                        <md-slider-container flex="100">
+                            <md-input-container flex="40">
+                                <input flex type="number" ng-model="speedDial.gridSpacing" aria-label="speedDial.gripSpacing" class="spacing-input-value">
+                            </md-input-container>
+                            <md-slider md-discrete ng-model="speedDial.gridSpacing" min="1" max="100" step="1" aria-label="speedDial.gridSpacing" class="md-primary"></md-slider>
+                        </md-slider-container>
+                    </div>
+                </md-fab-actions>
+            </md-fab-speed-dial>
+        </div>
+        <div layout="column" layout-align="center center" class="background-white">
+            <h1>Ospedale Bolzano</h1>
+            <h3>Piano: {{floor.name}}</h3>
+        </div>
+        <div id="canvas-container" layout="column"  layout-align="center center" class="parent-size">
             <canvas id="canvas-id" class="parent-size"></canvas>
         </div>
         <div>

@@ -15,12 +15,12 @@
      * Function that manage the user login functionalities
      * @type {string[]}
      */
-    loginController.$inject = ['$scope', 'loginService', '$location'];
-    function loginController($scope, loginService, $location) {
+    loginController.$inject = ['$scope', '$location', 'loginService'];
+    function loginController($scope, $location, loginService) {
         $scope.user = {username: '', password: ''};
         $scope.errorHandeling = {noConnection: false, wrongData: false};
 
-        //function that makes the log in of the user
+        // function that makes the log in of the user
         $scope.login = function(form){
             form.$submitted = 'true';
 
@@ -75,23 +75,37 @@
      * Function that manages the login map
      * @type {string[]}
      */
-    mapController.$inject = ['$scope', '$location', 'NgMap', 'mapService'];
-    function mapController($scope, $location, NgMap, mapService) {
-        let map = NgMap.getMap();
-        $scope.markers = [];
+    mapController.$inject = ['$location', '$scope', 'NgMap', 'loginService', 'socketService'];
+    function mapController( $location, $scope, NgMap, loginService, socketService) {
+        let vm = this;
+        NgMap.getMap().then(map => vm.map = map);
+        vm.positions = [];
 
-        let promise = mapService.getMapMarkers();
+        let promise = socketService.getSocket();
 
-        promise.then(
+        loginService.isLogged().then(
             function (response) {
-                if (response.data.response) {
-                    $scope.markers = response.data.result;
+                if (response.data.response){
+                    promise.then(
+                        function (socket) {
+                            socket.send(encodeRequest('get_markers', {username: response.data.username}));
+                            socket.onmessage = function(message) {
+                                let parsedMessage = JSON.parse(message.data);
+                                if (parsedMessage.action === 'get_markers') {
+                                    angular.forEach(parsedMessage.result, function ( value) {
+                                        vm.positions.push(value);
+                                    });
+                                }
+                            }
+                        }
+                    );
                 }
             }
         );
 
+        // console.log(vm.positions);
         $scope.clickLocation = function (e, index) {
-            localStorage.setItem('location', $scope.markers[index].name);
+            sessionStorage.setItem('location', vm.positions[index].name);
             $location.path('/canvas');
         }
     }
@@ -103,40 +117,69 @@
     canvasController.$inject = ['$scope', 'canvasService', 'socketService', 'menuService'];
     function canvasController($scope, canvasService, socketService, menuService){
         $scope.toggleLeft = menuService.toggleLeft('left');
+        $scope.isOpen = false;
+        $scope.floor = {};
+        $scope.speedDial = {
+            isOpen: false,
+            selectedDirection: 'left',
+            mode: 'md-scale',
+            gridSpacing: 100
+        };
 
         let canvas = document.querySelector('#canvas-id');
         let context = canvas.getContext('2d');
 
+        $scope.$watch('speedDial.gridSpacing', function (newValue) {
+            context.clearRect(15, 15, canvas.width, canvas.height);
+            updateCanvas(canvas, context, $scope.floor.image);
+
+            //drawing vertical
+            drawDashedLine(canvas, canvas.height,[5, 5], newValue, 'vertical');
+            //drawing horizontal lines
+            drawDashedLine(canvas, canvas.width,[5, 5], newValue, 'horizontal')
+        });
+
         socketService.getSocket().then(function (socket) {
-            socket.send(JSON.stringify({action: 'get_floor_image', location: localStorage.getItem('location'), floor: 'floor 1'}));
+            socket.send(encodeRequest('get_floor_info', {location: sessionStorage.getItem('location'), floor: 'floor 1'}));
 
             socket.onmessage = function (message) {
-
                 let parsedMessage = JSON.parse(message.data);
-                if (parsedMessage.action !== undefined) {
-                    switch (parsedMessage.action) {
-                        case 'get_floor_image': {
+                let result = parsedMessage.result[0];
 
-                            let img = new Image();
+                switch (parsedMessage.action) {
+                    case 'get_floor_info': {
+                        $scope.floor.name = result.name;
+                        $scope.floor.spacing = result.map_spacing;
+                        $scope.speedDial.gridSpacing = result.map_spacing;
+                        $scope.$apply();
 
-                            img.src = '../smartStudio/img/floors/' + parsedMessage.result;
+                        let img = new Image();
+                        img.src = '../smartStudio/img/floors/' + result.image_map;
 
-                            img.onload = function() {
-                                canvas.width = this.naturalWidth;
-                                canvas.height = this.naturalHeight;
-                                context.drawImage(img, 0, 0);
+                        img.onload = function() {
+                            $scope.floor.image = img;
+                            canvas.width = this.naturalWidth;
+                            canvas.height = this.naturalHeight;
 
-                                drawCanvasBorder(canvas, context);
+                            //drawing map border
+                            updateCanvas(canvas, context, img);
 
-                            };
-                            break;
-                        }
-                        case 'no_action':
-                            console.log('No action sended');
-                            break;
-                        default:
-                            console.log('No action received');
+                            //drawing vertical
+                            drawDashedLine(canvas, canvas.height, [5, 5], result.map_spacing, 'vertical');
+
+                            //drawing horizontal lines
+                            drawDashedLine(canvas, canvas.width, [5, 5], result.map_spacing, 'horizontal')
+
+                            //TODO load anchors
+
+                        };
+                        break;
                     }
+                    case 'no_action':
+                        console.log('No action sended');
+                        break;
+                    default:
+                        console.log('No action received');
                 }
             };
         });

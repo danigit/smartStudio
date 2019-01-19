@@ -1,8 +1,8 @@
     <div>
         <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
-            <div ng-controller="mapController" id="map-div">
+            <div ng-controller="mapController as vm" id="map-div">
                 <ng-map center="[41.87194, 12.56738]" zoom="7" mape-type-id="TERRAIN" class="height-100-vh">
-                    <custom-marker ng-repeat="marker in markers track by $index"
+                    <custom-marker ng-repeat="marker in vm.positions"
                                    id="custom-marker-{{$index}}"
                                    on-click="clickLocation($index)"
                                    position="{{marker.position}}">

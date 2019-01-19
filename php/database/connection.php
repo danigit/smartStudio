@@ -188,22 +188,25 @@ class Connection{
 
     /**
      * Function tha retrieve the markers from the database
+     * @param $username
      * @return array|bool|db_errors|mysqli_result
      */
-    function get_markers(){
-        //TODO retrieve only the markers of the logged user
-        $query = 'SELECT name, latitude, longitude, icon FROM location';
+    function get_markers($username){
+        $this->query = 'SELECT location.name as name, latitude, longitude, icon FROM location 
+                  JOIN user_has_location uhl ON location.id = uhl.location_id 
+                  JOIN user u on uhl.user_id = u.id WHERE username = ?';
 
-        $result = $this->connection->query($query);
+        $statement = $this->execute_selecting($this->query, 's', $username);
 
-        if ($result instanceof db_errors)
-            return $result;
-        else if ($result == false)
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
             return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
 
+        $this->result = $statement->get_result();
         $result_array = array();
 
-        while ($row = mysqli_fetch_assoc($result)) {
+        while ($row = mysqli_fetch_assoc($this->result)) {
             $position = array();
             $position[] = $row['latitude'];
             $position[] = $row['longitude'];
@@ -218,10 +221,10 @@ class Connection{
      * Function that retrieve the image of the floor passed as the parameter on the location passed as parameter
      * @param $location - the location where the floor is
      * @param $floor - the floor for witch to retrieve the map
-     * @return db_errors|mysqli_stmt
+     * @return db_errors|array
      */
-    function get_floor_image($location, $floor){
-        $this->query = 'SELECT image_map FROM floor JOIN location ON location_id = location.id WHERE  location.name = ? AND floor.name = ?';
+    function get_floor_info($location, $floor){
+        $this->query = 'SELECT floor.name, image_map, map_width, map_spacing FROM floor JOIN location ON location_id = location.id WHERE  location.name = ? AND floor.name = ?';
 
         $statement = $this->execute_selecting($this->query, 'ss', $location, $floor);
 
@@ -230,13 +233,15 @@ class Connection{
         else if ($statement == false)
             return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
 
-        $statement->bind_result($res_floor_image);
-        $fetch = $statement->fetch();
+        $this->result = $statement->get_result();
+        $result_array = array();
 
-        if ($fetch)
-            return $res_floor_image;
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $result_array[] = array('name' => $row['name'], 'image_map' => $row['image_map'], "map_width" => $row['map_width'],
+                'map_spacing' => $row['map_spacing']);
+        }
 
-        return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
+        return $result_array;
     }
 
     /**
