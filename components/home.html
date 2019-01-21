@@ -1,5 +1,6 @@
     <div>
         <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
+            <!--map container-->
             <div ng-controller="mapController as vm" id="map-div">
                 <ng-map center="[41.87194, 12.56738]" zoom="7" mape-type-id="TERRAIN" class="height-100-vh">
                     <custom-marker ng-repeat="marker in vm.positions"
@@ -7,22 +8,23 @@
                                    on-click="clickLocation($index)"
                                    position="{{marker.position}}">
                         <div>
-                            <img ng-src="../smartStudio/img/{{marker.icon}}" alt="">
+                            <img ng-src="../img/{{marker.icon}}" alt="{{marker.name}}" title="{{marker.name}}">
                         </div>
                     </custom-marker>
                 </ng-map>
             </div>
-
+            <!--end map container-->
+            <!--menu container-->
             <div flex="100">
                 <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
-                    <img id="open-menu-icon" src="../smartStudio/img/menu-arrow.png" alt="">
+                    <img id="open-menu-icon" src="../img/menu-arrow.png" alt="">
                 </div>
                 <section layout="row" flex>
                     <md-sidenav id="menu-panel" class="md-sidenav-left" md-component-id="left" md-disable-backdrop md-whiteframe="4">
                         <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
                             <h1 class="md-toolbar-tools color-black">Menu</h1>
                             <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
-                                <img src="../smartStudio/img/close-menu.png" alt="">
+                                <img src="../img/close-menu.png" alt="Close" title="Close">
                             </div>
                         </md-toolbar>
                         <md-content layout-margin class="margin-top-10">
@@ -31,20 +33,21 @@
                             </div>
                             <div layout="column">
                                 <md-list>
-                                    <md-list-item ng-click=""><p>Anagrafica</p><img src="../smartStudio/img/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click=""><p>Ancore</p><img src="../smartStudio/img/ancora-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click=""><p>Seleziona piano</p><img src="../smartStudio/img/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../smartStudio/img/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click=""><p>Storico</p><img src="../smartStudio/img/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click=""><p>Allarmi attivi</p><img src="../smartStudio/img/alarm-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click=""><p>Cambia password</p><img src="../smartStudio/img/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click="logout()"><p>Logout</p><img src="../smartStudio/img/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click=""><p>Anagrafica</p><img src="../img/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click=""><p>Ancore</p><img src="../img/ancora-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click=""><p>Seleziona piano</p><img src="../img/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../img/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click=""><p>Storico</p><img src="../img/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click=""><p>Allarmi attivi</p><img src="../img/alarm-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click=""><p>Cambia password</p><img src="../img/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click="logout()"><p>Logout</p><img src="../img/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 </md-list>
                             </div>
                         </md-content>
                     </md-sidenav>
                 </section>
             </div>
+            <!--end menu container-->
         </div>
 
     </div>

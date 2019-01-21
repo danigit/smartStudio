@@ -1,4 +1,4 @@
 
-let smartPath = '../smartStudio/';
-let mainPath = '../smartStudio/';
-let imagePath = '../smartStudio/img/';
+let smartPath = '../';
+let mainPath = '../';
+let imagePath = '../img/';

@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bf53d0c2-d8f7-451c-87e2-b43cd8bb383e" name="Default Changelist" comment="BUG FIXING&#10;&#10;Risolto il bug per cui il progressivo delle fatture era un numero indietro di quello giusto, aggiunto messaggio di errore se si prova ad inserire una fattura con un progressivo gia' esistente, genero fattura solo se i dati sono stati inseriti nel database">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/canvas.html" beforeDir="false" afterPath="$PROJECT_DIR$/../components/canvas.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/change-registry.html" beforeDir="false" afterPath="$PROJECT_DIR$/../components/change-registry.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/../components/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/../components/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/recover-password-code.html" beforeDir="false" afterPath="$PROJECT_DIR$/../components/recover-password-code.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../components/recover-password.html" beforeDir="false" afterPath="$PROJECT_DIR$/../components/recover-password.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../css/canvas.css" beforeDir="false" afterPath="$PROJECT_DIR$/../css/canvas.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../css/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/../css/custom.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../js/configuration.js" beforeDir="false" afterPath="$PROJECT_DIR$/../js/configuration.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../js/controllers.js" beforeDir="false" afterPath="$PROJECT_DIR$/../js/controllers.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../js/helper.js" beforeDir="false" afterPath="$PROJECT_DIR$/../js/helper.js" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="psicoFatture@localhost" type="feb32156:DbDataSourceImpl" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="psicoFatture@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="psicoFatture@localhost" type="feb32156:DbDataSourceImpl" />
+        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
+        <item name="psicoFatture: schema" type="76f4a085:MysqlImplModel$Schema" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="FileEditorManager">
+    <leaf />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>conso</find>
+      <find>color:transpa</find>
+      <find>md-input-container:not(.md-input-has-value) input:not(:focus)::-webkit-datetime-edit-text</find>
+      <find>insertPatient</find>
+      <find>generateInvoiceDi</find>
+      <find>invoice</find>
+      <find>login</find>
+      <find>http://localhost</find>
+      <find>./components</find>
+      <find>../psicofatture</find>
+      <find>../psicofatture/components</find>
+      <find>generateInvoiceDialo</find>
+      <find>remove</find>
+      <find>font</find>
+      <find>sans-serif</find>
+      <find>setFont</find>
+      <find>addFont</find>
+      <find>API.setFon</find>
+      <find>asso</find>
+      <find>back</find>
+      <find>number</find>
+    </findStrings>
+    <replaceStrings>
+      <replace />
+    </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/9b96d2a6-6d53-4b46-9359-197a62e5a73e/console_1.sql" />
+        <option value="$PROJECT_DIR$/php/ajax/get_patients.php" />
+        <option value="$PROJECT_DIR$/css/default/angular-material.min.css" />
+        <option value="$PROJECT_DIR$/php/ajax/get_last_invoices.php" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/9b96d2a6-6d53-4b46-9359-197a62e5a73e/console_2.sql" />
+        <option value="$PROJECT_DIR$/php/ajax/update_patient.php" />
+        <option value="$PROJECT_DIR$/php/ajax/logout.php" />
+        <option value="$PROJECT_DIR$/php/ajax/helper.php" />
+        <option value="$PROJECT_DIR$/php/ajax/is_not_logged.php" />
+        <option value="$PROJECT_DIR$/php/ajax/control_login.php" />
+        <option value="$PROJECT_DIR$/php/ajax/communication.php" />
+        <option value="$PROJECT_DIR$/php/ajax/login.php" />
+        <option value="$PROJECT_DIR$/php/ajax/is_logged.php" />
+        <option value="$PROJECT_DIR$/components/error-dialog.html" />
+        <option value="$PROJECT_DIR$/components/success-dialog.html" />
+        <option value="$PROJECT_DIR$/php/ajax/remove_patient.php" />
+        <option value="$PROJECT_DIR$/php/ajax/get_invoice_number.php" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/9b96d2a6-6d53-4b46-9359-197a62e5a73e/console_3.sql" />
+        <option value="$PROJECT_DIR$/components/home.html" />
+        <option value="$PROJECT_DIR$/php/ajax/send_email_pdf.java" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/9b96d2a6-6d53-4b46-9359-197a62e5a73e/console.sql" />
+        <option value="$PROJECT_DIR$/php/ajax/insert_patient.php" />
+        <option value="$PROJECT_DIR$/components/login.html" />
+        <option value="$PROJECT_DIR$/components/confirm-dialog.html" />
+        <option value="$PROJECT_DIR$/components/error-delete-dialog.html" />
+        <option value="$PROJECT_DIR$/components/error-insert-dialog.html" />
+        <option value="$PROJECT_DIR$/components/error-update-dialog.html" />
+        <option value="$PROJECT_DIR$/components/generate-invoice-dialog.html" />
+        <option value="$PROJECT_DIR$/components/insert-patient-dialog.html" />
+        <option value="$PROJECT_DIR$/components/success-insert-dialog.html" />
+        <option value="$PROJECT_DIR$/components/success-invoice.html" />
+        <option value="$PROJECT_DIR$/components/success-update-dialog.html" />
+        <option value="$PROJECT_DIR$/components/update-patient.html" />
+        <option value="$PROJECT_DIR$/components/update-patient-dialog.html" />
+        <option value="$PROJECT_DIR$/php/database/config.php" />
+        <option value="$PROJECT_DIR$/components/generate-invoice.html" />
+        <option value="$PROJECT_DIR$/css/custom.css" />
+        <option value="$PROJECT_DIR$/app/default/jspdf.customfonts.min.js" />
+        <option value="$PROJECT_DIR$/app/default/jspdf.min.js" />
+        <option value="$PROJECT_DIR$/app/default/default_vfs.js" />
+        <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/php/ajax/send_email_pdf.php" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/9b96d2a6-6d53-4b46-9359-197a62e5a73e/console_4.sql" />
+        <option value="$PROJECT_DIR$/php/database/db_errors.php" />
+        <option value="$PROJECT_DIR$/components/error-invoice.html" />
+        <option value="$PROJECT_DIR$/components/error-duplicate-invoice.html" />
+        <option value="$PROJECT_DIR$/php/database/test.php" />
+        <option value="$PROJECT_DIR$/php/ajax/insert_invoice.php" />
+        <option value="$PROJECT_DIR$/php/database/helper.php" />
+        <option value="$PROJECT_DIR$/php/database/connection.php" />
+        <option value="$PROJECT_DIR$/app/app.js" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenProjectNavigator">
+    <treeState>
+      <expand />
+      <select />
+    </treeState>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="4">
+    <option name="x" value="1600" />
+    <option name="y" value="25" />
+    <option name="width" value="1590" />
+    <option name="height" value="1775" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="ProjectPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547595798838" />
+    <property name="database.console.LAST_STATE" value="true" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/app" />
+      <recent name="$PROJECT_DIR$/resources/fonts" />
+      <recent name="$PROJECT_DIR$/php" />
+      <recent name="$PROJECT_DIR$/components" />
+      <recent name="$PROJECT_DIR$/img" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/php/database" />
+      <recent name="$PROJECT_DIR$/css/default" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bf53d0c2-d8f7-451c-87e2-b43cd8bb383e" name="Default Changelist" comment="" />
+      <created>1545864107379</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1545864107379</updated>
+      <workItem from="1545864108473" duration="8171000" />
+      <workItem from="1545925892938" duration="12307000" />
+      <workItem from="1546011332514" duration="8780000" />
+      <workItem from="1546096332816" duration="8960000" />
+      <workItem from="1546207602848" duration="17514000" />
+      <workItem from="1546271357008" duration="3155000" />
+      <workItem from="1546377374161" duration="18876000" />
+      <workItem from="1546461266151" duration="25179000" />
+      <workItem from="1546510120614" duration="21589000" />
+      <workItem from="1546550001826" duration="13134000" />
+      <workItem from="1546616899881" duration="4975000" />
+      <workItem from="1546891785397" duration="932000" />
+      <workItem from="1546892729611" duration="10000" />
+      <workItem from="1546892840157" duration="801000" />
+      <workItem from="1546894737656" duration="5307000" />
+      <workItem from="1546983405680" duration="1810000" />
+      <workItem from="1546986599166" duration="6056000" />
+      <workItem from="1547071586233" duration="2214000" />
+      <workItem from="1547079502607" duration="5377000" />
+      <workItem from="1547128635818" duration="1648000" />
+      <workItem from="1547194565991" duration="3061000" />
+      <workItem from="1547302500965" duration="671000" />
+      <workItem from="1547485208814" duration="18000" />
+      <workItem from="1547485255817" duration="1112000" />
+      <workItem from="1547492021841" duration="2563000" />
+      <workItem from="1547555951404" duration="599000" />
+      <workItem from="1547572298375" duration="650000" />
+      <workItem from="1547589295987" duration="6199000" />
+      <workItem from="1548082113948" duration="4928000" />
+      <workItem from="1548105352391" duration="789000" />
+    </task>
+    <task id="LOCAL-00001" summary="HOME&#10;&#10;Creata l'interfaccia html per la pagina di login con i relativi css senza la parte js">
+      <created>1545875102096</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1545875102096</updated>
+    </task>
+    <task id="LOCAL-00002" summary="CONNECTION TO DATABASE&#10;&#10;Implementata la connessione a database usando i PDO, implementata classe di gestione degli errori, implementata classe di testing delle funzioni che accedono al database, creato file di configurazione per il database, implementato file helper per le helper functions">
+      <created>1545933101447</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1545933101447</updated>
+    </task>
+    <task id="LOCAL-00003" summary="LOGIN &#10;&#10;Implementata la funzione che controlla se un utente e registrato nel database (login)">
+      <created>1545933991925</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1545933991925</updated>
+    </task>
+    <task id="LOCAL-00004" summary="LOGIN &#10;&#10;Implementati i messaggi di errore in fase di login sul campo email e password. Implementazione standard usando angular material.">
+      <created>1546099430910</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1546099430910</updated>
+    </task>
+    <task id="LOCAL-00005" summary="HOME&#10;&#10;Implementato il recupero dal database delle prime 10 fatture e la visulaizzazione in una tabella con affianco il pulsante di richiamo generazione fattura">
+      <created>1546212768883</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1546212768883</updated>
+    </task>
+    <task id="LOCAL-00006" summary="GENERATE INVOICE&#10;&#10;Implementata la visualizzazione di tutti i pazienti con la relativa casella input per filtrarli per stringa e il pulsante genera fattura che non fa ancora niente">
+      <created>1546218594946</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1546218594946</updated>
+    </task>
+    <task id="LOCAL-00007" summary="HOME&#10;&#10;Implementata la visualizzazione di tutte le fatture con i relativi dati anagrafici ordinati in ordine decrescente per data">
+      <created>1546219741776</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1546219741776</updated>
+    </task>
+    <task id="LOCAL-00008" summary="GENERATE INVOICE&#10;&#10;Iniziata l'implementazione del pdf che viene generato cliccando sul pulsante genera fattura">
+      <created>1546223778567</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1546223778567</updated>
+    </task>
+    <task id="LOCAL-00009" summary="GENERATE INVOICE&#10;&#10;Finito il formato standard della fattura per singoli pazienti, al click sul pulsante genera fattura viene creato il pdf e scaricato in locale">
+      <created>1546274504520</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1546274504520</updated>
+    </task>
+    <task id="LOCAL-00010" summary="GENERATE INVOICE&#10;&#10;Implementata al finestra modale per la verifica delle informazioni da inserire nella fattura con i relativi messaggi di errore e gli eventi sui pulsanti del modale">
+      <created>1546390803903</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1546390803904</updated>
+    </task>
+    <task id="LOCAL-00011" summary="UPDATE PATIENT, REMOVE PATIENT&#10;&#10;Implementata la possibilita' di aggiornare i dati di un paziente oppure eliminare un paziente gia' esistente">
+      <created>1546471656557</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1546471656557</updated>
+    </task>
+    <task id="LOCAL-00012" summary="INSERT PATIENT&#10;&#10;Implementata la gestione degli messaggi di inserimento avvenuto e di errore nell'inserimento">
+      <created>1546516372576</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1546516372576</updated>
+    </task>
+    <task id="LOCAL-00013" summary="INSERT INVOICE&#10;&#10;Implementata la funzionalita' di inserimento fattura sia dalla lista dei clienti che dalla lista delle fatture, implementati i messaggi di avvisso per le operazioni crud sui clienti">
+      <created>1546531828552</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1546531828552</updated>
+    </task>
+    <task id="LOCAL-00014" summary="BUG FIXING&#10;&#10;Risolto il bug per cui il progressivo delle fatture era un numero indietro di quello giusto, aggiunto messaggio di errore se si prova ad inserire una fattura con un progressivo gia' esistente, genero fattura solo se i dati sono stati inseriti nel database">
+      <created>1547595797196</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1547595797196</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="187385000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="1600" y="25" width="1590" height="1775" extended-state="4" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23735408" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info id="Designer" order="2" />
+      <window_info id="Image Layers" order="3" />
+      <window_info id="Capture Tool" order="4" />
+      <window_info id="UI Designer" order="5" />
+      <window_info id="Learn" order="6" />
+      <window_info id="Favorites" order="7" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.32947624" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Database Changes" order="8" />
+      <window_info anchor="bottom" id="Terminal" order="9" />
+      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
+      <window_info anchor="bottom" id="Database Console" order="11" visible="true" weight="0.32927573" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.32947624" />
+      <window_info anchor="bottom" id="Docker" order="13" show_stripe_button="false" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="1" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="2" />
+      <window_info anchor="right" id="Capture Analysis" order="3" />
+      <window_info anchor="right" id="Theme Preview" order="4" />
+      <window_info anchor="right" id="Palette&#9;" order="5" />
+      <window_info anchor="right" id="Database" order="6" weight="0.32925257" />
+      <window_info anchor="right" id="Maven Projects" order="7" weight="0.32925257" />
+      <window_info anchor="right" id="Ant Build" order="8" weight="0.25" />
+      <window_info anchor="right" id="Maven" order="9" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="HOME&#10;&#10;Creata l'interfaccia html per la pagina di login con i relativi css senza la parte js" />
+    <MESSAGE value="CONNECTION TO DATABASE&#10;&#10;Implementata la connessione a database usando i PDO, implementata classe di gestione degli errori, implementata classe di testing delle funzioni che accedono al database, creato file di configurazione per il database, implementato file helper per le helper functions" />
+    <MESSAGE value="LOGIN &#10;&#10;Implementata la funzione che controlla se un utente e registrato nel database (login)" />
+    <MESSAGE value="LOGIN &#10;&#10;Implementato il login con richiesta di conferma email e password dal server e cambio pagina se la risposta e' positiva. Nessun tipo di controllo degli errori implementato" />
+    <MESSAGE value="LOGIN &#10;&#10;Implementati i messaggi di errore in fase di login sul campo email e password. Implementazione standard usando angular material." />
+    <MESSAGE value="HOME&#10;&#10;Implementato il recupero dal database delle prime 10 fatture e la visulaizzazione in una tabella con affianco il pulsante di richiamo generazione fattura" />
+    <MESSAGE value="GENERATE INVOICE&#10;&#10;Implementata la visualizzazione di tutti i pazienti con la relativa casella input per filtrarli per stringa e il pulsante genera fattura che non fa ancora niente" />
+    <MESSAGE value="HOME&#10;&#10;Implementata la visualizzazione di tutte le fatture con i relativi dati anagrafici ordinati in ordine decrescente per data" />
+    <MESSAGE value="GENERATE INVOICE&#10;&#10;Iniziata l'implementazione del pdf che viene generato cliccando sul pulsante genera fattura" />
+    <MESSAGE value="GENERATE INVOICE&#10;&#10;Finito il formato standard della fattura per singoli pazienti, al click sul pulsante genera fattura viene creato il pdf e scaricato in locale" />
+    <MESSAGE value="GENERATE INVOICE&#10;&#10;Implementata al finestra modale per la verifica delle informazioni da inserire nella fattura con i relativi messaggi di errore e gli eventi sui pulsanti del modale" />
+    <MESSAGE value="UPDATE PATIENT, REMOVE PATIENT&#10;&#10;Implementata la possibilita' di aggiornare i dati di un paziente oppure eliminare un paziente gia' esistente" />
+    <MESSAGE value="LOGIN, LOGOUT&#10;&#10;Implementato il controllo della sessione latto server e reindirizzamento alla pagina giusta in funzione se l'utente e; gia; logato o meno. Implementata la gestione degli errori in fase di login con visualizzazione anche di errori di connessione ed password o email errata" />
+    <MESSAGE value="INSERT PATIENT&#10;&#10;Implementata la gestione degli messaggi di inserimento avvenuto e di errore nell'inserimento" />
+    <MESSAGE value="INSERT INVOICE&#10;&#10;Implementata la funzionalita' di inserimento fattura sia dalla lista dei clienti che dalla lista delle fatture, implementati i messaggi di avvisso per le operazioni crud sui clienti" />
+    <MESSAGE value="BUG FIXING&#10;&#10;Risolto il bug per cui il progressivo delle fatture era un numero indietro di quello giusto, aggiunto messaggio di errore se si prova ad inserire una fattura con un progressivo gia' esistente, genero fattura solo se i dati sono stati inseriti nel database" />
+    <option name="LAST_COMMIT_MESSAGE" value="BUG FIXING&#10;&#10;Risolto il bug per cui il progressivo delle fatture era un numero indietro di quello giusto, aggiunto messaggio di errore se si prova ad inserire una fattura con un progressivo gia' esistente, genero fattura solo se i dati sono stati inseriti nel database" />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="das://9b96d2a6-6d53-4b46-9359-197a62e5a73e/schema/psicoFatture/table/patient" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/9b96d2a6-6d53-4b46-9359-197a62e5a73e/console_2.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="32">
+          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/img/pdf-logo.png" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/update_patient.php" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/logout.php" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/is_logged.php" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/is_not_logged.php" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/control_login.php" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/communication.php" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/login.php" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/helper.php" />
+    <entry file="file://$PROJECT_DIR$/img/close-icon.jpg" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/9b96d2a6-6d53-4b46-9359-197a62e5a73e/console_3.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="49" selection-start-column="49" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/php/mailer/extras/README.md" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/remove_patient.php" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/get_patients.php" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/get_invoice_number.php" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/get_last_invoices.php" />
+    <entry file="file://$PROJECT_DIR$/components/error-delete-dialog.html" />
+    <entry file="file://$PROJECT_DIR$/components/error-update-dialog.html" />
+    <entry file="file://$PROJECT_DIR$/components/insert-patient-dialog.html" />
+    <entry file="file://$PROJECT_DIR$/components/success-insert-dialog.html" />
+    <entry file="file://$PROJECT_DIR$/components/success-invoice.html" />
+    <entry file="file://$PROJECT_DIR$/components/success-update-dialog.html" />
+    <entry file="file://$PROJECT_DIR$/components/update-patient.html" />
+    <entry file="file://$PROJECT_DIR$/components/update-patient-dialog.html" />
+    <entry file="file://$PROJECT_DIR$/app/default/jspdf.customfonts.min.js" />
+    <entry file="file://$PROJECT_DIR$/app/default/jspdf.min.js" />
+    <entry file="file://$PROJECT_DIR$/app/default/default_vfs.js" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/send_email_pdf.php" />
+    <entry file="file://$PROJECT_DIR$/components/home.html" />
+    <entry file="file://$PROJECT_DIR$/css/home.css" />
+    <entry file="file://$PROJECT_DIR$/css/custom.css" />
+    <entry file="file://$PROJECT_DIR$/index.html" />
+    <entry file="file://$PROJECT_DIR$/components/login.html" />
+    <entry file="file://$PROJECT_DIR$/components/error-duplicate-invoice.html" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/9b96d2a6-6d53-4b46-9359-197a62e5a73e/console_4.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="95" selection-start-column="95" selection-end-column="95" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/php/database/helper.php" />
+    <entry file="file://$PROJECT_DIR$/php/database/config.php" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/9b96d2a6-6d53-4b46-9359-197a62e5a73e/console.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="116" selection-start-column="116" selection-end-column="116" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/php/ajax/insert_patient.php" />
+    <entry file="file://$PROJECT_DIR$/components/error-invoice.html" />
+    <entry file="file://$PROJECT_DIR$/php/ajax/insert_invoice.php" />
+    <entry file="file://$PROJECT_DIR$/php/database/db_errors.php" />
+    <entry file="file://$PROJECT_DIR$/php/database/test.php" />
+    <entry file="file://$PROJECT_DIR$/components/generate-invoice-dialog.html" />
+    <entry file="file://$PROJECT_DIR$/components/error-insert-dialog.html" />
+    <entry file="file://$PROJECT_DIR$/components/confirm-dialog.html" />
+    <entry file="file://$PROJECT_DIR$/components/generate-invoice.html" />
+    <entry file="file://$PROJECT_DIR$/app/app.js" />
+    <entry file="file://$PROJECT_DIR$/php/database/connection.php" />
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>@types/cordova</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>fattureSimo</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2297794" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

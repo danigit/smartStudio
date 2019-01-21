@@ -55,7 +55,7 @@ function updateCanvas(canvas, context, image) {
 }
 
 
-function drawIcon(result, img, width, canvas, type) {
+function drawIcon(result, img, width, canvas) {
     let context = canvas.getContext('2d');
     let virtualRadius = 0;
 
@@ -82,4 +82,16 @@ function drawIcon(result, img, width, canvas, type) {
 
 function scaleSize(width, canvas) {
     return (100/width) * (canvas.width/100);
+}
+
+function openFullScreen(elem) {
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
+    }
 }

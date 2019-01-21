@@ -1,44 +1,50 @@
 <div>
+    <!--popup header-->
     <md-toolbar id="popup-toolbar" ng-class="registry.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../smartStudio/img/close-icon.png" aria-label="Close dialog"/>
+                <img src="../img/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
             </md-button>
         </div>
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../smartStudio/img/login-icon.png" class="popup-icon" alt="Smart Studio">
+            <img src="../img/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">AGGIORNAMENTO TAG</h1>
+                <h1 class=" font-iceberg font-x-large">AGGIORNAMENTO WETAG</h1>
             </div>
         </div>
     </md-toolbar>
+    <!--end popup header-->
 
+    <!--popup content-->
     <md-content class="popup-padding">
         <div layout="column" layout-align="center center">
-            <!--<md-subheader><h1 class="color-darkcyan">RINOMINA TAG</h1></md-subheader>-->
-            <md-select placeholder="Seleziona tag..." ng-model="registry.tag" class="width-100">
-                <md-option value="{{tag.id}}" ng-repeat="tag in registry.tags">{{tag.id}}</md-option>
-            </md-select>
+            <form id="changeRegistryForm" name="changeRegistryForm">
+                <md-select placeholder="Seleziona WeTag..." ng-model="registry.tag" class="width-100" required="">
+                    <md-option value="{{tag.id}}" ng-repeat="tag in registry.tags">{{tag.id}}</md-option>
+                </md-select>
 
-            <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
-                <input ng-model="registry.name" placeholder="Inserisci nuovo nome">
-            </md-input-container>
+                <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
+                    <input required type="text" ng-model="registry.name" name="registryName" placeholder="Inserisci nuovo nome">
+                    <div ng-messages="changeRegistryForm.registryName.$error || changeRegistryForm.$submitted" role="alert">
+                        <div ng-message=" required">Inserire un nome</div>
+                    </div>
+                </md-input-container>
 
-            <div class="background-transparent-white text-center color-green font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
-                 ng-show="registry.resultOk">
-                Nome aggiornato con successo!
-            </div>
-            <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
-                 ng-show="registry.resultError">
-                Impossibile aggiornare il tag.
-            </div>
-            <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
-                 ng-show="registry.fieldsEmpty">
-                Selezionare un tag e inserire un nome!
-            </div>
-            <md-button ng-click="changeTagName()" class="md-warn color-darkblue">INVIA</md-button>
+                <div class="background-transparent-white text-center color-green font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                     ng-show="registry.resultOk">
+                    Nome aggiornato con successo!
+                </div>
+                <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                     ng-show="registry.resultError">
+                    Inserire un nome diverso per il WeTag.
+                </div>
+                <div layout="column" layout-align="center center">
+                    <md-button ng-click="changeTagName(changeRegistryForm)" class="md-warn color-darkblue">INVIA</md-button>
+                </div>
+            </form>
         </div>
     </md-content>
+    <!--end popup content-->
 </div>

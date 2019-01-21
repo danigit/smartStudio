@@ -116,9 +116,13 @@
      */
     canvasController.$inject = ['$scope', '$location', '$mdDialog', '$timeout', 'canvasService', 'socketService', 'menuService'];
     function canvasController($scope, $location, $mdDialog, $timeout, canvasService, socketService, menuService){
+        let floor = {};
+
         $scope.toggleLeft = menuService.toggleLeft('left');
         $scope.isOpen = false;
-        let floor = {};
+        $scope.header = {
+            location: sessionStorage.getItem('location')
+        };
 
         $scope.grid = {
             showGrid: true,
@@ -129,12 +133,13 @@
             isOpen: false,
             selectedDirection: 'left',
             mode: 'md-scale',
+            fullscreen: false,
             gridSpacing: 0
         };
 
         let canvas = document.querySelector('#canvas-id');
         let context = canvas.getContext('2d');
-;
+
         $scope.$watch('speedDial.gridSpacing', function (newValue) {
             context.clearRect(15, 15, canvas.width, canvas.height);
             updateCanvas(canvas, context, floor.image);
@@ -174,6 +179,14 @@
             }
         });
 
+        $scope.$watch('speedDial.fullscreen', function (newValue) {
+            if (newValue) {
+                openFullScreen(document.querySelector('#canvas-container'));
+                $scope.speedDial.fullscreen = false;
+                // $scope.$watch();
+            }
+        });
+
         socketService.getSocket().then(function (socket) {
             socket.send(encodeRequest('get_floor_info', {location: sessionStorage.getItem('location'), floor: 'floor 1'}));
             socket.send(encodeRequest('get_anchors', {floor: 'floor 1'}));
@@ -185,10 +198,12 @@
 
                 switch (parsedMessage.action) {
                     case 'get_floor_info': {
-                        $scope.name = result[0].name;
+                        $scope.header.name = result[0].name;
                         floor.spacing = result[0].map_spacing;
                         floor.width = result[0].map_width;
                         $scope.speedDial.gridSpacing = result[0].map_spacing;
+
+                        $scope.$apply();
 
                         let img = new Image();
                         img.src = imagePath + 'floors/' + result[0].image_map;
@@ -246,14 +261,13 @@
                         console.log('No action received');
                 }
                 $scope.$apply();
-
             };
 
         });
 
         $scope.registry = function(){
             $mdDialog.show({
-                templateUrl: '../smartStudio/components/change-registry.html',
+                templateUrl: '../components/change-registry.html',
                 parent: angular.element(document.body),
                 targetEvent: event,
                 clickOutsideToClose: true,
@@ -279,17 +293,18 @@
                                 $scope.registry.tags = parsedMessage.result;
                         };
 
-                        $scope.changeTagName = function () {
+                        $scope.changeTagName = function (form) {
+                            form.$submitted = true;
                             console.log('changing name');
                             console.log($scope.registry.tag);
                             if ($scope.registry.tag != null && $scope.registry.name !== ''){
-                                socket.send(encodeRequest('change_tag_name', {tag: $scope.registry.tag, name: $scope.registry.name}))
+                                socket.send(encodeRequest('change_tag_name', {tag: $scope.registry.tag, name: $scope.registry.name}));
 
                                 socket.onmessage = function (message) {
                                     parsedMessage = JSON.parse(message.data);
 
                                     if (parsedMessage.action === 'change_tag_name'){
-                                        if (parsedMessage.result === 1) {
+                                        if (parsedMessage.result === 1 || parsedMessage.result === 0) {
                                             $scope.registry.resultOk = true;
                                             $scope.registry.resultError = false;
                                             $scope.registry.fieldsEmpty = false;
@@ -297,7 +312,7 @@
                                             $timeout(function () {
                                                 $mdDialog.hide();
                                             }, 2000)
-                                        }else {
+                                        }else if (parsedMessage.result === 0) {
                                             $scope.registry.resultOk = false;
                                             $scope.registry.resultError = true;
                                             $scope.registry.fieldsEmpty = false;

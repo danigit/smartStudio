@@ -8,3 +8,14 @@
 .spacing-input-value{
     padding: 15px 0 0 0!important;
 }
+
+.canvas-location{
+    margin:20px 0 0 0;
+    font-weight: bolder;
+    font-size: xx-large;
+}
+
+.canvas-floor{
+    margin: 0;
+    font-size: medium;
+}
