@@ -47,14 +47,6 @@
     homeService.$inject = ['$http'];
     function homeService($http) {
         let service = this;
-
-        //Function that remeve the user session
-        service.logout = function () {
-            return $http({
-                method: 'GET',
-                url   : smartPath + 'php/ajax/logout.php',
-            });
-        };
     }
 
     /**
@@ -148,14 +140,22 @@
      * Function that handle the menu
      * @type {string[]}
      */
-    menuService.$inject = ['$mdSidenav'];
-    function menuService($mdSidenav) {
+    menuService.$inject = ['$mdSidenav', '$http'];
+    function menuService($mdSidenav, $http) {
         let service = this;
 
         service.toggleLeft = function (componentId) {
             return function () {
                 $mdSidenav(componentId).toggle();
             }
-        }
+        };
+
+        //Function that remeve the user session
+        service.logout = function () {
+            return $http({
+                method: 'GET',
+                url   : smartPath + 'php/ajax/logout.php',
+            });
+        };
     }
 })();

@@ -24,21 +24,19 @@ function encodeRequest(action, data) {
 
 function drawDashedLine(canvas, length, pattern, spacing, width, direction) {
     let context = canvas.getContext('2d');
-    let virtualWidth = ((spacing*100)/width) * (canvas.width/100);
+    let virtualWidth = scaleSize(width, canvas) * spacing;
     context.strokeStyle = 'lightgray';
 
     if (direction === 'horizontal') {
         for (let i = 25; i < canvas.height - 25; i += virtualWidth){
             context.beginPath();
             context.setLineDash(pattern);
-            console.log('drawing: ');
             context.moveTo(25, i);
             context.lineTo(length - 25, i);
             context.stroke();
         }
 
     }else if (direction === 'vertical'){
-        console.log('drawing vertical');
         for (let i = 25; i < canvas.width - 25; i += virtualWidth){
             context.beginPath();
             context.setLineDash(pattern);
@@ -54,4 +52,34 @@ function updateCanvas(canvas, context, image) {
     if (image !== undefined)
         context.drawImage(image, 0, 0);
     drawCanvasBorder(canvas, context, 25);
+}
+
+
+function drawIcon(result, img, width, canvas, type) {
+    let context = canvas.getContext('2d');
+    let virtualRadius = 0;
+
+    angular.forEach(result, function (value) {
+        virtualRadius = scaleSize(width, canvas) * value.radius;
+
+        context.fillStyle = '#0093c4';
+        context.fillRect(value.x_pos, value.y_pos - 17, 15, 15);
+        context.fillStyle = 'white';
+        context.fillText(value.id, value.x_pos + 5, value.y_pos - 6);
+        context.drawImage(img, value.x_pos, value.y_pos);
+        context.strokeStyle = '#ff000094';
+        if (value.radius > 0 ){
+            context.beginPath();
+            context.setLineDash([]);
+            context.arc(value.x_pos + 5, value.y_pos - 6, virtualRadius, 0, 2 * Math.PI);
+            context.fillStyle = '#ff000010';
+            context.fill();
+            context.stroke();
+        }
+
+    });
+}
+
+function scaleSize(width, canvas) {
+    return (100/width) * (canvas.width/100);
 }

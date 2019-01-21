@@ -224,7 +224,8 @@ class Connection{
      * @return db_errors|array
      */
     function get_floor_info($location, $floor){
-        $this->query = 'SELECT floor.name, image_map, map_width, map_spacing FROM floor JOIN location ON location_id = location.id WHERE  location.name = ? AND floor.name = ?';
+        $this->query = 'SELECT floor.name, image_map, map_width, map_spacing FROM floor 
+                        JOIN location ON location_id = location.id WHERE  location.name = ? AND floor.name = ?';
 
         $statement = $this->execute_selecting($this->query, 'ss', $location, $floor);
 
@@ -242,6 +243,86 @@ class Connection{
         }
 
         return $result_array;
+    }
+
+    function get_anchors($floor){
+        $this->query = 'SELECT anchor.id, anchor.name, x_pos, y_pos, radius FROM anchor JOIN floor ON anchor.floor_id = floor.id WHERE floor.name = ?';
+
+        $statement = $this->execute_selecting($this->query, 's', $floor);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
+
+        $this->result = $statement->get_result();
+        $result_array = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $result_array[] = array('id' => $row['id'], 'name' => $row['name'], 'x_pos' => $row['x_pos'], "y_pos" => $row['y_pos'],
+                'radius' => $row['radius']);
+        }
+
+        return $result_array;
+    }
+
+    function get_cameras($floor){
+        $this->query = 'SELECT camera.id, description, username, password, x_pos, y_pos, radius FROM camera 
+                        JOIN floor ON floor_id = floor.id WHERE floor.name = ?';
+
+        $statement = $this->execute_selecting($this->query, 's', $floor);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
+
+        $this->result = $statement->get_result();
+        $result_array = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $result_array[] = array('id' => $row['id'], 'description' => $row['description'], 'username' => $row['username'],
+                'password' => $row['password'], 'x_pos' => $row['x_pos'], "y_pos" => $row['y_pos'], 'radius' => $row['radius']);
+        }
+
+        return $result_array;
+    }
+
+    function get_tags($location){
+
+        $this->query = 'SELECT tag.id, tag.name FROM tag JOIN anchor ON tag.anchor_id = anchor.id 
+                        JOIN floor ON anchor.floor_id = floor.id JOIN location ON floor.location_id = location.id WHERE location.name = ?';
+
+        $statement = $this->execute_selecting($this->query, 's', $location);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+
+        $this->result = $statement->get_result();
+        $result_array = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $result_array[] = array('id' => $row['id'], 'name' => $row['name']);
+        }
+
+        return $result_array;
+    }
+
+    function change_tag_name($tag, $name){
+
+        $this->query = "UPDATE tag SET name = ? WHERE id = ?";
+        $statement = $this->execute_selecting($this->query, 'ss', $name, $tag);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_UPDATING_TAG);
+
+        $this->result =  $this->connection->affected_rows;
+
+        return $this->result;
     }
 
     /**

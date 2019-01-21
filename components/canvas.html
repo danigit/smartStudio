@@ -5,21 +5,26 @@
                                ng-class="speedDial.mode">
                 <md-fab-trigger>
                     <md-button aria-label="menu" class="md-fab background-darkcyan">
-                        <img src="../smartStudio/img/icons/setting.png" class="setting-image" alt="">
+                        <img src="../smartStudio/img/setting.png" class="setting-image" alt="">
                     </md-button>
                 </md-fab-trigger>
 
                 <md-fab-actions>
-                    <div layout="column" style="width: 200px;">
+                    <div layout="column" class="padding-lr-15-px">
                         <div flex="100" layout layout-align="center center">
-                            <span class="font-medium">Spaziatura griglia</span>
+                            <span class="font-medium color-darkcyan">Spaziatura griglia: <b>{{speedDial.gridSpacing}}</b></span>
                         </div>
                         <md-slider-container flex="100">
-                            <md-input-container flex="40">
-                                <input flex type="number" ng-model="speedDial.gridSpacing" aria-label="speedDial.gripSpacing" class="spacing-input-value">
-                            </md-input-container>
-                            <md-slider md-discrete ng-model="speedDial.gridSpacing" min="1" max="1000" step="1" aria-label="speedDial.gridSpacing" class="md-primary"></md-slider>
+                            <md-slider md-discrete ng-model="speedDial.gridSpacing" min="10" max="1000" step="10" aria-label="speedDial.gridSpacing" class="md-primary"></md-slider>
                         </md-slider-container>
+                    </div>
+                    <div layout="column" class="padding-lr-15-px border-right-1-darkcyan" layout-align="center center">
+                        <div flex="100" layout layout-align="center center">
+                            <span class="font-medium color-darkcyan" ng-show="grid.showGrid">Griglia: <b class="color-green">ON</b></span>
+                            <span class="font-medium color-darkcyan" ng-show="!grid.showGrid">Griglia: <b class="color-red">OFF</b></span>
+                        </div>
+                        <md-switch class="md-primary margin-none margin-top-10" ng-change="switchChanged" md-no-ink aria-label="Switch No Ink" ng-model="grid.showGrid">
+                        </md-switch>
                     </div>
                 </md-fab-actions>
             </md-fab-speed-dial>
@@ -28,12 +33,12 @@
             <h1>Ospedale Bolzano</h1>
             <h3>Piano: {{floor.name}}</h3>
         </div>
-        <div id="canvas-container" layout="column"  layout-align="center center" class="parent-size">
-            <canvas id="canvas-id" class="parent-size"></canvas>
+        <div id="canvas-container" layout="row"  layout-align="center start" class="parent-size">
+            <canvas id="canvas-id" class="width-100"></canvas>
         </div>
         <div>
-            <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--25-px cursor-pointer outline-none">
-                <img id="open-menu-icon" src="../smartStudio/img/open-menu.png" alt="">
+            <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
+                <img id="open-menu-icon" src="../smartStudio/img/menu-arrow.png" alt="">
             </div>
             <section layout="row" flex>
                 <md-sidenav id="menu-panel" class="md-sidenav-left" md-component-id="left" md-disable-backdrop md-whiteframe="4">
@@ -49,7 +54,7 @@
                         </div>
                         <div layout="column">
                             <md-list>
-                                <md-list-item ng-click=""><p>Anagrafica</p><img src="../smartStudio/img/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="registry()"><p>Anagrafica</p><img src="../smartStudio/img/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click=""><p>Ancore</p><img src="../smartStudio/img/ancora-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click=""><p>Seleziona piano</p><img src="../smartStudio/img/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../smartStudio/img/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>

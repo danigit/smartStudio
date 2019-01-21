@@ -1,0 +1,44 @@
+<div>
+    <md-toolbar id="popup-toolbar" ng-class="registry.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="../smartStudio/img/close-icon.png" aria-label="Close dialog"/>
+            </md-button>
+        </div>
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="../smartStudio/img/login-icon.png" class="popup-icon" alt="Smart Studio">
+        </div>
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">AGGIORNAMENTO TAG</h1>
+            </div>
+        </div>
+    </md-toolbar>
+
+    <md-content class="popup-padding">
+        <div layout="column" layout-align="center center">
+            <!--<md-subheader><h1 class="color-darkcyan">RINOMINA TAG</h1></md-subheader>-->
+            <md-select placeholder="Seleziona tag..." ng-model="registry.tag" class="width-100">
+                <md-option value="{{tag.id}}" ng-repeat="tag in registry.tags">{{tag.id}}</md-option>
+            </md-select>
+
+            <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
+                <input ng-model="registry.name" placeholder="Inserisci nuovo nome">
+            </md-input-container>
+
+            <div class="background-transparent-white text-center color-green font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                 ng-show="registry.resultOk">
+                Nome aggiornato con successo!
+            </div>
+            <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                 ng-show="registry.resultError">
+                Impossibile aggiornare il tag.
+            </div>
+            <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                 ng-show="registry.fieldsEmpty">
+                Selezionare un tag e inserire un nome!
+            </div>
+            <md-button ng-click="changeTagName()" class="md-warn color-darkblue">INVIA</md-button>
+        </div>
+    </md-content>
+</div>

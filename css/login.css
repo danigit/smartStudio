@@ -3,6 +3,11 @@
     height: 130px;
 }
 
+.popup-icon{
+    width: 70px;
+    height: 70px;
+}
+
 #loginButton{
     margin: 10% 0 10% 0!important;;
 }

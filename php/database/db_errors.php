@@ -20,6 +20,8 @@ class db_errors
     public static $ERROR_USER_NOT_FOUND = 9;
     public static $ERROR_ON_GETTING_MARKERS = 10;
     public static $ERROR_ON_GETTING_FLOOR_IMAGE = 11;
+    public static $ERROR_ON_GETTING_TAGS = 12;
+    public static $ERROR_ON_UPDATING_TAG = 12;
 
     private $error;
 
@@ -72,6 +74,10 @@ class db_errors
                 return 'ERROR_ON_GETTING_MARKERS';
             case 11:
                 return 'ERROR_ON_GETTING_FLOOR_IMAGE';
+            case 12:
+                return 'ERROR_ON_GETTING_TAGS';
+            case 13:
+                return 'ERROR_ON_UPDATING_TAG';
             default:
                 return 'UNKNOWN_ERROR';
         }

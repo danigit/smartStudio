@@ -14,6 +14,9 @@ DIMENSIONS
     height: 100%;
 }
 
+.width-100{
+    width: 100%;
+}
 
 /******************************************************************
 FONTS
@@ -82,8 +85,8 @@ MARGINS
     margin-right: 10px;
 }
 
-.margin-left--25-px{
-    margin-left: -25px;
+.margin-left--8-px{
+    margin-left: -8px;
 }
 
 .margin-bottom-0{
@@ -106,6 +109,9 @@ MARGINS
     margin-bottom: 10px!important;
 }
 
+.margin-top--20-px{
+    margin-top: -20px!important;
+}
 
 
 
@@ -140,7 +146,13 @@ PADDING
     padding-top: 5%;
 }
 
+.padding-lr-15-px{
+    padding: 0 15px 0 15px;
+}
 
+.popup-padding{
+    padding: 5px 70px 5px 70px;
+}
 
 
 
@@ -171,7 +183,9 @@ BORDER
     border: 2px solid #263238;
 }
 
-
+.border-right-1-darkcyan{
+    border-right: 1px solid #0093c4;
+}
 
 
 
@@ -188,6 +202,10 @@ COLOR
     color: #E12315;
 }
 
+.color-darkred{
+    color: #E13044;
+}
+
 .color-ottanio{
     color: #29353A;
 }
@@ -195,6 +213,25 @@ COLOR
 .color-black{
     color: #000000;
 }
+
+.color-darkcyan{
+    color: #0093c4!important;
+}
+
+.color-green{
+    color: #4BAE5A;
+}
+
+.color-darkblue{
+    color: #3754AF!important;
+}
+
+
+
+
+
+
+
 
 
 
@@ -271,11 +308,16 @@ BACKGROUND
 }
 
 .background-white{
-    background-color: #FFFFFF;
+    background-color: #FFFFFF!important;
 }
 
+.background-green{
+    background-color: #4BAE5A!important;
+}
 
-
+.background-red{
+    background-color: #E13044!important;
+}
 
 
 /******************************************************************

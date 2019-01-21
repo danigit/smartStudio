@@ -58,7 +58,7 @@
 
         //function that makes the logout of the user
         $scope.logout = function () {
-            let promise = homeService.logout();
+            let promise = menuService.logout();
 
             promise.then(
                 function (response) {
@@ -114,68 +114,129 @@
      * Function that handles the canvas interaction
      * @type {string[]}
      */
-    canvasController.$inject = ['$scope', 'canvasService', 'socketService', 'menuService'];
-    function canvasController($scope, canvasService, socketService, menuService){
+    canvasController.$inject = ['$scope', '$location', '$mdDialog', '$timeout', 'canvasService', 'socketService', 'menuService'];
+    function canvasController($scope, $location, $mdDialog, $timeout, canvasService, socketService, menuService){
         $scope.toggleLeft = menuService.toggleLeft('left');
         $scope.isOpen = false;
-        $scope.floor = {};
+        let floor = {};
+
+        $scope.grid = {
+            showGrid: true,
+            gridMessage: 'On'
+        };
+
         $scope.speedDial = {
             isOpen: false,
             selectedDirection: 'left',
             mode: 'md-scale',
-            gridSpacing: 100
+            gridSpacing: 0
         };
 
         let canvas = document.querySelector('#canvas-id');
         let context = canvas.getContext('2d');
-
+;
         $scope.$watch('speedDial.gridSpacing', function (newValue) {
             context.clearRect(15, 15, canvas.width, canvas.height);
-            updateCanvas(canvas, context, $scope.floor.image);
+            updateCanvas(canvas, context, floor.image);
 
-            if ($scope.floor.width !== undefined) {
+            if (floor.width !== undefined) {
                 //drawing vertical
-                drawDashedLine(canvas, canvas.height, [5, 5], newValue, $scope.floor.width, 'vertical');
+                drawDashedLine(canvas, canvas.height, [5, 5], newValue, floor.width, 'vertical');
                 //drawing horizontal lines
-                drawDashedLine(canvas, canvas.width, [5, 5], newValue, $scope.floor.width, 'horizontal');
+                drawDashedLine(canvas, canvas.width, [5, 5], newValue, floor.width, 'horizontal');
+                //drawing images
+                drawIcon(floor.anchorsResult, floor.anchorImage, floor.width, canvas);
+                //draw cameras
+                drawIcon(floor.camerasResult, floor.cameraImage, floor.width, canvas);
+            }
+        });
+
+        $scope.$watch('grid.showGrid', function (newValue) {
+            context.clearRect(15, 15, canvas.width, canvas.height);
+            updateCanvas(canvas, context, floor.image);
+
+            if (!newValue){
+                //drawing images
+                drawIcon(floor.anchorsResult, floor.anchorImage, floor.width, canvas);
+                //draw cameras
+                drawIcon(floor.camerasResult, floor.cameraImage, floor.width, canvas);
+            }else {
+                if (floor.width !== undefined) {
+                    //drawing vertical
+                    drawDashedLine(canvas, canvas.height, [5, 5], floor.spacing, floor.width, 'vertical');
+                    //drawing horizontal lines
+                    drawDashedLine(canvas, canvas.width, [5, 5], floor.spacing, floor.width, 'horizontal');
+                    //drawing images
+                    drawIcon(floor.anchorsResult, floor.anchorImage, floor.width, canvas);
+                    //draw cameras
+                    drawIcon(floor.camerasResult, floor.cameraImage, floor.width, canvas);
+                }
             }
         });
 
         socketService.getSocket().then(function (socket) {
             socket.send(encodeRequest('get_floor_info', {location: sessionStorage.getItem('location'), floor: 'floor 1'}));
+            socket.send(encodeRequest('get_anchors', {floor: 'floor 1'}));
+            socket.send(encodeRequest('get_cameras', {floor: 'floor 1'}));
 
             socket.onmessage = function (message) {
                 let parsedMessage = JSON.parse(message.data);
-                let result = parsedMessage.result[0];
+                let result = parsedMessage.result;
 
                 switch (parsedMessage.action) {
                     case 'get_floor_info': {
-                        $scope.floor.name = result.name;
-                        $scope.floor.spacing = result.map_spacing;
-                        $scope.floor.width = result.map_width;
-                        $scope.speedDial.gridSpacing = result.map_spacing;
-                        $scope.$apply();
+                        $scope.name = result[0].name;
+                        floor.spacing = result[0].map_spacing;
+                        floor.width = result[0].map_width;
+                        $scope.speedDial.gridSpacing = result[0].map_spacing;
 
                         let img = new Image();
-                        img.src = '../smartStudio/img/floors/' + result.image_map;
+                        img.src = imagePath + 'floors/' + result[0].image_map;
 
                         img.onload = function() {
-                            $scope.floor.image = img;
+                            floor.image = img;
                             canvas.width = this.naturalWidth;
                             canvas.height = this.naturalHeight;
 
                             //drawing map border
                             updateCanvas(canvas, context, img);
 
-                            //drawing vertical
-                            drawDashedLine(canvas, canvas.height, [5, 5], $scope.floor.spacing, $scope.floor.width, 'vertical');
+                            if ($scope.grid) {
+                                //drawing vertical
+                                drawDashedLine(canvas, canvas.height, [5, 5], floor.spacing, floor.width, 'vertical');
 
-                            //drawing horizontal lines
-                            drawDashedLine(canvas, canvas.width, [5, 5], $scope.floor.spacing, $scope.floor.width, 'horizontal')
-
+                                //drawing horizontal lines
+                                drawDashedLine(canvas, canvas.width, [5, 5], floor.spacing, floor.width, 'horizontal')
+                            }
                             //TODO load anchors
-
                         };
+                        break;
+                    }
+                    case 'get_anchors':{
+                        floor.anchorsResult = result;
+
+                        let img = new Image();
+                        img.src = imagePath + 'ancora-icon.png';
+
+                        floor.anchorImage = img;
+
+                        img.onload = function () {
+                            drawIcon(result, img, floor.width, canvas);
+                        };
+                        break;
+                    }
+                    case 'get_cameras':{
+                        floor.camerasResult = result;
+
+                        let img = new Image();
+                        img.src = imagePath + 'icons/camera.png';
+
+                        floor.cameraImage = img;
+
+                        img.onload = function () {
+                          drawIcon(result, img, floor.width, canvas);
+                        };
+
                         break;
                     }
                     case 'no_action':
@@ -184,10 +245,95 @@
                     default:
                         console.log('No action received');
                 }
+                $scope.$apply();
+
             };
+
         });
 
+        $scope.registry = function(){
+            $mdDialog.show({
+                templateUrl: '../smartStudio/components/change-registry.html',
+                parent: angular.element(document.body),
+                targetEvent: event,
+                clickOutsideToClose: true,
+                controller: ['$scope', function ($scope) {
+                    $scope.registry = {
+                        tag: null,
+                        tags: null,
+                        name: '',
+                        resultOk: false,
+                        resultError: false,
+                        fieldsEmpty: false,
+                        resultClass: ''
+                    };
 
+                    socketService.getSocket().then(function (socket) {
+                        socket.send(encodeRequest('get_tags', {location: sessionStorage.getItem('location')}));
+                        let parsedMessage = null;
+
+                        socket.onmessage = function (message) {
+                            parsedMessage = JSON.parse(message.data);
+
+                            if (parsedMessage.action === 'get_tags')
+                                $scope.registry.tags = parsedMessage.result;
+                        };
+
+                        $scope.changeTagName = function () {
+                            console.log('changing name');
+                            console.log($scope.registry.tag);
+                            if ($scope.registry.tag != null && $scope.registry.name !== ''){
+                                socket.send(encodeRequest('change_tag_name', {tag: $scope.registry.tag, name: $scope.registry.name}))
+
+                                socket.onmessage = function (message) {
+                                    parsedMessage = JSON.parse(message.data);
+
+                                    if (parsedMessage.action === 'change_tag_name'){
+                                        if (parsedMessage.result === 1) {
+                                            $scope.registry.resultOk = true;
+                                            $scope.registry.resultError = false;
+                                            $scope.registry.fieldsEmpty = false;
+                                            $scope.registry.resultClass = 'background-green';
+                                            $timeout(function () {
+                                                $mdDialog.hide();
+                                            }, 2000)
+                                        }else {
+                                            $scope.registry.resultOk = false;
+                                            $scope.registry.resultError = true;
+                                            $scope.registry.fieldsEmpty = false;
+                                            $scope.registry.resultClass = 'background-red';
+                                        }
+                                    }
+
+                                    $scope.$apply();
+                                }
+                            }else {
+                                $scope.registry.resultOk = false;
+                                $scope.registry.resultError = false;
+                                $scope.registry.fieldsEmpty = true;
+                                $scope.registry.resultClass = 'background-red';
+                            }
+                        }
+                    });
+
+                    $scope.hide = function () {
+                       $mdDialog.hide();
+                    }
+                }]
+            })
+        };
+
+        //function that makes the logout of the user
+        $scope.logout = function () {
+            let promise = menuService.logout();
+
+            promise.then(
+                function (response) {
+                    if (response.data.response)
+                        $location.path('/');
+                }
+            )
+        };
     }
 
     /**
