@@ -7,8 +7,6 @@
  * Time: 19.58
  */
 
-ini_set('session.save_handler', 'memcached');
-ini_set('session.save_path', 'localhost:8090');
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 require_once '../database/connection.php';
@@ -120,9 +118,36 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'get_floors':{
+                $result['action'] = 'get_floors';
+                $query = $this->connection->get_floors($decoded_message['data']['location']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             case 'change_tag_name':{
                 $result['action'] = 'change_tag_name';
                 $query = $this->connection->change_tag_name($decoded_message['data']['tag'], $decoded_message['data']['name']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'change_anchor_field':{
+                $result['action'] = 'change_anchor_field';
+                $query = $this->connection->change_anchor_field($decoded_message['data']['anchor_id'], $decoded_message['data']['anchor_field'], $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'change_floor_field':{
+                $result['action'] = 'change_floor_field';
+                $query = $this->connection->change_floor_field($decoded_message['data']['floor_id'], $decoded_message['data']['floor_field'], $decoded_message['data']['field_value']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

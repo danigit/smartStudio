@@ -22,8 +22,7 @@ function encodeRequest(action, data) {
     return JSON.stringify({action: action, data: data});
 }
 
-function drawDashedLine(canvas, length, pattern, spacing, width, direction) {
-    let context = canvas.getContext('2d');
+function drawDashedLine(canvas, context, length, pattern, spacing, width, direction) {
     let virtualWidth = scaleSize(width, canvas) * spacing;
     context.strokeStyle = 'lightgray';
 
@@ -35,7 +34,6 @@ function drawDashedLine(canvas, length, pattern, spacing, width, direction) {
             context.lineTo(length - 25, i);
             context.stroke();
         }
-
     }else if (direction === 'vertical'){
         for (let i = 25; i < canvas.width - 25; i += virtualWidth){
             context.beginPath();
@@ -44,35 +42,37 @@ function drawDashedLine(canvas, length, pattern, spacing, width, direction) {
             context.lineTo(i, length - 25);
             context.stroke();
         }
-
     }
 }
 
 function updateCanvas(canvas, context, image) {
-    if (image !== undefined)
+    if (image !== undefined) {
         context.drawImage(image, 0, 0);
+        context.stroke();
+    }
     drawCanvasBorder(canvas, context, 25);
 }
 
 
-function drawIcon(result, img, width, canvas) {
-    let context = canvas.getContext('2d');
+function drawIcon(result, context, img, width, canvas) {
     let virtualRadius = 0;
 
     angular.forEach(result, function (value) {
         virtualRadius = scaleSize(width, canvas) * value.radius;
 
+        context.beginPath();
         context.fillStyle = '#0093c4';
         context.fillRect(value.x_pos, value.y_pos - 17, 15, 15);
         context.fillStyle = 'white';
         context.fillText(value.id, value.x_pos + 5, value.y_pos - 6);
         context.drawImage(img, value.x_pos, value.y_pos);
-        context.strokeStyle = '#ff000094';
-        if (value.radius > 0 ){
+        context.strokeStyle = '#ff000015';
+        context.stroke();
+        if (value.radius > 0){
             context.beginPath();
             context.setLineDash([]);
             context.arc(value.x_pos + 5, value.y_pos - 6, virtualRadius, 0, 2 * Math.PI);
-            context.fillStyle = '#ff000010';
+            context.fillStyle = '#ff000009';
             context.fill();
             context.stroke();
         }

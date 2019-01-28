@@ -19,3 +19,7 @@
     margin: 0;
     font-size: medium;
 }
+
+md-toolbar{
+    background-color: #0093c4!important;
+}

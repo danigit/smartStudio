@@ -10,6 +10,9 @@
     main.controller('recoverPassController', recoverPassController);
     main.controller('mapController', mapController);
     main.controller('canvasController', canvasController);
+    main.controller('registryController', registryController);
+    main.controller('anchorsController', anchorsController);
+    main.controller('menuController', menuController);
 
     /**
      * Function that manage the user login functionalities
@@ -81,24 +84,20 @@
         NgMap.getMap().then(map => vm.map = map);
         vm.positions = [];
 
-        let promise = socketService.getSocket();
+        let loadMarkers = function(message){
+            angular.forEach(message.result, function ( value) {
+                vm.positions.push(value);
+            });
+        };
 
+
+
+        // let promise = socketService.getSocket();
+        //
         loginService.isLogged().then(
             function (response) {
                 if (response.data.response){
-                    promise.then(
-                        function (socket) {
-                            socket.send(encodeRequest('get_markers', {username: response.data.username}));
-                            socket.onmessage = function(message) {
-                                let parsedMessage = JSON.parse(message.data);
-                                if (parsedMessage.action === 'get_markers') {
-                                    angular.forEach(parsedMessage.result, function ( value) {
-                                        vm.positions.push(value);
-                                    });
-                                }
-                            }
-                        }
-                    );
+                    socketService.sendMessage('get_markers', {username: response.data.username}, loadMarkers);
                 }
             }
         );
@@ -116,12 +115,14 @@
      */
     canvasController.$inject = ['$scope', '$location', '$mdDialog', '$timeout', 'canvasService', 'socketService', 'menuService'];
     function canvasController($scope, $location, $mdDialog, $timeout, canvasService, socketService, menuService){
-        let floor = {};
 
         $scope.toggleLeft = menuService.toggleLeft('left');
-        $scope.isOpen = false;
+
+        // $scope.isOpen = false;
+
         $scope.header = {
-            location: sessionStorage.getItem('location')
+            location: sessionStorage.getItem('location'),
+            name: ''
         };
 
         $scope.grid = {
@@ -129,52 +130,155 @@
             gridMessage: 'On'
         };
 
+        $scope.anchors = {
+            showAnchors: true,
+            anchorsMessage: 'On'
+        };
+
+        $scope.cameras = {
+            showCameras: true,
+            camerasMessage: 'On'
+        };
+
+        $scope.radius = {
+            showRadius: true,
+            radiusMessage: 'On'
+        };
+
+        $scope.drawing = {
+            showDrawing: false,
+            drawingMessage: 'Off'
+        };
+
         $scope.speedDial = {
             isOpen: false,
             selectedDirection: 'left',
             mode: 'md-scale',
             fullscreen: false,
-            gridSpacing: 0
+            gridSpacing: 0,
+        };
+
+        $scope.gridSpacing = 0;
+
+        $scope.floors = {
+            defaultFloor: 1
         };
 
         let canvas = document.querySelector('#canvas-id');
         let context = canvas.getContext('2d');
 
-        $scope.$watch('speedDial.gridSpacing', function (newValue) {
-            context.clearRect(15, 15, canvas.width, canvas.height);
-            updateCanvas(canvas, context, floor.image);
+        $scope.$watch('gridSpacing', function (newValue) {
+            if (socketService.floor.mapResult !== undefined) {
+                socketService.floor.mapResult.map_spacing = newValue;
+                context.clearRect(15, 15, canvas.width, canvas.height);
+                updateCanvas(canvas, context, socketService.floor.image);
 
-            if (floor.width !== undefined) {
-                //drawing vertical
-                drawDashedLine(canvas, canvas.height, [5, 5], newValue, floor.width, 'vertical');
-                //drawing horizontal lines
-                drawDashedLine(canvas, canvas.width, [5, 5], newValue, floor.width, 'horizontal');
-                //drawing images
-                drawIcon(floor.anchorsResult, floor.anchorImage, floor.width, canvas);
-                //draw cameras
-                drawIcon(floor.camerasResult, floor.cameraImage, floor.width, canvas);
+                if (socketService.floor.mapResult.map_width !== undefined) {
+                    //drawing vertical
+                    drawDashedLine(canvas, context, canvas.height, [5, 5], newValue, socketService.floor.mapResult.map_width, 'vertical');
+                    //drawing horizontal lines
+                    drawDashedLine(canvas, context, canvas.width, [5, 5], newValue, socketService.floor.mapResult.map_width, 'horizontal');
+                    //drawing images
+                    if ($scope.anchors.showAnchors)
+                        drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
+                    //draw cameras
+                    if ($scope.cameras.showCameras)
+                        drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
+                }
             }
         });
 
         $scope.$watch('grid.showGrid', function (newValue) {
-            context.clearRect(15, 15, canvas.width, canvas.height);
-            updateCanvas(canvas, context, floor.image);
+            if (socketService.floor.mapResult !== undefined) {
+                context.clearRect(15, 15, canvas.width, canvas.height);
+                updateCanvas(canvas, context, socketService.floor.image);
 
-            if (!newValue){
-                //drawing images
-                drawIcon(floor.anchorsResult, floor.anchorImage, floor.width, canvas);
-                //draw cameras
-                drawIcon(floor.camerasResult, floor.cameraImage, floor.width, canvas);
-            }else {
-                if (floor.width !== undefined) {
-                    //drawing vertical
-                    drawDashedLine(canvas, canvas.height, [5, 5], floor.spacing, floor.width, 'vertical');
-                    //drawing horizontal lines
-                    drawDashedLine(canvas, canvas.width, [5, 5], floor.spacing, floor.width, 'horizontal');
-                    //drawing images
-                    drawIcon(floor.anchorsResult, floor.anchorImage, floor.width, canvas);
+                if (!newValue) {
+                    if (!$scope.drawing.showDrawing) {
+                        //drawing anchors
+                        drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
+                        //draw cameras
+                        drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
+                    }
+                } else {
+                    if (socketService.floor.mapResult.map_width !== undefined) {
+                        //drawing vertical
+                        drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
+                        //drawing horizontal lines
+                        drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
+                        //drawing images
+                        if ($scope.anchors.showAnchors)
+                            drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
+                        //draw cameras
+                        if ($scope.cameras.showCameras)
+                            drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
+                    }
+                }
+            }
+        });
+
+        $scope.$watch('anchors.showAnchors', function (newValue) {
+            if (socketService.floor.mapResult !== undefined) {
+                context.clearRect(15, 15, canvas.width, canvas.height);
+                updateCanvas(canvas, context, socketService.floor.image);
+
+                if (!newValue) {
+                    if ($scope.grid.showGrid) {
+                        //drawing vertical
+                        drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
+                        //drawing horizontal lines
+                        drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
+                    }
                     //draw cameras
-                    drawIcon(floor.camerasResult, floor.cameraImage, floor.width, canvas);
+                    if ($scope.cameras.showCameras)
+                        drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
+                } else {
+                    if (socketService.floor.mapResult.map_width !== undefined) {
+                        if ($scope.grid.showGrid) {
+                            //drawing vertical
+                            drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
+                            //drawing horizontal lines
+                            drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
+                        }
+                        //drawing images
+                        drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
+                        //draw cameras
+                        if ($scope.cameras.showCameras)
+                            drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
+                    }
+                }
+            }
+        });
+
+        $scope.$watch('cameras.showCameras', function (newValue) {
+            if (socketService.floor.mapResult !== undefined) {
+                context.clearRect(15, 15, canvas.width, canvas.height);
+                updateCanvas(canvas, context, socketService.floor.image);
+
+                if (!newValue) {
+                    if ($scope.grid.showGrid) {
+                        //drawing vertical
+                        drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
+                        //drawing horizontal lines
+                        drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
+                    }
+                    //draw cameras
+                    if ($scope.anchors.showAnchors)
+                        drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
+                } else {
+                    if (socketService.floor.mapResult.map_width !== undefined) {
+                        if ($scope.grid.showGrid) {
+                            //drawing vertical
+                            drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
+                            //drawing horizontal lines
+                            drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
+                        }
+                        //drawing images
+                        if ($scope.anchors.showAnchors)
+                            drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
+                        //draw cameras
+                        drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
+                    }
                 }
             }
         });
@@ -183,88 +287,137 @@
             if (newValue) {
                 openFullScreen(document.querySelector('#canvas-container'));
                 $scope.speedDial.fullscreen = false;
-                // $scope.$watch();
             }
         });
 
-        socketService.getSocket().then(function (socket) {
-            socket.send(encodeRequest('get_floor_info', {location: sessionStorage.getItem('location'), floor: 'floor 1'}));
-            socket.send(encodeRequest('get_anchors', {floor: 'floor 1'}));
-            socket.send(encodeRequest('get_cameras', {floor: 'floor 1'}));
-
-            socket.onmessage = function (message) {
-                let parsedMessage = JSON.parse(message.data);
-                let result = parsedMessage.result;
-
-                switch (parsedMessage.action) {
-                    case 'get_floor_info': {
-                        $scope.header.name = result[0].name;
-                        floor.spacing = result[0].map_spacing;
-                        floor.width = result[0].map_width;
-                        $scope.speedDial.gridSpacing = result[0].map_spacing;
-
-                        $scope.$apply();
-
-                        let img = new Image();
-                        img.src = imagePath + 'floors/' + result[0].image_map;
-
-                        img.onload = function() {
-                            floor.image = img;
-                            canvas.width = this.naturalWidth;
-                            canvas.height = this.naturalHeight;
-
-                            //drawing map border
-                            updateCanvas(canvas, context, img);
-
-                            if ($scope.grid) {
-                                //drawing vertical
-                                drawDashedLine(canvas, canvas.height, [5, 5], floor.spacing, floor.width, 'vertical');
-
-                                //drawing horizontal lines
-                                drawDashedLine(canvas, canvas.width, [5, 5], floor.spacing, floor.width, 'horizontal')
-                            }
-                            //TODO load anchors
-                        };
-                        break;
-                    }
-                    case 'get_anchors':{
-                        floor.anchorsResult = result;
-
-                        let img = new Image();
-                        img.src = imagePath + 'ancora-icon.png';
-
-                        floor.anchorImage = img;
-
-                        img.onload = function () {
-                            drawIcon(result, img, floor.width, canvas);
-                        };
-                        break;
-                    }
-                    case 'get_cameras':{
-                        floor.camerasResult = result;
-
-                        let img = new Image();
-                        img.src = imagePath + 'icons/camera.png';
-
-                        floor.cameraImage = img;
-
-                        img.onload = function () {
-                          drawIcon(result, img, floor.width, canvas);
-                        };
-
-                        break;
-                    }
-                    case 'no_action':
-                        console.log('No action sended');
-                        break;
-                    default:
-                        console.log('No action received');
-                }
-                $scope.$apply();
-            };
-
+        $scope.$watch('floors.defaultFloor', function (newValue) {
+            socketService.floor.defaultFloor = $scope.floors.defaultFloor;
+            if($scope.floors.result !== undefined) {
+                socketService.sendMessage('get_floor_info', {location: sessionStorage.getItem('location'), floor: $scope.floors.defaultFloor}, showFloorMap);
+                socketService.sendMessage('get_anchors', {floor: $scope.floors.defaultFloor}, showAnchors);
+                socketService.sendMessage('get_cameras', {floor: $scope.floors.defaultFloor}, showCameras);
+            }
         });
 
+        $scope.$watch('radius.showRadisu', function (newValue) {
+            if (socketService.floor.mapResult !== undefined) {
+                context.clearRect(15, 15, canvas.width, canvas.height);
+                updateCanvas(canvas, context, socketService.floor.image);
+
+                if (!newValue) {
+                    if ($scope.grid.showGrid) {
+                        //drawing vertical
+                        drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
+                        //drawing horizontal lines
+                        drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
+                    }
+                    //draw cameras
+                    if ($scope.anchors.showAnchors)
+                        drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
+                    if ($scope.cameras.showCameras)
+                        drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
+                } else {
+                    if (socketService.floor.mapResult.map_width !== undefined) {
+                        if ($scope.grid.showGrid) {
+                            //drawing vertical
+                            drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
+                            //drawing horizontal lines
+                            drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
+                        }
+                        //drawing images
+                        if ($scope.anchors.showAnchors)
+                            drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
+
+                        //draw cameras
+                        if ($scope.cameras.showCameras)
+                         drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
+                    }
+                }
+            }
+        });
+
+        $scope.$watch('drawing.showDrawing', function (newValue) {
+            context.clearRect(15, 15, canvas.width, canvas.height);
+            updateCanvas(canvas, context, socketService.floor.image);
+
+            if (!newValue){
+                $scope.grid.showGrid = true;
+                $scope.anchors.showAnchors = true;
+                $scope.cameras.showCameras = true;
+            }else{
+                $scope.grid.showGrid = false;
+                $scope.anchors.showAnchors = false;
+                $scope.cameras.showCameras = false;
+            }
+        });
+
+        let showFloorMap = function(message){
+
+            $scope.header.name = message.result[0].name;
+            $scope.gridSpacing = message.result[0].map_spacing;
+
+            socketService.floor.mapResult = message.result[0];
+
+            let img = new Image();
+            img.src = imagePath + 'floors/' + message.result[0].image_map;
+
+            img.onload = function() {
+                socketService.floor.image = img;
+                canvas.width = this.naturalWidth;
+                canvas.height = this.naturalHeight;
+
+                //updating the canvas and drawing border
+                updateCanvas(canvas, context, img);
+
+                if ($scope.grid.showGrid) {
+                    //drawing vertical
+                    drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
+
+                    //drawing horizontal lines
+                    drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal')
+                }
+            };
+        };
+
+        let showAnchors = function(message){
+            socketService.floor.anchorsResult = message.result;
+
+            let img = new Image();
+            img.src = imagePath + 'ancora-icon.png';
+
+            socketService.floor.anchorImage = img;
+
+            img.onload = function () {
+                drawIcon(message.result, context, img, socketService.floor.mapResult.map_width, canvas);
+            };
+        };
+
+        let showCameras = function(message){
+            socketService.floor.camerasResult = message.result;
+
+            let img = new Image();
+            img.src = imagePath + 'icons/camera.png';
+
+            socketService.floor.cameraImage = img;
+
+            img.onload = function () {
+              drawIcon(message.result, context, img, socketService.floor.mapResult.map_width, canvas);
+            };
+        };
+
+        let getFloors = function(message){
+          $scope.floors.result = message.result;
+          $scope.floors.defaultFloor = message.result[0].name;
+        };
+
+        socketService.sendMessage('get_floor_info', {location: sessionStorage.getItem('location'), floor: 'floor 1'}, showFloorMap);
+        socketService.sendMessage('get_anchors', {floor: 'floor 1'}, showAnchors);
+        socketService.sendMessage('get_cameras', {floor: 'floor 1'}, showCameras);
+        socketService.sendMessage('get_floors', {location: sessionStorage.getItem('location')}, getFloors);
+    }
+
+    menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$timeout', 'menuService', 'socketService'];
+    function menuController($scope, $mdDialog, $mdEditDialog, $location, $timeout, menuService, socketService){
         $scope.registry = function(){
             $mdDialog.show({
                 templateUrl: '../components/change-registry.html',
@@ -282,60 +435,234 @@
                         resultClass: ''
                     };
 
-                    socketService.getSocket().then(function (socket) {
-                        socket.send(encodeRequest('get_tags', {location: sessionStorage.getItem('location')}));
-                        let parsedMessage = null;
+                    let getTags = function(message){
+                        $scope.registry.tags = message.result;
+                    };
 
-                        socket.onmessage = function (message) {
-                            parsedMessage = JSON.parse(message.data);
-
-                            if (parsedMessage.action === 'get_tags')
-                                $scope.registry.tags = parsedMessage.result;
-                        };
-
-                        $scope.changeTagName = function (form) {
-                            form.$submitted = true;
-                            console.log('changing name');
-                            console.log($scope.registry.tag);
-                            if ($scope.registry.tag != null && $scope.registry.name !== ''){
-                                socket.send(encodeRequest('change_tag_name', {tag: $scope.registry.tag, name: $scope.registry.name}));
-
-                                socket.onmessage = function (message) {
-                                    parsedMessage = JSON.parse(message.data);
-
-                                    if (parsedMessage.action === 'change_tag_name'){
-                                        if (parsedMessage.result === 1 || parsedMessage.result === 0) {
-                                            $scope.registry.resultOk = true;
-                                            $scope.registry.resultError = false;
-                                            $scope.registry.fieldsEmpty = false;
-                                            $scope.registry.resultClass = 'background-green';
-                                            $timeout(function () {
-                                                $mdDialog.hide();
-                                            }, 2000)
-                                        }else if (parsedMessage.result === 0) {
-                                            $scope.registry.resultOk = false;
-                                            $scope.registry.resultError = true;
-                                            $scope.registry.fieldsEmpty = false;
-                                            $scope.registry.resultClass = 'background-red';
-                                        }
-                                    }
-
-                                    $scope.$apply();
-                                }
-                            }else {
-                                $scope.registry.resultOk = false;
-                                $scope.registry.resultError = false;
-                                $scope.registry.fieldsEmpty = true;
-                                $scope.registry.resultClass = 'background-red';
-                            }
+                    let sendTagChange = function(message){
+                        if (message.result === 1 || message.result === 0) {
+                            $scope.registry.resultOk = true;
+                            $scope.registry.resultError = false;
+                            $scope.registry.fieldsEmpty = false;
+                            $scope.registry.resultClass = 'background-green';
+                            $timeout(function () {
+                                $mdDialog.hide();
+                            }, 2000)
+                        }else if (message.result === 0) {
+                            $scope.registry.resultOk = false;
+                            $scope.registry.resultError = true;
+                            $scope.registry.fieldsEmpty = false;
+                            $scope.registry.resultClass = 'background-red';
                         }
-                    });
+
+                        $scope.$apply();
+                    };
+
+                    $scope.changeTagName = function (form) {
+                        form.$submitted = true;
+                        if ($scope.registry.tag != null && $scope.registry.name !== ''){
+                            socketService.sendMessage('change_tag_name', {tag: $scope.registry.tag, name: $scope.registry.name}, sendTagChange)
+                        }else {
+                            $scope.registry.resultClass = 'background-red';
+                        }
+                    };
+
+                    socketService.sendMessage('get_tags', {location: sessionStorage.getItem('location')}, getTags);
 
                     $scope.hide = function () {
-                       $mdDialog.hide();
+                        $mdDialog.hide();
                     }
                 }]
             })
+        };
+
+        $scope.showAnchorsTable = function() {
+            $mdDialog.show({
+                templateUrl        : '../components/anchors.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
+                clickOutsideToClose: true,
+                controller         : ['$scope', function ($scope) {
+                    $scope.selected = [];
+                    $scope.limitOptions = [5, 10, 15];
+
+                    $scope.query = {
+                        order: 'name',
+                        limit: 5,
+                        page: 1
+                    };
+
+                    $scope.anchors = [];
+
+                    $scope.editCell = function(event, anchor, anchorName) {
+
+                        event.stopPropagation();
+
+                        let editCell = {
+                            modelValue: anchor[anchorName],
+                            save: function (input) {
+                                input.$invalid = true;
+                                anchor[anchorName] = input.$modelValue;
+                                socketService.sendMessage('change_anchor_field', {anchor_id: anchor.id, anchor_field: anchorName, field_value: input.$modelValue}, function () {})
+                            },
+                            targetEvent: event,
+                            title: 'Inserisci un valore',
+                            validators:{
+                                'md-maxlength': 30
+                            }
+                        };
+
+                        let promise = $mdEditDialog.large(editCell);
+
+                        promise.then(function (ctrl) {
+                            let input = ctrl.getInput();
+                            // console.log(input);
+
+                            input.$viewChangeListeners.push(function () {
+                                console.log($scope.anchors);
+                                input.$setValidity('test', input.$modelValue !== 'test');
+                            });
+                        })
+                    };
+
+                    function getAnchors(message) {
+                        $scope.anchors = message.result;
+                    }
+
+                    socketService.sendMessage('get_anchors', {floor: 'floor 1'}, getAnchors);
+
+                    $scope.hideAnchors = function () {
+                        $mdDialog.hide();
+                    };
+                }]
+            });
+        };
+
+        $scope.floorUpdate = function(){
+            $mdDialog.show({
+                templateUrl: '../components/floor-settings.html',
+                parent: angular.element(document.body),
+                targetEvent: event,
+                clickOutsideToClose: true,
+                controller: ['$scope', function ($scope) {
+                    $scope.selected = [];
+                    $scope.limitOptions = [5, 10, 15];
+
+                    $scope.query = {
+                        order: 'name',
+                        limit: 5,
+                        page: 1
+                    };
+
+                    $scope.floors = [];
+
+                    $scope.editCell = function(event, floor, floorName) {
+
+                        event.stopPropagation();
+
+                        let editCell = {
+                            modelValue: floor[floorName],
+                            save: function (input) {
+                                input.$invalid = true;
+                                floor[floorName] = input.$modelValue;
+                                socketService.sendMessage('change_floor_field', {floor_id: floor.id, floor_field: floorName, field_value: input.$modelValue}, function () {})
+                            },
+                            targetEvent: event,
+                            title: 'Inserisci un valore',
+                            validators:{
+                                'md-maxlength': 30
+                            }
+                        };
+
+                        let promise = $mdEditDialog.large(editCell);
+
+                        promise.then(function (ctrl) {
+                            let input = ctrl.getInput();
+
+                            input.$viewChangeListeners.push(function () {
+                                console.log($scope.anchors);
+                                input.$setValidity('test', input.$modelValue !== 'test');
+                            });
+                        })
+                    };
+
+                    let getFloors = function(message){
+                        console.log(message.result)
+                        $scope.floors = message.result;
+                    };
+
+                    socketService.sendMessage('get_floors', {location: sessionStorage.getItem('location')}, getFloors);
+
+                    $scope.hide = function () {
+                        $mdDialog.hide();
+                    }
+                }]
+            })
+        };
+
+        $scope.changePassword = function () {
+            $mdDialog.show({
+                templateUrl        : '../components/change-password.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
+                clickOutsideToClose: true,
+                controller         : ['$scope', function ($scope) {
+                    $scope.changePassword = {
+                        oldPassword: '',
+                        newPassword: '',
+                        reNewPassword: '',
+                        resultClass: '',
+                        resultOk: false,
+                        wrongOld: false,
+                        resultError: false
+                    };
+
+                    $scope.sendPassword = function (form) {
+                        form.$submitted = true;
+
+                        if ($scope.changePassword.newPassword !== $scope.changePassword.reNewPassword){
+                            $scope.changePassword.resultClass = 'background-red';
+                            $scope.changePassword.resultError = true;
+                            $scope.changePassword.resultOk    = false;
+                            $scope.changePassword.wrongOld = false;
+                        }else{
+                            if (form.$valid ) {
+                                let promise = menuService.sendPassword($scope.changePassword.oldPassword, $scope.changePassword.newPassword);
+
+                                promise.then(
+                                    function (response) {
+                                        if (response.data.response) {
+                                            if (response.data.result === 1 || response.data.result === 0) {
+                                                $scope.changePassword.resultClass = 'background-green';
+                                                $scope.changePassword.resultOk    = true;
+                                                $scope.changePassword.resultError = false;
+                                                $scope.changePassword.wrongOld    = false;
+                                                $timeout(function () {
+                                                    $mdDialog.hide();
+                                                }, 2000)
+                                            }
+                                        } else {
+                                            if ($scope.changePassword.oldPassword !== '' && $scope.changePassword.newPassword !== '' &&
+                                                $scope.changePassword.reNewPassword !== '') {
+                                                $scope.changePassword.resultOk    = false;
+                                                $scope.changePassword.resultError = false;
+                                                $scope.changePassword.wrongOld    = true;
+                                                $scope.changePassword.resultClass = 'background-red';
+                                            }
+                                        }
+                                    }
+                                )
+                            }else {
+                                $scope.changePassword.resultClass = 'background-red';
+                            }
+                        }
+                    };
+
+                    $scope.hide = function () {
+                        $mdDialog.hide();
+                    }
+                }]
+            });
         };
 
         //function that makes the logout of the user
@@ -349,6 +676,16 @@
                 }
             )
         };
+    }
+
+    registryController.$inject = ['$scope', '$mdDialog', '$timeout', 'socketService'];
+    function registryController($scope, $mdDialog, $timeout, socketService){
+
+    }
+
+    anchorsController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', 'socketService'];
+    function anchorsController($scope, $mdDialog, $mdEditDialog, socketService){
+
     }
 
     /**

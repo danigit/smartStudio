@@ -1,39 +1,28 @@
 <div>
     <div layout="column"  class="height-100-vh">
         <!--setting button-->
-        <div class="top-corner">
+        <div class="top-corner" ng-show="drawing.showDrawing">
             <md-fab-speed-dial md-open="isOpen" md-direction="{{speedDial.selectedDirection}}"
                                ng-class="speedDial.mode">
                 <md-fab-trigger>
                     <md-button aria-label="menu" class="md-fab background-darkcyan">
-                        <img src="../img/setting.png" class="setting-image" alt="Modifica impostazioni pagina" title="Modifica impostazioni pagina">
+                        <img src="../img/edit-icon.png" class="setting-image" alt="Modifica impostazioni pagina" title="Modifica impostazioni pagina">
                     </md-button>
                 </md-fab-trigger>
 
                 <md-fab-actions>
-                    <div layout="column" class="padding-lr-15-px">
-                        <div flex="100" layout layout-align="center center">
-                            <span class="font-medium color-white">Spaziatura griglia: <b>{{speedDial.gridSpacing}}</b></span>
-                        </div>
-                        <md-slider-container flex="100">
-                            <md-slider md-discrete ng-model="speedDial.gridSpacing" min="10" max="1000" step="10" aria-label="speedDial.gridSpacing" class="md-primary"></md-slider>
-                        </md-slider-container>
-                    </div>
-                    <div layout="column" class="padding-lr-15-px border-right-1-darkcyan" layout-align="center center">
-                        <div flex="100" layout layout-align="center center">
-                            <span class="font-medium color-white" ng-show="grid.showGrid">Griglia: <b class="color-green">ON</b></span>
-                            <span class="font-medium color-white" ng-show="!grid.showGrid">Griglia: <b class="color-red">OFF</b></span>
-                        </div>
-                        <md-switch class="md-primary margin-none margin-top-10" ng-change="switchChanged" md-no-ink aria-label="Switch No Ink" ng-model="grid.showGrid">
-                        </md-switch>
-                    </div>
-                    <div layout="column" class="padding-lr-15-px border-right-1-darkcyan" layout-align="center center">
-                        <div flex="100" layout layout-align="center center">
-                            <span class="font-medium color-white">Fullscreen</span>
-                        </div>
-                        <md-switch class="md-primary margin-none margin-top-10" ng-change="switchChanged" md-no-ink aria-label="Switch No Ink" ng-model="speedDial.fullscreen">
-                        </md-switch>
-                    </div>
+                    <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
+                        <img src="../img/vertical-line.png" class="width-100 height-100" alt="Disegna riga verticale" title="Disegna riga verticale">
+                    </md-button>
+                    <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
+                        <img src="../img/horizontal-line.png" class="width-100 height-100" alt="Disegna riga orizontale" title="Disegna riga orizontale">
+                    </md-button>
+                    <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
+                        <img src="../img/inclined-line.png" class="width-100 height-100" alt="Disegna riga inclinata" title="Disegna riga inclinata">
+                    </md-button>
+                    <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
+                        <img src="../img/free-draw.png" class="width-100 height-100" alt="Disegna riga inclinata" title="Disegna riga inclinata">
+                    </md-button>
                 </md-fab-actions>
             </md-fab-speed-dial>
         </div>
@@ -72,17 +61,91 @@
                         <div layout="column" layout-align="center center">
                             <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
                         </div>
-                        <div layout="column">
-                            <md-list>
-                                <md-list-item ng-click="registry()"><p>Anagrafica</p><img src="../img/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click=""><p>Ancore</p><img src="../img/ancora-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click=""><p>Seleziona piano</p><img src="../img/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                        <div layout="column" id="menu-container">
+                            <md-list ng-controller="menuController">
+                                <md-list-item ng-click="registry($$event)"><p>Aggiorna WeTag</p><img src="../img/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="showAnchorsTable()"><p>Tabella Ancore</p><img src="../img/ancora-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="floorUpdate()"><p>Tabella piani</p><img src="../img/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../img/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click=""><p>Storico</p><img src="../img/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click=""><p>Allarmi attivi</p><img src="../img/alarm-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click=""><p>Cambia password</p><img src="../img/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="changePassword()"><p>Cambia password</p><img src="../img/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click="logout()"><p>Logout</p><img src="../img/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
                             </md-list>
+
+                            <md-subheader class="background-lightcyan color-black margin-bottom-10-px margin-top-10-px">Azzioni immediate</md-subheader>
+
+                            <div id="change-floor-container" layout="column" class="padding-10-px" layout-align="center center">
+                                <md-input-container class="margin-bottom-0 margin-top-10">
+                                    <label>Selezione piano</label>
+                                    <md-select ng-model="floors.defaultFloor">
+                                        <md-option ng-repeat="floor in floors.result" ng-value="floor.name">
+                                            {{floor.name}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                            <div id="change-grid-container" layout="column" class="padding-10-px">
+                                <div flex="100" layout layout-align="center center">
+                                    <md-subheader class="padding-0 width-100 zindex-0">Spaziatura griglia: <b>{{speedDial.gridSpacing}}</b><md-subheader>
+                                </div>
+                                <md-slider-container flex="100">
+                                    <md-slider md-discrete ng-model="gridSpacing" min="10" max="1000" step="10" aria-label="speedDial.gridSpacing" class="md-primary"></md-slider>
+                                </md-slider-container>
+                            </div>
+                            <div layout="row" layout-align="center center">
+                                <div id="grid-on-off-container" layout="column" class="padding-10-px width-50" layout-align="center center">
+                                    <div flex="100" layout layout-align="center center">
+                                        <md-subheader class="padding-0" ng-show="grid.showGrid">Griglia: <b class="color-green">ON</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="!grid.showGrid">Griglia: <b class="color-red">OFF</b></md-subheader>
+                                    </div>
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="" ng-model="grid.showGrid">
+                                    </md-switch>
+                                </div>
+                                <div id="fullscreen-on-off-container" layout="column" class="padding-10-px width-50" layout-align="center center">
+                                    <div flex="100" layout layout-align="center center">
+                                        <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b></md-subheader>
+                                    </div>
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Switch No Ink" ng-model="speedDial.fullscreen">
+                                    </md-switch>
+                                </div>
+                            </div>
+                            <div layout="row" layout-align="center center">
+                                <div id="anchors-on-off-container" layout="column" class="padding-10-px width-50" layout-align="center center">
+                                    <div flex="100" layout layout-align="center center">
+                                        <md-subheader class="padding-0" ng-show="anchors.showAnchors">Anchors: <b class="color-green">ON</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="!anchors.showAnchors">Anchors: <b class="color-red">OFF</b></md-subheader>
+                                    </div>
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="" ng-model="anchors.showAnchors">
+                                    </md-switch>
+                                </div>
+                                <div id="cameras-on-off-container" layout="column" class="padding-10-px width-50" layout-align="center center">
+                                    <div flex="100" layout layout-align="center center">
+                                        <md-subheader class="padding-0" ng-show="cameras.showCameras">Cameras: <b class="color-green">ON</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="!cameras.showCameras">Cameras: <b class="color-red">OFF</b></md-subheader>
+                                    </div>
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="" ng-model="cameras.showCameras">
+                                    </md-switch>
+                                </div>
+                            </div>
+                            <div layout="row" layout-align="center center">
+                                <!--<div id="radius-on-off-container" layout="column" class="padding-10-px width-50" layout-align="center center">-->
+                                    <!--<div flex="100" layout layout-align="center center">-->
+                                        <!--<md-subheader class="padding-0" ng-show="radius.showRadius">Radius: <b class="color-green">ON</b></md-subheader>-->
+                                        <!--<md-subheader class="padding-0" ng-show="!anchors.showRadius">Radius: <b class="color-red">OFF</b></md-subheader>-->
+                                    <!--</div>-->
+                                    <!--<md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="" ng-model="radius.showRadius">-->
+                                    <!--</md-switch>-->
+                                <!--</div>-->
+                                <div id="drawing-on-off-container" layout="column" class="padding-10-px width-100" layout-align="center center">
+                                    <div flex="100" layout layout-align="center center">
+                                        <md-subheader class="padding-0" ng-show="drawing.showDrawing">Modalita' disegna: <b class="color-green">ON</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="!drawing.showDrawing">Modalita' disegna: <b class="color-red">OFF</b></md-subheader>
+                                    </div>
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="" ng-model="drawing.showDrawing">
+                                    </md-switch>
+                                </div>
+                            </div>
                         </div>
                     </md-content>
                 </md-sidenav>

@@ -24,11 +24,15 @@ class Test{
      */
     function test_function($function_name){
         switch ($function_name) {
-            case 'register': var_dump($this->conn->register('ds.acconto@gmail.com', 'dani'));
+            case 'register': var_dump($this->conn->register('dani', 'da'));
                 break;
             case 'login': var_dump($this->conn->login('danis', 'dani'));
                 break;
-            case 'get_floor_image': var_dump($this->conn->get_floor_image('Ospedale Bolzano', 'floor 1'));
+            case 'get_floor_image': var_dump($this->conn->get_floor_info('Ospedale Bolzano', 'floor 1'));
+                break;
+            case 'get_anchors': var_dump($this->conn->get_anchors('floor 1'));
+                break;
+            case 'change_password': var_dump($this->conn->change_password('da', 'dani'));
                 break;
             default: var_dump('Funzione non esistente');
         }
@@ -36,4 +40,4 @@ class Test{
 }
 
 $test = new Test();
-$test->test_function('get_floor_image');
+$test->test_function('change_password');

@@ -4,34 +4,29 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="27">
+          <list size="22">
             <item index="0" class="java.lang.String" itemvalue="layout" />
             <item index="1" class="java.lang.String" itemvalue="layout-align" />
-            <item index="2" class="java.lang.String" itemvalue="layout-xs" />
-            <item index="3" class="java.lang.String" itemvalue="flex" />
-            <item index="4" class="java.lang.String" itemvalue="flex-gt-sm" />
-            <item index="5" class="java.lang.String" itemvalue="layout-lg" />
-            <item index="6" class="java.lang.String" itemvalue="layout-sm" />
-            <item index="7" class="java.lang.String" itemvalue="layout-gt-xs" />
-            <item index="8" class="java.lang.String" itemvalue="flex-sm" />
-            <item index="9" class="java.lang.String" itemvalue="flex-xs" />
-            <item index="10" class="java.lang.String" itemvalue="flex-lg" />
-            <item index="11" class="java.lang.String" itemvalue="flex-xl" />
-            <item index="12" class="java.lang.String" itemvalue="md-component-id" />
-            <item index="13" class="java.lang.String" itemvalue="md-disable-backdrop" />
-            <item index="14" class="java.lang.String" itemvalue="layout-margin" />
-            <item index="15" class="java.lang.String" itemvalue="center" />
-            <item index="16" class="java.lang.String" itemvalue="zoom" />
-            <item index="17" class="java.lang.String" itemvalue="mape-type-id" />
-            <item index="18" class="java.lang.String" itemvalue="position" />
-            <item index="19" class="java.lang.String" itemvalue="on-click" />
-            <item index="20" class="java.lang.String" itemvalue="md-open" />
-            <item index="21" class="java.lang.String" itemvalue="md-direction" />
-            <item index="22" class="java.lang.String" itemvalue="ng-model" />
-            <item index="23" class="java.lang.String" itemvalue="md-on-open" />
-            <item index="24" class="java.lang.String" itemvalue="ng-change" />
-            <item index="25" class="java.lang.String" itemvalue="value" />
-            <item index="26" class="java.lang.String" itemvalue="md-no-float" />
+            <item index="2" class="java.lang.String" itemvalue="md-numeric" />
+            <item index="3" class="java.lang.String" itemvalue="md-no-float" />
+            <item index="4" class="java.lang.String" itemvalue="md-open" />
+            <item index="5" class="java.lang.String" itemvalue="md-direction" />
+            <item index="6" class="java.lang.String" itemvalue="md-row-select" />
+            <item index="7" class="java.lang.String" itemvalue="multiple" />
+            <item index="8" class="java.lang.String" itemvalue="ng-model" />
+            <item index="9" class="java.lang.String" itemvalue="md-progress" />
+            <item index="10" class="java.lang.String" itemvalue="md-order" />
+            <item index="11" class="java.lang.String" itemvalue="md-select" />
+            <item index="12" class="java.lang.String" itemvalue="md-on-select" />
+            <item index="13" class="java.lang.String" itemvalue="md-auto-select" />
+            <item index="14" class="java.lang.String" itemvalue="md-limit" />
+            <item index="15" class="java.lang.String" itemvalue="md-limit-options" />
+            <item index="16" class="java.lang.String" itemvalue="md-page" />
+            <item index="17" class="java.lang.String" itemvalue="md-total" />
+            <item index="18" class="java.lang.String" itemvalue="md-on-paginate" />
+            <item index="19" class="java.lang.String" itemvalue="md-component-id" />
+            <item index="20" class="java.lang.String" itemvalue="md-disable-backdrop" />
+            <item index="21" class="java.lang.String" itemvalue="ng-change" />
           </list>
         </value>
       </option>
@@ -47,7 +42,7 @@
             <item index="3" class="java.lang.String" itemvalue="noscript" />
             <item index="4" class="java.lang.String" itemvalue="embed" />
             <item index="5" class="java.lang.String" itemvalue="script" />
-            <item index="6" class="java.lang.String" itemvalue="md-fab-trigger" />
+            <item index="6" class="java.lang.String" itemvalue="md-table-container" />
           </list>
         </value>
       </option>

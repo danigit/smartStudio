@@ -9,6 +9,10 @@ DIMENSIONS
     height: 90%;
 }
 
+.height-100{
+    height: 100%;
+}
+
 .parent-size{
     width: 100%;
     height: 100%;
@@ -22,9 +26,13 @@ DIMENSIONS
     width: 5%;
 }
 
+.width-300-px{
+    width: 300px;
+}
 
-
-
+.width-50{
+    width: 50%;
+}
 
 
 
@@ -126,7 +134,11 @@ MARGINS
     margin-top: 10% !important;
 }
 
-.margint-top-5-px{
+.margin-top-10-px{
+    margin-top: 10px!important;
+}
+
+.margin-top-5-px{
     margin-top: 5px!important;
 }
 
@@ -181,7 +193,9 @@ PADDING
     padding: 5px 70px 5px 70px;
 }
 
-
+.padding-0{
+    padding: 0!important;
+}
 
 /******************************************************************
 BORDER
@@ -214,6 +228,9 @@ BORDER
     border-right: 1px solid #0093c4;
 }
 
+.border-3-darkblue{
+    border: 3px solid #0093c4!important;
+}
 
 
 
@@ -286,6 +303,9 @@ OTHER
     z-index: 100!important;
 }
 
+.zindex-0{
+    z-index: 0!important;
+}
 
 
 /******************************************************************
@@ -319,7 +339,7 @@ BACKGROUND
 }
 
 .background-transparent-white{
-    background-color: #ffffff5c;
+    background-color: #ffffff5c!important;
 }
 
 .background-lightottanio{
@@ -350,6 +370,9 @@ BACKGROUND
     background-color: #E13044!important;
 }
 
+.background-lightcyan{
+    background-color: #4fc3f7!important;
+}
 
 /******************************************************************
 POSITION

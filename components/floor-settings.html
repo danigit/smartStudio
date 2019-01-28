@@ -1,0 +1,52 @@
+<div>
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="changePassword.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="../img/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="../img/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">AGGIORNAMENTO PIANO</h1>
+            </div>
+        </div>
+    </md-toolbar>
+    <!--end popup header-->
+
+    <!--popup content-->
+    <md-content class="popup-padding">
+        <div layout="column" layout-align="center center">
+            <md-table-container>
+                <table md-table md-row-select="options.rowSelection" multiple="true" ng-model="selected" md-progress="promise">
+                    <thead md-head md-order="query.order">
+                    <tr md-row>
+                        <th md-column ><span>id</span></th>
+                        <th md-column ><span>nome</span></th>
+                        <th md-column ><span>width</span></th>
+                        <th md-column ><span>spacing</span></th>
+                    </tr>
+                    </thead>
+                    <tbody md-body>
+                    <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true" ng-repeat="floor in floors">
+                        <td md-cell>{{floor.id}}</td>
+                        <td md-cell ng-click="editCell($event, floor, 'name')" ng-class="{'md-placeholder': !floor.name}">{{floor.name || 'Inserire nome'}}</td>
+                        <td md-cell ng-click="editCell($event, floor, 'width')" ng-class="{'md-placeholder': !floor.width}">{{floor.width || 'Inserire lunghezza'}}</td>
+                        <td md-cell ng-click="editCell($event, floor, 'spacing')" ng-class="{'md-placeholder': !floor.spacing}">{{floor.spacing || 'Inserire spaziatura tacche'}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
+
+            <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page" md-total="{{floors.length}}" md-on-paginate="getFloorsfloor()"></md-table-pagination>
+            <!--<div layout="row" layout-align="end end" class="width-100">-->
+            <!--<md-button class="md-primary" ng-click="saveAnchors()">Salva</md-button>-->
+            <!--<md-button class="md-primary" ng-click="hideAnchors()">Cancella</md-button>-->
+            <!--</div>-->
+        </div>
+    </md-content>
+    <!--end popup content-->
+</div>

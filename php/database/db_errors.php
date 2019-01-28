@@ -21,7 +21,8 @@ class db_errors
     public static $ERROR_ON_GETTING_MARKERS = 10;
     public static $ERROR_ON_GETTING_FLOOR_IMAGE = 11;
     public static $ERROR_ON_GETTING_TAGS = 12;
-    public static $ERROR_ON_UPDATING_TAG = 12;
+    public static $ERROR_ON_UPDATING_TAG = 13;
+    public static $ERROR_ON_CHANGING_PASSWORD_WRONG_OLD = 14;
 
     private $error;
 
@@ -78,6 +79,8 @@ class db_errors
                 return 'ERROR_ON_GETTING_TAGS';
             case 13:
                 return 'ERROR_ON_UPDATING_TAG';
+            case 14:
+                return 'ERROR_ON_CHANGING_PASSWORD_WRONG_OLD';
             default:
                 return 'UNKNOWN_ERROR';
         }

@@ -39,9 +39,9 @@ class Connection{
     function register($username, $password){
         $hash_code = password_hash($password, PASSWORD_BCRYPT);
 
-        $this->query = 'INSERT INTO user (username, password, name, role) VALUES (?, ?, ?, ?)';
+        $this->query = 'INSERT INTO user (username, password, email,  name, role) VALUES (?, ?, ?, ?, ?)';
 
-        $this->result = $this->execute_inserting($this->query, 'sssi', $username, $hash_code, 'dani', 1);
+        $this->result = $this->execute_inserting($this->query, 'ssssi', $username, $hash_code, 'dani@gmail.com', 'dani', 1);
 
         if ($this->result instanceof db_errors)
             return $this->result;
@@ -186,6 +186,41 @@ class Connection{
         return $this->result;
     }
 
+    function change_password($old_password, $new_password){
+        if(!isset($_SESSION))
+            session_start();
+
+        $username = $_SESSION['username'];
+
+        $this->query = 'SELECT password FROM user WHERE username = ?';
+        $statement = $this->execute_selecting($this->query, 's', $username);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+
+        $statement->bind_result($res_pass);
+        $fetch = $statement->fetch();
+
+        if (!($fetch && password_verify($old_password, $res_pass)))
+            return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD_WRONG_OLD);
+
+        $statement->close();
+
+        $hash_code = password_hash($new_password, PASSWORD_BCRYPT);
+
+        $this->query = "UPDATE user SET password = ? WHERE username = ?";
+
+        $statement = $this->execute_selecting($this->query, 'ss', $hash_code, $username);
+
+        if ($statement instanceof db_errors)
+            array_push($errors, 'db_error');
+        else if ($statement == false)
+            array_push($errors, 'false');
+
+        return $this->connection->affected_rows;
+    }
     /**
      * Function tha retrieve the markers from the database
      * @param $username
@@ -246,7 +281,7 @@ class Connection{
     }
 
     function get_anchors($floor){
-        $this->query = 'SELECT anchor.id, anchor.name, x_pos, y_pos, radius FROM anchor JOIN floor ON anchor.floor_id = floor.id WHERE floor.name = ?';
+        $this->query = 'SELECT anchor.id, anchor.name, x_pos, y_pos, z_pos, radius, ip, rssi_threshold, proximity FROM anchor JOIN floor ON anchor.floor_id = floor.id WHERE floor.name = ?';
 
         $statement = $this->execute_selecting($this->query, 's', $floor);
 
@@ -260,7 +295,7 @@ class Connection{
 
         while ($row = mysqli_fetch_assoc($this->result)) {
             $result_array[] = array('id' => $row['id'], 'name' => $row['name'], 'x_pos' => $row['x_pos'], "y_pos" => $row['y_pos'],
-                'radius' => $row['radius']);
+                'z_pos' => $row['z_pos'], 'radius' => $row['radius'], 'ip' => $row['ip'], 'rssi' => $row['rssi_threshold'], 'proximity' => $row['proximity']);
         }
 
         return $result_array;
@@ -310,10 +345,58 @@ class Connection{
         return $result_array;
     }
 
+    function get_floors($location){
+        $this->query = 'SELECT floor.id, floor.name, floor.map_width, floor.map_spacing FROM floor JOIN location ON floor.location_id = location.id WHERE location.name = ?';
+
+        $statement = $this->execute_selecting($this->query, 's', $location);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+
+        $this->result = $statement->get_result();
+        $result_array = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $result_array[] = array('id' => $row['id'], 'name' => $row['name'], 'width' => $row['map_width'], 'spacing' => $row['map_spacing']);
+        }
+
+        return $result_array;
+    }
+
     function change_tag_name($tag, $name){
 
         $this->query = "UPDATE tag SET name = ? WHERE id = ?";
         $statement = $this->execute_selecting($this->query, 'ss', $name, $tag);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_UPDATING_TAG);
+
+        $this->result =  $this->connection->affected_rows;
+
+        return $this->result;
+    }
+
+    function change_anchor_field($anchor_id, $anchor_field, $field_value){
+        $this->query = "UPDATE anchor SET " . $anchor_field . " = ? WHERE id = ?";
+        $statement = $this->execute_selecting($this->query, 'si', $field_value, $anchor_id);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_UPDATING_TAG);
+
+        $this->result =  $this->connection->affected_rows;
+
+        return $this->result;
+    }
+
+    function change_floor_field($floor_id, $floor_field, $field_value){
+        $this->query = "UPDATE floor SET " . $floor_field . " = ? WHERE id = ?";
+        $statement = $this->execute_selecting($this->query, 'si', $field_value, $floor_id);
 
         if ($statement instanceof db_errors)
             return $statement;

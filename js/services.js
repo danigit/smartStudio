@@ -44,9 +44,8 @@
      * Function that handle home page requests and home page business logic
      * @type {string[]}
      */
-    homeService.$inject = ['$http'];
-    function homeService($http) {
-        let service = this;
+    homeService.$inject = [];
+    function homeService() {
     }
 
     /**
@@ -87,6 +86,8 @@
     canvasService.$inject = [];
     function canvasService(){
         let service = this;
+
+        service.floor = {};
     }
 
     /**
@@ -96,18 +97,23 @@
     socketService.$inject = [];
     function socketService(){
         let service = this;
+        service.floor = {
+            defaultFloor: 1
+        };
 
-        service.getSocket = function(){
-            return new Promise(function (resolve, reject) {
-                let server = new WebSocket('ws://localhost:8090');
-                server.onopen = function () {
-                    resolve(server);
-                };
+        service.sendMessage = function(action, data, callback){
+            let server = new WebSocket('ws://localhost:8090');
+            server.onopen = function () {
+                server.send(encodeRequest(action, data));
+            };
 
-                server.onerror = function (error) {
-                    reject(error);
-                };
-            });
+            server.onmessage = function (message){
+                let parsedMessage = JSON.parse(message.data);
+                callback(parsedMessage);
+            };
+
+            server.onerror = function (error) {
+            };
         };
     }
 
@@ -157,5 +163,13 @@
                 url   : smartPath + 'php/ajax/logout.php',
             });
         };
+
+        service.sendPassword = function (oldPassword, newPassword) {
+            return $http({
+                method: 'POST',
+                url   : smartPath + 'php/ajax/change_password.php',
+                params: {oldPassword: oldPassword, newPassword: newPassword}
+            });
+        }
     }
 })();

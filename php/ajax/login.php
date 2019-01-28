@@ -9,7 +9,7 @@
 require_once 'is_not_logged.php';
 require_once 'helper.php';
 
-header('Access-Control-Allow-Origin: http://localhost:3000');
+//header('Access-Control-Allow-Origin: http://localhost:3000');
 
 class login extends is_not_logged {
     private $username, $password, $result;
