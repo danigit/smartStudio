@@ -57,7 +57,11 @@
      */
     homeController.$inject = ['$scope', 'homeService', '$location', 'menuService'];
     function homeController($scope, homeService, $location, menuService) {
-        // let map = initMap();
+        $scope.mapConfiguration = {
+          zoom: 7,
+          map_type: 'TERRAIN',
+          center: [41.87194, 12.56738]
+        };
 
         //function that makes the logout of the user
         $scope.logout = function () {
@@ -81,6 +85,7 @@
     mapController.$inject = ['$location', '$scope', 'NgMap', 'loginService', 'socketService'];
     function mapController( $location, $scope, NgMap, loginService, socketService) {
         let vm = this;
+
         NgMap.getMap().then(map => vm.map = map);
         vm.positions = [];
 
@@ -90,10 +95,6 @@
             });
         };
 
-
-
-        // let promise = socketService.getSocket();
-        //
         loginService.isLogged().then(
             function (response) {
                 if (response.data.response){

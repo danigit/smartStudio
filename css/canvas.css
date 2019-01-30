@@ -10,16 +10,24 @@
 }
 
 .canvas-location{
-    margin:20px 0 0 0;
+    margin:-25px 0 0 -8px;
     font-weight: bolder;
     font-size: xx-large;
+    border-bottom: 4px solid #FFB950;
 }
 
 .canvas-floor{
-    margin: 0;
+    margin: 4px 0 0 0;
+    padding-left: 2%;
+    float: right;
     font-size: medium;
 }
 
 md-toolbar{
     background-color: #0093c4!important;
+}
+
+.canvas-header-image{
+    width: 100px;
+    margin: 20px 0 20px 0;
 }

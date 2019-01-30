@@ -6,9 +6,11 @@
                 <img src="../img/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
             </md-button>
         </div>
+
         <div layout="row" layout-align="center center" class="margin-top--20-px">
             <img src="../img/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
+
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
                 <h1 class=" font-iceberg font-x-large">AGGIORNAMENTO WETAG</h1>
@@ -20,7 +22,9 @@
     <!--popup content-->
     <md-content class="popup-padding">
         <div layout="column" layout-align="center center">
+
             <form id="changeRegistryForm" name="changeRegistryForm">
+
                 <md-select placeholder="Seleziona WeTag..." ng-model="registry.tag" class="width-100" required="">
                     <md-option value="{{tag.id}}" ng-repeat="tag in registry.tags">{{tag.id}}</md-option>
                 </md-select>
@@ -36,10 +40,12 @@
                      ng-show="registry.resultOk">
                     Nome aggiornato con successo!
                 </div>
+
                 <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
                      ng-show="registry.resultError">
                     Inserire un nome diverso per il WeTag.
                 </div>
+
                 <div layout="column" layout-align="center center">
                     <md-button ng-click="changeTagName(changeRegistryForm)" class="md-warn color-darkblue">INVIA</md-button>
                 </div>

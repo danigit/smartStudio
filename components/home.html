@@ -2,7 +2,9 @@
         <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
             <!--map container-->
             <div ng-controller="mapController as vm" id="map-div">
-                <ng-map center="[41.87194, 12.56738]" zoom="7" mape-type-id="TERRAIN" class="height-100-vh">
+
+                <ng-map center="{{mapConfiguration.center}}" zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="height-100-vh">
+
                     <custom-marker ng-repeat="marker in vm.positions"
                                    id="custom-marker-{{$index}}"
                                    on-click="clickLocation($index)"
@@ -14,28 +16,36 @@
                 </ng-map>
             </div>
             <!--end map container-->
+            
             <!--menu container-->
             <div flex="100">
+
                 <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
                     <img id="open-menu-icon" src="../img/menu-arrow.png" alt="">
                 </div>
+
                 <section layout="row" flex>
+
                     <md-sidenav id="menu-panel" class="md-sidenav-left" md-component-id="left" md-disable-backdrop md-whiteframe="4">
+
                         <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
                             <h1 class="md-toolbar-tools color-black">Menu</h1>
                             <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
                                 <img src="../img/close-menu.png" alt="Close" title="Close">
                             </div>
                         </md-toolbar>
+
                         <md-content layout-margin class="margin-top-10">
+
                             <div layout="column" layout-align="center center">
+                                <img src="../img/login-icon.png" class="home-menu-logo" alt="Smart Track" title="Smart Track">
                                 <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
                             </div>
+
                             <div layout="column">
+
                                 <md-list>
-                                    <md-list-item ng-click=""><p>Anagrafica</p><img src="../img/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click=""><p>Ancore</p><img src="../img/ancora-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click=""><p>Seleziona piano</p><img src="../img/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click=""><p>Insert location</p><img src="../img/icons/add-location.png" class="menu-list-icon" alt=""></md-list-item>
                                     <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../img/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                     <md-list-item ng-click=""><p>Storico</p><img src="../img/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                     <md-list-item ng-click=""><p>Allarmi attivi</p><img src="../img/alarm-icon.png" class="menu-list-icon" alt=""></md-list-item>
@@ -49,5 +59,4 @@
             </div>
             <!--end menu container-->
         </div>
-
     </div>
