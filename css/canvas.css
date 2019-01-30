@@ -1,4 +1,14 @@
-.setting-image{
+
+md-toolbar{
+    background-color: #0093c4!important;
+}
+
+.canvas-header-image{
+    width: 100px;
+    margin: 20px 0 20px 0;
+}
+
+.edit-image{
     display: block;
     width: 65%;
     margin-left: auto;
@@ -23,11 +33,3 @@
     font-size: medium;
 }
 
-md-toolbar{
-    background-color: #0093c4!important;
-}
-
-.canvas-header-image{
-    width: 100px;
-    margin: 20px 0 20px 0;
-}

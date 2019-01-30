@@ -3,10 +3,6 @@
     height: 100vh;
 }
 
-.gmnoprint{
-    display: none!important;
-}
-
 #open-menu-button{
     background-color: #0093c4;
     position: absolute;
@@ -23,7 +19,6 @@
     padding: 20px 5px 19px 10px;
 }
 
-.home-menu-logo{
-    width: 70px;
-    height: 70px;
+.gmnoprint{
+    display: none!important;
 }

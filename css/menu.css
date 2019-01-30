@@ -80,3 +80,13 @@
     color: #0093c4;
     border-bottom: 1px solid #0093c4;
 }
+
+.menu-list-icon{
+    width: 15px;
+    height: 15px;
+}
+
+.home-menu-logo{
+    width: 70px;
+    height: 70px;
+}

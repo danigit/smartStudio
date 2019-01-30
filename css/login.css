@@ -1,16 +1,3 @@
-.avatar-image{
-    width: 130px;
-    height: 130px;
-}
-
-.popup-icon{
-    width: 70px;
-    height: 70px;
-}
-
-#loginButton{
-    margin: 10% 0 10% 0!important;;
-}
 
 /**
 FRAMEWORK
@@ -24,10 +11,28 @@ FRAMEWORK
     border-color: #000000!important;
 }
 
+/**
+CUSTOM
+ */
+
+#loginButton{
+    margin: 10% 0 10% 0!important;;
+}
+
 #login-container {
     background: #00000014;
     padding: 40px;
     box-shadow: 0 0 110px 30px #00000026;
     border-radius: 20px;
     margin-bottom: 20%;
+}
+
+.avatar-image{
+    width: 130px;
+    height: 130px;
+}
+
+.popup-icon{
+    width: 70px;
+    height: 70px;
 }
