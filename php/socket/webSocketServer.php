@@ -129,6 +129,17 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'get_session':{
+                $result['action'] = 'get_session';
+
+                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username']))
+                    $result['result'] = array('session_name' => $_SESSION['username'], 'id' => $_SESSION['id'], 'is_admin' => $_SESSION['is_admin']);
+                else
+                    $result['result'] = 'no_session';
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             case 'get_markers':{
                 $result['action'] = 'get_markers';
                 echo $decoded_message['data']['username'];

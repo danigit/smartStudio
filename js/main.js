@@ -9,36 +9,63 @@
         $routeProvider
             .when('/', {
                 resolve: {
-                    check: function ($location, loginService) {
-                        //if the user is logged the I redirect to the home
-                        loginService.isLogged(function (message) {
-                            if (message.result !== 'not_logged')
-                                $location.path('/home')
-                        });
+                    check: function ($location, $timeout, socketService) {
+                        // if the user is logged the I redirect to the home
+                        $timeout(function () {
+                            socketService.getSocket().then(
+                                function (socket) {
+                                    socket.send(encodeRequest('is_logged', {}));
+
+                                    socket.onmessage = function (message) {
+                                        let mess = JSON.parse(message.data);
+                                        if (mess.result.id !== undefined) {
+                                            $location.path('/home');
+                                        }
+                                    }
+                                }
+                            )
+                        }, 0)
+
                     },
                 },
                 templateUrl: mainPath + 'components/login.html',
                 controller: 'loginController'})
             .when('/home',{
                 resolve: {
-                    check: function ($location, loginService) {
+                    check: function ($location, $timeout, socketService) {
                         //if the user is not logged then I redirect to the login page
-                        loginService.isLogged(function (message){
-                            if (message.result === 'not_logged')
-                                $location.path('/');
-                        })
+                        $timeout(function () {
+                            socketService.getSocket().then(
+                                function (socket) {
+                                    socket.send(encodeRequest('is_logged', {}));
+                                    socket.onmessage = function (message) {
+                                        let mess = JSON.parse(message.data);
+                                        if (mess.result === 'not_logged')
+                                            $location.path('/');
+                                    }
+                                }
+                            )
+                        }, 0)
                     },
                 },
                 templateUrl: mainPath + 'components/home.html',
                 controller: 'homeController'})
             .when('/canvas',{
                 resolve: {
-                    check: function ($location, loginService) {
-                        //if the user is not logged then I redirect to the login page
-                        loginService.isLogged(function (message) {
-                            if (message.result === 'not_logged')
-                                $location.path('/');
-                        });
+                    check: function ($location, $timeout, socketService) {
+                        // if the user is not logged then I redirect to the login page
+                        $timeout(function () {
+                            socketService.getSocket().then(
+                                function (socket) {
+                                    socket.send(encodeRequest('is_logged', {}));
+                                    socket.onmessage = function (message) {
+                                        let mess = JSON.parse(message.data);
+                                        if (mess.result === 'not_logged')
+                                            $location.path('/');
+                                    }
+                                }
+                            )
+                        }, 0)
                     },
                 },
                 templateUrl: mainPath + 'components/canvas.html',

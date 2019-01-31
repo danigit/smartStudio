@@ -19,6 +19,7 @@
     function dataService(){
         let service = this;
 
+        service.isAdmin = false;
 
     }
 
@@ -31,13 +32,20 @@
         let service = this;
 
         //function that creates a new session for the user
-        service.login = function (username, password, callback) {
-            socketService.sendMessage('login', {username: username, password: password}, callback);
-        };
+        // service.login = function (username, password, callback) {
+        //     socketService.getSocket().then(
+        //         function (socket) {
+        //             socket.send(encodeRequest('login', {username: username, password: password}))
+        //
+        //             socket.onmessage = function (message) {
+        //                 callback(message);
+        //             }
+        //         }
+        //     )
+        // };
 
         //Function that controls if the user has an open session
         service.isLogged = function (callback) {
-            socketService.sendMessage('is_logged', {}, callback);
         };
     }
 
@@ -57,8 +65,9 @@
     function mapService($http, loginService, socketService){
         let service = this;
 
-        let promise = socketService.getSocket();
-
+        service.getMarkers = function(callback) {
+            socketService.sendMessage('get_markers', 'dani', callback);
+        }
         // service.getMapMarkers = function() {
         //     loginService.isLogged().then(
         //         function (response) {
@@ -98,7 +107,6 @@
     socketService.$inject = [];
     function socketService(){
         let service = this;
-        console.log('creating the socket');
         let server = new WebSocket('ws://localhost:8090');
         let isOpen = false;
 
@@ -106,22 +114,18 @@
             defaultFloor: 1
         };
 
-        service.sendMessage = function(action, data, callback){
-            server.onopen = function () {
-                isOpen = true;
-                server.send(encodeRequest(action, data));
-            };
+        server.onopen = function(){
+            isOpen = true;
+        };
 
-            if (isOpen)
-                server.send(encodeRequest(action, data));
-
-            server.onmessage = function (message){
-                let parsedMessage = JSON.parse(message.data);
-                callback(parsedMessage);
-            };
-
-            server.onerror = function (error) {
-            };
+        service.getSocket = function(){
+            return new Promise(function (resolve, reject) {
+                if (isOpen){
+                    resolve(server);
+                }else{
+                    // reject('error');
+                }
+            });
         };
     }
 

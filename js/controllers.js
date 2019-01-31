@@ -18,8 +18,8 @@
      * Function that manage the user login functionalities
      * @type {string[]}
      */
-    loginController.$inject = ['$scope', '$location', 'loginService'];
-    function loginController($scope, $location, loginService) {
+    loginController.$inject = ['$scope', '$location', 'socketService'];
+    function loginController($scope, $location, socketService) {
         $scope.user = {username: '', password: ''};
         $scope.errorHandeling = {noConnection: false, wrongData: false};
 
@@ -27,23 +27,31 @@
         $scope.login = function(form){
             form.$submitted = 'true';
 
-            let executeLogin = function(message){
-                if (message.result.id !== undefined) {
-                    $location.path('/home');
-                    $scope.$apply();
+            socketService.getSocket().then(
+                function (socket) {
+                    console.log(socket);
+                    socket.send(encodeRequest('login', {username: $scope.user.username, password: $scope.user.password}))
+
+                    socket.onmessage = function (message) {
+                        let mess = JSON.parse(message.data);
+
+                        if (mess.result !== "ERROR_ON_LOGIN"){
+                            $location.path('/home');
+                            $scope.$apply();
+                        } else{
+                            $scope.errorHandeling.noConnection = false;
+                            $scope.errorHandeling.wrongData    = true;
+                            $scope.$apply();
+                        }
+                    }
                 }
-                else if (message.result === 'ERROR_ON_LOGIN') {
-                    $scope.errorHandeling.noConnection = false;
-                    $scope.errorHandeling.wrongData    = true;
-                    $scope.$apply();
-                }else {
+            ).catch(
+                function (error) {
                     $scope.errorHandeling.wrongData = false;
                     $scope.errorHandeling.noConnection = true;
                     $scope.$apply();
                 }
-            };
-
-            loginService.login($scope.user.username, $scope.user.password, executeLogin);
+            )
         };
 
         $scope.recoverPassword = function () {
@@ -57,55 +65,65 @@
      */
     homeController.$inject = ['$scope', 'homeService', '$location', 'menuService', 'dataService'];
     function homeController($scope, homeService, $location, menuService, dataService) {
-        $scope.mapConfiguration = {
-          zoom: 7,
-          map_type: 'TERRAIN',
-          center: [41.87194, 12.56738]
-        };
-
-        $scope.isAdmin = dataService.admin;
-
-        //function that makes the logout of the user
-        $scope.logout = function () {
-            let promise = menuService.logout();
-
-            promise.then(
-                function (response) {
-                    if (response.data.response)
-                        $location.path('/');
-                }
-            )
-        };
-
-        $scope.toggleLeft = menuService.toggleLeft('left');
+        // $scope.mapConfiguration = {
+        //   zoom: 7,
+        //   map_type: 'TERRAIN',
+        //   center: [41.87194, 12.56738]
+        // };
+        //
+        // //function that makes the logout of the user
+        // $scope.logout = function () {
+        //     let promise = menuService.logout();
+        //
+        //     promise.then(
+        //         function (response) {
+        //             if (response.data.response)
+        //                 $location.path('/');
+        //         }
+        //     )
+        // };
+        //
+        // $scope.toggleLeft = menuService.toggleLeft('left');
     }
 
     /**
      * Function that manages the login map
      * @type {string[]}
      */
-    mapController.$inject = ['$location', '$scope', 'NgMap', 'loginService', 'socketService'];
-    function mapController( $location, $scope, NgMap, loginService, socketService) {
+    mapController.$inject = ['$location', '$scope', '$timeout', 'NgMap', 'loginService', 'socketService', 'dataService'];
+    function mapController( $location, $scope, $timeout, NgMap, loginService, socketService, dataService) {
         let vm = this;
+        $scope.mapConfiguration = {
+            zoom: 7,
+            map_type: 'TERRAIN',
+            center: [41.87194, 12.56738]
+        };
 
         NgMap.getMap().then(map => vm.map = map);
         vm.positions = [];
 
-        let loadMarkers = function(message){
-            angular.forEach(message.result, function ( value) {
-                vm.positions.push(value);
-            });
-        };
+        $timeout(function () {
 
-        // loginService.isLogged().then(
-        //     function (response) {
-        //         if (response.data.response){
-        //             // socketService.sendMessage('get_markers', {username: response.data.username}, loadMarkers);
-        //         }
-        //     }
-        // );
+            socketService.getSocket().then(
+                function (socket) {
+                    socket.send(encodeRequest('get_session', {}))
 
-        // console.log(vm.positions);
+                    socket.onmessage = function (message) {
+                        let mess = JSON.parse(message.data);
+
+                        socket.send(encodeRequest('get_markers', {username: mess.result.session_name}));
+
+                        socket.onmessage = function (message) {
+                            let mess = JSON.parse(message.data);
+                            angular.forEach(mess.result, function (value) {
+                                vm.positions.push(value);
+                            })
+                        }
+                    }
+                }
+            );
+        }, 0);
+
         $scope.clickLocation = function (e, index) {
             sessionStorage.setItem('location', vm.positions[index].name);
             $location.path('/canvas');
@@ -296,9 +314,9 @@
         $scope.$watch('floors.defaultFloor', function (newValue) {
             socketService.floor.defaultFloor = $scope.floors.defaultFloor;
             if($scope.floors.result !== undefined) {
-                socketService.sendMessage('get_floor_info', {location: sessionStorage.getItem('location'), floor: $scope.floors.defaultFloor}, showFloorMap);
-                socketService.sendMessage('get_anchors', {floor: $scope.floors.defaultFloor}, showAnchors);
-                socketService.sendMessage('get_cameras', {floor: $scope.floors.defaultFloor}, showCameras);
+                // socketService.sendMessage('get_floor_info', {location: sessionStorage.getItem('location'), floor: $scope.floors.defaultFloor}, showFloorMap);
+                // socketService.sendMessage('get_anchors', {floor: $scope.floors.defaultFloor}, showAnchors);
+                // socketService.sendMessage('get_cameras', {floor: $scope.floors.defaultFloor}, showCameras);
             }
         });
 
@@ -413,17 +431,49 @@
           $scope.floors.defaultFloor = message.result[0].name;
         };
 
-        socketService.sendMessage('get_floor_info', {location: sessionStorage.getItem('location'), floor: 'floor 1'}, showFloorMap);
-        socketService.sendMessage('get_anchors', {floor: 'floor 1'}, showAnchors);
-        socketService.sendMessage('get_cameras', {floor: 'floor 1'}, showCameras);
-        socketService.sendMessage('get_floors', {location: sessionStorage.getItem('location')}, getFloors);
+        // socketService.sendMessage('get_floor_info', {location: sessionStorage.getItem('location'), floor: 'floor 1'}, showFloorMap);
+        // socketService.sendMessage('get_anchors', {floor: 'floor 1'}, showAnchors);
+        // socketService.sendMessage('get_cameras', {floor: 'floor 1'}, showCameras);
+        // socketService.sendMessage('get_floors', {location: sessionStorage.getItem('location')}, getFloors);
     }
 
-    menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$timeout', 'menuService', 'socketService'];
-    function menuController($scope, $mdDialog, $mdEditDialog, $location, $timeout, menuService, socketService){
+    menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$timeout', '$mdSidenav', 'menuService', 'socketService'];
+    function menuController($scope, $mdDialog, $mdEditDialog, $location, $timeout, $mdSidenav, menuService, socketService){
+
+        $scope.isAdmin = false;
+
+        // socketService.sendMessage('get_session', {}, function (message) {
+        //     if (message.action === 'get_session' && message.result.is_admin === 1) {
+        //         $scope.isAdmin = true;
+        //     }
+        // });
 
         $scope.toggleLeft = function(){
             $mdSidenav('left').toggle();
+        };
+
+        $scope.insertLocation = function(){
+            $mdDialog.show({
+                templateUrl: '../components/insert-location.html',
+                parent: angular.element(document.body),
+                targetEvent: event,
+                clickOutsideToClose: true,
+                controller: ['$scope', function ($scope) {
+                    $scope.location = {
+                        name: '',
+                        description: '',
+                        latitude: '',
+                        longitude: '',
+                        resultOk: false,
+                        resultError: false,
+                        resultClass: ''
+                    };
+
+                    $scope.hide = function () {
+                        $mdDialog.hide();
+                    }
+                }]
+            })
         };
 
         $scope.registry = function(){
@@ -469,13 +519,13 @@
                     $scope.changeTagName = function (form) {
                         form.$submitted = true;
                         if ($scope.registry.tag != null && $scope.registry.name !== ''){
-                            socketService.sendMessage('change_tag_name', {tag: $scope.registry.tag, name: $scope.registry.name}, sendTagChange)
+                            // socketService.sendMessage('change_tag_name', {tag: $scope.registry.tag, name: $scope.registry.name}, sendTagChange)
                         }else {
                             $scope.registry.resultClass = 'background-red';
                         }
                     };
 
-                    socketService.sendMessage('get_tags', {location: sessionStorage.getItem('location')}, getTags);
+                    // socketService.sendMessage('get_tags', {location: sessionStorage.getItem('location')}, getTags);
 
                     $scope.hide = function () {
                         $mdDialog.hide();
@@ -511,7 +561,7 @@
                             save: function (input) {
                                 input.$invalid = true;
                                 anchor[anchorName] = input.$modelValue;
-                                socketService.sendMessage('change_anchor_field', {anchor_id: anchor.id, anchor_field: anchorName, field_value: input.$modelValue}, function () {})
+                                // socketService.sendMessage('change_anchor_field', {anchor_id: anchor.id, anchor_field: anchorName, field_value: input.$modelValue}, function () {})
                             },
                             targetEvent: event,
                             title: 'Inserisci un valore',
@@ -537,7 +587,7 @@
                         $scope.anchors = message.result;
                     }
 
-                    socketService.sendMessage('get_anchors', {floor: 'floor 1'}, getAnchors);
+                    // socketService.sendMessage('get_anchors', {floor: 'floor 1'}, getAnchors);
 
                     $scope.hideAnchors = function () {
                         $mdDialog.hide();
@@ -573,7 +623,7 @@
                             save: function (input) {
                                 input.$invalid = true;
                                 floor[floorName] = input.$modelValue;
-                                socketService.sendMessage('change_floor_field', {floor_id: floor.id, floor_field: floorName, field_value: input.$modelValue}, function () {})
+                                // socketService.sendMessage('change_floor_field', {floor_id: floor.id, floor_field: floorName, field_value: input.$modelValue}, function () {})
                             },
                             targetEvent: event,
                             title: 'Inserisci un valore',
@@ -599,7 +649,7 @@
                         $scope.floors = message.result;
                     };
 
-                    socketService.sendMessage('get_floors', {location: sessionStorage.getItem('location')}, getFloors);
+                    // socketService.sendMessage('get_floors', {location: sessionStorage.getItem('location')}, getFloors);
 
                     $scope.hide = function () {
                         $mdDialog.hide();
@@ -675,11 +725,17 @@
 
         //function that makes the logout of the user
         $scope.logout = function () {
-            console.log('sending logout');
-            socketService.sendMessage('logout', {}, function (message) {
-                if (message.result === 'logged_out')
-                    $location.path('/')
-            });
+            socketService.getSocket().then(
+                function (socket) {
+                    socket.send(encodeRequest('logout', {}));
+
+                    socket.onmessage = function (message) {
+                        let mess = JSON.parse(message.data);
+                        if (mess.result === 'logged_out')
+                            $location.path('/')
+                    }
+                }
+            )
         };
 
 

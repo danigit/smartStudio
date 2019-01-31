@@ -4,8 +4,7 @@
             <div ng-controller="mapController as vm" id="map-div">
 
                 <ng-map center="{{mapConfiguration.center}}" zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="height-100-vh">
-
-                    <custom-marker ng-repeat="marker in vm.positions"
+                    <custom-marker ng-repeat="marker in vm.positions track by $index"
                                    id="custom-marker-{{$index}}"
                                    on-click="clickLocation($index)"
                                    position="{{marker.position}}">
@@ -18,7 +17,7 @@
             <!--end map container-->
             
             <!--menu container-->
-            <div flex="100">
+            <div flex="100" ng-controller="menuController">
 
                 <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
                     <img id="open-menu-icon" src="../img/icons/menu-arrow.png" alt="">
@@ -42,10 +41,10 @@
                                 <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
                             </div>
 
-                            <div layout="column" ng-controller="menuController">
+                            <div layout="column">
 
                                 <md-list>
-                                    <md-list-item ng-show="isAdmin" ng-click=""><p>Insert location</p><img src="../img/icons/add-location.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-show="isAdmin" ng-click="insertLocation()"><p>Insert location</p><img src="../img/icons/add-location.png" class="menu-list-icon" alt=""></md-list-item>
                                     <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../img/icons/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                     <md-list-item ng-click=""><p>Storico</p><img src="../img/icons/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                     <md-list-item ng-click=""><p>Allarmi attivi</p><img src="../img/icons/alarm-icon.png" class="menu-list-icon" alt=""></md-list-item>
