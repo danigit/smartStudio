@@ -7,25 +7,25 @@
                                ng-class="speedDial.mode">
                 <md-fab-trigger>
                     <md-button aria-label="menu" class="md-fab background-darkcyan">
-                        <img src="../img/edit-icon.png" class="edit-image" alt="Modifica impostazioni pagina" title="Modifica impostazioni pagina">
+                        <img src="../img/icons/edit-icon.png" class="edit-image" alt="Modifica impostazioni pagina" title="Modifica impostazioni pagina">
                     </md-button>
                 </md-fab-trigger>
 
                 <md-fab-actions>
                     <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
-                        <img src="../img/vertical-line.png" class="width-100 height-100" alt="Disegna riga verticale" title="Disegna riga verticale">
+                        <img src="../img/icons/vertical-line.png" class="width-100 height-100" alt="Disegna riga verticale" title="Disegna riga verticale">
                     </md-button>
 
                     <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
-                        <img src="../img/horizontal-line.png" class="width-100 height-100" alt="Disegna riga orizontale" title="Disegna riga orizontale">
+                        <img src="../img/icons/horizontal-line.png" class="width-100 height-100" alt="Disegna riga orizontale" title="Disegna riga orizontale">
                     </md-button>
 
                     <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
-                        <img src="../img/inclined-line.png" class="width-100 height-100" alt="Disegna riga inclinata" title="Disegna riga inclinata">
+                        <img src="../img/icons/inclined-line.png" class="width-100 height-100" alt="Disegna riga inclinata" title="Disegna riga inclinata">
                     </md-button>
 
                     <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
-                        <img src="../img/free-draw.png" class="width-100 height-100" alt="Disegna riga inclinata" title="Disegna riga inclinata">
+                        <img src="../img/icons/free-draw.png" class="width-100 height-100" alt="Disegna riga inclinata" title="Disegna riga inclinata">
                     </md-button>
                 </md-fab-actions>
             </md-fab-speed-dial>
@@ -34,7 +34,7 @@
 
         <!--header text-->
         <div layout="row" layout-align="center center" class="background-ottanio width-100" style="padding-left: 3%;">
-            <img src="../img/login-icon.png" class="canvas-header-image" alt="Smart Track" title="Smart Track">
+            <img src="../img/icons/login-icon.png" class="canvas-header-image" alt="Smart Track" title="Smart Track">
             <div class="margin-bottom-30-px">
                 <p class="canvas-location color-darkcyan">{{header.location | uppercase}}</p>
                 <p class="canvas-floor color-cyan">{{header.name}}</p>
@@ -51,7 +51,7 @@
         <!--menu container-->
         <div>
             <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
-                <img id="open-menu-icon" src="../img/menu-arrow.png" alt="Menu" title="Menu">
+                <img id="open-menu-icon" src="../img/icons/menu-arrow.png" alt="Menu" title="Menu">
             </div>
 
             <section layout="row" flex>
@@ -61,26 +61,26 @@
                     <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
                         <h1 class="md-toolbar-tools color-black">Menu</h1>
                         <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
-                            <img src="../img/close-menu.png" alt="Chiudi menu" title="Chiudi menu">
+                            <img src="../img/icons/close-menu.png" alt="Chiudi menu" title="Chiudi menu">
                         </div>
                     </md-toolbar>
 
                     <md-content layout-margin class="margin-top-10">
                         <div layout="column" layout-align="center center">
-                            <img src="../img/login-icon.png" class="home-menu-logo" alt="Smart Track" title="Smart Track">
+                            <img src="../img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track" title="Smart Track">
                             <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
                         </div>
 
                         <div layout="column" id="menu-container">
                             <md-list ng-controller="menuController">
-                                <md-list-item ng-click="registry($$event)"><p>Aggiorna WeTag</p><img src="../img/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="showAnchorsTable()"><p>Tabella Ancore</p><img src="../img/ancora-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="floorUpdate()"><p>Tabella piani</p><img src="../img/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../img/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click=""><p>Storico</p><img src="../img/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click=""><p>Allarmi attivi</p><img src="../img/alarm-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="changePassword()"><p>Cambia password</p><img src="../img/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="logout()"><p>Logout</p><img src="../img/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="registry($$event)"><p>Aggiorna WeTag</p><img src="../img/icons/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="showAnchorsTable()"><p>Tabella Ancore</p><img src="../img/icons/ancora-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="floorUpdate()"><p>Tabella piani</p><img src="../img/icons/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../img/icons/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click=""><p>Storico</p><img src="../img/icons/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click=""><p>Allarmi attivi</p><img src="../img/icons/alarm-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="changePassword()"><p>Cambia password</p><img src="../img/icons/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="logout()"><p>Logout</p><img src="../img/icons/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
                             </md-list>
 
                             <md-subheader class="background-lightcyan color-black margin-bottom-10-px margin-top-10-px">Azzioni immediate</md-subheader>

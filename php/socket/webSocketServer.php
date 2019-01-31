@@ -7,6 +7,8 @@
  * Time: 19.58
  */
 
+require_once '../ajax/communication.php';
+
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 require_once '../database/connection.php';
@@ -16,7 +18,7 @@ class webSocketServer implements MessageComponentInterface{
     private $connection;
 
     public function __construct(){
-        echo "SERVER IS LISTENING...\n\n";
+//        echo "SERVER IS LISTENING...\n\n";
         $this->clients = [];
         $this->connection = new Connection();
     }
@@ -27,6 +29,11 @@ class webSocketServer implements MessageComponentInterface{
      * @throws \Exception
      */
     function onOpen(ConnectionInterface $conn){
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        session_regenerate_id();
+
         // TODO: Implement onOpen() method.
         echo "CONNECTION ESTABLISHED WITH ({$conn->resourceId})!\n";
         $this->clients[$conn->resourceId] = $conn;
@@ -39,6 +46,13 @@ class webSocketServer implements MessageComponentInterface{
      * @throws \Exception
      */
     function onClose(ConnectionInterface $conn){
+//        if (!isset($_SESSION)) {
+//            session_start();
+//        }
+//        $_SESSION = array();
+//        session_regenerate_id();
+//        session_write_close();
+
         // TODO: Implement onClose() method.
         unset($this->clients[$conn->resourceId]);
     }
@@ -72,6 +86,49 @@ class webSocketServer implements MessageComponentInterface{
         $decoded_message = json_decode($msg, true);
 
         switch ($decoded_message['action']){
+            case 'login':{
+                $result['action'] = 'login';
+                $query = $this->connection->login($decoded_message['data']['username'], $decoded_message['data']['password']);
+
+                if ($query instanceof db_errors){
+                    $result['result'] = $query->getErrorName();
+                }else{
+                    $result['result'] = $query;
+
+                    $_SESSION = array();
+                    $_SESSION['username'] = $decoded_message['data']['username'];
+                    $_SESSION['id'] = $result['result']['id'];
+                    $_SESSION['is_admin'] = $result['result']['role'];
+                    session_write_close();
+                }
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'is_logged':{
+                $result['action'] = 'is_logged';
+
+                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username']))
+                    $result['result'] = array('session_name' => $_SESSION['username'], 'id' => $_SESSION['id'], 'is_admin' => $_SESSION['is_admin']);
+                else
+                    $result['result'] = 'not_logged';
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'logout':{
+                $result['action'] = 'logout';
+
+                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'])) {
+                    $_SESSION = array();
+                    session_write_close();
+                    $result['result'] = 'logged_out';
+                } else
+                    $result['result'] = 'not_logged_out';
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             case 'get_markers':{
                 $result['action'] = 'get_markers';
                 echo $decoded_message['data']['username'];

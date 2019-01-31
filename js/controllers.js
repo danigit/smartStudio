@@ -27,23 +27,23 @@
         $scope.login = function(form){
             form.$submitted = 'true';
 
-            let promise = loginService.login($scope.user.username, $scope.user.password);
-
-            promise.then(
-                function (response) {
-                    if (response.data.response) {
-                        $location.path('/home');
-                    }else{
-                        $scope.errorHandeling.noConnection = false;
-                        $scope.errorHandeling.wrongData = true;
-                    }
+            let executeLogin = function(message){
+                if (message.result.id !== undefined) {
+                    $location.path('/home');
+                    $scope.$apply();
                 }
-            ).catch(
-                function () {
+                else if (message.result === 'ERROR_ON_LOGIN') {
+                    $scope.errorHandeling.noConnection = false;
+                    $scope.errorHandeling.wrongData    = true;
+                    $scope.$apply();
+                }else {
                     $scope.errorHandeling.wrongData = false;
                     $scope.errorHandeling.noConnection = true;
+                    $scope.$apply();
                 }
-            )
+            };
+
+            loginService.login($scope.user.username, $scope.user.password, executeLogin);
         };
 
         $scope.recoverPassword = function () {
@@ -55,13 +55,15 @@
      * Function that manges the home page functionalities
      * @type {string[]}
      */
-    homeController.$inject = ['$scope', 'homeService', '$location', 'menuService'];
-    function homeController($scope, homeService, $location, menuService) {
+    homeController.$inject = ['$scope', 'homeService', '$location', 'menuService', 'dataService'];
+    function homeController($scope, homeService, $location, menuService, dataService) {
         $scope.mapConfiguration = {
           zoom: 7,
           map_type: 'TERRAIN',
           center: [41.87194, 12.56738]
         };
+
+        $scope.isAdmin = dataService.admin;
 
         //function that makes the logout of the user
         $scope.logout = function () {
@@ -95,13 +97,13 @@
             });
         };
 
-        loginService.isLogged().then(
-            function (response) {
-                if (response.data.response){
-                    socketService.sendMessage('get_markers', {username: response.data.username}, loadMarkers);
-                }
-            }
-        );
+        // loginService.isLogged().then(
+        //     function (response) {
+        //         if (response.data.response){
+        //             // socketService.sendMessage('get_markers', {username: response.data.username}, loadMarkers);
+        //         }
+        //     }
+        // );
 
         // console.log(vm.positions);
         $scope.clickLocation = function (e, index) {
@@ -419,6 +421,11 @@
 
     menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$timeout', 'menuService', 'socketService'];
     function menuController($scope, $mdDialog, $mdEditDialog, $location, $timeout, menuService, socketService){
+
+        $scope.toggleLeft = function(){
+            $mdSidenav('left').toggle();
+        };
+
         $scope.registry = function(){
             $mdDialog.show({
                 templateUrl: '../components/change-registry.html',
@@ -668,15 +675,14 @@
 
         //function that makes the logout of the user
         $scope.logout = function () {
-            let promise = menuService.logout();
-
-            promise.then(
-                function (response) {
-                    if (response.data.response)
-                        $location.path('/');
-                }
-            )
+            console.log('sending logout');
+            socketService.sendMessage('logout', {}, function (message) {
+                if (message.result === 'logged_out')
+                    $location.path('/')
+            });
         };
+
+
     }
 
     registryController.$inject = ['$scope', '$mdDialog', '$timeout', 'socketService'];

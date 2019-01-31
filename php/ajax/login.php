@@ -32,7 +32,7 @@ class login extends is_not_logged {
             $this->json_error("C'è stato un errore in fase di login", $this->result->getErrorName());
         }
 
-        set_session_variables($this->result, $this->username, true );
+        set_session_variables($this->result, $this->username, $this->result['role'] );
     }
 
     protected function return_data(){

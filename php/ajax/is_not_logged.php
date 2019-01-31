@@ -21,7 +21,7 @@ abstract class is_not_logged extends communication {
      * @return bool - true se la sessione e attiva, false altrimenti
      */
     protected function check_session(){
-        if(!isset($_SESSION['id'], $_SESSION['secure'], $_SESSION['username']))
+        if(!isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username']))
             return false;
 
         return true;

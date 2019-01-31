@@ -6,6 +6,7 @@
 
 
     //SERVICES
+    main.service('dataService', dataService);
     main.service('loginService', loginService);
     main.service('homeService', homeService);
     main.service('menuService', menuService);
@@ -14,29 +15,29 @@
     main.service('canvasService', canvasService);
     main.service('socketService', socketService);
 
+    dataService.$inject = [];
+    function dataService(){
+        let service = this;
+
+
+    }
+
     /**
      * Function that manage the login requests and login business logic
      * @type {string[]}
      */
-    loginService.$inject = ['$http'];
-    function loginService($http) {
+    loginService.$inject = ['$http', 'socketService'];
+    function loginService($http, socketService) {
         let service = this;
 
         //function that creates a new session for the user
-        service.login = function (username, password) {
-            return $http({
-                method: 'POST',
-                url: smartPath + 'php/ajax/login.php',
-                params: {username: username, password: password}
-            });
+        service.login = function (username, password, callback) {
+            socketService.sendMessage('login', {username: username, password: password}, callback);
         };
 
         //Function that controls if the user has an open session
-        service.isLogged = function () {
-            return $http({
-                method: 'GET',
-                url   : smartPath + 'php/ajax/control_login.php',
-            });
+        service.isLogged = function (callback) {
+            socketService.sendMessage('is_logged', {}, callback);
         };
     }
 
@@ -58,25 +59,25 @@
 
         let promise = socketService.getSocket();
 
-        service.getMapMarkers = function() {
-            loginService.isLogged().then(
-                function (response) {
-                    if (response.data.response) {
-                        promise.then(
-                            function (socket) {
-                                console.log(response.data.username);
-                                socket.send(encodeRequest('get_markers', {username: response.data.username}));
-                                socket.onmessage = function(response) {
-                                    if (response.action === 'get_markers') {
-                                        return response.data;
-                                    }
-                                }
-                            }
-                        );
-                    }
-                }
-            );
-        };
+        // service.getMapMarkers = function() {
+        //     loginService.isLogged().then(
+        //         function (response) {
+        //             if (response.data.response) {
+        //                 promise.then(
+        //                     function (socket) {
+        //                         console.log(response.data.username);
+        //                         socket.send(encodeRequest('get_markers', {username: response.data.username}));
+        //                         socket.onmessage = function(response) {
+        //                             if (response.action === 'get_markers') {
+        //                                 return response.data;
+        //                             }
+        //                         }
+        //                     }
+        //                 );
+        //             }
+        //         }
+        //     );
+        // };
     }
 
     /**
@@ -97,15 +98,22 @@
     socketService.$inject = [];
     function socketService(){
         let service = this;
+        console.log('creating the socket');
+        let server = new WebSocket('ws://localhost:8090');
+        let isOpen = false;
+
         service.floor = {
             defaultFloor: 1
         };
 
         service.sendMessage = function(action, data, callback){
-            let server = new WebSocket('ws://localhost:8090');
             server.onopen = function () {
+                isOpen = true;
                 server.send(encodeRequest(action, data));
             };
+
+            if (isOpen)
+                server.send(encodeRequest(action, data));
 
             server.onmessage = function (message){
                 let parsedMessage = JSON.parse(message.data);
@@ -146,8 +154,8 @@
      * Function that handle the menu
      * @type {string[]}
      */
-    menuService.$inject = ['$mdSidenav', '$http'];
-    function menuService($mdSidenav, $http) {
+    menuService.$inject = ['$mdSidenav', '$http', 'socketService'];
+    function menuService($mdSidenav, $http, socketService) {
         let service = this;
 
         service.toggleLeft = function (componentId) {
@@ -157,11 +165,8 @@
         };
 
         //Function that remeve the user session
-        service.logout = function () {
-            return $http({
-                method: 'GET',
-                url   : smartPath + 'php/ajax/logout.php',
-            });
+        service.logout = function (callback) {
+            socketService.sendMessage('logout', {}, callback)
         };
 
         service.sendPassword = function (oldPassword, newPassword) {

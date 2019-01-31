@@ -37,15 +37,15 @@ function is_error($value){
  * Function that set a session for the user passed as parameter
  * @param $id - the id of the user
  * @param $username - the name of the session
- * @param $is_secure
+ * @param $is_admin
  */
-function set_session_variables($id, $username, $is_secure){
+function set_session_variables($id, $username, $is_admin){
     session_start();
     session_regenerate_id();
     $_SESSION = array();
     $_SESSION['username'] = $username;
     $_SESSION['id'] = $id;
-    $_SESSION['secure'] = $is_secure;
+    $_SESSION['is_admin'] = $is_admin;
     session_write_close();
 }
 

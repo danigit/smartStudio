@@ -11,13 +11,10 @@
                 resolve: {
                     check: function ($location, loginService) {
                         //if the user is logged the I redirect to the home
-                        loginService.isLogged().then(
-                            function (response) {
-                                if (response.data.response){
-                                    $location.path('/home');
-                                }
-                            }
-                        );
+                        loginService.isLogged(function (message) {
+                            if (message.result !== 'not_logged')
+                                $location.path('/home')
+                        });
                     },
                 },
                 templateUrl: mainPath + 'components/login.html',
@@ -26,13 +23,10 @@
                 resolve: {
                     check: function ($location, loginService) {
                         //if the user is not logged then I redirect to the login page
-                        loginService.isLogged().then(
-                            function (response) {
-                                if (!response.data.response){
-                                    $location.path('/');
-                                }
-                            }
-                        );
+                        loginService.isLogged(function (message){
+                            if (message.result === 'not_logged')
+                                $location.path('/');
+                        })
                     },
                 },
                 templateUrl: mainPath + 'components/home.html',
@@ -41,13 +35,10 @@
                 resolve: {
                     check: function ($location, loginService) {
                         //if the user is not logged then I redirect to the login page
-                        loginService.isLogged().then(
-                            function (response) {
-                                if (!response.data.response){
-                                    $location.path('/');
-                                }
-                            }
-                        );
+                        loginService.isLogged(function (message) {
+                            if (message.result === 'not_logged')
+                                $location.path('/');
+                        });
                     },
                 },
                 templateUrl: mainPath + 'components/canvas.html',
