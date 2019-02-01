@@ -7,6 +7,7 @@
  */
 
 require_once 'config.php';
+require_once 'helper.php';
 require_once 'db_errors.php';
 
 class Connection{
@@ -250,6 +251,37 @@ class Connection{
         }
 
         return $result_array;
+    }
+
+    function insert_location($user, $name, $description, $latitude, $longitude, $image_name){
+        $this->connection->autocommit(false);
+        $errors = array();
+
+        $this->query = "INSERT INTO location (name, description, latitude, longitude, icon) VALUES (?, ?, ?, ?, ?)";
+        $statement = $this->execute_inserting($this->query, 'sssss', $name, $description, $latitude, $longitude, $image_name);
+
+        if ($statement instanceof db_errors)
+            array_push($errors, 'location_db_error');
+        else if ($statement == false)
+            array_push($errors,'location_error');
+
+        $this->result =  $this->connection->insert_id;
+
+        $this->query = 'INSERT INTO user_has_location (user_id, location_id) VALUES (?, ?)';
+        $statement = $this->execute_inserting($this->query, 'ii', $user, $this->result);
+
+        if ($statement instanceof db_errors)
+            array_push($errors, 'user_location_db_error');
+        else if ($statement == false)
+            array_push($errors, 'user_location_error');
+
+        $this->connection->commit();
+
+        if (!empty($errors)){
+            $this->connection->rollback();
+        }
+
+        return $this->result;
     }
 
     /**

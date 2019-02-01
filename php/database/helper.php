@@ -6,6 +6,8 @@
  * Time: 17.52
  */
 
+define('MARKERS_IMAGES_PATH', '../../img/markers-images/');
+
 require_once 'db_errors.php';
 
 /**

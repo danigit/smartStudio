@@ -18,8 +18,8 @@
      * Function that manage the user login functionalities
      * @type {string[]}
      */
-    loginController.$inject = ['$scope', '$location', 'socketService'];
-    function loginController($scope, $location, socketService) {
+    loginController.$inject = ['$scope', '$location', 'socketService', '$state'];
+    function loginController($scope, $location, socketService, $state) {
         $scope.user = {username: '', password: ''};
         $scope.errorHandeling = {noConnection: false, wrongData: false};
 
@@ -27,29 +27,25 @@
         $scope.login = function(form){
             form.$submitted = 'true';
 
-            socketService.getSocket().then(
-                function (socket) {
-                    console.log(socket);
-                    socket.send(encodeRequest('login', {username: $scope.user.username, password: $scope.user.password}))
+            console.log('logging in');
+            socketService.getSocket('login', {username: $scope.user.username, password: $scope.user.password}).then(
+                function (message) {
+                    console.log(message);
+                    let mess = JSON.parse(message.data);
 
-                    socket.onmessage = function (message) {
-                        let mess = JSON.parse(message.data);
-
-                        if (mess.result !== "ERROR_ON_LOGIN"){
-                            $location.path('/home');
-                            $scope.$apply();
-                        } else{
-                            $scope.errorHandeling.noConnection = false;
-                            $scope.errorHandeling.wrongData    = true;
-                            $scope.$apply();
-                        }
+                    if (mess.result !== "ERROR_ON_LOGIN"){
+                        console.log(mess.result);
+                        // dataService.username = $scope.user.username;
+                        $state.go('home');
+                    } else{
+                        $scope.errorHandeling.noConnection = false;
+                        $scope.errorHandeling.wrongData    = true;
                     }
                 }
             ).catch(
-                function (error) {
+                function () {
                     $scope.errorHandeling.wrongData = false;
                     $scope.errorHandeling.noConnection = true;
-                    $scope.$apply();
                 }
             )
         };
@@ -63,27 +59,24 @@
      * Function that manges the home page functionalities
      * @type {string[]}
      */
-    homeController.$inject = ['$scope', 'homeService', '$location', 'menuService', 'dataService'];
-    function homeController($scope, homeService, $location, menuService, dataService) {
-        // $scope.mapConfiguration = {
-        //   zoom: 7,
-        //   map_type: 'TERRAIN',
-        //   center: [41.87194, 12.56738]
-        // };
-        //
-        // //function that makes the logout of the user
-        // $scope.logout = function () {
-        //     let promise = menuService.logout();
-        //
-        //     promise.then(
-        //         function (response) {
-        //             if (response.data.response)
-        //                 $location.path('/');
-        //         }
-        //     )
-        // };
-        //
-        // $scope.toggleLeft = menuService.toggleLeft('left');
+    homeController.$inject = ['$scope', 'NgMap', 'homeData',];
+    function homeController($scope, NgMap, homeData) {
+        let vm = this;
+        let markers = homeData.markers;
+        $scope.isAdmin = (homeData.isAdmin === 1);
+
+        NgMap.getMap().then(map => vm.map = map);
+        vm.positions = [];
+
+        $scope.mapConfiguration = {
+            zoom: 7,
+            map_type: 'TERRAIN',
+            center: [41.87194, 12.56738]
+        };
+
+        angular.forEach(markers.result, function (value) {
+            vm.positions.push(value);
+        });
     }
 
     /**
@@ -91,44 +84,7 @@
      * @type {string[]}
      */
     mapController.$inject = ['$location', '$scope', '$timeout', 'NgMap', 'loginService', 'socketService', 'dataService'];
-    function mapController( $location, $scope, $timeout, NgMap, loginService, socketService, dataService) {
-        let vm = this;
-        $scope.mapConfiguration = {
-            zoom: 7,
-            map_type: 'TERRAIN',
-            center: [41.87194, 12.56738]
-        };
-
-        NgMap.getMap().then(map => vm.map = map);
-        vm.positions = [];
-
-        $timeout(function () {
-
-            socketService.getSocket().then(
-                function (socket) {
-                    socket.send(encodeRequest('get_session', {}))
-
-                    socket.onmessage = function (message) {
-                        let mess = JSON.parse(message.data);
-
-                        socket.send(encodeRequest('get_markers', {username: mess.result.session_name}));
-
-                        socket.onmessage = function (message) {
-                            let mess = JSON.parse(message.data);
-                            angular.forEach(mess.result, function (value) {
-                                vm.positions.push(value);
-                            })
-                        }
-                    }
-                }
-            );
-        }, 0);
-
-        $scope.clickLocation = function (e, index) {
-            sessionStorage.setItem('location', vm.positions[index].name);
-            $location.path('/canvas');
-        }
-    }
+    function mapController( $location, $scope, $timeout, NgMap, loginService, socketService, dataService) {}
 
     /**
      * Function that handles the canvas interaction
@@ -311,7 +267,7 @@
             }
         });
 
-        $scope.$watch('floors.defaultFloor', function (newValue) {
+        $scope.$watch('floors.defaultFloor', function () {
             socketService.floor.defaultFloor = $scope.floors.defaultFloor;
             if($scope.floors.result !== undefined) {
                 // socketService.sendMessage('get_floor_info', {location: sessionStorage.getItem('location'), floor: $scope.floors.defaultFloor}, showFloorMap);
@@ -440,14 +396,6 @@
     menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$timeout', '$mdSidenav', 'menuService', 'socketService'];
     function menuController($scope, $mdDialog, $mdEditDialog, $location, $timeout, $mdSidenav, menuService, socketService){
 
-        $scope.isAdmin = false;
-
-        // socketService.sendMessage('get_session', {}, function (message) {
-        //     if (message.action === 'get_session' && message.result.is_admin === 1) {
-        //         $scope.isAdmin = true;
-        //     }
-        // });
-
         $scope.toggleLeft = function(){
             $mdSidenav('left').toggle();
         };
@@ -459,14 +407,98 @@
                 targetEvent: event,
                 clickOutsideToClose: true,
                 controller: ['$scope', function ($scope) {
+                    let fileInput = null;
+
                     $scope.location = {
                         name: '',
                         description: '',
                         latitude: '',
                         longitude: '',
-                        resultOk: false,
-                        resultError: false,
+                        showSuccess: false,
+                        showError: false,
+                        message: '',
                         resultClass: ''
+                    };
+
+                    $scope.insertLocation = function(form){
+                        form.$submitted = true;
+
+                        if (form.$valid) {
+                            socketService.getSocket('get_user', {}).then(
+                                function (response) {
+                                    let file = null;
+                                    let fileName = null;
+
+                                    if (fileInput != null && fileInput.files.length !== 0) {
+                                        file = fileInput.files[0];
+                                        fileName = file.name;
+                                    }
+
+                                    let user = JSON.parse(response.data);
+
+                                    socketService.getSocket('insert_location', {
+                                        user       : user.result.id,
+                                        name       : $scope.location.name,
+                                        description: $scope.location.description,
+                                        latitude   : $scope.location.latitude,
+                                        longitude  : $scope.location.longitude,
+                                        imageName: fileName,
+                                    }).then(
+                                        function (result) {
+                                            if (result !== undefined && result !== 0) {
+                                                if (file != null){
+                                                    convertImageToBase64(file).then(
+                                                        function (result) {
+                                                            socketService.getSocket('save_marker_image', {imageName: fileName, image: result })
+                                                                .then(function (result) {
+                                                                    let message = JSON.parse(result.data);
+                                                                    if (message.result === false){
+                                                                        $scope.location.showSuccess = false;
+                                                                        $scope.location.showError = true;
+                                                                        $scope.location.message = "Posizione inserita senza salvare l'immagine";
+                                                                        $scope.resultClass = 'background-orange'
+                                                                    }
+                                                                });
+                                                        }
+                                                    )
+                                                }
+                                                $scope.location.resultClass = 'background-green';
+                                                $scope.location.showSuccess = true;
+                                                $scope.location.showError = false;
+                                                $scope.location.message = 'Posizione inserita con successo';
+                                                $timeout(function () {
+                                                    $mdDialog.hide();
+                                                }, 1000);
+                                            } else {
+                                                $scope.location.showSuccess =  false;
+                                                $scope.location.showError =  true;
+                                                $scope.location.message = 'Impossibile inserire la posizione.';
+                                                $scope.location.resultClass = 'background-red';
+                                            }
+
+                                            $scope.$apply();
+                                        }
+                                    ).catch(function () {
+                                        $scope.location.showSuccess = false;
+                                        $scope.location.showError = true;
+                                        $scope.location.message = 'Impossibile inserire la posizione.';
+                                        $scope.location.resultClass = 'background-red';
+                                    })
+                                }
+                            ).catch(function () {
+                                $scope.location.showSuccess = false;
+                                $scope.location.showError = true;
+                                $scope.location.message = 'Impossibile communicare con il server';
+                                $scope.location.resultClass = 'background-red';
+                            })
+                        }else {
+                            $scope.location.resultClass = 'background-red';
+                        }
+                    };
+
+                    $scope.uploadMarkerImage = function(){
+                        fileInput = document.getElementById('marker-image');
+                        fileInput.click();
                     };
 
                     $scope.hide = function () {
@@ -645,7 +677,6 @@
                     };
 
                     let getFloors = function(message){
-                        console.log(message.result)
                         $scope.floors = message.result;
                     };
 

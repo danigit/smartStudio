@@ -34,10 +34,12 @@ class Test{
                 break;
             case 'change_password': var_dump($this->conn->change_password('da', 'dani'));
                 break;
+            case 'insert_location': var_dump($this->conn->insert_location('1', 'Universita1', 'Uni1', '414', '110', 'image.png'));
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('change_password');
+$test->test_function('insert_location');

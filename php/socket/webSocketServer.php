@@ -7,7 +7,7 @@
  * Time: 19.58
  */
 
-require_once '../ajax/communication.php';
+require_once '../ajax/helper.php';
 
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
@@ -105,17 +105,6 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
-            case 'is_logged':{
-                $result['action'] = 'is_logged';
-
-                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username']))
-                    $result['result'] = array('session_name' => $_SESSION['username'], 'id' => $_SESSION['id'], 'is_admin' => $_SESSION['is_admin']);
-                else
-                    $result['result'] = 'not_logged';
-
-                $this->clients[$from->resourceId]->send(json_encode($result));
-                break;
-            }
             case 'logout':{
                 $result['action'] = 'logout';
 
@@ -129,23 +118,42 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
-            case 'get_session':{
-                $result['action'] = 'get_session';
+            case 'get_user':{
+                $result['action'] = 'get_user';
 
                 if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username']))
                     $result['result'] = array('session_name' => $_SESSION['username'], 'id' => $_SESSION['id'], 'is_admin' => $_SESSION['is_admin']);
                 else
-                    $result['result'] = 'no_session';
+                    $result['result'] = 'no_user';
 
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
             case 'get_markers':{
                 $result['action'] = 'get_markers';
-                echo $decoded_message['data']['username'];
                 $query = $this->connection->get_markers($decoded_message['data']['username']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'insert_location':{
+                $result['action'] = 'insert_location';
+                $query = $this->connection->insert_location($decoded_message['data']['user'], $decoded_message['data']['name'], $decoded_message['data']['description'],
+                    $decoded_message['data']['latitude'], $decoded_message['data']['longitude'], $decoded_message['data']['imageName']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'save_marker_image':{
+                $result['action'] = 'save_marker_image';
+
+                $decodedFile = explode('data:image/png;base64,', $decoded_message['data']['image']);
+                $decodedFile = base64_decode($decodedFile[1]);
+                $result['result'] = file_put_contents(MARKERS_IMAGES_PATH . $decoded_message['data']['imageName'], $decodedFile);
 
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;

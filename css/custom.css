@@ -9,6 +9,10 @@ DIMENSIONS
     height: 100%;
 }
 
+.width-30{
+    width: 30%;
+}
+
 .width-50{
     width: 50%;
 }
@@ -191,12 +195,19 @@ PADDING
     padding: 10px;
 }
 
+.padding-right-10-px{
+    padding-right: 10px;
+}
+
+.padding-left-10-px{
+    padding-left: 10px;
+}
 .padding-lr-15-px{
     padding: 0 15px 0 15px;
 }
 
 .popup-padding{
-    padding: 5px 70px 5px 70px;
+    padding: 5px 70px 20px 70px;
 }
 
 
@@ -261,7 +272,7 @@ COLOR
 *******************************************************************/
 
 .color-white{
-    color: #FFFFFF;
+    color: #FFFFFF!important;
 }
 
 .color-red{
@@ -296,6 +307,9 @@ COLOR
     color: #4fc3f7;
 }
 
+.color-orange{
+    color: #F76E41!important;
+}
 
 
 

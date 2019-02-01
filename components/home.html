@@ -1,15 +1,14 @@
     <div>
         <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
             <!--map container-->
-            <div ng-controller="mapController as vm" id="map-div">
-
+            <div id="map-div">
                 <ng-map center="{{mapConfiguration.center}}" zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="height-100-vh">
-                    <custom-marker ng-repeat="marker in vm.positions track by $index"
+                    <custom-marker ng-repeat="marker in homeCtrl.positions"
                                    id="custom-marker-{{$index}}"
                                    on-click="clickLocation($index)"
                                    position="{{marker.position}}">
                         <div>
-                            <img ng-src="../img/{{marker.icon}}" alt="{{marker.name}}" title="{{marker.name}}">
+                            <img ng-src="../img/markers-images/{{marker.icon}}" alt="{{marker.name}}" title="{{marker.name}}">
                         </div>
                     </custom-marker>
                 </ng-map>
@@ -22,7 +21,6 @@
                 <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
                     <img id="open-menu-icon" src="../img/icons/menu-arrow.png" alt="">
                 </div>
-
                 <section layout="row" flex>
 
                     <md-sidenav id="menu-panel" class="md-sidenav-left" md-component-id="left" md-disable-backdrop md-whiteframe="4">
@@ -42,7 +40,6 @@
                             </div>
 
                             <div layout="column">
-
                                 <md-list>
                                     <md-list-item ng-show="isAdmin" ng-click="insertLocation()"><p>Insert location</p><img src="../img/icons/add-location.png" class="menu-list-icon" alt=""></md-list-item>
                                     <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../img/icons/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
@@ -51,6 +48,23 @@
                                     <md-list-item ng-click=""><p>Cambia password</p><img src="../img/icons/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                     <md-list-item ng-click="logout()"><p>Logout</p><img src="../img/icons/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 </md-list>
+
+                                <md-subheader class="background-lightcyan color-black margin-bottom-10-px margin-top-10-px">Azzioni immediate</md-subheader>
+
+                                <div id="change-floor-container" layout="column" class="padding-10-px" layout-align="center center">
+
+                                    <md-input-container class="margin-bottom-0 margin-top-10">
+
+                                        <label>Cerca WeTag</label>
+
+                                        <md-select ng-model="floors.defaultFloor">
+
+                                            <md-option ng-repeat="floor in tags" ng-value="floor.name">
+                                                {{floor.name}}
+                                            </md-option>
+                                        </md-select>
+                                    </md-input-container>
+                                </div>
                             </div>
                         </md-content>
                     </md-sidenav>

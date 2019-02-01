@@ -95,3 +95,28 @@ function openFullScreen(elem) {
         elem.msRequestFullscreen();
     }
 }
+
+function convertImageToBase64(img) {
+    if (img == null)
+        return;
+
+    let image = new Image();
+    image.src = URL.createObjectURL(img);
+
+    let canvas = document.createElement('canvas');
+    let context = canvas.getContext('2d');
+    let data = '';
+
+    return new Promise(function (resolve) {
+
+        image.onload = function() {
+            canvas.height = this.height;
+            canvas.width  = this.width;
+
+            context.drawImage(image, 0, 0);
+            data = canvas.toDataURL('image/png');
+
+            resolve(data);
+        }
+    })
+}

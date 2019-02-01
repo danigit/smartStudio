@@ -17,18 +17,14 @@
 
     dataService.$inject = [];
     function dataService(){
-        let service = this;
-
-        service.isAdmin = false;
-
     }
 
     /**
      * Function that manage the login requests and login business logic
      * @type {string[]}
      */
-    loginService.$inject = ['$http', 'socketService'];
-    function loginService($http, socketService) {
+    loginService.$inject = [];
+    function loginService() {
         let service = this;
 
         //function that creates a new session for the user
@@ -53,8 +49,14 @@
      * Function that handle home page requests and home page business logic
      * @type {string[]}
      */
-    homeService.$inject = [];
-    function homeService() {
+    homeService.$inject = ['socketService'];
+    function homeService(socketService) {
+
+        let service = this;
+
+        service.getServerMarkers = function(username) {
+            return socketService.getSocket('get_markers', {username: username});
+        }
     }
 
     /**
@@ -107,6 +109,7 @@
     socketService.$inject = [];
     function socketService(){
         let service = this;
+
         let server = new WebSocket('ws://localhost:8090');
         let isOpen = false;
 
@@ -118,15 +121,32 @@
             isOpen = true;
         };
 
-        service.getSocket = function(){
-            return new Promise(function (resolve, reject) {
-                if (isOpen){
-                    resolve(server);
-                }else{
-                    // reject('error');
-                }
-            });
+        server.onerror = function(){
         };
+
+        service.getSocket = function(action, data){
+            return new Promise(function (resolve, reject) {
+
+                if (isOpen) {
+                    server.send(encodeRequest(action, data));
+                    server.onmessage = function (message) {
+                        resolve(message);
+                    }
+                }
+                server.onopen = function () {
+                    server.send(encodeRequest(action, data));
+                    server.onmessage = function(message) {
+                        resolve(message);
+                        isOpen = true;
+                    }
+                };
+
+                server.onerror = function (error) {
+                    reject(error);
+                }
+            })
+        };
+
     }
 
     /**

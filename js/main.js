@@ -2,80 +2,69 @@
     'use strict';
 
     //loading the angular framework and the dependencies
-    let main = angular.module('main', ['ngMaterial', 'ngRoute', 'ngMessages', 'ngMap', 'md.data.table']);
+    let main = angular.module('main', ['ngMaterial', 'ui.router', 'ngMessages', 'ngMap', 'md.data.table']);
 
     //Configuring the router and the angular initial data
-    main.config(function ($routeProvider) {
-        $routeProvider
-            .when('/', {
-                resolve: {
-                    check: function ($location, $timeout, socketService) {
-                        // if the user is logged the I redirect to the home
-                        $timeout(function () {
-                            socketService.getSocket().then(
-                                function (socket) {
-                                    socket.send(encodeRequest('is_logged', {}));
+    main.config(RoutesConfig);
 
-                                    socket.onmessage = function (message) {
-                                        let mess = JSON.parse(message.data);
-                                        if (mess.result.id !== undefined) {
-                                            $location.path('/home');
-                                        }
-                                    }
-                                }
-                            )
-                        }, 0)
+    RoutesConfig.$inject = ['$stateProvider', '$urlRouterProvider'];
+    function RoutesConfig($stateProvider, $urlRouterProvider) {
 
-                    },
-                },
-                templateUrl: mainPath + 'components/login.html',
-                controller: 'loginController'})
-            .when('/home',{
-                resolve: {
-                    check: function ($location, $timeout, socketService) {
-                        //if the user is not logged then I redirect to the login page
-                        $timeout(function () {
-                            socketService.getSocket().then(
-                                function (socket) {
-                                    socket.send(encodeRequest('is_logged', {}));
-                                    socket.onmessage = function (message) {
-                                        let mess = JSON.parse(message.data);
-                                        if (mess.result === 'not_logged')
-                                            $location.path('/');
-                                    }
-                                }
-                            )
-                        }, 0)
-                    },
-                },
-                templateUrl: mainPath + 'components/home.html',
-                controller: 'homeController'})
-            .when('/canvas',{
-                resolve: {
-                    check: function ($location, $timeout, socketService) {
-                        // if the user is not logged then I redirect to the login page
-                        $timeout(function () {
-                            socketService.getSocket().then(
-                                function (socket) {
-                                    socket.send(encodeRequest('is_logged', {}));
-                                    socket.onmessage = function (message) {
-                                        let mess = JSON.parse(message.data);
-                                        if (mess.result === 'not_logged')
-                                            $location.path('/');
-                                    }
-                                }
-                            )
-                        }, 0)
-                    },
-                },
-                templateUrl: mainPath + 'components/canvas.html',
-                controller: 'canvasController'})
-            .when('/recover-password',{
-                templateUrl: mainPath + 'components/recover-password.html',
-                controller: 'recoverPassController'})
-            .when('/recover-password-code',{
-                templateUrl: mainPath + 'components/recover-password-code.html',
-                controller: 'recoverPassController'
+        $urlRouterProvider.otherwise('/login');
+
+        $stateProvider
+            .state('login', {
+                url: '/login',
+                templateUrl: '../components/login.html',
+                controller: 'loginController as loginCtr',
+                resolve:{
+                    goToHomeIfLoggedIn: ['socketService', '$state', function (socketService, $state) {
+                        socketService.getSocket('get_user', {})
+                            .then(function (response) {
+                                let message = JSON.parse(response.data);
+                                if (message.result !== 'no_user')
+                                    $state.go('home');
+                            });
+                    }]
+                }
             })
-    });
+
+            .state('home', {
+                url: '/home',
+                templateUrl: '../components/home',
+                controller: 'homeController as homeCtrl',
+                resolve: {
+                    homeData: ['homeService', 'socketService', '$state', '$q', function (homeService, socketService, $state, $q) {
+                        let promise = $q.defer();
+
+                        socketService.getSocket('get_user', {}).then(
+                            function (response) {
+                                let mess = JSON.parse(response.data);
+                                if (mess.result.session_name !== undefined) {
+                                    socketService.getSocket('get_markers', {username: mess.result.session_name}).then(
+                                        function (message) {
+                                            let result = {
+                                                markers: JSON.parse(message.data),
+                                                isAdmin: mess.result.is_admin
+                                            };
+                                            promise.resolve(result);
+                                        }
+                                    )
+                                }else {
+                                    $state.go('login');
+                                }
+                            }
+                        );
+
+                        return promise.promise;
+                    }]
+                }
+            })
+
+            .state('canvas', {
+                url: '/canvas',
+                templateUrl: '../components/canvas.html',
+                controller: 'mapController as mapCtrl'
+            })
+    }
 })();
