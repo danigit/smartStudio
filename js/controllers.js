@@ -425,71 +425,74 @@
                         form.$submitted = true;
 
                         if (form.$valid) {
-                            socketService.getSocket('get_user', {}).then(
+                            let file = null;
+                            let fileName = null;
+
+                            if (fileInput != null && fileInput.files.length !== 0) {
+                                file = fileInput.files[0];
+                                fileName = file.name;
+                            }
+
+                            socketService.getSocket('get_user', {})
+                                .then(
                                 function (response) {
-                                    let file = null;
-                                    let fileName = null;
-
-                                    if (fileInput != null && fileInput.files.length !== 0) {
-                                        file = fileInput.files[0];
-                                        fileName = file.name;
-                                    }
-
                                     let user = JSON.parse(response.data);
 
-                                    socketService.getSocket('insert_location', {
+                                    return socketService.getSocket('insert_location', {
                                         user       : user.result.id,
                                         name       : $scope.location.name,
                                         description: $scope.location.description,
                                         latitude   : $scope.location.latitude,
                                         longitude  : $scope.location.longitude,
                                         imageName: fileName,
-                                    }).then(
-                                        function (result) {
-                                            if (result !== undefined && result !== "0") {
-                                                if (file != null){
-                                                    convertImageToBase64(file).then(
-                                                        function (result) {
-                                                            socketService.getSocket('save_marker_image', {imageName: fileName, image: result })
-                                                                .then(function (result) {
-                                                                    let message = JSON.parse(result.data);
-                                                                    if (message.result === false){
-                                                                        $scope.location.showSuccess = false;
-                                                                        $scope.location.showError = true;
-                                                                        $scope.location.message = "Posizione inserita senza salvare l'immagine";
-                                                                        $scope.resultClass = 'background-orange'
-                                                                    }
-                                                                });
-                                                        }
-                                                    )
-                                                }
-                                                $scope.location.resultClass = 'background-green';
-                                                $scope.location.showSuccess = true;
-                                                $scope.location.showError = false;
-                                                $scope.location.message = 'Posizione inserita con successo';
-                                                $timeout(function () {
-                                                    $mdDialog.hide();
-                                                }, 1000);
-                                            } else {
-                                                $scope.location.showSuccess =  false;
-                                                $scope.location.showError =  true;
-                                                $scope.location.message = 'Impossibile inserire la posizione.';
-                                                $scope.location.resultClass = 'background-red';
-                                            }
-
-                                            $scope.$apply();
+                                    })
+                                })
+                                .then(
+                                function (result) {
+                                    let res = JSON.parse(result.data);
+                                    if (res.result !== undefined && res.result !== 0) {
+                                        if (file != null){
+                                            return convertImageToBase64(file);
                                         }
-                                    ).catch(function () {
-                                        $scope.location.showSuccess = false;
-                                        $scope.location.showError = true;
+                                    } else {
+                                        $scope.location.showSuccess =  false;
+                                        $scope.location.showError =  true;
                                         $scope.location.message = 'Impossibile inserire la posizione.';
                                         $scope.location.resultClass = 'background-red';
-                                    })
+                                    }
+                                })
+                                .then(
+                                    function (result) {
+                                        return socketService.getSocket('save_marker_image', {imageName: fileName, image: result })
+                                })
+                                .then(function (result) {
+                                    let message = JSON.parse(result.data);
+
+                                    if (message.result === false){
+                                        console.log('image not inserted');
+                                        $scope.location.showSuccess = false;
+                                        $scope.location.showError = true;
+                                        $scope.location.message = "Posizione inserita senza salvare l'immagine";
+                                        $scope.resultClass = 'background-orange'
+                                    }else {
+                                        $scope.location.resultClass = 'background-green';
+                                        $scope.location.showSuccess = true;
+                                        $scope.location.showError = false;
+                                        $scope.location.message = 'Posizione inserita con successo';
+
+                                        $scope.$apply();
+
+                                        $timeout(function () {
+                                            // $mdDialog.hide();
+                                            window.location.reload();
+                                        }, 1000);
+                                    }
                                 }
-                            ).catch(function () {
+                            ).catch(function (error) {
+                                console.log(error);
                                 $scope.location.showSuccess = false;
                                 $scope.location.showError = true;
-                                $scope.location.message = 'Impossibile communicare con il server';
+                                $scope.location.message = 'Impossibile inserire la posizione';
                                 $scope.location.resultClass = 'background-red';
                             })
                         }else {

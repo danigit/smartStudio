@@ -81,11 +81,11 @@
                         <tbody md-body>
                             <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true" ng-repeat="row in historyRows | limitTo: query.limit: (query.page -1 ) * query.limit">
                                 <td md-cell>{{row.time}}</td>
-                                <td md-cell ng-class="{'md-placeholder': !row.event}">{{row.event || '-'}}</td>
-                                <td md-cell ng-class="{'md-placeholder': !row.tag}">{{row.tag || '-'}}</td>
-                                <td md-cell ng-class="{'md-placeholder': !row.anchor}">{{row.anchor || '-'}}</td>
-                                <td md-cell ng-class="{'md-placeholder': !row.tag_x_pos}">{{row.tag_x_pos || '-'}}</td>
-                                <td md-cell ng-class="{'md-placeholder': !row.tag_y_pos}">{{row.tag_y_pos || '-'}}</td>
+                                <td md-cell ng-class="{'md-placeholder': !row.event}">{{row.event || 'Dato non disponibile'}}</td>
+                                <td md-cell ng-class="{'md-placeholder': !row.tag}">{{row.tag || 'Dato non disponibile'}}</td>
+                                <td md-cell ng-class="{'md-placeholder': !row.anchor}">{{row.anchor || 'Dato non disponibile'}}</td>
+                                <td md-cell ng-class="{'md-placeholder': !row.tag_x_pos}">{{row.tag_x_pos || 'Dato non disponibile'}}</td>
+                                <td md-cell ng-class="{'md-placeholder': !row.tag_y_pos}">{{row.tag_y_pos || 'Dato non disponibile'}}</td>
                             </tr>
                         </tbody>
                     </table>
