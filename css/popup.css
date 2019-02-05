@@ -1,3 +1,7 @@
 .success-toolbar{
     background-color: green!important;
 }
+
+.history-filter{
+    padding: 10px 40px 10px 40px;
+}

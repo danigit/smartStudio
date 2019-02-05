@@ -40,7 +40,7 @@ class Connection{
     function register($username, $password){
         $hash_code = password_hash($password, PASSWORD_BCRYPT);
 
-        $this->query = 'INSERT INTO user (username, password, email,  name, role) VALUES (?, ?, ?, ?, ?)';
+        $this->query = 'INSERT INTO user (USERNAME, PASSWORD, EMAIL,  NAME, ROLE) VALUES (?, ?, ?, ?, ?)';
 
         $this->result = $this->execute_inserting($this->query, 'ssssi', $username, $hash_code, 'dani@gmail.com', 'dani', 1);
 
@@ -59,7 +59,7 @@ class Connection{
      * @return db_errors|array - the user id on success or an error on fail
      */
     function login($username, $password){
-        $this->query = 'SELECT id, password, role FROM user WHERE  username = ?';
+        $this->query = 'SELECT ID, PASSWORD, ROLE FROM user WHERE  USERNAME = ?';
 
         $statement = $this->execute_selecting($this->query, 's', $username);
 
@@ -87,7 +87,7 @@ class Connection{
         $this->connection->autocommit(false);
         $errors = array();
 
-        $this->query = 'SELECT id  FROM user WHERE  email = ?';
+        $this->query = 'SELECT ID  FROM user WHERE  EMAIL = ?';
         $statement = $this->execute_selecting($this->query, 's', $email);
 
         if ($statement instanceof db_errors)
@@ -103,7 +103,7 @@ class Connection{
 
         $statement->close();
 
-        $this->query = 'INSERT INTO recover_password (email, code) VALUES (?, ?)';
+        $this->query = 'INSERT INTO recover_password (EMAIL, CODE) VALUES (?, ?)';
         $result = $this->execute_inserting($this->query, 'ss', $email, $code);
 
         if ($result instanceof db_errors)
@@ -135,7 +135,7 @@ class Connection{
         $this->connection->autocommit(false);
         $errors = array();
 
-        $this->query = 'SELECT email  FROM recover_password WHERE  code = ?';
+        $this->query = 'SELECT EMAIL FROM recover_password WHERE  CODE = ?';
         $statement = $this->execute_selecting($this->query, 's', strtoupper($code));
 
         if ($statement instanceof db_errors)
@@ -154,7 +154,7 @@ class Connection{
 
         $statement->close();
 
-        $this->query = "UPDATE user SET password = ? WHERE email = ? AND username = ?";
+        $this->query = "UPDATE user SET PASSWORD = ? WHERE EMAIL = ? AND USERNAME = ?";
         $statement = $this->execute_selecting($this->query, 'sss', $hash_password, $email, $username);
 
         if ($statement instanceof db_errors)
@@ -193,7 +193,7 @@ class Connection{
 
         $username = $_SESSION['username'];
 
-        $this->query = 'SELECT password FROM user WHERE username = ?';
+        $this->query = 'SELECT PASSWORD FROM user WHERE USERNAME = ?';
         $statement = $this->execute_selecting($this->query, 's', $username);
 
         if ($statement instanceof db_errors)
@@ -211,14 +211,14 @@ class Connection{
 
         $hash_code = password_hash($new_password, PASSWORD_BCRYPT);
 
-        $this->query = "UPDATE user SET password = ? WHERE username = ?";
+        $this->query = "UPDATE user SET PASSWORD = ? WHERE USERNAME = ?";
 
         $statement = $this->execute_selecting($this->query, 'ss', $hash_code, $username);
 
         if ($statement instanceof db_errors)
-            array_push($errors, 'db_error');
+            return $statement;
         else if ($statement == false)
-            array_push($errors, 'false');
+            return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
 
         return $this->connection->affected_rows;
     }
@@ -228,9 +228,9 @@ class Connection{
      * @return array|bool|db_errors|mysqli_result
      */
     function get_markers($username){
-        $this->query = 'SELECT location.name as name, latitude, longitude, icon FROM location 
-                  JOIN user_has_location uhl ON location.id = uhl.location_id 
-                  JOIN user u on uhl.user_id = u.id WHERE username = ?';
+        $this->query = 'SELECT location.NAME, LATITUDE, LONGITUDE, ICON FROM location 
+                  JOIN user_has_location uhl ON location.ID = uhl.LOCATION_ID 
+                  JOIN user u on uhl.USER_ID = u.ID WHERE USERNAME = ?';
 
         $statement = $this->execute_selecting($this->query, 's', $username);
 
@@ -244,10 +244,10 @@ class Connection{
 
         while ($row = mysqli_fetch_assoc($this->result)) {
             $position = array();
-            $position[] = $row['latitude'];
-            $position[] = $row['longitude'];
+            $position[] = $row['LATITUDE'];
+            $position[] = $row['LONGITUDE'];
 
-            $result_array[] = array('name' => $row['name'], 'position' => $position, "icon" => $row['icon']);
+            $result_array[] = array('name' => $row['NAME'], 'position' => $position, "icon" => $row['ICON']);
         }
 
         return $result_array;
@@ -257,7 +257,7 @@ class Connection{
         $this->connection->autocommit(false);
         $errors = array();
 
-        $this->query = "INSERT INTO location (name, description, latitude, longitude, icon) VALUES (?, ?, ?, ?, ?)";
+        $this->query = "INSERT INTO location (NAME, DESCRIPTION, LATITUDE, LONGITUDE, ICON) VALUES (?, ?, ?, ?, ?)";
         $statement = $this->execute_inserting($this->query, 'sssss', $name, $description, $latitude, $longitude, $image_name);
 
         if ($statement instanceof db_errors)
@@ -267,7 +267,7 @@ class Connection{
 
         $this->result =  $this->connection->insert_id;
 
-        $this->query = 'INSERT INTO user_has_location (user_id, location_id) VALUES (?, ?)';
+        $this->query = 'INSERT INTO user_has_location (USER_ID, LOCATION_ID) VALUES (?, ?)';
         $statement = $this->execute_inserting($this->query, 'ii', $user, $this->result);
 
         if ($statement instanceof db_errors)
@@ -282,6 +282,68 @@ class Connection{
         }
 
         return $this->result;
+    }
+
+    function get_history($fromDate, $toDate, $tag, $event){
+
+        $statement = null;
+
+        if ($tag == null && $event == null) {
+            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
+                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID
+                            WHERE history.TIME BETWEEN ? AND ?";
+            $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
+        } else if ($event == null && $tag != null) {
+            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
+                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID
+                            WHERE tag.NAME = ? AND history.TIME BETWEEN ? AND ?";
+            $statement = $this->execute_selecting($this->query, 'sss', $tag, $fromDate, $toDate);
+        } else if ($event != null && $tag == null){
+            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
+                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID
+                            WHERE event.DESCRIPTION = ? AND history.TIME BETWEEN ? AND ?";
+            $statement = $this->execute_selecting($this->query, 'sss', $event, $fromDate, $toDate);
+        } else if ($event != null && $tag != null){
+            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
+                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID
+                            WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND history.TIME BETWEEN ? AND ?";
+            $statement = $this->execute_selecting($this->query, 'ssss', $event, $tag, $fromDate, $toDate);
+        }
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+
+        $this->result = $statement->get_result();
+
+        $array_result = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
+                                    'tag_y_pos' => $row['TAG_Y_POS']);
+        }
+
+        return $array_result;
+//        $statement = $this->execute_selecting($this->query, 's', $username);
+
+//        if ($statement instanceof db_errors)
+//            return $statement;
+//        else if ($statement == false)
+//            return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+//
+//        $this->result = $statement->get_result();
+//        $result_array = array();
+//
+//        while ($row = mysqli_fetch_assoc($this->result)) {
+//            $position = array();
+//            $position[] = $row['latitude'];
+//            $position[] = $row['longitude'];
+//
+//            $result_array[] = array('name' => $row['name'], 'position' => $position, "icon" => $row['icon']);
+//        }
+
+//        return $result_array;
     }
 
     /**
@@ -355,12 +417,35 @@ class Connection{
         return $result_array;
     }
 
-    function get_tags($location){
+//    function get_tags_by_location($location){
+//
+//        $this->query = 'SELECT tag.id, tag.name FROM tag JOIN anchor ON tag.anchor_id = anchor.id
+//                        JOIN floor ON anchor.floor_id = floor.id JOIN location ON floor.location_id = location.id WHERE location.name = ?';
+//
+//        $statement = $this->execute_selecting($this->query, 's', $location);
+//
+//        if ($statement instanceof db_errors)
+//            return $statement;
+//        else if ($statement == false)
+//            return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+//
+//        $this->result = $statement->get_result();
+//        $result_array = array();
+//
+//        while ($row = mysqli_fetch_assoc($this->result)) {
+//            $result_array[] = array('id' => $row['id'], 'name' => $row['name']);
+//        }
+//
+//        return $result_array;
+//    }
 
-        $this->query = 'SELECT tag.id, tag.name FROM tag JOIN anchor ON tag.anchor_id = anchor.id 
-                        JOIN floor ON anchor.floor_id = floor.id JOIN location ON floor.location_id = location.id WHERE location.name = ?';
+    function get_tags_by_user($user){
 
-        $statement = $this->execute_selecting($this->query, 's', $location);
+        $this->query = 'SELECT t.ID, t.NAME FROM user JOIN user_has_location uhl ON user.ID = uhl.USER_ID
+                        JOIN location l ON uhl.LOCATION_ID = l.ID JOIN floor ON l.ID = floor.LOCATION_ID JOIN anchor ON floor.ID = anchor.FLOOR_ID
+                        JOIN tag t on anchor.ID = t.ANCHOR_ID WHERE user.USERNAME = ?';
+
+        $statement = $this->execute_selecting($this->query, 's', $user);
 
         if ($statement instanceof db_errors)
             return $statement;
@@ -371,10 +456,27 @@ class Connection{
         $result_array = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $result_array[] = array('id' => $row['id'], 'name' => $row['name']);
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME']);
         }
 
         return $result_array;
+    }
+
+    function get_events(){
+        $this->query = 'SELECT ID, DESCRIPTION, ICON_NAME FROM event';
+
+        $this->result = $this->connection->query($this->query);
+
+        if ($this->result == false)
+            return new db_errors(db_errors::$ERROR_ON_TEST);
+
+        $array_result = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $array_result[] = array('id' => $row['ID'], 'description' => $row['DESCRIPTION'], 'icon_name' => $row['ICON_NAME']);
+        }
+
+        return $array_result;
     }
 
     function get_floors($location){
@@ -499,3 +601,6 @@ class Connection{
         return $statement;
     }
 }
+
+//$conn = new Connection();
+//$conn->register('dani', 'dani');

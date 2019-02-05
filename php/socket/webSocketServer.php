@@ -158,6 +158,30 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'get_history':{
+                $result['action'] = 'get_history';
+                $fromDate = $decoded_message['data']['fromDate'];
+                $toDate = $decoded_message['data']['toDate'];
+                $tag = $decoded_message['data']['tag'];
+                $event = $decoded_message['data']['event'];
+
+
+                $query = $this->connection->get_history($fromDate, $toDate, $tag, $event);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'change_password':{
+                $result['action'] = 'change_password';
+                $query = $this->connection->change_password($decoded_message['data']['oldPassword'], $decoded_message['data']['newPassword']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             case 'get_floor_info':{
                 $result['action'] = 'get_floor_info';
                 $query = $this->connection->get_floor_info($decoded_message['data']['location'], $decoded_message['data']['floor']);
@@ -185,9 +209,18 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
-            case 'get_tags':{
-                $result['action'] = 'get_tags';
-                $query = $this->connection->get_tags($decoded_message['data']['location']);
+            case 'get_tags_by_user':{
+                $result['action'] = 'get_tags_by_user';
+                $query = $this->connection->get_tags_by_user($decoded_message['data']['user']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'get_events':{
+                $result['action'] = 'get_events';
+                $query = $this->connection->get_events();
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

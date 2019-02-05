@@ -41,6 +41,7 @@
                         $scope.errorHandeling.noConnection = false;
                         $scope.errorHandeling.wrongData    = true;
                     }
+                    $scope.$apply();
                 }
             ).catch(
                 function () {
@@ -393,8 +394,8 @@
         // socketService.sendMessage('get_floors', {location: sessionStorage.getItem('location')}, getFloors);
     }
 
-    menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$timeout', '$mdSidenav', 'menuService', 'socketService'];
-    function menuController($scope, $mdDialog, $mdEditDialog, $location, $timeout, $mdSidenav, menuService, socketService){
+    menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$state', '$filter', '$timeout', '$mdSidenav', 'dataService', 'menuService', 'socketService'];
+    function menuController($scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, dataService, menuService, socketService){
 
         $scope.toggleLeft = function(){
             $mdSidenav('left').toggle();
@@ -445,7 +446,7 @@
                                         imageName: fileName,
                                     }).then(
                                         function (result) {
-                                            if (result !== undefined && result !== 0) {
+                                            if (result !== undefined && result !== "0") {
                                                 if (file != null){
                                                     convertImageToBase64(file).then(
                                                         function (result) {
@@ -507,6 +508,139 @@
                 }]
             })
         };
+
+        $scope.viewHistory = function(){
+            $mdDialog.show({
+                templateUrl: '../components/history.html',
+                parent: angular.element(document.body),
+                targetEvent: event,
+                clickOutsideToClose: true,
+                controller: ['$scope', function ($scope) {
+                    let from = new Date();
+                    from.setDate(from.getDate() - 7);
+
+                    $scope.history = {
+                        fromDate: from,
+                        toDate: new Date(),
+                        tags: null,
+                        events: null,
+                        selectedTag: null,
+                        selectedEvent: null
+                    };
+
+                    $scope.query = {
+                        limitOptions: [5, 10, 15],
+                        order: 'Data',
+                        limit: 5,
+                        page: 1
+                    };
+
+                    $scope.historyRows = [];
+
+
+
+                    $scope.$watchGroup(['history.fromDate', 'history.toDate', 'history.selectedTag', 'history.selectedEvent'], function (newValues) {
+                        let fromDate = $filter('date')(newValues[0], 'yyyy-MM-dd');
+                        let toDate = $filter('date')(newValues[1], 'yyyy-MM-dd');
+
+                        socketService.getSocket('get_events', {})
+                            .then(function (response) {
+                                console.log(response);
+                                let message = JSON.parse(response.data);
+                                $scope.history.events = message.result;
+                                $scope.history.tags = dataService.tags;
+                                $scope.$apply();
+                                return socketService.getSocket('get_history', {fromDate: fromDate, toDate: toDate, tag: newValues[2], event: newValues[3]})
+                            })
+                            .then(function (result) {
+                                let mess = JSON.parse(result.data);
+                                $scope.historyRows = mess.result;
+                                $scope.$apply();
+                            }
+                        );
+                    });
+
+                    $scope.hide = function () {
+                        $mdDialog.hide();
+                    }
+                }]
+
+            });
+        };
+
+        $scope.changePassword = function () {
+            $mdDialog.show({
+                templateUrl        : '../components/change-password.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
+                clickOutsideToClose: true,
+                controller         : ['$scope', function ($scope) {
+                    $scope.changePassword = {
+                        oldPassword: '',
+                        newPassword: '',
+                        reNewPassword: '',
+                        resultClass: '',
+                        showSuccess: false,
+                        showError: false,
+                        message: false
+                    };
+
+                    $scope.sendPassword = function (form) {
+                        form.$submitted = true;
+
+                        if ($scope.changePassword.newPassword !== $scope.changePassword.reNewPassword){
+                            $scope.changePassword.resultClass = 'background-red';
+                            $scope.changePassword.showError = true;
+                            $scope.changePassword.showSuccess    = false;
+                            $scope.changePassword.message = "Le password devono coincidere!";
+                        }else{
+                            if (form.$valid ) {
+
+                                socketService.getSocket('change_password', {oldPassword: $scope.changePassword.oldPassword, newPassword: $scope.changePassword.newPassword})
+                                    .then(function (result) {
+                                        let message = JSON.parse(result.data);
+                                        if (message.result === 'wrong_old'){
+                                            $scope.changePassword.resultClass = 'background-red';
+                                            $scope.changePassword.showError = true;
+                                            $scope.changePassword.showSuccess = false;
+                                            $scope.changePassword.message = 'Vecchia password non valida';
+                                        }else if (message.result === 'error_on_changing_password'){
+                                            $scope.changePassword.resultClass = 'background-red';
+                                            $scope.changePassword.showSuccess = false;
+                                            $scope.changePassword.showError = true;
+                                            $scope.changePassword.message = "Impossibile cambiare la password!";
+                                            $timeout(function () {
+                                                $mdDialog.hide();
+                                            }, 1000);
+                                        }else {
+                                            $scope.changePassword.resultClass = 'background-green';
+                                            $scope.changePassword.showSuccess = true;
+                                            $scope.changePassword.showError = false;
+                                            $scope.changePassword.message = "Password cambiata correnttamente!";
+                                            $timeout(function () {
+                                                $mdDialog.hide();
+                                            }, 1000);
+                                        }
+                                        $scope.$apply();
+                                    });
+                            }else {
+                                $scope.changePassword.resultClass = 'background-red';
+                            }
+                        }
+                    };
+
+                    $scope.hide = function () {
+                        $mdDialog.hide();
+                    }
+                }]
+            });
+        };
+
+        $scope.searchWeTag = function(){
+            $scope.search = {
+                selectedTag: ''
+            };
+        }();
 
         $scope.registry = function(){
             $mdDialog.show({
@@ -689,82 +823,13 @@
             })
         };
 
-        $scope.changePassword = function () {
-            $mdDialog.show({
-                templateUrl        : '../components/change-password.html',
-                parent             : angular.element(document.body),
-                targetEvent        : event,
-                clickOutsideToClose: true,
-                controller         : ['$scope', function ($scope) {
-                    $scope.changePassword = {
-                        oldPassword: '',
-                        newPassword: '',
-                        reNewPassword: '',
-                        resultClass: '',
-                        resultOk: false,
-                        wrongOld: false,
-                        resultError: false
-                    };
-
-                    $scope.sendPassword = function (form) {
-                        form.$submitted = true;
-
-                        if ($scope.changePassword.newPassword !== $scope.changePassword.reNewPassword){
-                            $scope.changePassword.resultClass = 'background-red';
-                            $scope.changePassword.resultError = true;
-                            $scope.changePassword.resultOk    = false;
-                            $scope.changePassword.wrongOld = false;
-                        }else{
-                            if (form.$valid ) {
-                                let promise = menuService.sendPassword($scope.changePassword.oldPassword, $scope.changePassword.newPassword);
-
-                                promise.then(
-                                    function (response) {
-                                        if (response.data.response) {
-                                            if (response.data.result === 1 || response.data.result === 0) {
-                                                $scope.changePassword.resultClass = 'background-green';
-                                                $scope.changePassword.resultOk    = true;
-                                                $scope.changePassword.resultError = false;
-                                                $scope.changePassword.wrongOld    = false;
-                                                $timeout(function () {
-                                                    $mdDialog.hide();
-                                                }, 2000)
-                                            }
-                                        } else {
-                                            if ($scope.changePassword.oldPassword !== '' && $scope.changePassword.newPassword !== '' &&
-                                                $scope.changePassword.reNewPassword !== '') {
-                                                $scope.changePassword.resultOk    = false;
-                                                $scope.changePassword.resultError = false;
-                                                $scope.changePassword.wrongOld    = true;
-                                                $scope.changePassword.resultClass = 'background-red';
-                                            }
-                                        }
-                                    }
-                                )
-                            }else {
-                                $scope.changePassword.resultClass = 'background-red';
-                            }
-                        }
-                    };
-
-                    $scope.hide = function () {
-                        $mdDialog.hide();
-                    }
-                }]
-            });
-        };
-
         //function that makes the logout of the user
         $scope.logout = function () {
-            socketService.getSocket().then(
-                function (socket) {
-                    socket.send(encodeRequest('logout', {}));
-
-                    socket.onmessage = function (message) {
-                        let mess = JSON.parse(message.data);
-                        if (mess.result === 'logged_out')
-                            $location.path('/')
-                    }
+            socketService.getSocket('logout', {}).then(
+                function (result) {
+                    let mess = JSON.parse(result.data);
+                    if (mess.result === 'logged_out')
+                        $state.go('login');
                 }
             )
         };

@@ -238,6 +238,10 @@ BORDER
     border: 1px solid #E12315;
 }
 
+.border-1-darkcyan{
+    border: 1px solid #0093c4!important;
+}
+
 .border-2-lightbalck{
     border: 2px solid #263238;
 }

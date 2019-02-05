@@ -34,7 +34,11 @@ class Test{
                 break;
             case 'change_password': var_dump($this->conn->change_password('da', 'dani'));
                 break;
+            case 'get_markers': var_dump($this->conn->get_markers('dani'));
+                break;
             case 'insert_location': var_dump($this->conn->insert_location('1', 'Universita1', 'Uni1', '414', '110', 'image.png'));
+                break;
+            case 'get_tags_by_user': var_dump($this->conn->get_tags_by_user('dani'));
                 break;
             default: var_dump('Funzione non esistente');
         }

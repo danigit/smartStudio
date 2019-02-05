@@ -7,8 +7,8 @@
     //Configuring the router and the angular initial data
     main.config(RoutesConfig);
 
-    RoutesConfig.$inject = ['$stateProvider', '$urlRouterProvider'];
-    function RoutesConfig($stateProvider, $urlRouterProvider) {
+    RoutesConfig.$inject = ['$stateProvider', '$urlRouterProvider', '$mdDateLocaleProvider'];
+    function RoutesConfig($stateProvider, $urlRouterProvider, $mdDateLocaleProvider) {
 
         $urlRouterProvider.otherwise('/login');
 
@@ -34,20 +34,28 @@
                 templateUrl: '../components/home',
                 controller: 'homeController as homeCtrl',
                 resolve: {
-                    homeData: ['homeService', 'socketService', '$state', '$q', function (homeService, socketService, $state, $q) {
+                    homeData: ['homeService', 'socketService', 'dataService', '$state', '$q', function (homeService, socketService, dataService,  $state, $q) {
                         let promise = $q.defer();
 
                         socketService.getSocket('get_user', {}).then(
                             function (response) {
                                 let mess = JSON.parse(response.data);
                                 if (mess.result.session_name !== undefined) {
+                                    dataService.username = mess.result.session_name;
                                     socketService.getSocket('get_markers', {username: mess.result.session_name}).then(
                                         function (message) {
                                             let result = {
                                                 markers: JSON.parse(message.data),
                                                 isAdmin: mess.result.is_admin
                                             };
-                                            promise.resolve(result);
+
+                                            socketService.getSocket('get_tags_by_user', {user: dataService.username})
+                                                .then(function (response) {
+                                                    let message = JSON.parse(response.data);
+                                                    dataService.tags = message.result;
+                                                    promise.resolve(result);
+                                                }
+                                            );
                                         }
                                     )
                                 }else {
@@ -57,7 +65,7 @@
                         );
 
                         return promise.promise;
-                    }]
+                    }],
                 }
             })
 
@@ -65,6 +73,17 @@
                 url: '/canvas',
                 templateUrl: '../components/canvas.html',
                 controller: 'mapController as mapCtrl'
-            })
+            }
+        );
+
+        $mdDateLocaleProvider.formatDate = function(date) {
+
+            let day = date.getDate();
+            let monthIndex = date.getMonth();
+            let year = date.getFullYear();
+
+            return day + '/' + (monthIndex + 1) + '/' + year;
+
+        };
     }
 })();

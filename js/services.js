@@ -17,6 +17,10 @@
 
     dataService.$inject = [];
     function dataService(){
+        let service = this;
+
+        service.username = '';
+        service.tags = [];
     }
 
     /**
@@ -130,9 +134,11 @@
                 if (isOpen) {
                     server.send(encodeRequest(action, data));
                     server.onmessage = function (message) {
+                        // console.log(message);
                         resolve(message);
                     }
                 }
+
                 server.onopen = function () {
                     server.send(encodeRequest(action, data));
                     server.onmessage = function(message) {
