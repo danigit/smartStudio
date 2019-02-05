@@ -20,7 +20,9 @@
         let service = this;
 
         service.username = '';
+        service.location = '';
         service.tags = [];
+        service.floors = [];
     }
 
     /**

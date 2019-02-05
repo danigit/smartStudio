@@ -62,9 +62,9 @@ function drawIcon(result, context, img, width, canvas) {
 
         context.beginPath();
         context.fillStyle = '#0093c4';
-        context.fillRect(value.x_pos, value.y_pos - 17, 15, 15);
+        context.fillRect(value.x_pos, value.y_pos - 17, 17, 16);
         context.fillStyle = 'white';
-        context.fillText(value.id, value.x_pos + 5, value.y_pos - 6);
+        context.fillText(value.id, value.x_pos + 2, value.y_pos - 5);
         context.drawImage(img, value.x_pos, value.y_pos);
         context.strokeStyle = '#ff000015';
         context.stroke();

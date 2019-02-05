@@ -26,7 +26,7 @@
             <form id="changeRegistryForm" name="changeRegistryForm">
 
                 <md-select placeholder="Seleziona WeTag..." ng-model="registry.tag" class="width-100" required="">
-                    <md-option value="{{tag.id}}" ng-repeat="tag in registry.tags">{{tag.id}}</md-option>
+                    <md-option value="{{tag.id}}" ng-repeat="tag in registry.tags">{{tag.name}}</md-option>
                 </md-select>
 
                 <md-input-container md-no-float class="md-block width-100 margin-bottom-0">

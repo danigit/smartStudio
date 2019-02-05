@@ -12,19 +12,19 @@
                 </md-fab-trigger>
 
                 <md-fab-actions>
-                    <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
+                    <md-button aria-label="Disegna riga verticale" class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
                         <img src="../img/icons/vertical-line.png" class="width-100 height-100" alt="Disegna riga verticale" title="Disegna riga verticale">
                     </md-button>
 
-                    <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
+                    <md-button aria-label="Disegna riga orizontale" class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
                         <img src="../img/icons/horizontal-line.png" class="width-100 height-100" alt="Disegna riga orizontale" title="Disegna riga orizontale">
                     </md-button>
 
-                    <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
+                    <md-button aria-label="Disegna riga inclinata" class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
                         <img src="../img/icons/inclined-line.png" class="width-100 height-100" alt="Disegna riga inclinata" title="Disegna riga inclinata">
                     </md-button>
 
-                    <md-button class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
+                    <md-button aria-label="Disegna riga inclinata" class="md-fab md-raised md-mini background-ottanio border-3-darkblue">
                         <img src="../img/icons/free-draw.png" class="width-100 height-100" alt="Disegna riga inclinata" title="Disegna riga inclinata">
                     </md-button>
                 </md-fab-actions>
@@ -37,19 +37,19 @@
             <img src="../img/icons/login-icon.png" class="canvas-header-image" alt="Smart Track" title="Smart Track">
             <div class="margin-bottom-30-px">
                 <p class="canvas-location color-darkcyan">{{header.location | uppercase}}</p>
-                <p class="canvas-floor color-cyan">{{header.name}}</p>
+                <p class="canvas-floor color-cyan">{{header.floorName}}</p>
             </div>
         </div>
         <!--end header text-->
 
         <!--canvas container-->
         <div id="canvas-container" layout="row"  layout-align="center start" class="parent-size background-ottanio">
-            <canvas id="canvas-id" class="width-100"></canvas>
+            <canvas id="canvas-id" ng-init="loadFloor()" class="width-100"></canvas>
         </div>
         <!--end canvas container-->
 
         <!--menu container-->
-        <div>
+        <div ng-controller="menuController">
             <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
                 <img id="open-menu-icon" src="../img/icons/menu-arrow.png" alt="Menu" title="Menu">
             </div>
@@ -73,7 +73,7 @@
 
                         <div layout="column" id="menu-container">
                             <md-list ng-controller="menuController">
-                                <md-list-item ng-click="registry($$event)"><p>Aggiorna WeTag</p><img src="../img/icons/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="registry()"><p>Aggiorna WeTag</p><img src="../img/icons/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click="showAnchorsTable()"><p>Tabella Ancore</p><img src="../img/icons/ancora-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click="floorUpdate()"><p>Tabella piani</p><img src="../img/icons/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../img/icons/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
@@ -120,7 +120,7 @@
                                         <md-subheader class="padding-0" ng-show="!grid.showGrid">Griglia: <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="" ng-model="grid.showGrid">
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi la griglia" ng-model="grid.showGrid">
                                     </md-switch>
                                 </div>
 
@@ -130,7 +130,7 @@
                                         <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Switch No Ink" ng-model="speedDial.fullscreen">
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Passsa in modalita' fullscreen" ng-model="speedDial.fullscreen">
                                     </md-switch>
                                 </div>
                             </div>
@@ -143,7 +143,7 @@
                                         <md-subheader class="padding-0" ng-show="!anchors.showAnchors">Anchors: <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="" ng-model="anchors.showAnchors">
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi le telecamere" ng-model="anchors.showAnchors">
                                     </md-switch>
                                 </div>
 
@@ -154,7 +154,7 @@
                                         <md-subheader class="padding-0" ng-show="!cameras.showCameras">Cameras: <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="" ng-model="cameras.showCameras">
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi le telecamere" ng-model="cameras.showCameras">
                                     </md-switch>
                                 </div>
                             </div>
@@ -166,7 +166,7 @@
                                         <md-subheader class="padding-0" ng-show="drawing.showDrawing">Modalita' disegna: <b class="color-green">ON</b></md-subheader>
                                         <md-subheader class="padding-0" ng-show="!drawing.showDrawing">Modalita' disegna: <b class="color-red">OFF</b></md-subheader>
                                     </div>
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="" ng-model="drawing.showDrawing">
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi strumenti disegno" ng-model="drawing.showDrawing">
                                     </md-switch>
                                 </div>
                             </div>

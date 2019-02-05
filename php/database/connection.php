@@ -353,22 +353,20 @@ class Connection{
      * @return db_errors|array
      */
     function get_floor_info($location, $floor){
-        $this->query = 'SELECT floor.name, image_map, map_width, map_spacing FROM floor 
-                        JOIN location ON location_id = location.id WHERE  location.name = ? AND floor.name = ?';
+        $this->query = 'SELECT floor.ID, floor.NAME, floor.MAP_WIDTH, floor.MAP_SPACING FROM floor JOIN location ON floor.LOCATION_ID = location.ID WHERE location.NAME = ?';
 
-        $statement = $this->execute_selecting($this->query, 'ss', $location, $floor);
+        $statement = $this->execute_selecting($this->query, 's', $location);
 
         if ($statement instanceof db_errors)
             return $statement;
         else if ($statement == false)
-            return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
+            return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
 
         $this->result = $statement->get_result();
         $result_array = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $result_array[] = array('name' => $row['name'], 'image_map' => $row['image_map'], "map_width" => $row['map_width'],
-                'map_spacing' => $row['map_spacing']);
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'width' => $row['MAP_WIDTH'], 'spacing' => $row['MAP_SPACING']);
         }
 
         return $result_array;
@@ -396,8 +394,8 @@ class Connection{
     }
 
     function get_cameras($floor){
-        $this->query = 'SELECT camera.id, description, username, password, x_pos, y_pos, radius FROM camera 
-                        JOIN floor ON floor_id = floor.id WHERE floor.name = ?';
+        $this->query = 'SELECT camera.ID, DESCRIPTION, USERNAME, PASSWORD, X_POS, Y_POS, RADIUS FROM camera 
+                        JOIN floor ON FLOOR_ID = floor.ID WHERE floor.NAME = ?';
 
         $statement = $this->execute_selecting($this->query, 's', $floor);
 
@@ -410,8 +408,8 @@ class Connection{
         $result_array = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $result_array[] = array('id' => $row['id'], 'description' => $row['description'], 'username' => $row['username'],
-                'password' => $row['password'], 'x_pos' => $row['x_pos'], "y_pos" => $row['y_pos'], 'radius' => $row['radius']);
+            $result_array[] = array('id' => $row['ID'], 'description' => $row['DESCRIPTION'], 'username' => $row['USERNAME'],
+                'password' => $row['PASSWORD'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'], 'radius' => $row['RADIUS']);
         }
 
         return $result_array;
@@ -480,7 +478,7 @@ class Connection{
     }
 
     function get_floors($location){
-        $this->query = 'SELECT floor.id, floor.name, floor.map_width, floor.map_spacing FROM floor JOIN location ON floor.location_id = location.id WHERE location.name = ?';
+        $this->query = 'SELECT floor.ID, floor.NAME, floor.IMAGE_MAP, floor.MAP_WIDTH, floor.MAP_SPACING FROM floor JOIN location ON floor.LOCATION_ID = location.ID WHERE location.NAME = ?';
 
         $statement = $this->execute_selecting($this->query, 's', $location);
 
@@ -493,7 +491,7 @@ class Connection{
         $result_array = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $result_array[] = array('id' => $row['id'], 'name' => $row['name'], 'width' => $row['map_width'], 'spacing' => $row['map_spacing']);
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'image_map' => $row['IMAGE_MAP'], 'width' => $row['MAP_WIDTH'], 'spacing' => $row['MAP_SPACING']);
         }
 
         return $result_array;

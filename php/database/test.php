@@ -30,6 +30,8 @@ class Test{
                 break;
             case 'get_floor_image': var_dump($this->conn->get_floor_info('Ospedale Bolzano', 'floor 1'));
                 break;
+            case 'get_floors': var_dump($this->conn->get_floors('BOLZANO'));
+                break;
             case 'get_anchors': var_dump($this->conn->get_anchors('floor 1'));
                 break;
             case 'change_password': var_dump($this->conn->change_password('da', 'dani'));
@@ -46,4 +48,4 @@ class Test{
 }
 
 $test = new Test();
-$test->test_function('insert_location');
+$test->test_function('get_floors');

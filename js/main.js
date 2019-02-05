@@ -72,7 +72,34 @@
             .state('canvas', {
                 url: '/canvas',
                 templateUrl: '../components/canvas.html',
-                controller: 'mapController as mapCtrl'
+                controller: 'canvasController as canvasCtrl',
+                resolve: {
+                    canvasData: ['socketService', 'dataService', '$state', '$q', function (socketService, dataService, $state, $q) {
+                        let promise = $q.defer();
+                        socketService.getSocket('get_user', {})
+                            .then(function (response) {
+                                let message = JSON.parse(response.data);
+                                dataService.username = message.result.session_name;
+
+                                return socketService.getSocket('get_location', {})
+                            })
+                            .then(function (response) {
+                                let message = JSON.parse(response.data);
+                                if (message.result !== 'location_not_found') {
+                                    dataService.location = message.result;
+                                    return socketService.getSocket('get_floors', {location: message.result});
+                                }
+                            })
+                            .then(function (response) {
+                                let message = JSON.parse(response.data);
+                                dataService.floors = message.result;
+                                promise.resolve({location: dataService.location, floors: dataService.floors})
+                            }
+                        );
+
+                        return promise.promise;
+                    }]
+                }
             }
         );
 

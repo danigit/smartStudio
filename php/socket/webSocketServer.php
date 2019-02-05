@@ -182,6 +182,29 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'save_location':{
+                $result['action'] = 'save_location';
+
+                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'])) {
+                    $_SESSION['location'] = $decoded_message['data']['location'];
+                    $result['result'] = 'location_saved';
+                } else
+                    $result['result'] = 'location_not_saved';
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'get_location':{
+                $result['action'] = 'get_location';
+
+                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'], $_SESSION['location'])) {
+                    $result['result'] = $_SESSION['location'];
+                } else
+                    $result['result'] = 'location_not_found';
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             case 'get_floor_info':{
                 $result['action'] = 'get_floor_info';
                 $query = $this->connection->get_floor_info($decoded_message['data']['location'], $decoded_message['data']['floor']);

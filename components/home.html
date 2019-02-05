@@ -5,7 +5,6 @@
                 <ng-map center="{{mapConfiguration.center}}" zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="height-100-vh">
                     <custom-marker ng-repeat="marker in homeCtrl.positions"
                                    id="custom-marker-{{$index}}"
-                                   on-click="clickLocation($index)"
                                    position="{{marker.position}}">
                         <div>
                             <img ng-src="../img/markers-images/{{marker.icon}}" alt="{{marker.name}}" title="{{marker.name}}">

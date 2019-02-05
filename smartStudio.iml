@@ -6,5 +6,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jspdf.debug" level="application" />
     <orderEntry type="library" name="angular-material" level="application" />
+    <orderEntry type="library" name="markerclusterer" level="application" />
   </component>
 </module>
