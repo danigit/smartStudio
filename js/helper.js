@@ -46,7 +46,7 @@ function drawDashedLine(canvas, context, length, pattern, spacing, width, direct
 }
 
 function updateCanvas(canvas, context, image) {
-    context.clearRect(0, 0, canvas.height, canvas.width);
+    context.clearRect(0, 0, canvas.width, canvas.height);
     if (image !== undefined) {
         context.drawImage(image, 0, 0);
         context.stroke();
@@ -55,17 +55,23 @@ function updateCanvas(canvas, context, image) {
 }
 
 
-function drawIcon(result, context, img, width, canvas) {
+function drawIcon(result, context, img, width, canvas, isTag) {
     let virtualRadius = 0;
-
+    let id = 0;
     angular.forEach(result, function (value) {
         virtualRadius = scaleSize(width, canvas) * value.radius;
-
         context.beginPath();
-        context.fillStyle = '#0093c4';
-        context.fillRect(value.x_pos, value.y_pos - 17, 17, 16);
-        context.fillStyle = 'white';
-        context.fillText(value.id, value.x_pos + 2, value.y_pos - 5);
+        if (isTag){
+            context.fillStyle = 'red';
+            (value.id < 10) ? id = '0' + value.id : id = value.id;
+            context.fillText(id, value.x_pos + 6, value.y_pos + 16);
+        } else {
+            context.fillStyle = '#0093c4';
+            context.fillRect(value.x_pos, value.y_pos - 17, 17, 16);
+            context.fillStyle = 'white';
+            context.fillText(value.id, value.x_pos + 2, value.y_pos - 5);
+        }
+
         context.drawImage(img, value.x_pos, value.y_pos);
         context.strokeStyle = '#ff000015';
         context.stroke();
@@ -77,7 +83,6 @@ function drawIcon(result, context, img, width, canvas) {
             context.fill();
             context.stroke();
         }
-
     });
 }
 

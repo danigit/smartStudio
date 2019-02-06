@@ -116,8 +116,8 @@
      * Function that handles the canvas interaction
      * @type {string[]}
      */
-    canvasController.$inject = ['$scope', '$location', '$mdDialog', '$timeout', 'canvasService', 'socketService', 'menuService', 'canvasData', 'dataService'];
-    function canvasController($scope, $location, $mdDialog, $timeout, canvasService, socketService, menuService, canvasData, dataService){
+    canvasController.$inject = ['$scope', '$location', '$mdDialog', '$timeout', '$interval', 'canvasService', 'socketService', 'menuService', 'canvasData', 'dataService'];
+    function canvasController($scope, $location, $mdDialog, $timeout, $interval, canvasService, socketService, menuService, canvasData, dataService){
         $scope.floorData = {
             defaultFloorName: canvasData.floors[0].name,
             gridSpacing: canvasData.floors[0].map_spacing,
@@ -174,6 +174,7 @@
 
         $scope.loadFloor = function(grid, anchors, cameras){
 
+            console.log('loading floor');
             let img = new Image();
             img.src = imagePath + 'floors/' + $scope.defaultFloor.image_map;
 
@@ -181,7 +182,6 @@
                 canvas.width = this.naturalWidth;
                 canvas.height = this.naturalHeight;
 
-                console.log('updating canvas');
                 //updating the canvas and drawing border
                 updateCanvas(canvas, context, img);
 
@@ -221,7 +221,7 @@
             img.src = imagePath + 'icons/ancora-icon.png';
 
             img.onload = function () {
-                drawIcon(result, context, img, $scope.defaultFloor.width, canvas);
+                drawIcon(result, context, img, $scope.defaultFloor.width, canvas, false);
             };
         };
 
@@ -232,18 +232,92 @@
 
             img.onload = function () {
                 console.log(result);
-                drawIcon(result, context, img, $scope.defaultFloor.width, canvas);
+                drawIcon(result, context, img, $scope.defaultFloor.width, canvas, false);
             };
         };
 
         let showWeTag = function (result) {
             let img = new Image();
-            img.src = imagePath + 'icons/tag-icon.png';
+            img.src = imagePath + 'icons/tag-green.png';
 
             img.onload = function () {
-                drawIcon(result, context, img, $scope.defaultFloor.width, canvas);
+                drawIcon(result, context, img, $scope.defaultFloor.width, canvas, true);
             }
-        }
+        };
+
+        let constantUpdateCanvas = function(){
+            let bufferCanvas = document.createElement('canvas');
+            let bufferContext = bufferCanvas.getContext('2d');
+
+            let img = new Image();
+            img.src = imagePath + 'floors/' + $scope.defaultFloor.image_map;
+
+            img.onload = function() {
+                bufferCanvas.width = this.naturalWidth;
+                bufferCanvas.height = this.naturalHeight;
+
+                $interval(function () {
+                    let grid = $scope.switch.showGrid;
+                    let anchors = $scope.switch.showAnchors;
+                    let cameras = $scope.switch.showCameras;
+
+                    //updating the canvas and drawing border
+                    updateCanvas(bufferCanvas, bufferContext, img);
+
+                    if (grid) {
+                        //drawing vertical
+                        drawDashedLine(bufferCanvas, bufferContext, canvas.height, [5, 5], $scope.defaultFloor.map_spacing, $scope.defaultFloor.width, 'vertical');
+                        //drawing horizontal lines
+                        drawDashedLine(bufferCanvas, bufferContext, canvas.width, [5, 5], $scope.defaultFloor.map_spacing, $scope.defaultFloor.width, 'horizontal');
+                    }
+
+                    socketService.getSocket('get_anchors_by_floor', {floor: $scope.floorData.defaultFloorName})
+                        .then(function (response) {
+                            let message         = JSON.parse(response.data);
+                            dataService.anchors = message.result;
+
+                            if (anchors) {
+                                let img = new Image();
+                                img.src = imagePath + 'icons/ancora-icon.png';
+
+                                img.onload = function () {
+                                    drawIcon(message.result, bufferContext, img, $scope.defaultFloor.width, bufferCanvas, false);
+                                };
+                            }
+
+                            return socketService.getSocket('get_cameras', {floor: $scope.floorData.defaultFloorName})
+                        })
+                        .then(function (response) {
+                            let message = JSON.parse(response.data);
+
+                            if (cameras) {
+                                let img = new Image();
+                                img.src = imagePath + 'icons/camera.png';
+
+                                img.onload = function () {
+                                    drawIcon(message.result, bufferContext, img, $scope.defaultFloor.width, bufferCanvas, false);
+                                };
+                            }
+                            return socketService.getSocket('get_tags_by_floor', {floor: $scope.defaultFloor.id});
+                        })
+                        .then(function (response) {
+                            let message = JSON.parse(response.data);
+
+                            let img = new Image();
+                            img.src = imagePath + 'icons/tag-green.png';
+
+                            img.onload = function () {
+                                drawIcon(message.result, bufferContext, img, $scope.defaultFloor.width, bufferCanvas, true);
+
+                                context.drawImage(bufferCanvas, 0, 0);
+                            }
+
+                        })
+                }, 1000);
+            }
+        };
+
+        constantUpdateCanvas();
     }
 
     menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$state', '$filter', '$timeout', '$mdSidenav', 'dataService', 'menuService', 'socketService'];
