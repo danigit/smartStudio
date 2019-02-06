@@ -118,44 +118,25 @@
      */
     canvasController.$inject = ['$scope', '$location', '$mdDialog', '$timeout', 'canvasService', 'socketService', 'menuService', 'canvasData', 'dataService'];
     function canvasController($scope, $location, $mdDialog, $timeout, canvasService, socketService, menuService, canvasData, dataService){
-
-        console.log('inside canvas');
-        console.log(canvasData);
-
-        $scope.defaultFloor = canvasData.floors[0];
-
-        // $scope.isOpen = false;
-
-        $scope.header = {
+        $scope.floorData = {
+            defaultFloorName: canvasData.floors[0].name,
+            gridSpacing: canvasData.floors[0].map_spacing,
             location: canvasData.location,
-            floorName: $scope.defaultFloor.name
         };
 
-        // $scope.map = {
-        //     showGrid: true,
-        //     gridMessage: 'On'
-        // };
-        //
-        // $scope.anchors = {
-        //     showAnchors: true,
-        //     anchorsMessage: 'On'
-        // };
-        //
-        // $scope.cameras = {
-        //     showCameras: true,
-        //     camerasMessage: 'On'
-        // };
-        //
-        // $scope.radius = {
-        //     showRadius: true,
-        //     radiusMessage: 'On'
-        // };
-        //
-        // $scope.drawing = {
-        //     showDrawing: false,
-        //     drawingMessage: 'Off'
-        // };
-        //
+        $scope.floors = canvasData.floors;
+        $scope.defaultFloor = canvasData.floors[0];
+
+        $scope.switch = {
+            showGrid: true,
+            showAnchors: true,
+            showCameras: true,
+            showRadius: true,
+            showDrawing: false,
+            showFullscreen: false,
+        };
+
+        // $scope.isOpen = false;
         // $scope.speedDial = {
         //     isOpen: false,
         //     selectedDirection: 'left',
@@ -163,233 +144,76 @@
         //     fullscreen: false,
         //     gridSpacing: 0,
         // };
-        //
-        // $scope.gridSpacing = 0;
-        //
-        //
+
         let canvas = document.querySelector('#canvas-id');
         let context = canvas.getContext('2d');
-        //
-        // $scope.$watch('gridSpacing', function (newValue) {
-        //     if (socketService.floor.mapResult !== undefined) {
-        //         socketService.floor.mapResult.map_spacing = newValue;
-        //         context.clearRect(15, 15, canvas.width, canvas.height);
-        //         updateCanvas(canvas, context, socketService.floor.image);
-        //
-        //         if (socketService.floor.mapResult.map_width !== undefined) {
-        //             //drawing vertical
-        //             drawDashedLine(canvas, context, canvas.height, [5, 5], newValue, socketService.floor.mapResult.map_width, 'vertical');
-        //             //drawing horizontal lines
-        //             drawDashedLine(canvas, context, canvas.width, [5, 5], newValue, socketService.floor.mapResult.map_width, 'horizontal');
-        //             //drawing images
-        //             if ($scope.anchors.showAnchors)
-        //                 drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
-        //             //draw cameras
-        //             if ($scope.cameras.showCameras)
-        //                 drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
-        //         }
-        //     }
-        // });
-        //
-        // $scope.$watch('grid.showGrid', function (newValue) {
-        //     if (socketService.floor.mapResult !== undefined) {
-        //         context.clearRect(15, 15, canvas.width, canvas.height);
-        //         updateCanvas(canvas, context, socketService.floor.image);
-        //
-        //         if (!newValue) {
-        //             if (!$scope.drawing.showDrawing) {
-        //                 //drawing anchors
-        //                 drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
-        //                 //draw cameras
-        //                 drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
-        //             }
-        //         } else {
-        //             if (socketService.floor.mapResult.map_width !== undefined) {
-        //                 //drawing vertical
-        //                 drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
-        //                 //drawing horizontal lines
-        //                 drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
-        //                 //drawing images
-        //                 if ($scope.anchors.showAnchors)
-        //                     drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
-        //                 //draw cameras
-        //                 if ($scope.cameras.showCameras)
-        //                     drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
-        //             }
-        //         }
-        //     }
-        // });
-        //
-        // $scope.$watch('anchors.showAnchors', function (newValue) {
-        //     if (socketService.floor.mapResult !== undefined) {
-        //         context.clearRect(15, 15, canvas.width, canvas.height);
-        //         updateCanvas(canvas, context, socketService.floor.image);
-        //
-        //         if (!newValue) {
-        //             if ($scope.grid.showGrid) {
-        //                 //drawing vertical
-        //                 drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
-        //                 //drawing horizontal lines
-        //                 drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
-        //             }
-        //             //draw cameras
-        //             if ($scope.cameras.showCameras)
-        //                 drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
-        //         } else {
-        //             if (socketService.floor.mapResult.map_width !== undefined) {
-        //                 if ($scope.grid.showGrid) {
-        //                     //drawing vertical
-        //                     drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
-        //                     //drawing horizontal lines
-        //                     drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
-        //                 }
-        //                 //drawing images
-        //                 drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
-        //                 //draw cameras
-        //                 if ($scope.cameras.showCameras)
-        //                     drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
-        //             }
-        //         }
-        //     }
-        // });
-        //
-        // $scope.$watch('cameras.showCameras', function (newValue) {
-        //     if (socketService.floor.mapResult !== undefined) {
-        //         context.clearRect(15, 15, canvas.width, canvas.height);
-        //         updateCanvas(canvas, context, socketService.floor.image);
-        //
-        //         if (!newValue) {
-        //             if ($scope.grid.showGrid) {
-        //                 //drawing vertical
-        //                 drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
-        //                 //drawing horizontal lines
-        //                 drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
-        //             }
-        //             //draw cameras
-        //             if ($scope.anchors.showAnchors)
-        //                 drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
-        //         } else {
-        //             if (socketService.floor.mapResult.map_width !== undefined) {
-        //                 if ($scope.grid.showGrid) {
-        //                     //drawing vertical
-        //                     drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
-        //                     //drawing horizontal lines
-        //                     drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
-        //                 }
-        //                 //drawing images
-        //                 if ($scope.anchors.showAnchors)
-        //                     drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
-        //                 //draw cameras
-        //                 drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
-        //             }
-        //         }
-        //     }
-        // });
-        //
-        // $scope.$watch('speedDial.fullscreen', function (newValue) {
-        //     if (newValue) {
-        //         openFullScreen(document.querySelector('#canvas-container'));
-        //         $scope.speedDial.fullscreen = false;
-        //     }
-        // });
-        //
-        // $scope.$watch('floors.defaultFloor', function () {
-        //     socketService.floor.defaultFloor = $scope.floors.defaultFloor;
-        //     if($scope.floors.result !== undefined) {
-        //         // socketService.sendMessage('get_floor_info', {location: sessionStorage.getItem('location'), floor: $scope.floors.defaultFloor}, showFloorMap);
-        //         // socketService.sendMessage('get_anchors', {floor: $scope.floors.defaultFloor}, showAnchors);
-        //         // socketService.sendMessage('get_cameras', {floor: $scope.floors.defaultFloor}, showCameras);
-        //     }
-        // });
-        //
-        // $scope.$watch('radius.showRadisu', function (newValue) {
-        //     if (socketService.floor.mapResult !== undefined) {
-        //         context.clearRect(15, 15, canvas.width, canvas.height);
-        //         updateCanvas(canvas, context, socketService.floor.image);
-        //
-        //         if (!newValue) {
-        //             if ($scope.grid.showGrid) {
-        //                 //drawing vertical
-        //                 drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
-        //                 //drawing horizontal lines
-        //                 drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
-        //             }
-        //             //draw cameras
-        //             if ($scope.anchors.showAnchors)
-        //                 drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
-        //             if ($scope.cameras.showCameras)
-        //                 drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
-        //         } else {
-        //             if (socketService.floor.mapResult.map_width !== undefined) {
-        //                 if ($scope.grid.showGrid) {
-        //                     //drawing vertical
-        //                     drawDashedLine(canvas, context, canvas.height, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'vertical');
-        //                     //drawing horizontal lines
-        //                     drawDashedLine(canvas, context, canvas.width, [5, 5], socketService.floor.mapResult.map_spacing, socketService.floor.mapResult.map_width, 'horizontal');
-        //                 }
-        //                 //drawing images
-        //                 if ($scope.anchors.showAnchors)
-        //                     drawIcon(socketService.floor.anchorsResult, context, socketService.floor.anchorImage, socketService.floor.mapResult.map_width, canvas);
-        //
-        //                 //draw cameras
-        //                 if ($scope.cameras.showCameras)
-        //                  drawIcon(socketService.floor.camerasResult, context, socketService.floor.cameraImage, socketService.floor.mapResult.map_width, canvas);
-        //             }
-        //         }
-        //     }
-        // });
-        //
-        // $scope.$watch('drawing.showDrawing', function (newValue) {
-        //     context.clearRect(15, 15, canvas.width, canvas.height);
-        //     updateCanvas(canvas, context, socketService.floor.image);
-        //
-        //     if (!newValue){
-        //         $scope.grid.showGrid = true;
-        //         $scope.anchors.showAnchors = true;
-        //         $scope.cameras.showCameras = true;
-        //     }else{
-        //         $scope.grid.showGrid = false;
-        //         $scope.anchors.showAnchors = false;
-        //         $scope.cameras.showCameras = false;
-        //     }
-        // });
-        //
-        $scope.loadFloor = function(){
+
+        $scope.$watchGroup(['switch.showGrid', 'switch.showAnchors', 'switch.showCameras', 'floorData.gridSpacing', 'switch.showDrawing'], function (newValues) {
+            $scope.defaultFloor.map_spacing = newValues[3];
+
+            if (!newValues[4])
+                $scope.loadFloor(newValues[0], newValues[1], newValues[2]);
+            else
+                $scope.loadFloor(false, false, false)
+        });
+
+        $scope.$watch('switch.fullscreen', function (newValue) {
+            if (newValue) {
+                openFullScreen(document.querySelector('#canvas-container'));
+                $scope.switch.fullscreen = false;
+            }
+        });
+
+        $scope.$watch('floorData.defaultFloorName', function (newValue) {
+            $scope.defaultFloor = $scope.floors.filter(f => { return f.name === newValue})[0];
+            if ($scope.floorData.gridSpacing === $scope.defaultFloor.map_spacing)
+                $scope.loadFloor(true, true, true);
+            else
+                $scope.floorData.gridSpacing = $scope.defaultFloor.map_spacing;
+        });
+
+        $scope.loadFloor = function(grid, anchors, cameras){
 
             let img = new Image();
-            img.src = imagePath + 'floors/' + canvasData.floors[0].image_map;
+            img.src = imagePath + 'floors/' + $scope.defaultFloor.image_map;
 
             img.onload = function() {
                 canvas.width = this.naturalWidth;
                 canvas.height = this.naturalHeight;
 
+                console.log('updating canvas');
                 //updating the canvas and drawing border
                 updateCanvas(canvas, context, img);
 
-                // if ($scope.grid.showGrid) {
+                if (grid) {
                     //drawing vertical
-                    drawDashedLine(canvas, context, canvas.height, [5, 5], $scope.defaultFloor.spacing, $scope.defaultFloor.width, 'vertical');
-                //
+                    drawDashedLine(canvas, context, canvas.height, [5, 5], $scope.defaultFloor.map_spacing, $scope.defaultFloor.width, 'vertical');
                     //drawing horizontal lines
-                    drawDashedLine(canvas, context, canvas.width, [5, 5], $scope.defaultFloor.spacing, $scope.defaultFloor.width, 'horizontal');
-                // }
+                    drawDashedLine(canvas, context, canvas.width, [5, 5], $scope.defaultFloor.map_spacing, $scope.defaultFloor.width, 'horizontal');
+                }
 
 
-                socketService.getSocket('get_anchors', {floor: $scope.defaultFloor.name})
+                socketService.getSocket('get_anchors_by_floor', {floor: $scope.floorData.defaultFloorName})
                     .then(function (response) {
                         let message = JSON.parse(response.data);
                         dataService.anchors = message.result;
-                        showAnchors(message.result);
+                        if (anchors)
+                            showAnchors(message.result);
 
-                        return socketService.getSocket('get_cameras', {floor: $scope.defaultFloor.name})
+                        return socketService.getSocket('get_cameras', {floor: $scope.floorData.defaultFloorName})
                     })
                     .then(function (response) {
                         let message = JSON.parse(response.data);
-                        showCameras(message.result);
+                        if (cameras)
+                            showCameras(message.result);
+
+                        return socketService.getSocket('get_tags_by_floor', {floor: $scope.defaultFloor.id});
+                    })
+                    .then(function (response) {
+                        let message = JSON.parse(response.data);
+                        showWeTag(message.result);
                     })
             };
-
-
         };
 
         let showAnchors = function(result){
@@ -411,6 +235,15 @@
                 drawIcon(result, context, img, $scope.defaultFloor.width, canvas);
             };
         };
+
+        let showWeTag = function (result) {
+            let img = new Image();
+            img.src = imagePath + 'icons/tag-icon.png';
+
+            img.onload = function () {
+                drawIcon(result, context, img, $scope.defaultFloor.width, canvas);
+            }
+        }
     }
 
     menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$state', '$filter', '$timeout', '$mdSidenav', 'dataService', 'menuService', 'socketService'];
@@ -663,49 +496,45 @@
                 targetEvent: event,
                 clickOutsideToClose: true,
                 controller: ['$scope', function ($scope) {
-                    console.log(dataService.tags);
-                    $scope.registry = {
-                        tag: null,
-                        tags: null,
-                        name: '',
-                        resultOk: false,
-                        resultError: false,
-                        resultClass: ''
+                    $scope.selected = [];
+                    $scope.limitOptions = [5, 10, 15];
+
+                    $scope.query = {
+                        order: 'name',
+                        limit: 5,
+                        page: 1
                     };
 
-                    socketService.getSocket('get_tags_by_user', {user: dataService.username})
+                    socketService.getSocket('get_tags_by_location', {location: dataService.location})
                         .then(function (response) {
                             let message = JSON.parse(response.data);
-
-                            $scope.registry.tags = message.result;
-
+                            $scope.tags = message.result;
                         });
 
-                    $scope.changeTagName = function (form) {
-                        form.$submitted = true;
+                    $scope.editCell = function(event, tag, tagName) {
 
-                        if ($scope.registry.tag != null && $scope.registry.name !== ''){
-                            socketService.getSocket('change_tag_name', {tag: $scope.registry.tag, name: $scope.registry.name})
-                                .then(function (response) {
-                                    let message = JSON.parse(response.data);
+                        event.stopPropagation();
 
-                                    if (message.result === 1 || message.result === 0) {
-                                        $scope.registry.resultOk = true;
-                                        $scope.registry.resultError = false;
-                                        $scope.registry.resultClass = 'background-green';
-                                        $timeout(function () {
-                                            $mdDialog.hide();
-                                        }, 2000)
-                                    }else if (message.result === 0) {
-                                        $scope.registry.resultOk = false;
-                                        $scope.registry.resultError = true;
-                                        $scope.registry.resultClass = 'background-red';
-                                    }
-                                    $scope.$apply();
-                                })
-                        }else {
-                            $scope.registry.resultClass = 'background-red';
-                        }
+                        let editCell = {
+                            modelValue: tag[tagName],
+                            save: function (input) {
+                                input.$invalid = true;
+                                tag[tagName] = input.$modelValue;
+                                socketService.getSocket('change_tag_field', {tag_id: tag.id, tag_field: tagName, field_value: input.$modelValue})
+                                    .then(function (response) {
+                                        let message = JSON.parse(response.data);
+                                        if (message.result !== 1)
+                                            console.log(message.result);
+                                    })
+                            },
+                            targetEvent: event,
+                            title: 'Inserisci un valore',
+                            validators:{
+                                'md-maxlength': 30
+                            }
+                        };
+
+                        $mdEditDialog.large(editCell);
                     };
 
                     $scope.hide = function () {
@@ -731,7 +560,11 @@
                         page: 1
                     };
 
-                    $scope.anchors = dataService.anchors;
+                    socketService.getSocket('get_anchors_by_location', {location: dataService.location})
+                        .then(function (response) {
+                            let message = JSON.parse(response.data);
+                            $scope.anchors = message.result;
+                        });
 
                     $scope.editCell = function(event, anchor, anchorName) {
 
@@ -742,7 +575,12 @@
                             save: function (input) {
                                 input.$invalid = true;
                                 anchor[anchorName] = input.$modelValue;
-                                // socketService.sendMessage('change_anchor_field', {anchor_id: anchor.id, anchor_field: anchorName, field_value: input.$modelValue}, function () {})
+                                socketService.getSocket('change_anchor_field', {anchor_id: anchor.id, anchor_field: anchorName, field_value: input.$modelValue})
+                                    .then(function (response) {
+                                        let message = JSON.parse(response.data);
+                                        if (message.result !== 1)
+                                            console.log(message.result);
+                                    })
                             },
                             targetEvent: event,
                             title: 'Inserisci un valore',
@@ -751,17 +589,7 @@
                             }
                         };
 
-                        let promise = $mdEditDialog.large(editCell);
-
-                        promise.then(function (ctrl) {
-                            let input = ctrl.getInput();
-                            // console.log(input);
-
-                            input.$viewChangeListeners.push(function () {
-                                console.log($scope.anchors);
-                                input.$setValidity('test', input.$modelValue !== 'test');
-                            });
-                        })
+                        $mdEditDialog.large(editCell);
                     };
 
                     $scope.hideAnchors = function () {
@@ -787,7 +615,7 @@
                         page: 1
                     };
 
-                    $scope.floors = [];
+                    $scope.floors = dataService.floors;
 
                     $scope.editCell = function(event, floor, floorName) {
 
@@ -798,7 +626,13 @@
                             save: function (input) {
                                 input.$invalid = true;
                                 floor[floorName] = input.$modelValue;
-                                // socketService.sendMessage('change_floor_field', {floor_id: floor.id, floor_field: floorName, field_value: input.$modelValue}, function () {})
+                                console.log(floorName);
+                                socketService.getSocket('change_floor_field', {floor_id: floor.id, floor_field: floorName, field_value: input.$modelValue})
+                                    .then(function (response) {
+                                        let message = JSON.parse(response.data);
+                                        if (message.result !== 1)
+                                            console.log(message.result);
+                                    })
                             },
                             targetEvent: event,
                             title: 'Inserisci un valore',
@@ -807,23 +641,8 @@
                             }
                         };
 
-                        let promise = $mdEditDialog.large(editCell);
-
-                        promise.then(function (ctrl) {
-                            let input = ctrl.getInput();
-
-                            input.$viewChangeListeners.push(function () {
-                                console.log($scope.anchors);
-                                input.$setValidity('test', input.$modelValue !== 'test');
-                            });
-                        })
+                        $mdEditDialog.large(editCell);
                     };
-
-                    let getFloors = function(message){
-                        $scope.floors = message.result;
-                    };
-
-                    // socketService.sendMessage('get_floors', {location: sessionStorage.getItem('location')}, getFloors);
 
                     $scope.hide = function () {
                         $mdDialog.hide();

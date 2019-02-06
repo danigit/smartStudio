@@ -36,15 +36,15 @@
         <div layout="row" layout-align="center center" class="background-ottanio width-100" style="padding-left: 3%;">
             <img src="../img/icons/login-icon.png" class="canvas-header-image" alt="Smart Track" title="Smart Track">
             <div class="margin-bottom-30-px">
-                <p class="canvas-location color-darkcyan">{{header.location | uppercase}}</p>
-                <p class="canvas-floor color-cyan">{{header.floorName}}</p>
+                <p class="canvas-location color-darkcyan">{{floorData.location | uppercase}}</p>
+                <p class="canvas-floor color-cyan">{{floorData.defaultFloorName}}</p>
             </div>
         </div>
         <!--end header text-->
 
         <!--canvas container-->
         <div id="canvas-container" layout="row"  layout-align="center start" class="parent-size background-ottanio">
-            <canvas id="canvas-id" ng-init="loadFloor()" class="width-100"></canvas>
+            <canvas id="canvas-id" ng-init="loadFloor(true, true, true)" class="width-100"></canvas>
         </div>
         <!--end canvas container-->
 
@@ -77,8 +77,7 @@
                                 <md-list-item ng-click="showAnchorsTable()"><p>Tabella Ancore</p><img src="../img/icons/ancora-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click="floorUpdate()"><p>Tabella piani</p><img src="../img/icons/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../img/icons/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click=""><p>Storico</p><img src="../img/icons/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click=""><p>Allarmi attivi</p><img src="../img/icons/alarm-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="viewHistory()"><p>Storico</p><img src="../img/icons/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click="changePassword()"><p>Cambia password</p><img src="../img/icons/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click="logout()"><p>Logout</p><img src="../img/icons/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
                             </md-list>
@@ -91,9 +90,8 @@
 
                                     <label>Selezione piano</label>
 
-                                    <md-select ng-model="floors.defaultFloor">
-
-                                        <md-option ng-repeat="floor in floors.result" ng-value="floor.name">
+                                    <md-select ng-model="floorData.defaultFloorName">
+                                        <md-option ng-repeat="floor in floors" ng-value="floor.name">
                                             {{floor.name}}
                                         </md-option>
                                     </md-select>
@@ -103,11 +101,11 @@
                             <div id="change-grid-container" layout="column" class="padding-10-px">
 
                                 <div flex="100" layout layout-align="center center">
-                                    <md-subheader class="padding-0 width-100 zindex-0">Spaziatura griglia: <b>{{speedDial.gridSpacing}}</b><md-subheader>
+                                    <md-subheader class="padding-0 width-100 zindex-0">Spaziatura griglia: <b>{{floorData.gridSpacing}}</b><md-subheader>
                                 </div>
 
                                 <md-slider-container flex="100">
-                                    <md-slider md-discrete ng-model="gridSpacing" min="10" max="1000" step="10" aria-label="speedDial.gridSpacing" class="md-primary"></md-slider>
+                                    <md-slider md-discrete ng-model="floorData.gridSpacing" min="10" max="1000" step="10" aria-label="Selezionare la densita' della griglia" class="md-primary"></md-slider>
                                 </md-slider-container>
                             </div>
 
@@ -116,11 +114,11 @@
                                 <div id="grid-on-off-container" layout="column" class="padding-10-px width-50" layout-align="center center">
 
                                     <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="grid.showGrid">Griglia: <b class="color-green">ON</b></md-subheader>
-                                        <md-subheader class="padding-0" ng-show="!grid.showGrid">Griglia: <b class="color-red">OFF</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="switch.showGrid">Griglia: <b class="color-green">ON</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="!switch.showGrid">Griglia: <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi la griglia" ng-model="grid.showGrid">
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi la griglia" ng-model="switch.showGrid">
                                     </md-switch>
                                 </div>
 
@@ -130,7 +128,7 @@
                                         <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Passsa in modalita' fullscreen" ng-model="speedDial.fullscreen">
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Passsa in modalita' fullscreen" ng-model="switch.fullscreen">
                                     </md-switch>
                                 </div>
                             </div>
@@ -139,22 +137,22 @@
                                 <div id="anchors-on-off-container" layout="column" class="padding-10-px width-50" layout-align="center center">
 
                                     <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="anchors.showAnchors">Anchors: <b class="color-green">ON</b></md-subheader>
-                                        <md-subheader class="padding-0" ng-show="!anchors.showAnchors">Anchors: <b class="color-red">OFF</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="switch.showAnchors">Anchors: <b class="color-green">ON</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="!switch.showAnchors">Anchors: <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi le telecamere" ng-model="anchors.showAnchors">
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi le telecamere" ng-model="switch.showAnchors">
                                     </md-switch>
                                 </div>
 
                                 <div id="cameras-on-off-container" layout="column" class="padding-10-px width-50" layout-align="center center">
 
                                     <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="cameras.showCameras">Cameras: <b class="color-green">ON</b></md-subheader>
-                                        <md-subheader class="padding-0" ng-show="!cameras.showCameras">Cameras: <b class="color-red">OFF</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="switch.showCameras">Cameras: <b class="color-green">ON</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="!switch.showCameras">Cameras: <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi le telecamere" ng-model="cameras.showCameras">
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi le telecamere" ng-model="switch.showCameras">
                                     </md-switch>
                                 </div>
                             </div>
@@ -163,10 +161,10 @@
 
                                 <div id="drawing-on-off-container" layout="column" class="padding-10-px width-100" layout-align="center center">
                                     <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="drawing.showDrawing">Modalita' disegna: <b class="color-green">ON</b></md-subheader>
-                                        <md-subheader class="padding-0" ng-show="!drawing.showDrawing">Modalita' disegna: <b class="color-red">OFF</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="switch.showDrawing">Modalita' disegna: <b class="color-green">ON</b></md-subheader>
+                                        <md-subheader class="padding-0" ng-show="!switch.showDrawing">Modalita' disegna: <b class="color-red">OFF</b></md-subheader>
                                     </div>
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi strumenti disegno" ng-model="drawing.showDrawing">
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi strumenti disegno" ng-model="switch.showDrawing">
                                     </md-switch>
                                 </div>
                             </div>

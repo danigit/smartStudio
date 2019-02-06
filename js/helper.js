@@ -46,6 +46,7 @@ function drawDashedLine(canvas, context, length, pattern, spacing, width, direct
 }
 
 function updateCanvas(canvas, context, image) {
+    context.clearRect(0, 0, canvas.height, canvas.width);
     if (image !== undefined) {
         context.drawImage(image, 0, 0);
         context.stroke();

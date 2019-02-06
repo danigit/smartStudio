@@ -37,11 +37,11 @@
                     </thead>
 
                     <tbody md-body>
-                        <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true" ng-repeat="floor in floors">
+                        <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true" ng-repeat="floor in floors | limitTo: query.limit: (query.page -1 ) * query.limit">
                             <td md-cell>{{floor.id}}</td>
                             <td md-cell ng-click="editCell($event, floor, 'name')" ng-class="{'md-placeholder': !floor.name}">{{floor.name || 'Inserire nome'}}</td>
-                            <td md-cell ng-click="editCell($event, floor, 'width')" ng-class="{'md-placeholder': !floor.width}">{{floor.width || 'Inserire lunghezza'}}</td>
-                            <td md-cell ng-click="editCell($event, floor, 'spacing')" ng-class="{'md-placeholder': !floor.spacing}">{{floor.spacing || 'Inserire spaziatura tacche'}}</td>
+                            <td md-cell ng-click="editCell($event, floor, 'map_width')" ng-class="{'md-placeholder': !floor.width}">{{floor.width || 'Inserire lunghezza'}}</td>
+                            <td md-cell ng-click="editCell($event, floor, 'map_spacing')" ng-class="{'md-placeholder': !floor.map_spacing}">{{floor.map_spacing || 'Inserire spaziatura tacche'}}</td>
                         </tr>
                     </tbody>
                 </table>

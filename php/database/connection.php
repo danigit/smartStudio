@@ -289,24 +289,24 @@ class Connection{
         $statement = null;
 
         if ($tag == null && $event == null) {
-            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
-                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID
-                            WHERE history.TIME BETWEEN ? AND ?";
+            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, floor.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
+                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID JOIN location l on tag.LOCATION_ID = l.ID
+                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE history.TIME BETWEEN ? AND ?";
             $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
         } else if ($event == null && $tag != null) {
-            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
-                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID
-                            WHERE tag.NAME = ? AND history.TIME BETWEEN ? AND ?";
+            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, floor.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
+                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID JOIN location l on tag.LOCATION_ID = l.ID
+                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE tag.NAME = ? AND history.TIME BETWEEN ? AND ?";
             $statement = $this->execute_selecting($this->query, 'sss', $tag, $fromDate, $toDate);
         } else if ($event != null && $tag == null){
-            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
-                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID
-                            WHERE event.DESCRIPTION = ? AND history.TIME BETWEEN ? AND ?";
+            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, floor.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
+                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID JOIN location l on tag.LOCATION_ID = l.ID
+                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE event.DESCRIPTION = ? AND history.TIME BETWEEN ? AND ?";
             $statement = $this->execute_selecting($this->query, 'sss', $event, $fromDate, $toDate);
         } else if ($event != null && $tag != null){
-            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
-                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID
-                            WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND history.TIME BETWEEN ? AND ?";
+            $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, floor.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
+                            JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID JOIN location l on tag.LOCATION_ID = l.ID
+                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND history.TIME BETWEEN ? AND ?";
             $statement = $this->execute_selecting($this->query, 'ssss', $event, $tag, $fromDate, $toDate);
         }
 
@@ -320,7 +320,8 @@ class Connection{
         $array_result = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
+            $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                                    'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
                                     'tag_y_pos' => $row['TAG_Y_POS']);
         }
 
@@ -372,8 +373,9 @@ class Connection{
         return $result_array;
     }
 
-    function get_anchors($floor){
-        $this->query = 'SELECT anchor.id, anchor.name, x_pos, y_pos, z_pos, radius, ip, rssi_threshold, proximity FROM anchor JOIN floor ON anchor.floor_id = floor.id WHERE floor.name = ?';
+    function get_anchors_by_floor($floor){
+        $this->query = 'SELECT anchor.ID, anchor.NAME, X_POS, Y_POS, Z_POS, RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, TYPE, PERMITTED_ASSET FROM anchor JOIN floor ON anchor.FLOOR_ID = floor.ID
+                        WHERE floor.NAME = ?';
 
         $statement = $this->execute_selecting($this->query, 's', $floor);
 
@@ -386,8 +388,32 @@ class Connection{
         $result_array = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $result_array[] = array('id' => $row['id'], 'name' => $row['name'], 'x_pos' => $row['x_pos'], "y_pos" => $row['y_pos'],
-                'z_pos' => $row['z_pos'], 'radius' => $row['radius'], 'ip' => $row['ip'], 'rssi' => $row['rssi_threshold'], 'proximity' => $row['proximity']);
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'],
+                'z_pos' => $row['Z_POS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'],
+                'type' => $row['TYPE'], 'permitted_asset' => $row['PERMITTED_ASSET']);
+        }
+
+        return $result_array;
+    }
+
+    function get_anchors_by_location($location){
+        $this->query = 'SELECT anchor.ID, anchor.NAME, X_POS, Y_POS, Z_POS, anchor.RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, TYPE, PERMITTED_ASSET FROM anchor JOIN floor ON anchor.FLOOR_ID = floor.ID
+                        JOIN location l on floor.LOCATION_ID = l.ID WHERE l.NAME = ?';
+
+        $statement = $this->execute_selecting($this->query, 's', $location);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
+
+        $this->result = $statement->get_result();
+        $result_array = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'],
+                'z_pos' => $row['Z_POS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'],
+                'type' => $row['TYPE'], 'permitted_asset' => $row['PERMITTED_ASSET']);
         }
 
         return $result_array;
@@ -460,6 +486,48 @@ class Connection{
         return $result_array;
     }
 
+    function get_tags_by_floor($floor){
+
+        $this->query = 'SELECT tag.ID, tag.NAME, tag.X_POS, tag.Y_POS FROM tag JOIN anchor a ON tag.ANCHOR_ID = a.ID JOIN floor ON a.FLOOR_ID = floor.ID WHERE floor.ID = ?';
+
+        $statement = $this->execute_selecting($this->query, 's', $floor);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+
+        $this->result = $statement->get_result();
+        $result_array = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], 'y_pos' => $row['Y_POS']);
+        }
+
+        return $result_array;
+    }
+
+    function get_tags_by_location($location){
+
+        $this->query = 'SELECT tag.ID, tag.NAME FROM tag JOIN location l ON tag.LOCATION_ID = l.ID WHERE l.NAME = ?';
+
+        $statement = $this->execute_selecting($this->query, 's', $location);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+
+        $this->result = $statement->get_result();
+        $result_array = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME']);
+        }
+
+        return $result_array;
+    }
+
     function get_events(){
         $this->query = 'SELECT ID, DESCRIPTION, ICON_NAME FROM event';
 
@@ -491,16 +559,16 @@ class Connection{
         $result_array = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'image_map' => $row['IMAGE_MAP'], 'width' => $row['MAP_WIDTH'], 'spacing' => $row['MAP_SPACING']);
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'image_map' => $row['IMAGE_MAP'], 'width' => $row['MAP_WIDTH'], 'map_spacing' => $row['MAP_SPACING']);
         }
 
         return $result_array;
     }
 
-    function change_tag_name($tag, $name){
+    function change_tag_field($tag_id, $tag_field, $field_value){
 
-        $this->query = "UPDATE tag SET name = ? WHERE id = ?";
-        $statement = $this->execute_selecting($this->query, 'ss', $name, $tag);
+        $this->query = "UPDATE tag SET " . strtoupper($tag_field) . " = ? WHERE ID = ?";
+        $statement = $this->execute_selecting($this->query, 'ss', $field_value, $tag_id);
 
         if ($statement instanceof db_errors)
             return $statement;
@@ -513,7 +581,7 @@ class Connection{
     }
 
     function change_anchor_field($anchor_id, $anchor_field, $field_value){
-        $this->query = "UPDATE anchor SET " . $anchor_field . " = ? WHERE id = ?";
+        $this->query = "UPDATE anchor SET " . strtoupper($anchor_field) . " = ? WHERE ID = ?";
         $statement = $this->execute_selecting($this->query, 'si', $field_value, $anchor_id);
 
         if ($statement instanceof db_errors)
@@ -527,7 +595,7 @@ class Connection{
     }
 
     function change_floor_field($floor_id, $floor_field, $field_value){
-        $this->query = "UPDATE floor SET " . $floor_field . " = ? WHERE id = ?";
+        $this->query = "UPDATE floor SET " . strtoupper($floor_field) . " = ? WHERE ID = ?";
         $statement = $this->execute_selecting($this->query, 'si', $field_value, $floor_id);
 
         if ($statement instanceof db_errors)

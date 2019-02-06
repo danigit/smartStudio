@@ -1,6 +1,6 @@
 <div>
     <!--popup header-->
-    <md-toolbar id="popup-toolbar" ng-class="registry.resultClass">
+    <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
                 <img src="../img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
@@ -13,7 +13,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">AGGIORNAMENTO WETAG</h1>
+                <h1 class=" font-iceberg font-x-large">VISUALIZZAZIONE WETAG</h1>
             </div>
         </div>
     </md-toolbar>
@@ -21,35 +21,34 @@
 
     <!--popup content-->
     <md-content class="popup-padding">
+
         <div layout="column" layout-align="center center">
 
-            <form id="changeRegistryForm" name="changeRegistryForm">
+            <md-table-container>
 
-                <md-select placeholder="Seleziona WeTag..." ng-model="registry.tag" class="width-100" required="">
-                    <md-option value="{{tag.id}}" ng-repeat="tag in registry.tags">{{tag.name}}</md-option>
-                </md-select>
+                <table md-table md-row-select="options.rowSelection" multiple="true" ng-model="selected" md-progress="promise">
 
-                <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
-                    <input required type="text" ng-model="registry.name" name="registryName" placeholder="Inserisci nuovo nome">
-                    <div ng-messages="changeRegistryForm.registryName.$error || changeRegistryForm.$submitted" role="alert">
-                        <div ng-message=" required">Inserire un nome</div>
-                    </div>
-                </md-input-container>
+                    <thead md-head md-order="query.order">
+                    <tr md-row>
+                        <th md-column ><span>id</span></th>
+                        <th md-column ><span>nome</span></th>
+                    </tr>
+                    </thead>
 
-                <div class="background-transparent-white text-center color-green font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
-                     ng-show="registry.resultOk">
-                    Nome aggiornato con successo!
-                </div>
+                    <tbody md-body>
+                    <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true" ng-repeat="tag in tags | limitTo: query.limit: (query.page -1 ) * query.limit">
+                        <td md-cell>{{tag.id}}</td>
+                        <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">{{tag.name || 'Inserire nome'}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
 
-                <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
-                     ng-show="registry.resultError">
-                    Inserire un nome diverso per il WeTag.
-                </div>
-
-                <div layout="column" layout-align="center center">
-                    <md-button ng-click="changeTagName(changeRegistryForm)" class="md-warn color-darkblue">INVIA</md-button>
-                </div>
-            </form>
+            <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page" md-total="{{tags.length}}" md-on-paginate=""></md-table-pagination>
+            <!--<div layout="row" layout-align="end end" class="width-100">-->
+            <!--<md-button class="md-primary" ng-click="saveAnchors()">Salva</md-button>-->
+            <!--<md-button class="md-primary" ng-click="hideAnchors()">Cancella</md-button>-->
+            <!--</div>-->
         </div>
     </md-content>
     <!--end popup content-->

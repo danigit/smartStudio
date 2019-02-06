@@ -38,27 +38,31 @@
                             <th md-column md-numeric><span>raggio</span></th>
                             <th md-column ><span>ip</span></th>
                             <th md-column ><span>rssi</span></th>
-                            <th md-column ><span>proximity</span></th>
+                            <th md-column md-numeric><span>proximity</span></th>
+                            <th md-column md-numeric><span>type</span></th>
+                            <th md-column ><span>permitted asset</span></th>
                         </tr>
                     </thead>
 
                     <tbody md-body>
-                        <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true" ng-repeat="anchor in anchors">
+                        <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true" ng-repeat="anchor in anchors | limitTo: query.limit: (query.page -1 ) * query.limit">
                             <td md-cell>{{anchor.id}}</td>
                             <td md-cell ng-click="editCell($event, anchor, 'name')" ng-class="{'md-placeholder': !anchor.name}">{{anchor.name || 'Inserire nome'}}</td>
-                            <td md-cell ng-click="editCell($event, anchor, 'x_pos')" ng-class="{'md-placeholder': !anchor.x_pos}">{{anchor.x_pos || 'Inserire x_pos'}}</td>
-                            <td md-cell ng-click="editCell($event, anchor, 'y_pos')" ng-class="{'md-placeholder': !anchor.y_pos}">{{anchor.y_pos || 'Inserire y_pos'}}</td>
-                            <td md-cell ng-click="editCell($event, anchor, 'z_pos')" ng-class="{'md-placeholder': !anchor.z_pos}">{{anchor.z_pos || 'Inserire z_pos'}}</td>
-                            <td md-cell ng-click="editCell($event, anchor, 'radius')" ng-class="{'md-placeholder': !anchor.radius}">{{anchor.radius || 'Inserire radius'}}</td>
+                            <td md-cell ng-click="editCell($event, anchor, 'x_pos')" ng-class="{'md-placeholder': !anchor.x_pos.toString()}">{{anchor.x_pos.toString() || 'Inserire x_pos'}}</td>
+                            <td md-cell ng-click="editCell($event, anchor, 'y_pos')" ng-class="{'md-placeholder': !anchor.y_pos.toString()}">{{anchor.y_pos.toString() || 'Inserire y_pos'}}</td>
+                            <td md-cell ng-click="editCell($event, anchor, 'z_pos')" ng-class="{'md-placeholder': !anchor.z_pos.toString()}">{{anchor.z_pos.toString() || 'Inserire z_pos'}}</td>
+                            <td md-cell ng-click="editCell($event, anchor, 'radius')" ng-class="{'md-placeholder': !anchor.radius.toString()}">{{anchor.radius.toString() || 'Inserire radius'}}</td>
                             <td md-cell ng-click="editCell($event, anchor, 'ip')" ng-class="{'md-placeholder': !anchor.ip}">{{anchor.ip || 'Inserire ip'}}</td>
-                            <td md-cell ng-click="editCell($event, anchor, 'rssi')" ng-class="{'md-placeholder': !anchor.rssi}">{{anchor.rssi || 'Inserire rssi'}}</td>
-                            <td md-cell ng-click="editCell($event, anchor, 'proximity')" ng-class="{'md-placeholder': !anchor.proximity}">{{anchor.proximity || 'Inserire proximity'}}</td>
+                            <td md-cell ng-click="editCell($event, anchor, 'rssi')" ng-class="{'md-placeholder': !anchor.rssi.toString()}">{{anchor.rssi.toString() || 'Inserire rssi'}}</td>
+                            <td md-cell ng-click="editCell($event, anchor, 'proximity')" ng-class="{'md-placeholder': !anchor.proximity.toString()}">{{anchor.proximity.toString() || 'Inserire proximity'}}</td>
+                            <td md-cell ng-click="editCell($event, anchor, 'type')" ng-class="{'md-placeholder': !anchor.type.toString()}">{{anchor.type.toString() || 'Inserire tipo'}}</td>
+                            <td md-cell ng-click="editCell($event, anchor, 'permitted_asset')" ng-class="{'md-placeholder': !anchor.permitted_asset}">{{anchor.permitted_asset || 'Inserire valore'}}</td>
                         </tr>
                     </tbody>
                 </table>
             </md-table-container>
 
-            <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page" md-total="{{anchors.length}}" md-on-paginate="getAnchors()"></md-table-pagination>
+            <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page" md-total="{{anchors.length}}" md-on-paginate="getAnchors"></md-table-pagination>
             <!--<div layout="row" layout-align="end end" class="width-100">-->
                 <!--<md-button class="md-primary" ng-click="saveAnchors()">Salva</md-button>-->
                 <!--<md-button class="md-primary" ng-click="hideAnchors()">Cancella</md-button>-->

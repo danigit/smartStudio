@@ -72,6 +72,8 @@
                             <th md-column ><span>Evento</span></th>
                             <th md-column md-numeric><span>Tag</span></th>
                             <th md-column md-numeric><span>Ancora</span></th>
+                            <th md-column md-numeric><span>Sito</span></th>
+                            <th md-column md-numeric><span>Piano</span></th>
                             <th md-column md-numeric><span>Coordinate x</span></th>
                             <th md-column md-numeric><span>Coordinate y</span></th>
 
@@ -84,8 +86,10 @@
                                 <td md-cell ng-class="{'md-placeholder': !row.event}">{{row.event || 'Dato non disponibile'}}</td>
                                 <td md-cell ng-class="{'md-placeholder': !row.tag}">{{row.tag || 'Dato non disponibile'}}</td>
                                 <td md-cell ng-class="{'md-placeholder': !row.anchor}">{{row.anchor || 'Dato non disponibile'}}</td>
-                                <td md-cell ng-class="{'md-placeholder': !row.tag_x_pos}">{{row.tag_x_pos || 'Dato non disponibile'}}</td>
-                                <td md-cell ng-class="{'md-placeholder': !row.tag_y_pos}">{{row.tag_y_pos || 'Dato non disponibile'}}</td>
+                                <td md-cell ng-class="{'md-placeholder': !row.location}">{{row.location || 'Dato non disponibile'}}</td>
+                                <td md-cell ng-class="{'md-placeholder': !row.floor}">{{row.floor || 'Dato non disponibile'}}</td>
+                                <td md-cell ng-class="{'md-placeholder': !row.tag_x_pos.toString()}">{{row.tag_x_pos.toString() || 'Dato non disponibile'}}</td>
+                                <td md-cell ng-class="{'md-placeholder': !row.tag_y_pos.toString()}">{{row.tag_y_pos.toString() || 'Dato non disponibile'}}</td>
                             </tr>
                         </tbody>
                     </table>

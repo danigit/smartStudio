@@ -32,7 +32,7 @@ class Test{
                 break;
             case 'get_floors': var_dump($this->conn->get_floors('BOLZANO'));
                 break;
-            case 'get_anchors': var_dump($this->conn->get_anchors('floor 1'));
+            case 'get_anchors': var_dump($this->conn->get_anchors_by_floor('floor 1'));
                 break;
             case 'change_password': var_dump($this->conn->change_password('da', 'dani'));
                 break;
@@ -42,10 +42,14 @@ class Test{
                 break;
             case 'get_tags_by_user': var_dump($this->conn->get_tags_by_user('dani'));
                 break;
+            case 'get_tags_by_floor': var_dump($this->conn->get_tags_by_floor(3));
+                break;
+            case 'change_floor_field': var_dump($this->conn->change_floor_field('3', 'spacing', '100'));
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('get_floors');
+$test->test_function('get_tags_by_floor');
