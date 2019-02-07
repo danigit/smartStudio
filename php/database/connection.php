@@ -374,7 +374,7 @@ class Connection{
     }
 
     function get_anchors_by_floor($floor){
-        $this->query = 'SELECT anchor.ID, anchor.NAME, X_POS, Y_POS, Z_POS, RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, TYPE, PERMITTED_ASSET FROM anchor JOIN floor ON anchor.FLOOR_ID = floor.ID
+        $this->query = 'SELECT anchor.ID, anchor.NAME, X_POS, Y_POS, Z_POS, RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, TYPE, PERMITTED_ASSET, IS_ONLINE FROM anchor JOIN floor ON anchor.FLOOR_ID = floor.ID
                         WHERE floor.NAME = ?';
 
         $statement = $this->execute_selecting($this->query, 's', $floor);
@@ -390,7 +390,7 @@ class Connection{
         while ($row = mysqli_fetch_assoc($this->result)) {
             $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'],
                 'z_pos' => $row['Z_POS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'],
-                'type' => $row['TYPE'], 'permitted_asset' => $row['PERMITTED_ASSET']);
+                'type' => $row['TYPE'], 'permitted_asset' => $row['PERMITTED_ASSET'], 'is_online' => $row['IS_ONLINE']);
         }
 
         return $result_array;
@@ -420,7 +420,7 @@ class Connection{
     }
 
     function get_cameras($floor){
-        $this->query = 'SELECT camera.ID, DESCRIPTION, USERNAME, PASSWORD, X_POS, Y_POS, RADIUS FROM camera 
+        $this->query = 'SELECT camera.ID, DESCRIPTION, USERNAME, PASSWORD, X_POS, Y_POS, RADIUS, IS_ONLINE FROM camera 
                         JOIN floor ON FLOOR_ID = floor.ID WHERE floor.NAME = ?';
 
         $statement = $this->execute_selecting($this->query, 's', $floor);
@@ -435,7 +435,7 @@ class Connection{
 
         while ($row = mysqli_fetch_assoc($this->result)) {
             $result_array[] = array('id' => $row['ID'], 'description' => $row['DESCRIPTION'], 'username' => $row['USERNAME'],
-                'password' => $row['PASSWORD'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'], 'radius' => $row['RADIUS']);
+                'password' => $row['PASSWORD'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'], 'radius' => $row['RADIUS'], 'is_online' => $row['IS_ONLINE']);
         }
 
         return $result_array;
@@ -488,7 +488,9 @@ class Connection{
 
     function get_tags_by_floor($floor){
 
-        $this->query = 'SELECT tag.ID, tag.NAME, tag.X_POS, tag.Y_POS FROM tag JOIN anchor a ON tag.ANCHOR_ID = a.ID JOIN floor ON a.FLOOR_ID = floor.ID WHERE floor.ID = ?';
+        $this->query = 'SELECT tag.ID, tag.NAME, tag.X_POS, tag.Y_POS, tag.BATTERY_STATUS, tag.BATTERY_STATUS_ALERTED, tag.MAN_DOWN, tag.MAN_DOWN_ALERTED,
+                        tag.MAN_DOWN_DISABLED, tag.MAN_DOWN_DISABLED_ALERTED, tag.MAN_DOWN_TACITATED, tag.SOS, tag.SOS_ALERTED, tag.MAN_IN_QUOTE, tag.MAN_IN_QUOTE_ALERTED,
+                        tag.CALL_ME_ALARM, tag.EVACUATION_ALARM, tag.RADIO_SWITCHED_OFF, tag.DIAGNOSTIC_REQUEST, tag.IS_EXIT FROM tag JOIN anchor a ON tag.ANCHOR_ID = a.ID JOIN floor ON a.FLOOR_ID = floor.ID WHERE floor.ID = ?';
 
         $statement = $this->execute_selecting($this->query, 's', $floor);
 
@@ -501,7 +503,12 @@ class Connection{
         $result_array = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], 'y_pos' => $row['Y_POS']);
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], 'y_pos' => $row['Y_POS'], 'battery_status' => $row['BATTERY_STATUS'],
+                'battery_status_alerted' => $row['BATTERY_STATUS_ALERTED'], 'man_down' => $row['MAN_DOWN'], 'man_down_alerted' => $row['MAN_DOWN_ALERTED'],
+                'man_down_disabled' => $row['MAN_DOWN_DISABLED'], 'man_down_disabled_alerted' => $row['MAN_DOWN_DISABLED_ALERTED'], 'man_down_tacitaded' => $row['MAN_DOWN_TACITATED'],
+                'sos' => $row['SOS'], 'sos_alerted' => $row['SOS_ALERTED'], 'man_in_quote' => $row['MAN_IN_QUOTE'], 'man_in_quote_alerted' => $row['MAN_IN_QUOTE_ALERTED'],
+                'call_me_alarm' => $row['CALL_ME_ALARM'], 'evacuation_alarm' => $row['EVACUATION_ALARM'], 'radio_switched_off' => $row['RADIO_SWITCHED_OFF'],
+                'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'is_exit' => $row['IS_EXIT']);
         }
 
         return $result_array;
@@ -563,6 +570,19 @@ class Connection{
         }
 
         return $result_array;
+    }
+
+    function update_floor_image($name, $id){
+        $this->query = "UPDATE floor SET IMAGE_MAP = ? WHERE ID = ?";
+
+        $statement = $this->execute_selecting($this->query, 'ss', $name, $id);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+
+        return $this->connection->affected_rows;
     }
 
     function change_tag_field($tag_id, $tag_field, $field_value){

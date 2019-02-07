@@ -35,9 +35,9 @@
         <!--header text-->
         <div layout="row" layout-align="center center" class="background-ottanio width-100" style="padding-left: 3%;">
             <img src="../img/icons/login-icon.png" class="canvas-header-image" alt="Smart Track" title="Smart Track">
-            <div class="margin-bottom-30-px">
-                <p class="canvas-location color-darkcyan">{{floorData.location | uppercase}}</p>
-                <p class="canvas-floor color-cyan">{{floorData.defaultFloorName}}</p>
+            <div class="margin-bottom-30-px width-30">
+                <p class="canvas-location color-darkcyan text-center">{{floorData.location | uppercase}}</p>
+                <p class="canvas-floor color-cyan text-center">{{floorData.defaultFloorName}}</p>
             </div>
         </div>
         <!--end header text-->
@@ -74,7 +74,7 @@
                         <div layout="column" id="menu-container">
                             <md-list ng-controller="menuController">
                                 <md-list-item ng-click="registry()"><p>Aggiorna WeTag</p><img src="../img/icons/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="showAnchorsTable()"><p>Tabella Ancore</p><img src="../img/icons/ancora-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="showAnchorsTable()"><p>Tabella Ancore</p><img src="../img/icons/anchor-online-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click="floorUpdate()"><p>Tabella piani</p><img src="../img/icons/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../img/icons/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click="viewHistory()"><p>Storico</p><img src="../img/icons/history-icon.png" class="menu-list-icon" alt=""></md-list-item>

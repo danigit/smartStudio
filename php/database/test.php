@@ -46,10 +46,12 @@ class Test{
                 break;
             case 'change_floor_field': var_dump($this->conn->change_floor_field('3', 'spacing', '100'));
                 break;
+            case 'update_floor_image': var_dump($this->conn->update_floor_image('new_image.png', '3'));
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('get_tags_by_floor');
+$test->test_function('update_floor_image');

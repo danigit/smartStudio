@@ -42,6 +42,8 @@
                             <td md-cell ng-click="editCell($event, floor, 'name')" ng-class="{'md-placeholder': !floor.name}">{{floor.name || 'Inserire nome'}}</td>
                             <td md-cell ng-click="editCell($event, floor, 'map_width')" ng-class="{'md-placeholder': !floor.width}">{{floor.width || 'Inserire lunghezza'}}</td>
                             <td md-cell ng-click="editCell($event, floor, 'map_spacing')" ng-class="{'md-placeholder': !floor.map_spacing}">{{floor.map_spacing || 'Inserire spaziatura tacche'}}</td>
+                            <td md-cell ng-click="uploadFloorImage(floor.id)"><md-button class="color-orange"><label><input onchange="angular.element(this).scope().fileNameChanged()" type="file" class="ng-hide" id="floor-image-{{floor.id}}"></label>SELEZIONA IMMAGINE</md-button></td>
+                            <!--<td md-cell ><md-button ng-click="uploadFloorImage(floor.id)" class="color-orange">CARICA IMMAGINE</md-button></td>-->
                         </tr>
                     </tbody>
                 </table>

@@ -19,12 +19,13 @@
      * @type {string[]}
      */
     loginController.$inject = ['$scope', '$location', 'socketService', '$state'];
+
     function loginController($scope, $location, socketService, $state) {
-        $scope.user = {username: '', password: ''};
+        $scope.user           = {username: '', password: ''};
         $scope.errorHandeling = {noConnection: false, wrongData: false};
 
         // function that makes the log in of the user
-        $scope.login = function(form){
+        $scope.login = function (form) {
             form.$submitted = 'true';
 
             console.log('logging in');
@@ -33,11 +34,11 @@
                     console.log(message);
                     let mess = JSON.parse(message.data);
 
-                    if (mess.result !== "ERROR_ON_LOGIN"){
+                    if (mess.result !== "ERROR_ON_LOGIN") {
                         console.log(mess.result);
                         // dataService.username = $scope.user.username;
                         $state.go('home');
-                    } else{
+                    } else {
                         $scope.errorHandeling.noConnection = false;
                         $scope.errorHandeling.wrongData    = true;
                     }
@@ -45,14 +46,14 @@
                 }
             ).catch(
                 function () {
-                    $scope.errorHandeling.wrongData = false;
+                    $scope.errorHandeling.wrongData    = false;
                     $scope.errorHandeling.noConnection = true;
                 }
             )
         };
 
         $scope.recoverPassword = function () {
-          $location.path('/recover-password');
+            $location.path('/recover-password');
         }
     }
 
@@ -61,28 +62,29 @@
      * @type {string[]}
      */
     homeController.$inject = ['$scope', '$state', 'NgMap', 'homeData', 'socketService'];
+
     function homeController($scope, $state, NgMap, homeData, socketService) {
-        let vm = this;
-        let markers = homeData.markers;
+        let vm         = this;
+        let markers    = homeData.markers;
         $scope.isAdmin = (homeData.isAdmin === 1);
 
         $scope.mapConfiguration = {
-            zoom: 7,
+            zoom    : 7,
             map_type: 'TERRAIN',
-            center: [41.87194, 12.56738]
+            center  : [41.87194, 12.56738]
         };
 
         vm.dynamicMarkers = [];
 
-        NgMap.getMap().then(function(map) {
+        NgMap.getMap().then(function (map) {
             let bounds = new google.maps.LatLngBounds();
 
             for (let i = 0; i < markers.result.length; i++) {
                 let latLng = new google.maps.LatLng(markers.result[i].position[0], markers.result[i].position[1]);
                 console.log(markers.result[i].icon);
                 let marker = new google.maps.Marker({
-                    position:latLng,
-                    icon: '../img/markers-images/' + markers.result[i].icon
+                    position: latLng,
+                    icon    : '../img/markers-images/' + markers.result[i].icon
                 });
 
                 google.maps.event.addDomListener(marker, 'click', function () {
@@ -110,29 +112,32 @@
      * @type {string[]}
      */
     mapController.$inject = ['$location', '$scope', '$timeout', 'NgMap', 'loginService', 'socketService', 'dataService'];
-    function mapController( $location, $scope, $timeout, NgMap, loginService, socketService, dataService) {}
+
+    function mapController($location, $scope, $timeout, NgMap, loginService, socketService, dataService) {
+    }
 
     /**
      * Function that handles the canvas interaction
      * @type {string[]}
      */
     canvasController.$inject = ['$scope', '$location', '$mdDialog', '$timeout', '$interval', 'canvasService', 'socketService', 'menuService', 'canvasData', 'dataService'];
-    function canvasController($scope, $location, $mdDialog, $timeout, $interval, canvasService, socketService, menuService, canvasData, dataService){
+
+    function canvasController($scope, $location, $mdDialog, $timeout, $interval, canvasService, socketService, menuService, canvasData, dataService) {
         $scope.floorData = {
             defaultFloorName: canvasData.floors[0].name,
-            gridSpacing: canvasData.floors[0].map_spacing,
-            location: canvasData.location,
+            gridSpacing     : canvasData.floors[0].map_spacing,
+            location        : canvasData.location,
         };
 
-        $scope.floors = canvasData.floors;
+        $scope.floors       = canvasData.floors;
         $scope.defaultFloor = canvasData.floors[0];
 
         $scope.switch = {
-            showGrid: true,
-            showAnchors: true,
-            showCameras: true,
-            showRadius: true,
-            showDrawing: false,
+            showGrid      : true,
+            showAnchors   : true,
+            showCameras   : true,
+            showRadius    : true,
+            showDrawing   : false,
             showFullscreen: false,
         };
 
@@ -145,7 +150,7 @@
         //     gridSpacing: 0,
         // };
 
-        let canvas = document.querySelector('#canvas-id');
+        let canvas  = document.querySelector('#canvas-id');
         let context = canvas.getContext('2d');
 
         $scope.$watchGroup(['switch.showGrid', 'switch.showAnchors', 'switch.showCameras', 'floorData.gridSpacing', 'switch.showDrawing'], function (newValues) {
@@ -165,21 +170,23 @@
         });
 
         $scope.$watch('floorData.defaultFloorName', function (newValue) {
-            $scope.defaultFloor = $scope.floors.filter(f => { return f.name === newValue})[0];
+            $scope.defaultFloor = $scope.floors.filter(f => {
+                return f.name === newValue
+            })[0];
             if ($scope.floorData.gridSpacing === $scope.defaultFloor.map_spacing)
                 $scope.loadFloor(true, true, true);
             else
                 $scope.floorData.gridSpacing = $scope.defaultFloor.map_spacing;
         });
 
-        $scope.loadFloor = function(grid, anchors, cameras){
+        $scope.loadFloor = function (grid, anchors, cameras) {
 
             console.log('loading floor');
             let img = new Image();
             img.src = imagePath + 'floors/' + $scope.defaultFloor.image_map;
 
-            img.onload = function() {
-                canvas.width = this.naturalWidth;
+            img.onload = function () {
+                canvas.width  = this.naturalWidth;
                 canvas.height = this.naturalHeight;
 
                 //updating the canvas and drawing border
@@ -195,7 +202,7 @@
 
                 socketService.getSocket('get_anchors_by_floor', {floor: $scope.floorData.defaultFloorName})
                     .then(function (response) {
-                        let message = JSON.parse(response.data);
+                        let message         = JSON.parse(response.data);
                         dataService.anchors = message.result;
                         if (anchors)
                             showAnchors(message.result);
@@ -216,19 +223,21 @@
             };
         };
 
-        let showAnchors = function(result){
+        let showAnchors = function (result) {
             let img = new Image();
-            img.src = imagePath + 'icons/ancora-icon.png';
-
+            if (result.is_online)
+                img.src = imagePath + 'icons/ancor-online-icon.png';
+            else
+                img.src = imagePath + 'icons/anchor-offline-icon.png';
             img.onload = function () {
                 drawIcon(result, context, img, $scope.defaultFloor.width, canvas, false);
             };
         };
 
 
-        let showCameras = function(result){
+        let showCameras = function (result) {
             let img = new Image();
-            img.src = imagePath + 'icons/camera.png';
+            img.src = imagePath + 'icons/camera-online-icon.png';
 
             img.onload = function () {
                 console.log(result);
@@ -238,26 +247,76 @@
 
         let showWeTag = function (result) {
             let img = new Image();
-            img.src = imagePath + 'icons/tag-green.png';
+            img.src = imagePath + 'icons/tag-online-icon.png';
 
             img.onload = function () {
                 drawIcon(result, context, img, $scope.defaultFloor.width, canvas, true);
             }
         };
 
-        let constantUpdateCanvas = function(){
-            let bufferCanvas = document.createElement('canvas');
+        let controllAlarmOk = function (tag, image) {
+            if (tag.battery_status_alerted) {
+                image.src = imagePath + 'icons/battery-empty.png';
+            } else if (tag.man_down_alerted) {
+                image.src = imagePath + 'icons/man-down-icon.png';
+            } else if (tag.man_down_disabled_alerted) {
+                image.src = imagePath + 'icons/tag-offline-icon.png';
+            } else if (tag.sos_alerted) {
+                image.src = imagePath + 'icons/man-down-icon.png';
+            } else if (tag.man_in_quote_alerted) {
+                image.src = imagePath + 'icons/man-down-icon.png';
+            } else if (tag.call_me_alarm) {
+                image.src = imagePath + 'icons/man-down-icon.png';
+            } else if (tag.evacuation_alarm) {
+                image.src = imagePath + 'icons/man-down-icon.png';
+            } else if (tag.helmet_dpi_alerted) {
+                image.src = imagePath + 'icons/man-down-icon.png';
+            } else if (tag.belt_dpi_alerted) {
+                image.src = imagePath + 'icons/man-down-icon.png';
+            } else if (tag.glove_dpi_alerted) {
+                image.src = imagePath + 'icons/man-down-icon.png';
+            } else if (tag.shoe_dpi_alerted) {
+                image.src = imagePath + 'icons/man-down-icon.png';
+            } else {
+                image.src = imagePath + 'icons/tag-online-icon.png';
+            }
+        };
+
+        let promiseLoadImages = function (data, image) {
+            return Promise.all(
+                data.map(function (value) {
+                    return new Promise(function (resolve) {
+                        let img = new Image();
+                        if ((image === 'anchor' || image === 'camera') && value.is_online === 1)
+                            img.src = imagePath + 'icons/' + image + '-online-icon.png';
+                        else if (image === 'anchor' || image === 'camera')
+                            img.src = imagePath + 'icons/' + image + '-offline-icon.png';
+                        else if (image === 'tag')
+                            controllAlarmOk(value, img);
+
+                        img.onload = function () {
+                            resolve(img);
+                        }
+                    })
+                })
+            )
+        };
+
+        let constantUpdateCanvas = function () {
+            let bufferCanvas  = document.createElement('canvas');
             let bufferContext = bufferCanvas.getContext('2d');
 
-            let img = new Image();
-            img.src = imagePath + 'floors/' + $scope.defaultFloor.image_map;
+            $interval(function () {
+                let img = new Image();
+                img.src = imagePath + 'floors/' + $scope.defaultFloor.image_map;
 
-            img.onload = function() {
-                bufferCanvas.width = this.naturalWidth;
-                bufferCanvas.height = this.naturalHeight;
+                img.onload = function () {
+                    bufferCanvas.width  = this.naturalWidth;
+                    bufferCanvas.height = this.naturalHeight;
 
-                $interval(function () {
-                    let grid = $scope.switch.showGrid;
+                    console.log($scope.defaultFloor.name);
+
+                    let grid    = $scope.switch.showGrid;
                     let anchors = $scope.switch.showAnchors;
                     let cameras = $scope.switch.showCameras;
 
@@ -277,12 +336,14 @@
                             dataService.anchors = message.result;
 
                             if (anchors) {
-                                let img = new Image();
-                                img.src = imagePath + 'icons/ancora-icon.png';
-
-                                img.onload = function () {
-                                    drawIcon(message.result, bufferContext, img, $scope.defaultFloor.width, bufferCanvas, false);
-                                };
+                                let i = 0;
+                                promiseLoadImages(message.result, 'anchor').then(
+                                    function (allImages) {
+                                        angular.forEach(allImages, function (img) {
+                                            drawIcon(message.result[i++], bufferContext, img, $scope.defaultFloor.width, bufferCanvas, false);
+                                        })
+                                    }
+                                )
                             }
 
                             return socketService.getSocket('get_cameras', {floor: $scope.floorData.defaultFloorName})
@@ -291,142 +352,149 @@
                             let message = JSON.parse(response.data);
 
                             if (cameras) {
-                                let img = new Image();
-                                img.src = imagePath + 'icons/camera.png';
-
-                                img.onload = function () {
-                                    drawIcon(message.result, bufferContext, img, $scope.defaultFloor.width, bufferCanvas, false);
-                                };
+                                let i = 0;
+                                promiseLoadImages(message.result, 'camera').then(
+                                    function (allImages) {
+                                        angular.forEach(allImages, function (img) {
+                                            drawIcon(message.result[i++], bufferContext, img, $scope.defaultFloor.width, bufferCanvas, false);
+                                        })
+                                    }
+                                )
                             }
                             return socketService.getSocket('get_tags_by_floor', {floor: $scope.defaultFloor.id});
                         })
                         .then(function (response) {
                             let message = JSON.parse(response.data);
+                            let i       = 0;
+                            promiseLoadImages(message.result, 'tag').then(
+                                function (allImages) {
+                                    angular.forEach(allImages, function (img) {
+                                        drawIcon(message.result[i++], bufferContext, img, $scope.defaultFloor.width, bufferCanvas, true);
+                                    });
 
-                            let img = new Image();
-                            img.src = imagePath + 'icons/tag-green.png';
-
-                            img.onload = function () {
-                                drawIcon(message.result, bufferContext, img, $scope.defaultFloor.width, bufferCanvas, true);
-
-                                context.drawImage(bufferCanvas, 0, 0);
-                            }
-
+                                    context.drawImage(bufferCanvas, 0, 0);
+                                }
+                            );
                         })
-                }, 1000);
-            }
+                }
+            }, 1000);
+
         };
 
         constantUpdateCanvas();
     }
 
     menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$state', '$filter', '$timeout', '$mdSidenav', 'dataService', 'menuService', 'socketService'];
-    function menuController($scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, dataService, menuService, socketService){
 
-        $scope.toggleLeft = function(){
+    function menuController($scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, dataService, menuService, socketService) {
+
+        $scope.toggleLeft = function () {
             $mdSidenav('left').toggle();
         };
 
-        $scope.insertLocation = function(){
+        $scope.insertLocation = function () {
             $mdDialog.show({
-                templateUrl: '../components/insert-location.html',
-                parent: angular.element(document.body),
-                targetEvent: event,
+                templateUrl        : '../components/insert-location.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
                 clickOutsideToClose: true,
-                controller: ['$scope', function ($scope) {
+                controller         : ['$scope', function ($scope) {
                     let fileInput = null;
 
                     $scope.location = {
-                        name: '',
+                        name       : '',
                         description: '',
-                        latitude: '',
-                        longitude: '',
+                        latitude   : '',
+                        longitude  : '',
                         showSuccess: false,
-                        showError: false,
-                        message: '',
+                        showError  : false,
+                        message    : '',
                         resultClass: ''
                     };
 
-                    $scope.insertLocation = function(form){
+                    $scope.insertLocation = function (form) {
                         form.$submitted = true;
 
                         if (form.$valid) {
-                            let file = null;
+                            let file     = null;
                             let fileName = null;
 
                             if (fileInput != null && fileInput.files.length !== 0) {
-                                file = fileInput.files[0];
+                                file     = fileInput.files[0];
                                 fileName = file.name;
                             }
 
                             socketService.getSocket('get_user', {})
                                 .then(
-                                function (response) {
-                                    let user = JSON.parse(response.data);
+                                    function (response) {
+                                        let user = JSON.parse(response.data);
 
-                                    return socketService.getSocket('insert_location', {
-                                        user       : user.result.id,
-                                        name       : $scope.location.name,
-                                        description: $scope.location.description,
-                                        latitude   : $scope.location.latitude,
-                                        longitude  : $scope.location.longitude,
-                                        imageName: fileName,
+                                        return socketService.getSocket('insert_location', {
+                                            user       : user.result.id,
+                                            name       : $scope.location.name,
+                                            description: $scope.location.description,
+                                            latitude   : $scope.location.latitude,
+                                            longitude  : $scope.location.longitude,
+                                            imageName  : fileName,
+                                        })
                                     })
-                                })
-                                .then(
-                                function (result) {
-                                    let res = JSON.parse(result.data);
-                                    if (res.result !== undefined && res.result !== 0) {
-                                        if (file != null){
-                                            return convertImageToBase64(file);
-                                        }
-                                    } else {
-                                        $scope.location.showSuccess =  false;
-                                        $scope.location.showError =  true;
-                                        $scope.location.message = 'Impossibile inserire la posizione.';
-                                        $scope.location.resultClass = 'background-red';
-                                    }
-                                })
                                 .then(
                                     function (result) {
-                                        return socketService.getSocket('save_marker_image', {imageName: fileName, image: result })
-                                })
+                                        let res = JSON.parse(result.data);
+                                        if (res.result !== undefined && res.result !== 0) {
+                                            if (file != null) {
+                                                return convertImageToBase64(file);
+                                            }
+                                        } else {
+                                            $scope.location.showSuccess = false;
+                                            $scope.location.showError   = true;
+                                            $scope.location.message     = 'Impossibile inserire la posizione.';
+                                            $scope.location.resultClass = 'background-red';
+                                        }
+                                    })
+                                .then(
+                                    function (result) {
+                                        return socketService.getSocket('save_marker_image', {
+                                            imageName: fileName,
+                                            image: result
+                                        })
+                                    })
                                 .then(function (result) {
-                                    let message = JSON.parse(result.data);
+                                        let message = JSON.parse(result.data);
 
-                                    if (message.result === false){
-                                        console.log('image not inserted');
-                                        $scope.location.showSuccess = false;
-                                        $scope.location.showError = true;
-                                        $scope.location.message = "Posizione inserita senza salvare l'immagine";
-                                        $scope.resultClass = 'background-orange'
-                                    }else {
-                                        $scope.location.resultClass = 'background-green';
-                                        $scope.location.showSuccess = true;
-                                        $scope.location.showError = false;
-                                        $scope.location.message = 'Posizione inserita con successo';
+                                        if (message.result === false) {
+                                            console.log('image not inserted');
+                                            $scope.location.showSuccess = false;
+                                            $scope.location.showError   = true;
+                                            $scope.location.message     = "Posizione inserita senza salvare l'immagine";
+                                            $scope.resultClass          = 'background-orange'
+                                        } else {
+                                            $scope.location.resultClass = 'background-green';
+                                            $scope.location.showSuccess = true;
+                                            $scope.location.showError   = false;
+                                            $scope.location.message     = 'Posizione inserita con successo';
 
-                                        $scope.$apply();
+                                            $scope.$apply();
 
-                                        $timeout(function () {
-                                            // $mdDialog.hide();
-                                            window.location.reload();
-                                        }, 1000);
+                                            $timeout(function () {
+                                                // $mdDialog.hide();
+                                                window.location.reload();
+                                            }, 1000);
+                                        }
                                     }
-                                }
-                            ).catch(function (error) {
+                                ).catch(function (error) {
                                 console.log(error);
                                 $scope.location.showSuccess = false;
-                                $scope.location.showError = true;
-                                $scope.location.message = 'Impossibile inserire la posizione';
+                                $scope.location.showError   = true;
+                                $scope.location.message     = 'Impossibile inserire la posizione';
                                 $scope.location.resultClass = 'background-red';
                             })
-                        }else {
+                        } else {
                             $scope.location.resultClass = 'background-red';
                         }
                     };
 
-                    $scope.uploadMarkerImage = function(){
+                    $scope.uploadMarkerImage = function () {
                         fileInput = document.getElementById('marker-image');
                         fileInput.click();
                     };
@@ -438,53 +506,58 @@
             })
         };
 
-        $scope.viewHistory = function(){
+        $scope.viewHistory = function () {
             $mdDialog.show({
-                templateUrl: '../components/history.html',
-                parent: angular.element(document.body),
-                targetEvent: event,
+                templateUrl        : '../components/history.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
                 clickOutsideToClose: true,
-                controller: ['$scope', function ($scope) {
+                controller         : ['$scope', function ($scope) {
                     let from = new Date();
                     from.setDate(from.getDate() - 7);
 
                     $scope.history = {
-                        fromDate: from,
-                        toDate: new Date(),
-                        tags: null,
-                        events: null,
-                        selectedTag: null,
+                        fromDate     : from,
+                        toDate       : new Date(),
+                        tags         : null,
+                        events       : null,
+                        selectedTag  : null,
                         selectedEvent: null
                     };
 
                     $scope.query = {
                         limitOptions: [5, 10, 15],
-                        order: 'Data',
-                        limit: 5,
-                        page: 1
+                        order       : 'Data',
+                        limit       : 5,
+                        page        : 1
                     };
 
                     $scope.historyRows = [];
 
                     $scope.$watchGroup(['history.fromDate', 'history.toDate', 'history.selectedTag', 'history.selectedEvent'], function (newValues) {
                         let fromDate = $filter('date')(newValues[0], 'yyyy-MM-dd');
-                        let toDate = $filter('date')(newValues[1], 'yyyy-MM-dd');
+                        let toDate   = $filter('date')(newValues[1], 'yyyy-MM-dd');
 
                         socketService.getSocket('get_events', {})
                             .then(function (response) {
                                 console.log(response);
-                                let message = JSON.parse(response.data);
+                                let message           = JSON.parse(response.data);
                                 $scope.history.events = message.result;
-                                $scope.history.tags = dataService.tags;
+                                $scope.history.tags   = dataService.tags;
                                 $scope.$apply();
-                                return socketService.getSocket('get_history', {fromDate: fromDate, toDate: toDate, tag: newValues[2], event: newValues[3]})
+                                return socketService.getSocket('get_history', {
+                                    fromDate: fromDate,
+                                    toDate  : toDate,
+                                    tag     : newValues[2],
+                                    event   : newValues[3]
+                                })
                             })
                             .then(function (result) {
-                                let mess = JSON.parse(result.data);
-                                $scope.historyRows = mess.result;
-                                $scope.$apply();
-                            }
-                        );
+                                    let mess           = JSON.parse(result.data);
+                                    $scope.historyRows = mess.result;
+                                    $scope.$apply();
+                                }
+                            );
                     });
 
                     $scope.hide = function () {
@@ -503,54 +576,57 @@
                 clickOutsideToClose: true,
                 controller         : ['$scope', function ($scope) {
                     $scope.changePassword = {
-                        oldPassword: '',
-                        newPassword: '',
+                        oldPassword  : '',
+                        newPassword  : '',
                         reNewPassword: '',
-                        resultClass: '',
-                        showSuccess: false,
-                        showError: false,
-                        message: false
+                        resultClass  : '',
+                        showSuccess  : false,
+                        showError    : false,
+                        message      : false
                     };
 
                     $scope.sendPassword = function (form) {
                         form.$submitted = true;
 
-                        if ($scope.changePassword.newPassword !== $scope.changePassword.reNewPassword){
+                        if ($scope.changePassword.newPassword !== $scope.changePassword.reNewPassword) {
                             $scope.changePassword.resultClass = 'background-red';
-                            $scope.changePassword.showError = true;
-                            $scope.changePassword.showSuccess    = false;
-                            $scope.changePassword.message = "Le password devono coincidere!";
-                        }else{
-                            if (form.$valid ) {
+                            $scope.changePassword.showError   = true;
+                            $scope.changePassword.showSuccess = false;
+                            $scope.changePassword.message     = "Le password devono coincidere!";
+                        } else {
+                            if (form.$valid) {
 
-                                socketService.getSocket('change_password', {oldPassword: $scope.changePassword.oldPassword, newPassword: $scope.changePassword.newPassword})
+                                socketService.getSocket('change_password', {
+                                    oldPassword: $scope.changePassword.oldPassword,
+                                    newPassword: $scope.changePassword.newPassword
+                                })
                                     .then(function (result) {
                                         let message = JSON.parse(result.data);
-                                        if (message.result === 'wrong_old'){
+                                        if (message.result === 'wrong_old') {
                                             $scope.changePassword.resultClass = 'background-red';
-                                            $scope.changePassword.showError = true;
+                                            $scope.changePassword.showError   = true;
                                             $scope.changePassword.showSuccess = false;
-                                            $scope.changePassword.message = 'Vecchia password non valida';
-                                        }else if (message.result === 'error_on_changing_password'){
+                                            $scope.changePassword.message     = 'Vecchia password non valida';
+                                        } else if (message.result === 'error_on_changing_password') {
                                             $scope.changePassword.resultClass = 'background-red';
                                             $scope.changePassword.showSuccess = false;
-                                            $scope.changePassword.showError = true;
-                                            $scope.changePassword.message = "Impossibile cambiare la password!";
+                                            $scope.changePassword.showError   = true;
+                                            $scope.changePassword.message     = "Impossibile cambiare la password!";
                                             $timeout(function () {
                                                 $mdDialog.hide();
                                             }, 1000);
-                                        }else {
+                                        } else {
                                             $scope.changePassword.resultClass = 'background-green';
                                             $scope.changePassword.showSuccess = true;
-                                            $scope.changePassword.showError = false;
-                                            $scope.changePassword.message = "Password cambiata correnttamente!";
+                                            $scope.changePassword.showError   = false;
+                                            $scope.changePassword.message     = "Password cambiata correnttamente!";
                                             $timeout(function () {
                                                 $mdDialog.hide();
                                             }, 1000);
                                         }
                                         $scope.$apply();
                                     });
-                            }else {
+                            } else {
                                 $scope.changePassword.resultClass = 'background-red';
                             }
                         }
@@ -563,20 +639,20 @@
             });
         };
 
-        $scope.registry = function(){
+        $scope.registry = function () {
             $mdDialog.show({
-                templateUrl: '../components/change-registry.html',
-                parent: angular.element(document.body),
-                targetEvent: event,
+                templateUrl        : '../components/change-registry.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
                 clickOutsideToClose: true,
-                controller: ['$scope', function ($scope) {
-                    $scope.selected = [];
+                controller         : ['$scope', function ($scope) {
+                    $scope.selected     = [];
                     $scope.limitOptions = [5, 10, 15];
 
                     $scope.query = {
                         order: 'name',
                         limit: 5,
-                        page: 1
+                        page : 1
                     };
 
                     socketService.getSocket('get_tags_by_location', {location: dataService.location})
@@ -585,16 +661,20 @@
                             $scope.tags = message.result;
                         });
 
-                    $scope.editCell = function(event, tag, tagName) {
+                    $scope.editCell = function (event, tag, tagName) {
 
                         event.stopPropagation();
 
                         let editCell = {
-                            modelValue: tag[tagName],
-                            save: function (input) {
+                            modelValue : tag[tagName],
+                            save       : function (input) {
                                 input.$invalid = true;
-                                tag[tagName] = input.$modelValue;
-                                socketService.getSocket('change_tag_field', {tag_id: tag.id, tag_field: tagName, field_value: input.$modelValue})
+                                tag[tagName]   = input.$modelValue;
+                                socketService.getSocket('change_tag_field', {
+                                    tag_id     : tag.id,
+                                    tag_field  : tagName,
+                                    field_value: input.$modelValue
+                                })
                                     .then(function (response) {
                                         let message = JSON.parse(response.data);
                                         if (message.result !== 1)
@@ -602,8 +682,8 @@
                                     })
                             },
                             targetEvent: event,
-                            title: 'Inserisci un valore',
-                            validators:{
+                            title      : 'Inserisci un valore',
+                            validators : {
                                 'md-maxlength': 30
                             }
                         };
@@ -618,38 +698,42 @@
             })
         };
 
-        $scope.showAnchorsTable = function() {
+        $scope.showAnchorsTable = function () {
             $mdDialog.show({
                 templateUrl        : '../components/anchors.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 controller         : ['$scope', function ($scope) {
-                    $scope.selected = [];
+                    $scope.selected     = [];
                     $scope.limitOptions = [5, 10, 15];
 
                     $scope.query = {
                         order: 'name',
                         limit: 5,
-                        page: 1
+                        page : 1
                     };
 
                     socketService.getSocket('get_anchors_by_location', {location: dataService.location})
                         .then(function (response) {
-                            let message = JSON.parse(response.data);
+                            let message    = JSON.parse(response.data);
                             $scope.anchors = message.result;
                         });
 
-                    $scope.editCell = function(event, anchor, anchorName) {
+                    $scope.editCell = function (event, anchor, anchorName) {
 
                         event.stopPropagation();
 
                         let editCell = {
-                            modelValue: anchor[anchorName],
-                            save: function (input) {
-                                input.$invalid = true;
+                            modelValue : anchor[anchorName],
+                            save       : function (input) {
+                                input.$invalid     = true;
                                 anchor[anchorName] = input.$modelValue;
-                                socketService.getSocket('change_anchor_field', {anchor_id: anchor.id, anchor_field: anchorName, field_value: input.$modelValue})
+                                socketService.getSocket('change_anchor_field', {
+                                    anchor_id   : anchor.id,
+                                    anchor_field: anchorName,
+                                    field_value : input.$modelValue
+                                })
                                     .then(function (response) {
                                         let message = JSON.parse(response.data);
                                         if (message.result !== 1)
@@ -657,8 +741,8 @@
                                     })
                             },
                             targetEvent: event,
-                            title: 'Inserisci un valore',
-                            validators:{
+                            title      : 'Inserisci un valore',
+                            validators : {
                                 'md-maxlength': 30
                             }
                         };
@@ -673,35 +757,39 @@
             });
         };
 
-        $scope.floorUpdate = function(){
+        $scope.floorUpdate = function () {
             $mdDialog.show({
-                templateUrl: '../components/floor-settings.html',
-                parent: angular.element(document.body),
-                targetEvent: event,
+                templateUrl        : '../components/floor-settings.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
                 clickOutsideToClose: true,
-                controller: ['$scope', function ($scope) {
-                    $scope.selected = [];
+                controller         : ['$scope', function ($scope) {
+                    $scope.selected     = [];
                     $scope.limitOptions = [5, 10, 15];
 
                     $scope.query = {
                         order: 'name',
                         limit: 5,
-                        page: 1
+                        page : 1
                     };
 
                     $scope.floors = dataService.floors;
 
-                    $scope.editCell = function(event, floor, floorName) {
+                    $scope.editCell = function (event, floor, floorName) {
 
                         event.stopPropagation();
 
                         let editCell = {
-                            modelValue: floor[floorName],
-                            save: function (input) {
-                                input.$invalid = true;
+                            modelValue : floor[floorName],
+                            save       : function (input) {
+                                input.$invalid   = true;
                                 floor[floorName] = input.$modelValue;
                                 console.log(floorName);
-                                socketService.getSocket('change_floor_field', {floor_id: floor.id, floor_field: floorName, field_value: input.$modelValue})
+                                socketService.getSocket('change_floor_field', {
+                                    floor_id   : floor.id,
+                                    floor_field: floorName,
+                                    field_value: input.$modelValue
+                                })
                                     .then(function (response) {
                                         let message = JSON.parse(response.data);
                                         if (message.result !== 1)
@@ -709,13 +797,47 @@
                                     })
                             },
                             targetEvent: event,
-                            title: 'Inserisci un valore',
-                            validators:{
+                            title      : 'Inserisci un valore',
+                            validators : {
                                 'md-maxlength': 30
                             }
                         };
 
                         $mdEditDialog.large(editCell);
+                    };
+
+                    $scope.uploadFloorImage = function (id) {
+
+                        let fileInput = document.getElementById('floor-image-' + id);
+
+                        $scope.floorId = id;
+                        fileInput.click();
+                    };
+
+                    $scope.fileNameChanged = function () {
+                        let fileInput = document.getElementById('floor-image-' + $scope.floorId);
+                        let file      = null;
+                        let fileName  = null;
+
+                        if (fileInput != null && fileInput.files.length !== 0) {
+                            file     = fileInput.files[0];
+                            fileName = file.name;
+                        }
+
+                        if (file != null) {
+                            console.log($scope.floorId);
+                            convertImageToBase64(file)
+                                .then(function (result) {
+                                    return socketService.getSocket('save_floor_image', {
+                                        id   : $scope.floorId,
+                                        image: result,
+                                        name : fileName
+                                    })
+                                })
+                                .then(function (response) {
+                                    console.log(response);
+                                })
+                        }
                     };
 
                     $scope.hide = function () {
@@ -735,17 +857,17 @@
                 }
             )
         };
-
-
     }
 
     registryController.$inject = ['$scope', '$mdDialog', '$timeout', 'socketService'];
-    function registryController($scope, $mdDialog, $timeout, socketService){
+
+    function registryController($scope, $mdDialog, $timeout, socketService) {
 
     }
 
     anchorsController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', 'socketService'];
-    function anchorsController($scope, $mdDialog, $mdEditDialog, socketService){
+
+    function anchorsController($scope, $mdDialog, $mdEditDialog, socketService) {
 
     }
 
@@ -754,27 +876,28 @@
      * @type {string[]}
      */
     recoverPassController.$inject = ['$scope', 'recoverPassService', '$location'];
+
     function recoverPassController($scope, recoverPassService, $location) {
-        $scope.email = '';
-        $scope.code = '';
-        $scope.username = '';
-        $scope.password = '';
-        $scope.rePassword = '';
-        $scope.error = '';
-        $scope.errorHandeling = {noConnection: false, wrongData: false, passwordNotMatch: false };
+        $scope.email          = '';
+        $scope.code           = '';
+        $scope.username       = '';
+        $scope.password       = '';
+        $scope.rePassword     = '';
+        $scope.error          = '';
+        $scope.errorHandeling = {noConnection: false, wrongData: false, passwordNotMatch: false};
 
         $scope.sendRecoverPassword = function (form) {
-            form.$submitted = 'true';
+            form.$submitted                    = 'true';
             $scope.errorHandeling.noConnection = false;
-            $scope.errorHandeling.wrongData = false;
+            $scope.errorHandeling.wrongData    = false;
 
             let promise = recoverPassService.recoverPassword($scope.email);
 
             promise.then(
                 function (response) {
-                    if (response.data.response){
+                    if (response.data.response) {
                         $location.path('/recover-password-code')
-                    }else {
+                    } else {
                         $scope.errorHandeling.wrongData = true;
                     }
                 }
@@ -784,16 +907,16 @@
                 }
             )
         };
-        
+
         $scope.resetPassword = function (form) {
-            form.$submitted = 'true';
-            $scope.errorHandeling.noConnection = false;
-            $scope.errorHandeling.wrongData = false;
+            form.$submitted                        = 'true';
+            $scope.errorHandeling.noConnection     = false;
+            $scope.errorHandeling.wrongData        = false;
             $scope.errorHandeling.passwordNotMatch = false;
 
-            if ($scope.password !== $scope.rePassword){
+            if ($scope.password !== $scope.rePassword) {
                 $scope.errorHandeling.passwordNotMatch = true;
-            }else {
+            } else {
 
                 let promise = recoverPassService.resetPassword($scope.code, $scope.username, $scope.password, $scope.rePassword);
 
@@ -803,7 +926,7 @@
                             $location.path('/');
                         } else {
                             $scope.errorHandeling.wrongData = true;
-                            $scope.error = response.data.message;
+                            $scope.error                    = response.data.message;
                         }
                     }
                 ).catch(

@@ -158,6 +158,23 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'save_floor_image':{
+                $result['action'] = 'save_floor_image';
+
+                $query = $this->connection->update_floor_image($decoded_message['data']['name'], $decoded_message['data']['id']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                if ($result['result'] === 1) {
+                    $decodedFile = explode('data:image/png;base64,', $decoded_message['data']['image']);
+                    $decodedFile = base64_decode($decodedFile[1]);
+                    $result['result'] = file_put_contents(FLOOR_IMAGES_PATH . $decoded_message['data']['name'], $decodedFile);
+
+                }
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             case 'get_history':{
                 $result['action'] = 'get_history';
                 $fromDate = $decoded_message['data']['fromDate'];

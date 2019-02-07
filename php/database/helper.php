@@ -7,6 +7,7 @@
  */
 
 define('MARKERS_IMAGES_PATH', '../../img/markers-images/');
+define('FLOOR_IMAGES_PATH', '../../img/floors/');
 
 require_once 'db_errors.php';
 
