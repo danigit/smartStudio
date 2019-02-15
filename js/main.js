@@ -81,19 +81,20 @@
                                 let message = JSON.parse(response.data);
                                 dataService.username = message.result.session_name;
 
-                                return socketService.getSocket('get_location', {})
+                                return socketService.getSocket('get_location_info', {})
                             })
                             .then(function (response) {
                                 let message = JSON.parse(response.data);
                                 if (message.result !== 'location_not_found') {
                                     dataService.location = message.result;
-                                    return socketService.getSocket('get_floors', {location: message.result});
+                                    return socketService.getSocket('get_floors', {location: message.result.name});
                                 }
                             })
                             .then(function (response) {
                                 let message = JSON.parse(response.data);
+
                                 dataService.floors = message.result;
-                                promise.resolve({location: dataService.location, floors: dataService.floors})
+                                promise.resolve({location: dataService.location, floors: message.result})
                             }
                         );
 
