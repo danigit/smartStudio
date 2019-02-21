@@ -21,8 +21,11 @@
 
         service.username = '';
         service.location = '';
+        service.isAdmin = '';
         service.tags = [];
+        service.anchors = [];
         service.floors = [];
+        service.cameras = [];
     }
 
     /**
@@ -130,21 +133,21 @@
         server.onerror = function(){
         };
 
-        service.getSocket = function(action, data){
+        service.sendRequest = function(action, data){
             return new Promise(function (resolve, reject) {
 
                 if (isOpen) {
                     server.send(encodeRequest(action, data));
                     server.onmessage = function (message) {
                         // console.log(message);
-                        resolve(message);
+                        resolve(JSON.parse(message.data));
                     }
                 }
 
                 server.onopen = function () {
                     server.send(encodeRequest(action, data));
                     server.onmessage = function(message) {
-                        resolve(message);
+                        resolve(JSON.parse(message.data));
                         isOpen = true;
                     }
                 };
@@ -168,7 +171,7 @@
         service.recoverPassword = function (email) {
             return $http({
                 method: 'POST',
-                url: smartPath + 'php/ajax/recover_password.php',
+                url: mainPath + 'php/ajax/recover_password.php',
                 params: {email: email}
             })
         };
@@ -176,7 +179,7 @@
         service.resetPassword = function (code, username, password, repassword) {
             return $http({
                 method: 'POST',
-                url: smartPath + 'php/ajax/reset_password.php',
+                url: mainPath + 'php/ajax/reset_password.php',
                 params: {code: code, username: username, password: password, repassword: repassword}
             })
         }
@@ -204,7 +207,7 @@
         service.sendPassword = function (oldPassword, newPassword) {
             return $http({
                 method: 'POST',
-                url   : smartPath + 'php/ajax/change_password.php',
+                url   : mainPath + 'php/ajax/change_password.php',
                 params: {oldPassword: oldPassword, newPassword: newPassword}
             });
         }

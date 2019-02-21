@@ -1,11 +1,10 @@
 /**
  * Function that draw the border of the canvas
- * @param canvasWidth - the width of the canvas
- * @param canvasHeight - the height of the canvas
+ * @param canvas - the canvas on which to draw
  * @param context - the context of the canvas
+ * @param space
  */
 function drawCanvasBorder(canvasWidth, canvasHeight, context) {
-    //setting the border properies
     context.fillStyle   = '#0093c4';
 
     //drawing the border
@@ -21,35 +20,24 @@ function encodeRequest(action, data) {
     return JSON.stringify({action: action, data: data});
 }
 
-/**
- * Function that draws the vertical and horizontal lines on the canva
- * @param canvasWidth
- * @param canvasHeight
- * @param context
- * @param spacing
- * @param width
- * @param direction
- */
-function drawDashedLine(canvasWidth, canvasHeight, context, spacing, width, direction) {
-    let virtualWidth = scaleSize(width, canvasWidth) * spacing;
-    console.log(virtualWidth);
-    console.log(width);
+function drawDashedLine(canvas, context, length, pattern, spacing, width, direction) {
+    let virtualWidth = scaleSize(width, canvas) * spacing;
     context.strokeStyle = 'lightgray';
 
     if (direction === 'horizontal') {
-        for (let i = 25; i < canvasHeight - canvasBorderSpace; i += virtualWidth){
+        for (let i = 25; i < canvas.height - 25; i += virtualWidth){
             context.beginPath();
-            context.setLineDash(canvasGridPattern);
-            context.moveTo(canvasBorderSpace, i);
-            context.lineTo(canvasWidth - canvasBorderSpace, i);
+            context.setLineDash(pattern);
+            context.moveTo(25, i);
+            context.lineTo(length - 25, i);
             context.stroke();
         }
     }else if (direction === 'vertical'){
-        for (let i = 25; i < canvasWidth - canvasBorderSpace; i += virtualWidth){
+        for (let i = 25; i < canvas.width - 25; i += virtualWidth){
             context.beginPath();
-            context.setLineDash(canvasGridPattern);
-            context.moveTo(i, canvasBorderSpace);
-            context.lineTo(i, canvasHeight - canvasBorderSpace);
+            context.setLineDash(pattern);
+            context.moveTo(i, 25);
+            context.lineTo(i, length - 25);
             context.stroke();
         }
     }
@@ -61,7 +49,8 @@ function updateCanvas(canvasWidth, canvasHeight, context, image) {
         context.drawImage(image, 0, 0);
         context.stroke();
     }
-    drawCanvasBorder(canvasWidth, canvasHeight, context, 25);
+
+    drawCanvasBorder(canvasWidth, canvasHeight, context);
 }
 
 
@@ -95,8 +84,13 @@ function drawIcon(value, context, img, width, canvas, isTag) {
     }
 }
 
-function scaleSize(width, canvasWidth) {
-    return (100/width) * (canvasWidth/100);
+function drawCumulativeIcons(value, tagsNumber, context, img, width, canvas) {
+    context.drawImage(img, value.x_pos, value.y_pos);
+    context.stroke();
+}
+
+function scaleSize(width, canvas) {
+    return (100/width) * (canvas.width/100);
 }
 
 function openFullScreen(elem) {
@@ -135,3 +129,7 @@ function convertImageToBase64(img) {
         }
     })
 }
+
+let markerInfo = '<div>' +
+    '' +
+    '</div>'

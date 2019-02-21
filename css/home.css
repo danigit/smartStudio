@@ -22,3 +22,19 @@
 .gmnoprint{
     display: none!important;
 }
+
+.tag-info-icon{
+    display: block;
+    width: 60px;
+    margin: auto;
+}
+
+.marker-info-container{
+    margin-left: 30px;
+    width: 200px;
+    height: 200px;
+}
+
+.gm-fullscreen-control{
+    display: none!important;
+}

@@ -13,7 +13,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">VISUALIZZAZIONE ANCORE</h1>
+                <h1 class=" font-iceberg font-x-large">TABELLA ANCORE</h1>
             </div>
         </div>
     </md-toolbar>
@@ -30,23 +30,23 @@
 
                     <thead md-head md-order="query.order">
                         <tr md-row>
-                            <th md-column ><span>id</span></th>
-                            <th md-column ><span>nome</span></th>
-                            <th md-column md-numeric><span>x-pos</span></th>
-                            <th md-column md-numeric><span>y-pos</span></th>
-                            <th md-column md-numeric><span>z-pos</span></th>
-                            <th md-column md-numeric><span>raggio</span></th>
-                            <th md-column ><span>ip</span></th>
-                            <th md-column ><span>rssi</span></th>
-                            <th md-column md-numeric><span>proximity</span></th>
-                            <th md-column md-numeric><span>type</span></th>
-                            <th md-column ><span>permitted asset</span></th>
+                            <!--<th md-column ><span>id</span></th>-->
+                            <th md-column ><span class="color-darkcyan">NOME</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">X-POS</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">Y-POS</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">Z-POS</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">RAGGIO</span></th>
+                            <th md-column ><span class="color-darkcyan">IP</span></th>
+                            <th md-column ><span class="color-darkcyan">RSSI</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">PROXIMITY</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">TYPE</span></th>
+                            <th md-column ><span class="color-darkcyan">PERMITTED ASSET</span></th>
                         </tr>
                     </thead>
 
                     <tbody md-body>
                         <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true" ng-repeat="anchor in anchors | limitTo: query.limit: (query.page -1 ) * query.limit">
-                            <td md-cell>{{anchor.id}}</td>
+                            <!--<td md-cell>{{anchor.id}}</td>-->
                             <td md-cell ng-click="editCell($event, anchor, 'name')" ng-class="{'md-placeholder': !anchor.name}">{{anchor.name || 'Inserire nome'}}</td>
                             <td md-cell ng-click="editCell($event, anchor, 'x_pos')" ng-class="{'md-placeholder': !anchor.x_pos.toString()}">{{anchor.x_pos.toString() || 'Inserire x_pos'}}</td>
                             <td md-cell ng-click="editCell($event, anchor, 'y_pos')" ng-class="{'md-placeholder': !anchor.y_pos.toString()}">{{anchor.y_pos.toString() || 'Inserire y_pos'}}</td>

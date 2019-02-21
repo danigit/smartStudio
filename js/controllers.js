@@ -29,12 +29,10 @@
             form.$submitted = 'true';
 
             console.log('logging in');
-            socketService.getSocket('login', {username: $scope.user.username, password: $scope.user.password}).then(
-                function (message) {
-                    let mess = JSON.parse(message.data);
-
-                    if (mess.result !== "ERROR_ON_LOGIN") {
-                        console.log(mess.result);
+            socketService.sendRequest('login', {username: $scope.user.username, password: $scope.user.password}).then(
+                function (response) {
+                    if (response.result !== "ERROR_ON_LOGIN") {
+                        console.log(response.result);
                         // dataService.username = $scope.user.username;
                         $state.go('home');
                     } else {
@@ -52,7 +50,8 @@
         };
 
         $scope.recoverPassword = function () {
-            $location.path('/recover-password');
+            $state.go('recover-password');
+            // $location.path('/recover-password');
         }
     }
 
@@ -61,11 +60,12 @@
      * @type {string[]}
      */
     homeController.$inject = ['$scope', '$state', 'NgMap', 'homeData', 'socketService', 'dataService'];
+
     function homeController($scope, $state, NgMap, homeData, socketService, dataService) {
 
-        let homeCtrl         = this;
-        let markers    = homeData.markers;
-        let bounds = null;
+        let homeCtrl = this;
+        let markers  = homeData.markers;
+        let bounds   = null;
 
         homeCtrl.isAdmin = (homeData.isAdmin === 1);
 
@@ -79,24 +79,24 @@
 
         NgMap.getMap('main-map').then(function (map) {
 
-            let hideStyles =  [
+            let hideStyles = [
                 {
                     featureType: "poi",
                     elementType: "labels",
-                    stylers: [
-                        { visibility: "off" }
+                    stylers    : [
+                        {visibility: "off"}
                     ]
-                },{
+                }, {
                     featureType: "water",
                     elementType: "labels",
-                    stylers: [
-                        { visibility: "off" }
+                    stylers    : [
+                        {visibility: "off"}
                     ]
-                },{
+                }, {
                     featureType: "road",
                     elementType: "labels",
-                    stylers: [
-                        { visibility: "off" }
+                    stylers    : [
+                        {visibility: "off"}
                     ]
                 }
             ];
@@ -112,9 +112,9 @@
                 let latLng = new google.maps.LatLng(markers[i].position[0], markers[i].position[1]);
 
                 let marker = new google.maps.Marker({
-                    position: latLng,
+                    position : latLng,
                     animation: google.maps.Animation.DROP,
-                    icon    : '../img/icons/markers/' + ((markers[i].icon) ? markers[i].icon : 'location-marker.png')
+                    icon     : '../img/icons/markers/' + ((markers[i].icon) ? markers[i].icon : 'location-marker.png')
                 });
 
                 let infoWindow = new google.maps.InfoWindow({
@@ -137,16 +137,14 @@
                 })
 
                 google.maps.event.addDomListener(marker, 'click', function () {
-                    socketService.getSocket('save_location', {location: markers[i].name})
-                        .then(function (result) {
-                            let message = JSON.parse(result.data);
-                            if (message.result === 'location_saved') {
-                                socketService.getSocket('get_location_info', {})
+                    socketService.sendRequest('save_location', {location: markers[i].name})
+                        .then(function (response) {
+                            if (response.result === 'location_saved') {
+                                socketService.sendRequest('get_location_info', {})
                                     .then(function (response) {
-                                        let mess = JSON.parse(response.data);
-                                        dataService.location = mess.result;
+                                        dataService.location = response.result[0];
 
-                                        if (mess.result.is_inside)
+                                        if (response.result[0].is_inside)
                                             $state.go('canvas');
                                         else
                                             $state.go('outdoor-location');
@@ -178,13 +176,14 @@
      * @type {string[]}
      */
     outdoorController.$inject = ['$location', '$scope', '$timeout', '$interval', '$mdDialog', 'NgMap', 'loginService', 'socketService', 'dataService', 'outdoorData'];
+
     function outdoorController($location, $scope, $timeout, $interval, $mdDialog, NgMap, loginService, socketService, dataService, outdoorData) {
-        let outdoorCtrl = this;
-        let userTags = outdoorData.tags;
-        let tags = null;
+        let outdoorCtrl    = this;
+        let userTags       = outdoorData.tags;
+        let tags           = null;
         let updateMapTimer = null;
-        let bounds = new google.maps.LatLngBounds();
-        let locationInfo = '';
+        let bounds         = new google.maps.LatLngBounds();
+        let locationInfo   = '';
 
         outdoorCtrl.isAdmin = outdoorData.isAdmin;
 
@@ -197,53 +196,50 @@
         let dynamicTags = [];
 
         NgMap.getMap('outdoor-map').then(function (map) {
-            let hideStyles =  [
+            let hideStyles = [
                 {
                     featureType: "poi",
                     elementType: "labels",
-                    stylers: [
-                        { visibility: "off" }
+                    stylers    : [
+                        {visibility: "off"}
                     ]
-                },{
+                }, {
                     featureType: "water",
                     elementType: "labels",
-                    stylers: [
-                        { visibility: "off" }
+                    stylers    : [
+                        {visibility: "off"}
                     ]
-                },{
+                }, {
                     featureType: "road",
                     elementType: "labels",
-                    stylers: [
-                        { visibility: "off" }
+                    stylers    : [
+                        {visibility: "off"}
                     ]
                 }
             ];
 
             map.set('styles', hideStyles);
 
-            socketService.getSocket('get_location_info', {})
+            socketService.sendRequest('get_location_info', {})
                 .then(function (response) {
-                    let message = JSON.parse(response.data);
+                    let message  = JSON.parse(response.data);
                     locationInfo = message.result[0].name;
                     console.log(locationInfo);
 
-                    return socketService.getSocket('get_tags_by_location', {location: locationInfo})
+                    return socketService.sendRequest('get_tags_by_location', {location: locationInfo})
                 })
                 .then(function (response) {
-                    let message = JSON.parse(response.data);
-                    tags = message.result;
-
-                    console.log(tags);
+                    tags        = response.result;
 
                     for (let i = 0; i < tags.length; i++) {
                         let latLng = new google.maps.LatLng(tags[i].gps_north_degree, tags[i].gps_east_degree);
                         let marker = new google.maps.Marker({
-                            position: latLng,
+                            position : latLng,
                             animation: google.maps.Animation.DROP,
-                            icon    : '../img/icons/tags/tag-online-48.png'
+                            icon     : '../img/icons/tags/tag-online-48.png'
                         });
 
-                        let infoContent ='<div class="marker-info-container">' +
+                        let infoContent = '<div class="marker-info-container">' +
                             '<img src="../img/icons/login-icon.png" class="tag-info-icon">' +
                             '<p class="text-center font-large">' + tags[i].name.toUpperCase() + '</p>' +
                             '<div><p class="float-left">Latitude: </p><p class="float-right">' + tags[i].gps_north_degree + '</p></div>' +
@@ -265,8 +261,8 @@
 
                             dynamicTags.push(marker);
                             bounds.extend(marker.getPosition());
-                        }else {
-                            if (checkAlarms(tags[i])){
+                        } else {
+                            if (checkAlarms(tags[i])) {
                                 setIcon(tags[i], marker);
                                 let infoWindow = new google.maps.InfoWindow({
                                     content: infoContent
@@ -291,7 +287,7 @@
                     if (dynamicTags.length > 0) {
                         map.setCenter(bounds.getCenter());
                         map.fitBounds(bounds);
-                    }else {
+                    } else {
                         console.log(dataService.location);
                         let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
                         console.log(latLng);
@@ -304,23 +300,23 @@
         });
 
 
-        let constantUpdateMapTags = function(map, bounds){
+        let constantUpdateMapTags = function (map, bounds) {
             updateMapTimer = $interval(function () {
-                socketService.getSocket('get_tags_by_location', {location: locationInfo})
+                socketService.sendRequest('get_tags_by_location', {location: locationInfo})
                     .then(function (response) {
                         let mess = JSON.parse(response.data);
-                        tags = mess.result;
+                        tags     = mess.result;
                         console.log(tags);
                         for (let i = 0; i < tags.length; i++) {
                             let latLng = new google.maps.LatLng(tags[i].gps_north_degree, tags[i].gps_east_degree);
 
                             let marker = new google.maps.Marker({
-                                position: latLng,
+                                position : latLng,
                                 animation: google.maps.Animation.DROP,
-                                icon    : '../img/icons/tags/tag-online-48.png'
+                                icon     : '../img/icons/tags/tag-online-48.png'
                             });
 
-                            let infoContent ='<div class="marker-info-container">' +
+                            let infoContent = '<div class="marker-info-container">' +
                                 '<img src="../img/icons/login-icon.png" class="tag-info-icon">' +
                                 '<p class="text-center font-large">' + tags[i].name.toUpperCase() + '</p>' +
                                 '<div><p class="float-left">Latitude: </p><p class="float-right">' + tags[i].gps_north_degree + '</p></div>' +
@@ -340,7 +336,7 @@
                                 //     infoWindow.open(map, marker);
                                 // });
 
-                                if (checkAlarms(tags[i])){
+                                if (checkAlarms(tags[i])) {
                                     console.log('marker ok with alarms');
                                     if (markerIsOnMap(dynamicTags, marker)) {
                                         console.log('marker is on the map');
@@ -359,7 +355,7 @@
                                             }
                                         }
                                     }
-                                }else {
+                                } else {
                                     if (markerIsOnMap(dynamicTags, marker)) {
                                         console.log('marker is on map');
                                         console.log(marker.getIcon());
@@ -373,14 +369,14 @@
                                                 }
                                             }
                                         }
-                                    }else {
+                                    } else {
                                         dynamicTags.push(marker);
                                         marker.setMap(map);
                                     }
                                 }
-                            }else if (isOutdoor(tags[i])) {
+                            } else if (isOutdoor(tags[i])) {
                                 console.log('show marker not');
-                                if (checkAlarms(tags[i])){
+                                if (checkAlarms(tags[i])) {
                                     console.log('alarms on');
                                     setIcon(tags[i], marker);
 
@@ -395,22 +391,22 @@
                                     if (markerIsOnMap(dynamicTags, marker)) {
                                         console.log('marker on the map');
                                         console.log()
-                                        for(let m = 0; m < dynamicTags.length; m++){
+                                        for (let m = 0; m < dynamicTags.length; m++) {
                                             if (dynamicTags[m].getPosition().equals(marker.getPosition())) {
-                                                if (marker.getIcon() !== dynamicTags[m].getIcon()){
+                                                if (marker.getIcon() !== dynamicTags[m].getIcon()) {
                                                     dynamicTags[m].setMap(null);
                                                     dynamicTags.splice(m, 1);
                                                 }
                                             }
                                         }
-                                    }else {
+                                    } else {
                                         console.log('pushing marker');
                                         dynamicTags.push(marker);
                                         marker.setMap(map);
                                         bounds.extend(marker.getPosition());
                                     }
-                                }else{
-                                    for(let m = 0; m < dynamicTags.length; m++){
+                                } else {
+                                    for (let m = 0; m < dynamicTags.length; m++) {
                                         if (dynamicTags[m].getPosition().equals(marker.getPosition())) {
                                             dynamicTags[m].setMap(null);
                                             dynamicTags.splice(m, 1);
@@ -427,35 +423,35 @@
             }, 2000)
         };
 
-        let setIcon = function(tag, marker){
-            if (tag.sos){
+        let setIcon = function (tag, marker) {
+            if (tag.sos) {
                 marker.setIcon('../img/icons/tags/sos.png');
-            }else if (tag.battery_status){
+            } else if (tag.battery_status) {
                 marker.setIcon('../img/icons/tags/battery-empty.png');
-            } else if (tag.man_down){
+            } else if (tag.man_down) {
                 marker.setIcon('../img/icons/tags/man-down.png');
-            } else if (tag.man_down_disabled){
+            } else if (tag.man_down_disabled) {
                 marker.setIcon('../img/icons/tags/man-down-disabled.png');
-            }else if (tag.man_down_tacitated){
+            } else if (tag.man_down_tacitated) {
                 marker.setIcon('../img/icons/tags/man-down-tacitated.png');
-            } else if(tag.man_in_quote){
+            } else if (tag.man_in_quote) {
                 marker.setIcon('../img/icons/tags/man-in-quote.png');
-            }else if(tag.call_me_alarm){
+            } else if (tag.call_me_alarm) {
                 marker.setIcon('../img/icons/tags/call-me.png');
-            }else if (tag.diagnostic_request){
+            } else if (tag.diagnostic_request) {
                 marker.setIcon('../img/icons/tags/diagnostic-request.png');
             }
         };
 
-        let markerIsOnMap = function(markers, marker){
-            for(let m = 0; m < markers.length; m++){
+        let markerIsOnMap = function (markers, marker) {
+            for (let m = 0; m < markers.length; m++) {
                 if (markers[m].getPosition().equals(marker.getPosition()))
                     return true;
             }
             return false;
         };
 
-        let isOutdoor = function(tag){
+        let isOutdoor = function (tag) {
             return tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0;
         };
 
@@ -481,9 +477,9 @@
             })
         }
 
-        $scope.showAlarms = function(){
+        $scope.showAlarms = function () {
             $mdDialog.show({
-                locals: {tags: tags},
+                locals             : {tags: tags},
                 templateUrl        : '../components/outdoor-alarms-info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
@@ -491,30 +487,70 @@
                 controller         : ['$scope', 'tags', function ($scope, tags) {
                     $scope.alarms = {};
 
-                    for (let i = 0; i < tags.length; i++){
-                        if (tags[i].sos){
-                            $scope.alarms['sos_' + tags[i].name] = {tag: tags[i].name, name: 'SOS', description: 'Richiesta di aiuto immediato.', image: '../img/icons/tags/sos.png'};
+                    for (let i = 0; i < tags.length; i++) {
+                        if (tags[i].sos) {
+                            $scope.alarms['sos_' + tags[i].name] = {
+                                tag        : tags[i].name,
+                                name       : 'SOS',
+                                description: 'Richiesta di aiuto immediato.',
+                                image      : '../img/icons/tags/sos.png'
+                            };
                         }
-                        if (tags[i].battery_status){
-                            $scope.alarms['battery_status_' + tags[i].name] = {tag: tags[i].name, name: 'Batteria scarica', description: 'La batteria e\' scarica.', image: '../img/icons/tags/battery-empty.png'};
+                        if (tags[i].battery_status) {
+                            $scope.alarms['battery_status_' + tags[i].name] = {
+                                tag        : tags[i].name,
+                                name       : 'Batteria scarica',
+                                description: 'La batteria e\' scarica.',
+                                image      : '../img/icons/tags/battery-empty.png'
+                            };
                         }
-                        if (tags[i].man_down){
-                            $scope.alarms['man_down_' + tags[i].name] = {tag: tags[i].name, name: 'Uomo a terra', description: 'Uomo a terra, mandare soccorso', image: '../img/icons/tags/man-down.png'};
+                        if (tags[i].man_down) {
+                            $scope.alarms['man_down_' + tags[i].name] = {
+                                tag        : tags[i].name,
+                                name       : 'Uomo a terra',
+                                description: 'Uomo a terra, mandare soccorso',
+                                image      : '../img/icons/tags/man-down.png'
+                            };
                         }
-                        if (tags[i].man_down_disabled){
-                            $scope.alarms['man_down_disabled_' + tags[i].name] = {tag: tags[i].name, name: 'Uomo a terra disabilitato', description: 'Uomo a terra disabilitato', image: '../img/icons/tags/man-down-disabled.png'};
+                        if (tags[i].man_down_disabled) {
+                            $scope.alarms['man_down_disabled_' + tags[i].name] = {
+                                tag        : tags[i].name,
+                                name       : 'Uomo a terra disabilitato',
+                                description: 'Uomo a terra disabilitato',
+                                image      : '../img/icons/tags/man-down-disabled.png'
+                            };
                         }
-                        if (tags[i].man_down_tacitated){
-                            $scope.alarms['man_down_tacitated_' + tags[i].name] = {tag: tags[i].name, name: 'Man down tacitated', description: 'Man down tacitated.', image: '../img/icons/tags/man-down-tacitated.png'};
+                        if (tags[i].man_down_tacitated) {
+                            $scope.alarms['man_down_tacitated_' + tags[i].name] = {
+                                tag        : tags[i].name,
+                                name       : 'Man down tacitated',
+                                description: 'Man down tacitated.',
+                                image      : '../img/icons/tags/man-down-tacitated.png'
+                            };
                         }
-                        if(tags[i].man_in_quote){
-                            $scope.alarms['man_in_quote' + tags[i].name] = {tag: tags[i].name, name: 'Man in quote', description: 'Man in quote.', image: '../img/icons/tags/man-in-quote.png'};
+                        if (tags[i].man_in_quote) {
+                            $scope.alarms['man_in_quote' + tags[i].name] = {
+                                tag        : tags[i].name,
+                                name       : 'Man in quote',
+                                description: 'Man in quote.',
+                                image      : '../img/icons/tags/man-in-quote.png'
+                            };
                         }
-                        if(tags[i].call_me_alarm){
-                            $scope.alarms['call_me_alarm_' + tags[i].name] = {tag: tags[i].name, name: 'Call_me_alarm', description: 'Call me alarm.', image: '../img/icons/tags/call-me-alarm.png'};
+                        if (tags[i].call_me_alarm) {
+                            $scope.alarms['call_me_alarm_' + tags[i].name] = {
+                                tag        : tags[i].name,
+                                name       : 'Call_me_alarm',
+                                description: 'Call me alarm.',
+                                image      : '../img/icons/tags/call-me-alarm.png'
+                            };
                         }
-                        if (tags[i].diagnostic_request){
-                            $scope.alarms['diagnostic_request' + tags[i].name] = {tag: tags[i].name, name: 'Diagnostic request', description: 'Diagnostic request.', image: '../img/icons/tags/diagnostic-request.png'};
+                        if (tags[i].diagnostic_request) {
+                            $scope.alarms['diagnostic_request' + tags[i].name] = {
+                                tag        : tags[i].name,
+                                name       : 'Diagnostic request',
+                                description: 'Diagnostic request.',
+                                image      : '../img/icons/tags/diagnostic-request.png'
+                            };
                         }
                     }
 
@@ -525,10 +561,10 @@
             })
         };
 
-        $scope.showOfflineTags = function(){
+        $scope.showOfflineTags = function () {
             console.log('offline tags clicked');
             $mdDialog.show({
-                locals: {tags: tags},
+                locals             : {tags: tags},
                 templateUrl        : '../components/show-offline-tags.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
@@ -537,9 +573,12 @@
 
                     $scope.offlineTags = {};
 
-                    for (let i = 0; i < tags.length; i++){
-                        if ((tags[i].gps_north_degree !== 0 && tags[i].gps_east_degree !== 0) && (new Date(Date.now()) - (new Date(tags[i].gps_time)) > tags[i].sleep_time_outdoor)){
-                            $scope.offlineTags[tags[i].name] = {name: tags[i].name, image: '../img/icons/tags/tag-offline.png'}
+                    for (let i = 0; i < tags.length; i++) {
+                        if ((tags[i].gps_north_degree !== 0 && tags[i].gps_east_degree !== 0) && (new Date(Date.now()) - (new Date(tags[i].gps_time)) > tags[i].sleep_time_outdoor)) {
+                            $scope.offlineTags[tags[i].name] = {
+                                name : tags[i].name,
+                                image: '../img/icons/tags/tag-offline.png'
+                            }
                         }
                     }
 
@@ -560,17 +599,17 @@
      * @type {string[]}
      */
     canvasController.$inject = ['$scope', '$location', '$mdDialog', '$timeout', '$interval', 'canvasService', 'socketService', 'menuService', 'canvasData', 'dataService'];
+
     function canvasController($scope, $location, $mdDialog, $timeout, $interval, canvasService, socketService, menuService, canvasData, dataService) {
-        let canvas  = document.querySelector('#canvas-id');
-        let context = canvas.getContext('2d');let canvasCtrl = this;
+        let canvasCtrl    = this;
+        let canvas        = document.querySelector('#canvas-id');
+        let context       = canvas.getContext('2d');
         let bufferCanvas  = document.createElement('canvas');
         let bufferContext = bufferCanvas.getContext('2d');
-        let img = new Image();
-        let interval = undefined;
+        let canvasImage   = new Image();
 
-        canvasCtrl.tags = null;
-        canvasCtrl.floors       = canvasData.floors;
-        canvasCtrl.defaultFloor = canvasCtrl.floors[0];
+        canvasCtrl.floors                 = canvasData.floors;
+        canvasCtrl.defaultFloor           = canvasData.floors[0];
         canvasCtrl.showAlarmsIcon         = false;
         canvasCtrl.showOfflineTagsIcon    = false;
         canvasCtrl.showOfflineAnchorsIcon = false;
@@ -582,9 +621,9 @@
             location        : canvasData.location,
         };
 
-        //canvas show/hide elements variable
+        //canvas show/hide switch variable
         canvasCtrl.switch = {
-            showGrid      : true,
+            showGrid      : false,
             showAnchors   : true,
             showCameras   : true,
             showRadius    : true,
@@ -592,29 +631,28 @@
             showFullscreen: false,
         };
 
-        //setting for the drawing on canvas functionality
-        canvasCtrl.drawingOnCanvasSetting = {
-            isOpen           : false,
-            selectedDirection: 'left',
-            mode             : 'md-scale',
-            drawingMode      : ''
-        };
 
-
-
+        // $scope.isOpen = false;
+        // $scope.speedDial = {
+        //     isOpen: false,
+        //     selectedDirection: 'left',
+        //     mode: 'md-scale',
+        //     fullscreen: false,
+        //     gridSpacing: 0,
+        // };
 
         //watching for changes in switch buttons in menu
-        $scope.$watchGroup(['canvasCtrl.switch.showGrid', 'canvasCtrl.switch.showAnchors', 'canvasCtrl.switch.showCameras', 'canvasCtrl.floorData.gridSpacing', 'canvasController.switch.showDrawing'], function (newValues) {
-            //control if spacing is changed
+        $scope.$watchGroup(['canvasCtrl.switch.showGrid', 'canvasCtrl.switch.showAnchors', 'canvasCtrl.switch.showCameras', 'canvasCtrl.floorData.gridSpacing', 'canvasCtrl.switch.showDrawing'], function (newValues) {
             if (canvasCtrl.defaultFloor.map_spacing !== newValues[3])
                 canvasCtrl.defaultFloor.map_spacing = newValues[3];
 
             //TODO - control if drawing is off, - control if interval is undefined and start it if so, - resetting the switch buttons
             //     - if drawing is on stop the interval and set it to undefined, - reset the switch buttons, - reload canvas
 
-            canvasCtrl.loadFloor();
+            canvasCtrl.loadFloor(false, false, false)
         });
 
+        //watching the fullscreen switch button
         $scope.$watch('switch.fullscreen', function (newValue) {
             if (newValue) {
                 openFullScreen(document.querySelector('#canvas-container'));
@@ -622,18 +660,14 @@
             }
         });
 
+        //watching the floor selection button
         $scope.$watch('canvasCtrl.floorData.defaultFloorName', function (newValue) {
-            console.log(newValue);
             canvasCtrl.defaultFloor = canvasCtrl.floors.filter(f => {
                 return f.name === newValue
             })[0];
-
-            // if (canvasCtrl.floorData.gridSpacing === canvasCtrl.defaultFloor.map_spacing)
-            //     canvasCtrl.loadFloor(true, true, true);
-            // else
-            //     canvasCtrl.floorData.gridSpacing = canvasCtrl.defaultFloor.map_spacing;
         });
 
+        //function that loads the floor map and starts the contrant update of the floor
         canvasCtrl.loadFloor = function () {
             let img = new Image();
             img.src = imagePath + 'floors/' + canvasCtrl.defaultFloor.image_map;
@@ -642,285 +676,446 @@
                 canvas.width  = this.naturalWidth;
                 canvas.height = this.naturalHeight;
 
-                if (interval !== undefined){
-                    $interval.cancel(interval);
-                    interval = undefined;
-                }
+                //updating the canvas and drawing border
+                updateCanvas(canvas.width, canvas.height, context, img);
 
-                $interval(constantUpdateCanvas, 1000);
-                // constantUpdateCanvas();
+                //constantly updating the canvas
+                constantUpdateCanvas();
             };
         };
 
+        //controlling the alarms and setting the alarm icon
+        let assigningTagImage = function (tag, image) {
+            if (tag.sos) {
+                image.src = tagsIconPath + 'sos_24.png';
+            } else if (tag.man_down) {
+                image.src = tagsIconPath + 'man_down_24.png';
+            } else if (tag.battery_status) {
+                image.src = tagsIconPath + 'battery_low_24.png';
+            } else if (tag.helmet_dpi) {
+                image.src = tagsIconPath + 'helmet_dpi_24.png';
+            } else if (tag.belt_dpi) {
+                image.src = tagsIconPath + 'belt_dpi_24.png';
+            } else if (tag.glove_dpi) {
+                image.src = tagsIconPath + 'glove_dpi_24.png';
+            } else if (tag.shoe_dpi) {
+                image.src = tagsIconPath + 'shoe_dpi_24.png';
+            } else if (tag.man_down_disabled) {
+                image.src = tagsIconPath + 'man-down-disabled.png';
+            } else if (tag.man_down_tacitated) {
+                image.src = tagsIconPath + 'man-down-tacitated.png';
+            } else if (tag.man_in_quote) {
+                image.src = tagsIconPath + 'man_in_quote_24.png';
+            } else if (tag.call_me_alarm) {
+                image.src = tagsIconPath + 'call_me_alarm_24.png';
+            } else {
+                image.src = tagsIconPath + 'online_tag_24.png';
+            }
+        };
+
+        //loading all the images to be shown on the canvas asynchronously
+        let loadImagesAsynchronouslyWithPromise = function (data, image) {
+            //if no data is passed resolving the promise with a null value
+            if (data.length === 0) {
+                return Promise.resolve(null);
+            } else {
+                //loading all the images asynchronously
+                return Promise.all(
+                    data.map(function (value) {
+                        return new Promise(function (resolve) {
+                            let img = new Image();
+
+                            if ((image === 'anchor' || image === 'camera') && value.is_online)
+                                img.src = tagsIconPath + image + '_online_16.png';
+                            else if (image === 'anchor' || image === 'camera' && !value.is_online)
+                                img.src = tagsIconPath + image + '_offline_16.png';
+                            else if (image === 'tag') {
+                                //controling if is a cloud or a isolatedTags tag
+                                if (value.length > 1) {
+                                    (checkIfTagsHaveAlarms(value))
+                                        ? img.src = tagsIconPath + 'cumulative_tags_all_alert_32.png'
+                                        : img.src = tagsIconPath + 'cumulative_tags_32.png';
+                                } else {
+                                    if (checkIfTagHasAlarm(value[0])) {
+                                        assigningTagImage(value[0], img);
+                                    } else if (value[0].is_exit && !value[0].radio_switched_off) {
+                                        img.src = tagsIconPath + 'offline_tag_24.png';
+                                    } else if (!value[0].is_exit && !value[0].radio_switched_off) {
+                                        assigningTagImage(value[0], img);
+                                    }
+                                }
+                            }
+
+                            img.onload = function () {
+                                resolve(img);
+                            }
+                        })
+                    })
+                )
+            }
+        };
+
+        //check if there is at least a tag with an alarm
+        let checkIfTagsHaveAlarms = function (tags) {
+            return tags.some(function (tag) {
+                return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
+                    || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
+                    || tag.call_me_alarm || tag.diagnostic_request
+            });
+        };
+
+        //checking if the tag has an alarm
+        let checkIfTagHasAlarm = function (tag) {
+            return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
+                || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
+                || tag.call_me_alarm || tag.diagnostic_request;
+        };
+
+        //checking if there is at least an anchor offline
+        let checkIfAnchorsAreOffline = function (anchors) {
+            return anchors.some(function (anchor) {
+                return anchor.is_online !== true;
+            });
+        };
+
+        //constantly updating the canvas with the objects position from the server
         let constantUpdateCanvas = function () {
-            img.src = imagePath + 'floors/' + canvasCtrl.defaultFloor.image_map;
-            img.onload = function () {
-                bufferCanvas.width  = this.naturalWidth;
-                bufferCanvas.height = this.naturalHeight;
+            $interval(function () {
+                canvasImage.src = imagePath + 'floors/' + canvasCtrl.defaultFloor.image_map;
 
-                //updating the canvas and drawing border
-                updateCanvas(bufferCanvas.width, bufferCanvas.height, bufferContext, img);
+                canvasImage.onload = function () {
+                    bufferCanvas.width  = this.naturalWidth;
+                    bufferCanvas.height = this.naturalHeight;
 
-                if (canvasCtrl.switch.showGrid) {
-                    //drawing vertical
-                    drawDashedLine(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasCtrl.defaultFloor.map_spacing, canvasCtrl.defaultFloor.width, 'vertical');
-                    //drawing horizontal lines
-                    drawDashedLine(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasCtrl.defaultFloor.map_spacing, canvasCtrl.defaultFloor.width, 'horizontal');
-                }
+                    //updating the canvas and drawing border
+                    updateCanvas(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasImage);
 
-                socketService.getSocket('get_anchors_by_floor_and_location', {floor: canvasCtrl.floorData.defaultFloorName, location: dataService.location.name})
-                    .then(function (response) {
-                        let message         = JSON.parse(response.data);
-                        dataService.anchors = message.result;
+                    if (canvasCtrl.switch.showGrid) {
+                        //drawing vertical
+                        drawDashedLine(bufferCanvas, bufferContext, canvas.height, [5, 5], canvasCtrl.defaultFloor.map_spacing, canvasCtrl.defaultFloor.width, 'vertical');
+                        //drawing horizontal lines
+                        drawDashedLine(bufferCanvas, bufferContext, canvas.width, [5, 5], canvasCtrl.defaultFloor.map_spacing, canvasCtrl.defaultFloor.width, 'horizontal');
+                    }
 
-                        $scope.showAnchorsOfflineIcon = checkOfflineAnchors(dataService.anchors);
-
-                        if (canvasCtrl.switch.showAnchors) {
-                            let i = 0;
-                            promiseLoadImages(message.result, 'anchor').then(
-                                function (allImages) {
-                                    angular.forEach(allImages, function (img) {
-                                        drawIcon(message.result[i++], bufferContext, img, canvasCtrl.defaultFloor.width, bufferCanvas, false);
-                                    })
-                                }
-                            )
-                        }
-
-                        return socketService.getSocket('get_cameras', {floor: canvasCtrl.floorData.defaultFloorName})
+                    socketService.sendRequest('get_anchors_by_floor_and_location', {
+                        floor   : canvasCtrl.floorData.defaultFloorName,
+                        location: dataService.location
                     })
-                    .then(function (response) {
-                        let message = JSON.parse(response.data);
+                    //managing the anchors visualizzation
+                        .then(function (response) {
+                            dataService.anchors = response.result;
+                            loadAndDrawImagesOnCanvas(response.result, 'anchor', canvasCtrl.switch.showAnchors);
 
-                        dataService.cameras = message.result;
+                            canvasCtrl.showOfflineAnchorsIcon = checkIfAnchorsAreOffline(response.result);
 
-                        if (canvasCtrl.switch.showCameras) {
-                            let i = 0;
-                            promiseLoadImages(message.result, 'camera').then(
-                                function (allImages) {
-                                    angular.forEach(allImages, function (img) {
-                                        drawIcon(message.result[i++], bufferContext, img, canvasCtrl.defaultFloor.width, bufferCanvas, false);
-                                    })
+                            return socketService.sendRequest('get_cameras_by_floor_and_location', {
+                                floor   : canvasCtrl.floorData.defaultFloorName,
+                                location: dataService.location
+                            })
+                        })
+                        //managing the cameras visualizzation
+                        .then(function (response) {
+                            // dataService.cameras = response.result;
+
+                            loadAndDrawImagesOnCanvas(response.result, 'camera', canvasCtrl.switch.showCameras);
+
+                            return socketService.sendRequest('get_tags_by_floor_and_location', {floor: canvasCtrl.defaultFloor.id, location: dataService.location});
+                        })
+                        //managing the tags visualizzation
+                        .then(function (response) {
+                            dataService.tags = response.result;
+
+                            let tagClouds            = [];
+                            let isolatedTags         = [];
+                            let singleAndGroupedTags = [];
+                            let step                 = 0;
+                            let temporaryTagsArray                 = {
+                                singleTags: angular.copy(response.result),
+                            }
+
+                            for (let i = 0; i < response.result.length; i = step) {
+                                //getting the near tags of the tag passed as second parameter
+                                temporaryTagsArray = groupNearTags(temporaryTagsArray.singleTags, response.result[i]);
+
+                                if (temporaryTagsArray.groupTags.length > 0) {
+                                    singleAndGroupedTags.push(temporaryTagsArray.groupTags);
+                                    step += temporaryTagsArray.groupTags.length;
+                                } else {
+                                    step++;
                                 }
-                            )
-                        }
-                        return socketService.getSocket('get_tags_by_floor', {floor: canvasCtrl.defaultFloor.id});
-                    })
-                    .then(function (response) {
-                        let message = JSON.parse(response.data);
-                        $scope.tags = message.result;
+                            }
 
-                        canvasCtrl.showAlarmsIcon = checkAlarms($scope.tags);
+                            //getting the tag clouds
+                            tagClouds    = singleAndGroupedTags.filter(x => x.length > 1);
+                            //getting the remaining isolated tags
+                            isolatedTags = singleAndGroupedTags.filter(x => x.length === 1);
 
+                            loadImagesAsynchronouslyWithPromise(tagClouds, 'tag').then(
+                                function (images) {
+                                    //control if there are clouds to bhe shown
+                                    if (images !== null) {
+                                        //drawing the clouds on the canvas
+                                        images.forEach(function (image, index) {
+                                            drawIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor.width, bufferCanvas, true);
+                                        });
+                                    }
 
-                        let i       = 0;
-                        promiseLoadImages(message.result, 'tag').then(
-                            function (allImages) {
-                                angular.forEach(allImages, function (img) {
-                                    if(!(message.result[i].is_exit && message.result[i].radio_switched_off))
-                                        drawIcon(message.result[i], bufferContext, img, canvasCtrl.defaultFloor.width, bufferCanvas, true);
-                                    i++;
+                                    return loadImagesAsynchronouslyWithPromise(isolatedTags, 'tag');
+                                })
+                                .then(function (images) {
+                                    if (images !== null) {
+                                        //drawing the isolated tags
+                                        isolatedTags.forEach(function (tag, index) {
+                                            if (tag[0].gps_north_degree === 0 && tag[0].gps_east_degree === 0) {
+                                                if (tag[0].tag_type_id === 1) {
+                                                    if (!(tag[0].is_exit && tag[0].radio_switched_off)) {
+                                                        drawIcon(tag[0], bufferContext, images[index], canvasCtrl.defaultFloor.width, bufferCanvas, true);
+                                                    }
+                                                } else {
+                                                    if (checkIfTagHasAlarm(tag[0])) {
+                                                        drawIcon(tag[0], bufferContext, images[index], canvasCtrl.defaultFloor.width, bufferCanvas, true);
+                                                    } else if ((new Date(Date.now()) - (new Date(tag[0].gps_time)) < tag[0].sleep_time_indoor)) {
+                                                        drawIcon(tag[0], bufferContext, images[index], canvasCtrl.defaultFloor.width, bufferCanvas, true);
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }
+                                    context.drawImage(bufferCanvas, 0, 0);
                                 });
 
-                                context.drawImage(bufferCanvas, 0, 0);
-                            }
-                        );
-                        console.log(isTagOffline(message.result));
-                        canvasCtrl.showOfflineTagsIcon = isTagOffline(message.result);
-                    })
+                            //showing the offline anchors and alarm button
+                            canvasCtrl.showOfflineTagsIcon = isTagOffline(response.result);
+                            canvasCtrl.showAlarmsIcon      = checkIfTagsHaveAlarms(response.result);
+                        })
+                }
+            }, 1000);
+        };
+
+        //loading images and drawing them on canvas
+        let loadAndDrawImagesOnCanvas = function (objects, objectType, hasToBeDrawn) {
+            if (hasToBeDrawn) {
+                loadImagesAsynchronouslyWithPromise(objects, objectType).then(
+                    function (allImages) {
+                        allImages.forEach(function (image, index) {
+                            drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor.width, bufferCanvas, false);
+                        })
+                    }
+                )
             }
         };
 
-        let showAnchors = function (result) {
-            let img = new Image();
-            if (result.is_online)
-                img.src = imagePath + 'icons/ancor-online-icon.png';
-            else
-                img.src = imagePath + 'icons/anchor-offline-icon.png';
-            img.onload = function () {
-                drawIcon(result, context, img, canvasCtrl.defaultFloor.width, canvas, false);
+        //grouping the tags in one object divided by clouds of tags and single tags
+        let groupNearTags = function (tags, tag) {
+            let tagsGrouping = {
+                groupTags: [],
+                singleTags : []
             };
-        };
 
-
-        let showCameras = function (result) {
-            let img = new Image();
-            img.src = imagePath + 'icons/camera-online-icon.png';
-
-            img.onload = function () {
-                console.log(result);
-                drawIcon(result, context, img, canvasCtrl.defaultFloor.width, canvas, false);
-            };
-        };
-
-        let showWeTag = function (result) {
-            let img = new Image();
-            img.src = imagePath + 'icons/tag-online.png';
-
-            img.onload = function () {
-                drawIcon(result, context, img, canvasCtrl.defaultFloor.width, canvas, true);
-            }
-        };
-
-        let controllAlarmOk = function (tag, image) {
-
-            if (tag.sos) {
-                image.src = imagePath + 'icons/tags/sos.png';
-            }else if (tag.battery_status) {
-                image.src = imagePath + 'icons/tags/battery-empty.png';
-            } else if (tag.man_down) {
-                image.src = imagePath + 'icons/tags/man-down.png';
-            } else if (tag.man_down_disabled) {
-                image.src = imagePath + 'icons/tags/man-down-disabled.png';
-            } else if (tag.man_down_tacitated) {
-                image.src = imagePath + 'icons/tags/man-down-tacitated.png';
-            } else if (tag.man_in_quote) {
-                image.src = imagePath + 'icons/tags/man-in-quote.png';
-            } else if (tag.call_me_alarm) {
-                image.src = imagePath + 'icons/tags/call-me-alarm.png';
-            } else if (tag.helmet_dpi) {
-                image.src = imagePath + 'icons/man-down-icon.png';
-            } else if (tag.belt_dpi) {
-                image.src = imagePath + 'icons/man-down-icon.png';
-            } else if (tag.glove_dpi) {
-                image.src = imagePath + 'icons/man-down-icon.png';
-            } else if (tag.shoe_dpi) {
-                image.src = imagePath + 'icons/man-down-icon.png';
-            } else {
-                image.src = imagePath + 'icons/tags/tag-online.png';
-            }
-        };
-
-        let promiseLoadImages = function (data, image) {
-            return Promise.all(
-                data.map(function (value) {
-                    return new Promise(function (resolve) {
-                        let img = new Image();
-                        if ((image === 'anchor' || image === 'camera') && value.is_online === 1)
-                            img.src = imagePath + 'icons/' + image + '-online-icon.png';
-                        else if (image === 'anchor' || image === 'camera')
-                            img.src = imagePath + 'icons/' + image + '-offline-icon.png';
-                        else if (image === 'tag')
-                            if (value.is_exit && !value.switched_off){
-                                img.src = imagePath + 'icons/tags/tag-offline1.png';
-                            }else if(!value.is_exit && !value.switched_off) {
-                                controllAlarmOk(value, img);
-                            }
-
-                        img.onload = function () {
-                            resolve(img);
+            tags.forEach(function (tagElement) {
+                if (tagElement.x_pos - 20 < tag.x_pos && tag.x_pos < tagElement.x_pos + 20
+                    || (tagElement.y_pos - 20 < tag.y_pos && tag.y_pos < tagElement.y_pos)) {
+                    if (tagElement.tag_type_id !== 1) {
+                        if (checkIfTagHasAlarm(tagElement) || (new Date(Date.now()) - (new Date(tagElement.gps_time))) < tagElement.sleep_time_indoor) {
+                            tagsGrouping.groupTags.push(tagElement)
                         }
-                    })
-                })
-            )
+                    } else {
+                        tagsGrouping.groupTags.push(tagElement)
+                    }
+                } else {
+                    tagsGrouping.singleTags.push(tagElement);
+                }
+            });
+
+            return tagsGrouping;
         };
 
-
-        let checkAlarms = function (tags) {
-            let result = false;
-            for (let i = 0; i < tags.length; i++){
-                if (tags[i].battery_status || tags[i].man_down || tags[i].man_down_disabled || tags[i].man_down_tacitated || tags[i].man_in_quote || tags[i].call_me_alarm
-                    || tags[i].diagnostic_request)
-                    result = true;
-            }
-            return result;
+        let isTagOffline = function (tags) {
+            return tags.some(function (tag) {
+                return tag.is_exit && !tag.radio_switched_off;
+            })
         };
 
-        let checkOfflineAnchors = function(anchors){
-            let result = false;
-            for (let i = 0; i < anchors.length; i++){
-                if (anchors[i].is_online)
-                    result = true;
-            }
-            return result;
-        }
-
-
-
-        let isTagOffline = function(tags){
-            let result = false;
-
-            for (let i = 0; i < tags.length; i++){
-                if (tags[i].is_exit && !tags[i].radio_switched_off)
-                    result = true;
-            }
-
-            return result;
-        };
-
-        // constantUpdateCanvas();
-        HTMLCanvasElement.prototype.relMouseCoords = function (event) {
-            var totalOffsetX = 0;
-            var totalOffsetY = 0;
-            var canvasX = 0;
-            var canvasY = 0;
-            var currentElement = this;
+        //getting the coordinate of the click within respect the canvas
+        HTMLCanvasElement.prototype.canvasMouseClickCoords = function (event) {
+            let totalOffsetX   = 0;
+            let totalOffsetY   = 0;
+            let canvasX, canvasY;
+            let currentElement = this;
 
             do {
                 totalOffsetX += currentElement.offsetLeft;
                 totalOffsetY += currentElement.offsetTop;
-            }
-            while (currentElement = currentElement.offsetParent)
+            } while (currentElement = currentElement.offsetParent)
 
             canvasX = event.pageX - totalOffsetX;
             canvasY = event.pageY - totalOffsetY;
 
             // Fix for variable canvas width
-            canvasX = Math.round( canvasX * (this.width / this.offsetWidth) );
-            canvasY = Math.round( canvasY * (this.height / this.offsetHeight) );
+            canvasX = Math.round(canvasX * (this.width / this.offsetWidth));
+            canvasY = Math.round(canvasY * (this.height / this.offsetHeight));
 
-            return {x:canvasX, y:canvasY}
+            return {x: canvasX, y: canvasY}
         }
 
-        canvas.addEventListener('mousedown', function (event) {
-            let coords = canvas.relMouseCoords(event);
-            let tags = $scope.tags;
-            console.log(tags);
-            let anchors = dataService.anchors;
-            let cameras = dataService.cameras;
+        //creating the informations to be shown on the info window of the canvas objects
+        let createAlarmObjectForInfoWindow = function(tag, name, description, image){
+            return {
+                tag        : tag.name,
+                name       : name,
+                description: description,
+                image      : image
+            };
+        };
 
-            for (let i = 0; i < tags.length; i++){
-                if (tags[i].gps_north_degree === 0 || tags[i].gps_east_degree === 0){
-                    if (((tags[i].x_pos - 20) < coords.x && coords.x < (tags[i].x_pos + 20)) && ((tags[i].y_pos - 20) < coords.y && coords.y < (tags[i].y_pos + 20) )) {
+        //getting all the alarms of the tag passed as parameter and creating the objects to be shown in info window
+        let loadTagAlarmsForInfoWindow = function(tag){
+            let alarms = [];
+
+            if (tag.sos){
+                alarms.push(createAlarmObjectForInfoWindow(tag, 'SOS', 'Richiesta di aiuto.', tagsIconPath + 'sos_24.png'));
+            }
+            if (tag.man_down) {
+                alarms.push(createAlarmObjectForInfoWindow(tag, 'Uomo a terra', 'Uomo a terra.', tagsIconPath + 'man_down_24.png'));
+            }
+            if (tag.battery_status) {
+                alarms.push(createAlarmObjectForInfoWindow(tag, 'Batteria scarica', 'La batteria e\' scarica.', tagsIconPath + 'battery_low_24.png'));
+            }
+            if (tag.helmet_dpi){
+                alarms.push(createAlarmObjectForInfoWindow(tag, 'Helmet dpi', 'Helmet dpi', tagsIconPath + 'helmet_dpi_24.png'));
+            }
+            if (tag.belt_dpi){
+                alarms.push(createAlarmObjectForInfoWindow(tag, 'Belt dpi', 'Belt dpi', tagsIconPath + 'belt_dpi_24.png'));
+            }
+            if (tag.glove_dpi){
+                alarms.push(createAlarmObjectForInfoWindow(tag, 'Glove dpi', 'Glove dpi', tagsIconPath + 'glove_dpi_24.png'));
+            }
+            if (tag.shoe_dpi){
+                alarms.push(createAlarmObjectForInfoWindow(tag, 'Shoe dpi', 'Shoe dpi', tagsIconPath + 'shoe_dpi_24.png'));
+            }
+            if (tag.man_down_disabled){
+                alarms.push(createAlarmObjectForInfoWindow(tag, 'Man down disabled', 'Man down disabled', tagsIconPath + 'man_down_disbled_24.png'));
+            }
+            if (tag.man_down_tacitated) {
+                alarms.push(createAlarmObjectForInfoWindow(tag, 'man down tacitated', 'Man down tacitated', tagsIconPath + 'man_down_tacitated_24.png'));
+            }
+            if (tag.man_in_quote) {
+                alarms.push(createAlarmObjectForInfoWindow(tag, 'Man in quote', 'Man in quote', tagsIconPath + 'man_in_quote_24.png'));
+            }
+            if (tag.call_me_alarm) {
+                alarms.push(createAlarmObjectForInfoWindow(tag, 'Call me alarm', 'Call me alarm', tagsIconPath + 'call_me_alarm_24.png'));
+            }
+
+            return alarms;
+        };
+
+        //adding the mousedown listener to the canvas
+        canvas.addEventListener('mousedown', function (event) {
+            let coords = canvas.canvasMouseClickCoords(event);
+            let tagCloud = null;
+            let dialogShown = false;
+            //listen for the tags click
+            dataService.tags.forEach(function (tag) {
+                tagCloud = groupNearTags(dataService.tags, tag);
+                console.log(tagCloud);
+                if (tagCloud.groupTags.length > 0){
+                    console.log(tagCloud.groupTags)
+                }
+                if (tag.gps_north_degree === 0 || tag.gps_east_degree === 0) {
+                    if (((tag.x_pos - 20) < coords.x && coords.x < (tag.x_pos + 20)) && ((tag.y_pos - 20) < coords.y && coords.y < (tag.y_pos + 20))) {
+                        if (tagCloud.groupTags.length > 1){
+                            if (!dialogShown) {
+                                $mdDialog.show({
+                                    locals             : {tags: tagCloud.groupTags},
+                                    templateUrl        : '../components/tags-info.html',
+                                    parent             : angular.element(document.body),
+                                    targetEvent        : event,
+                                    clickOutsideToClose: true,
+                                    controller         : ['$scope', 'tags', function ($scope, tags) {
+                                        $scope.tags         = tags;
+                                        $scope.isTagInAlarm = 'background-red';
+                                        $scope.alarms       = loadTagAlarmsForInfoWindow(tag);
+
+                                        console.log('loaded alarmas');
+                                        console.log($scope.alarms);
+                                        $scope.hide = function () {
+                                            $mdDialog.hide();
+                                        }
+                                    }]
+                                })
+                            }
+                            dialogShown = true;
+                        }else{
+                            if (tag.tag_type_id === 1) {
+                                if (!(tag.is_exit && tag.radio_switched_off)) {
+                                    $mdDialog.show({
+                                        locals             : {tag: tag},
+                                        templateUrl        : '../components/tag-info.html',
+                                        parent             : angular.element(document.body),
+                                        targetEvent        : event,
+                                        clickOutsideToClose: true,
+                                        controller         : ['$scope', 'tag', function ($scope, tag) {
+                                            $scope.tag     = tag;
+                                            $scope.isTagInAlarm = 'background-red';
+                                            $scope.alarms  = loadTagAlarmsForInfoWindow(tag);
+
+                                            if ($scope.alarms.length === 0){
+                                                ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
+                                                    ? $scope.isTagInAlarm = 'background-gray'
+                                                    : $scope.isTagInAlarm = 'background-green';
+                                            }
+
+                                            $scope.hide = function () {
+                                                $mdDialog.hide();
+                                            }
+                                        }]
+                                    })
+                                }
+                            } else if (checkIfTagHasAlarm(tag) || (new Date(Date.now()) - (new Date(tag.gps_time)) < tag.sleep_time_indoor)) {
+                                $mdDialog.show({
+                                    locals             : {tag: tag},
+                                    templateUrl        : '../components/tag-info.html',
+                                    parent             : angular.element(document.body),
+                                    targetEvent        : event,
+                                    clickOutsideToClose: true,
+                                    controller         : ['$scope', 'tag', function ($scope, tag) {
+                                        $scope.tag     = tag;
+                                        $scope.isTagInAlarm = 'background-red';
+                                        $scope.alarms  = loadTagAlarmsForInfoWindow(tag);
+
+                                        if ($scope.alarms.length === 0) {
+                                            $scope.isTagInAlarm = 'background-green';
+                                        }
+
+                                        $scope.hide = function () {
+                                            $mdDialog.hide();
+                                        }
+                                    }]
+                                })
+                            }
+                        }
+                    }
+                }
+            });
+
+            //listen for anchors click events
+            dataService.anchors.forEach(function (anchor) {
+                if (!isTagAtCoords(coords)) {
+                    if (((anchor.x_pos - 20) < coords.x && coords.x < (anchor.x_pos + 20)) && ((anchor.y_pos - 20) < coords.y && coords.y < (anchor.y_pos + 20))) {
                         $mdDialog.show({
-                            locals: {tag: tags[i]},
-                            templateUrl        : '../components/tag-info.html',
+                            locals             : {anchor: anchor},
+                            templateUrl        : '../components/anchor-info.html',
                             parent             : angular.element(document.body),
                             targetEvent        : event,
                             clickOutsideToClose: true,
-                            controller         : ['$scope', 'tag', function ($scope, tag) {
-                                $scope.tag = tag;
-                                $scope.isAlarm = 'background-red';
-                                $scope.alarms = {};
+                            controller         : ['$scope', 'anchor', function ($scope, anchor) {
+                                $scope.anchor         = anchor;
+                                $scope.isAnchorOnline = 'background-green';
 
-                                if (tag.battery_status){
-                                    $scope.alarms['battery_status_' + tags[i].name] = {tag: tags[i].name, name: 'Batteria scarica', description: 'La batteria e\' scarica.', image: '../img/icons/battery-empty.png'};
-                                }
-                                if (tag.man_down){
-                                    $scope.alarms['man_down_' + tags[i].name] = {tag: tags[i].name, name: 'Uomo a terra', description: 'Uomo a terra, mandare soccorso', image: '../img/icons/man-down-icon.png'};
-                                }
-                                if (tag.man_down_tacitated){
-                                    $scope.alarms.man_down_tacitated = true;
-                                }
-                                if(tag.man_in_quote){
-                                    $scope.alarms.man_in_quote = true;
-                                }
-                                if(tag.call_me_alarm){
-                                    $scope.alarms.call_me_alarm = true;
-                                }
-                                if (tag.diagnostic_request){
-                                    $scope.alarms.diagnostic_request = true;
+                                if (!anchor.is_online) {
+                                    $scope.isOnline = 'background-gray';
                                 }
 
-                                console.log($scope.alarms);
-                                if (angular.equals({}, $scope.alarms)){
-                                    if ($scope.tag.is_exit && !$scope.tag.radio_switched_off){
-                                        $scope.isAlarm = 'background-gray';
-                                    } else {
-                                        $scope.isAlarm = 'background-green';
-                                        console.log($scope.isAlarm);
-                                    }
-                                }
-                                console.log(tag);
                                 $scope.hide = function () {
                                     $mdDialog.hide();
                                 }
@@ -928,105 +1123,109 @@
                         })
                     }
                 }
-            }
+            });
 
-            for (let i = 0; i < anchors.length; i++){
-                if (((anchors[i].x_pos - 20) < coords.x && coords.x < (anchors[i].x_pos + 20)) && ((anchors[i].y_pos - 20) < coords.y && coords.y < (anchors[i].y_pos + 20) )) {
-                    $mdDialog.show({
-                        locals: {anchor: anchors[i]},
-                        templateUrl        : '../components/anchor-info.html',
-                        parent             : angular.element(document.body),
-                        targetEvent        : event,
-                        clickOutsideToClose: true,
-                        controller         : ['$scope', 'anchor', function ($scope, anchor) {
-                            $scope.anchor = anchor;
-                            $scope.isOnline = 'background-green';
-
-                            if (!anchor.is_online){
-                                $scope.isOnline = 'background-gray';
-                            }
-                            console.log(anchor);
-                            $scope.hide = function () {
-                                $mdDialog.hide();
-                            }
-                        }]
-                    })
+            //listen for the cameras click events
+            dataService.cameras.forEach(function (camera) {
+                if(!isTagAtCoords(coords)) {
+                    if (((camera.x_pos - 20) < coords.x && coords.x < (camera.x_pos + 20)) && ((camera.y_pos - 20) < coords.y && coords.y < (camera.y_pos + 20))) {
+                        console.log(camera.description);
+                    }
                 }
-            }
-
-            console.log(cameras);
-            for (let i = 0; i < cameras.length; i++){
-                if (((cameras[i].x_pos - 20) < coords.x && coords.x < (cameras[i].x_pos + 20)) && ((cameras[i].y_pos - 20) < coords.y && coords.y < (cameras[i].y_pos + 20) )) {
-                    console.log(cameras[i].description);
-                }
-            }
+            });
         }, false);
 
+        //showing the info window with all the alarms
         $scope.showAlarms = function () {
             $mdDialog.show({
-                locals: {tags: $scope.tags},
+                locals             : {tags: dataService.tags},
                 templateUrl        : '../components/indoor-alarms-info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 controller         : ['$scope', 'tags', function ($scope, tags) {
-                    $scope.alarms = {};
+                    $scope.alarms = [];
 
-                    for (let i = 0; i < tags.length; i++) {
-                        if (tags[i].battery_status) {
-                            $scope.alarms['battery_status_' + tags[i].name] = {
-                                tag        : tags[i].name,
-                                name       : 'Batteria scarica',
-                                description: 'La batteria e\' scarica.',
-                                image      : '../img/icons/tags/battery-empty.png'
-                            };
-                        }
-                        if (tags[i].man_down) {
-                            $scope.alarms['man_down_' + tags[i].name] = {
-                                tag        : tags[i].name,
-                                name       : 'Uomo a terra',
-                                description: 'Uomo a terra, mandare soccorso',
-                                image      : '../img/icons/tags/man-down.png'
-                            };
-                        }
-                        if (tags[i].man_down_tacitated) {
-                            $scope.alarms.man_down_tacitated = true;
-                        }
-                        if (tags[i].man_in_quote) {
-                            $scope.alarms.man_in_quote = true;
-                        }
-                        if (tags[i].call_me_alarm) {
-                            $scope.alarms.call_me_alarm = true;
-                        }
-                        if (tags[i].diagnostic_request) {
-                            $scope.alarms.diagnostic_request = true;
-                        }
-                    }
+                    tags.forEach(function (tag) {
+                        let tagAlarms = loadTagAlarmsForInfoWindow(tag);
+                        tagAlarms.forEach(function (tagAlarm) {
+                            $scope.alarms.push(tagAlarm);
+                        })
+                    });
 
                     $scope.hide = function () {
                         $mdDialog.hide();
                     }
                 }]
             })
+        };
+
+        let isTagAtCoords = function(coords) {
+            return dataService.tags.some(function (tag) {
+                return (tag.gps_north_degree === 0 || tag.gps_east_degree === 0) && (((tag.x_pos - 20) < coords.x && coords.x < (tag.x_pos + 20)) && ((tag.y_pos - 20) < coords.y && coords.y < (tag.y_pos + 20)));
+            })
         }
 
-        $scope.showOfflineTagsIndoor = function(){
-            console.log('offline tags clicked');
+        //showing the info window with the online/offline tags
+        $scope.showOfflineTagsIndoor = function () {
             $mdDialog.show({
-                locals: {tags: $scope.tags},
-                templateUrl        : '../components/show-offline-tags.html',
+                templateUrl        : '../components/indoor_offline_tags_info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', 'tags', function ($scope, tags) {
+                controller         : ['$scope', function ($scope) {
 
-                    $scope.offlineTags = {};
+                    $scope.offlineTagsIndoor = [];
 
-                    for (let i = 0; i < tags.length; i++){
-                        if (tags[i].is_exit && !tags[i].radio_switched_off){
-                            $scope.offlineTags[tags[i].name] = {name: tags[i].name, image: '../img/icons/tags/tag-offline1.png'}
-                        }
+                    $scope.tagsStateIndoor = {
+                        offline: 0,
+                        online : 0
+                    };
+
+                    $scope.colors = ["#D3D3D3", "#4BAE5A"];
+                    $scope.labels = ["Tags disativati", "Tag attivi"];
+
+                    $scope.offlineTagsIndoor = dataService.tags.filter(t => (t.is_exit && !t.radio_switched_off));
+
+                    $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
+                    $scope.tagsStateIndoor.online  = dataService.tags.length - $scope.offlineTagsIndoor.length;
+
+                    $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online];
+
+                    $scope.hide = function () {
+                        $mdDialog.hide();
                     }
+                }]
+            })
+        };
+
+        //showing the info window with the online/offline anchors
+        $scope.showOfflineAnchorsIndoor = function () {
+            $mdDialog.show({
+                locals             : {floor: canvasCtrl.defaultFloor.name},
+                // templateUrl        : '../components/show-offline-tags.html',
+                templateUrl        : '../components/indoor_offline_anchors_info.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
+                clickOutsideToClose: true,
+                controller         : ['$scope', 'floor', 'dataService', function ($scope, floor, dataService) {
+
+                    $scope.offlineAnchors = [];
+
+                    $scope.anchorsState = {
+                        offline: 0,
+                        online : 0
+                    };
+
+                    $scope.colors = ["#D3D3D3", "#4BAE5A"];
+                    $scope.labels = ["Ancore disativate", "Ancore attive"];
+
+                    $scope.offlineAnchors = dataService.anchors.filter(a => !a.is_online);
+
+                    $scope.anchorsState.offline = $scope.offlineAnchors.length;
+                    $scope.anchorsState.online  = dataService.anchors.length - $scope.offlineAnchors.length;
+
+                    $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online];
 
                     $scope.hide = function () {
                         $mdDialog.hide();
@@ -1037,30 +1236,30 @@
 
         $scope.showEmergencyZone = function () {
             $mdDialog.show({
-                locals: {floor: canvasCtrl.defaultFloor.name, tags: $scope.tags},
+                locals             : {floor: canvasCtrl.defaultFloor.name, tags: dataService.tags},
                 templateUrl        : '../components/emergency-alarm-info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 controller         : ['$scope', 'floor', 'tags', function ($scope, floor, tags) {
-                    $scope.safeTags = null;
+                    $scope.safeTags   = null;
                     $scope.unsafeTags = [];
 
-                    $scope.men = {
-                        safe: 0,
+                    $scope.men    = {
+                        safe  : 0,
                         unsafe: 0
                     };
+
                     $scope.colors = ["#4BAE5A", "#E13044"];
                     $scope.labels = ["Persone in zona di evacuazione", "Persone disperse"];
 
-                    socketService.getSocket('get_emergency_info', {location: dataService.location, floor: floor})
+                    socketService.sendRequest('get_emergency_info', {location: dataService.location, floor: floor})
                         .then(function (response) {
-                            let message = JSON.parse(response.data);
-                            $scope.safeTags = message.result;
-                            $scope.unsafeTags = tags.filter(t => !message.result.some(i => i.tag_name === t.name));
+                            $scope.safeTags   = response.result;
+                            $scope.unsafeTags = tags.filter(t => !response.result.some(i => i.tag_name === t.name));
 
-                            $scope.men.safe = message.result.length;
-                            $scope.men.unsafe = tags.length - message.result.length;
+                            $scope.men.safe   = response.result.length;
+                            $scope.men.unsafe = tags.length - response.result.length;
 
                             $scope.data = [$scope.men.safe, $scope.men.unsafe];
                         });
@@ -1076,11 +1275,11 @@
     menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$state', '$filter', '$timeout', '$mdSidenav', 'NgMap', 'dataService', 'menuService', 'socketService'];
     function menuController($scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, NgMap, dataService, menuService, socketService) {
 
-        let searchMarker = new google.maps.Marker({});
-        $scope.isAdmin = dataService.isAdmin;
-        $scope.tags = dataService.tags;
+        let searchMarker   = new google.maps.Marker({});
+        $scope.isAdmin     = dataService.isAdmin;
+        $scope.tags        = dataService.tags;
         $scope.selectedTag = '';
-        $scope.switch = {
+        $scope.switch      = {
             mapFullscreen: false
         };
 
@@ -1120,12 +1319,12 @@
                                 fileName = file.name;
                             }
 
-                            socketService.getSocket('get_user', {})
+                            socketService.sendRequest('get_user', {})
                                 .then(
                                     function (response) {
                                         let user = JSON.parse(response.data);
 
-                                        return socketService.getSocket('insert_location', {
+                                        return socketService.sendRequest('insert_location', {
                                             user       : user.result.id,
                                             name       : $scope.location.name,
                                             description: $scope.location.description,
@@ -1150,15 +1349,13 @@
                                     })
                                 .then(
                                     function (result) {
-                                        return socketService.getSocket('save_marker_image', {
+                                        return socketService.sendRequest('save_marker_image', {
                                             imageName: fileName,
-                                            image: result
+                                            image    : result
                                         })
                                     })
-                                .then(function (result) {
-                                        let message = JSON.parse(result.data);
-
-                                        if (message.result === false) {
+                                .then(function (response) {
+                                        if (response.result === false) {
                                             console.log('image not inserted');
                                             $scope.location.showSuccess = false;
                                             $scope.location.showError   = true;
@@ -1236,27 +1433,25 @@
                         let fromDate = $filter('date')(newValues[0], 'yyyy-MM-dd');
                         let toDate   = $filter('date')(newValues[1], 'yyyy-MM-dd');
 
-                        socketService.getSocket('get_events', {})
+                        socketService.sendRequest('get_events', {})
                             .then(function (response) {
                                 console.log(response);
-                                let message           = JSON.parse(response.data);
-                                $scope.history.events = message.result;
+                                $scope.history.events = response.result;
                                 $scope.history.tags   = dataService.tags;
                                 $scope.$apply();
-                                return socketService.getSocket('get_history', {
+                                return socketService.sendRequest('get_history', {
                                     fromDate: fromDate,
                                     toDate  : toDate,
                                     tag     : newValues[2],
                                     event   : newValues[3]
                                 })
                             })
-                            .then(function (result) {
-                                    let mess           = JSON.parse(result.data);
-                                    $scope.historyRows = mess.result;
+                            .then(function (response) {
+                                    $scope.historyRows = response.result;
 
-                                    if ($scope.historyRows.length === 0){
+                                    if ($scope.historyRows.length === 0) {
                                         $scope.tableEmpty = true;
-                                    }else {
+                                    } else {
                                         $scope.tableEmpty = false;
                                     }
                                     $scope.$apply();
@@ -1300,18 +1495,17 @@
                         } else {
                             if (form.$valid) {
 
-                                socketService.getSocket('change_password', {
+                                socketService.sendRequest('change_password', {
                                     oldPassword: $scope.changePassword.oldPassword,
                                     newPassword: $scope.changePassword.newPassword
                                 })
-                                    .then(function (result) {
-                                        let message = JSON.parse(result.data);
-                                        if (message.result === 'wrong_old') {
+                                    .then(function (response) {
+                                        if (response.result === 'wrong_old') {
                                             $scope.changePassword.resultClass = 'background-red';
                                             $scope.changePassword.showError   = true;
                                             $scope.changePassword.showSuccess = false;
                                             $scope.changePassword.message     = 'Vecchia password non valida';
-                                        } else if (message.result === 'error_on_changing_password') {
+                                        } else if (response.result === 'error_on_changing_password') {
                                             $scope.changePassword.resultClass = 'background-red';
                                             $scope.changePassword.showSuccess = false;
                                             $scope.changePassword.showError   = true;
@@ -1345,7 +1539,7 @@
 
         $scope.registry = function () {
             $mdDialog.show({
-                locals: {admin: $scope.isAdmin},
+                locals             : {admin: $scope.isAdmin},
                 templateUrl        : '../components/change-registry.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
@@ -1353,38 +1547,36 @@
                 controller         : ['$scope', 'admin', function ($scope, admin) {
                     $scope.selected     = [];
                     $scope.limitOptions = [5, 10, 15];
-
+                    $scope.tags = [];
                     $scope.query = {
                         order: 'name',
                         limit: 5,
                         page : 1
                     };
 
-                    socketService.getSocket('get_tags_by_location', {location: dataService.location})
+                    socketService.sendRequest('get_tags_by_user', {user: dataService.username})
                         .then(function (response) {
-                            let message = JSON.parse(response.data);
-                            $scope.tags = message.result;
+                            $scope.tags = response.result;
                         });
 
                     $scope.editCell = function (event, tag, tagName) {
 
                         event.stopPropagation();
 
-                        if(admin) {
+                        if (admin) {
                             let editCell = {
                                 modelValue : tag[tagName],
                                 save       : function (input) {
                                     input.$invalid = true;
                                     tag[tagName]   = input.$modelValue;
-                                    socketService.getSocket('change_tag_field', {
+                                    socketService.sendRequest('change_tag_field', {
                                         tag_id     : tag.id,
                                         tag_field  : tagName,
                                         field_value: input.$modelValue
                                     })
                                         .then(function (response) {
-                                            let message = JSON.parse(response.data);
-                                            if (message.result !== 1)
-                                                console.log(message.result);
+                                            if (response.result !== 1)
+                                                console.log(response.result);
                                         })
                                 },
                                 targetEvent: event,
@@ -1407,7 +1599,7 @@
 
         $scope.showAnchorsTable = function () {
             $mdDialog.show({
-                locals: {admin: $scope.isAdmin},
+                locals             : {admin: $scope.isAdmin},
                 templateUrl        : '../components/anchors.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
@@ -1422,10 +1614,9 @@
                         page : 1
                     };
 
-                    socketService.getSocket('get_anchors_by_location', {location: dataService.location})
+                    socketService.sendRequest('get_anchors_by_location', {location: dataService.location})
                         .then(function (response) {
-                            let message    = JSON.parse(response.data);
-                            $scope.anchors = message.result;
+                            $scope.anchors = response.result;
                         });
 
                     $scope.editCell = function (event, anchor, anchorName) {
@@ -1438,15 +1629,14 @@
                                 save       : function (input) {
                                     input.$invalid     = true;
                                     anchor[anchorName] = input.$modelValue;
-                                    socketService.getSocket('change_anchor_field', {
+                                    socketService.sendRequest('change_anchor_field', {
                                         anchor_id   : anchor.id,
                                         anchor_field: anchorName,
                                         field_value : input.$modelValue
                                     })
                                         .then(function (response) {
-                                            let message = JSON.parse(response.data);
-                                            if (message.result !== 1)
-                                                console.log(message.result);
+                                            if (response.result !== 1)
+                                                console.log(response.result);
                                         })
                                 },
                                 targetEvent: event,
@@ -1469,7 +1659,7 @@
 
         $scope.floorUpdate = function () {
             $mdDialog.show({
-                locals: {admin: $scope.isAdmin},
+                locals             : {admin: $scope.isAdmin},
                 templateUrl        : '../components/floor-settings.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
@@ -1484,7 +1674,7 @@
                         page : 1
                     };
 
-                    canvasCtrl.floors = dataService.floors;
+                    $scope.floors = dataService.floors;
 
                     $scope.editCell = function (event, floor, floorName) {
 
@@ -1497,15 +1687,14 @@
                                     input.$invalid   = true;
                                     floor[floorName] = input.$modelValue;
                                     console.log(floorName);
-                                    socketService.getSocket('change_floor_field', {
+                                    socketService.sendRequest('change_floor_field', {
                                         floor_id   : floor.id,
                                         floor_field: floorName,
                                         field_value: input.$modelValue
                                     })
                                         .then(function (response) {
-                                            let message = JSON.parse(response.data);
-                                            if (message.result !== 1)
-                                                console.log(message.result);
+                                            if (response.result !== 1)
+                                                console.log(response.result);
                                         })
                                 },
                                 targetEvent: event,
@@ -1541,7 +1730,7 @@
                             console.log($scope.floorId);
                             convertImageToBase64(file)
                                 .then(function (result) {
-                                    return socketService.getSocket('save_floor_image', {
+                                    return socketService.sendRequest('save_floor_image', {
                                         id   : $scope.floorId,
                                         image: result,
                                         name : fileName
@@ -1562,53 +1751,48 @@
 
         //function that makes the logout of the user
         $scope.logout = function () {
-            socketService.getSocket('logout', {}).then(
-                function (result) {
-                    let mess = JSON.parse(result.data);
-                    if (mess.result === 'logged_out')
+            socketService.sendRequest('logout', {}).then(
+                function (response) {
+                    if (response.result === 'logged_out')
                         $state.go('login');
                 }
             )
         };
 
         $scope.$watch('selectedTag', function (newValue, oldValue) {
-            console.log(newValue);
             if (newValue !== '') {
                 let newTag = $filter('filter')(dataService.tags, newValue)[0];
                 let oldTag = $filter('filter')(dataService.tags, oldValue)[0];
-                console.log(newTag);
-                if (newTag.gps_north_degree === 0 && newTag.gps_east_degree === 0){
+                if (newTag.gps_north_degree === 0 && newTag.gps_east_degree === 0) {
                     //TODO mostrare tag su canvas
                     $mdDialog.show({
-                        locals: {tags: $scope.tags, outerScope: $scope},
+                        locals             : {tags: dataService.tags, outerScope: $scope},
                         templateUrl        : '../components/search-tag-inside.html',
                         parent             : angular.element(document.body),
                         targetEvent        : event,
                         clickOutsideToClose: true,
                         controller         : ['$scope', 'tags', 'outerScope', 'socketService', function ($scope, tags, outerScope, socketService) {
-                            let canvas = null;
+                            let canvas  = null;
                             let context = null;
-                            let tag = tags.find(x => x.name === newValue);
-                            console.log(tag);
+                            let tag     = tags.find(x => x.name === newValue);
 
-                            canvasCtrl.floorData = {
-                                location: '',
+                            $scope.floorData = {
+                                location : '',
                                 floorName: ''
                             };
 
                             $timeout(function () {
                                 canvas  = document.querySelector('#search-canvas-id');
                                 context = canvas.getContext('2d');
-                            },0);
+                            }, 0);
 
-                            socketService.getSocket('get_tag_floor', {tag: tag.id})
+                            socketService.sendRequest('get_tag_floor', {tag: tag.id})
                                 .then(function (response) {
-                                    let message = JSON.parse(response.data);
-                                    canvasCtrl.floorData.location = message.result[0].location_name;
-                                    canvasCtrl.floorData.floorName = message.result[0].name;
+                                    $scope.floorData.location  = response.result[0].location_name;
+                                    $scope.floorData.floorName = response.result[0].name;
 
                                     let img = new Image();
-                                    img.src = imagePath + 'floors/' + message.result[0].image_map;
+                                    img.src = imagePath + 'floors/' + response.result[0].image_map;
 
                                     img.onload = function () {
                                         canvas.width  = this.naturalWidth;
@@ -1618,10 +1802,11 @@
                                         updateCanvas(canvas.width, canvas.height, context, img);
 
                                         let tagImg = new Image();
-                                        tagImg.src = imagePath + 'icons/tag-online-icon.png';
+                                        tagImg.src = imagePath + 'icons/tags/tag-online.png';
 
                                         tagImg.onload = function () {
-                                            drawIcon(tag, context, tagImg, message.result[0].width, canvas, true);
+                                            console.log(tagImg);
+                                            drawIcon(tag, context, tagImg, response.result[0].width, canvas, true);
                                         }
                                     };
                                 });
@@ -1647,7 +1832,7 @@
                                 content: '<div class="marker-info-container">' +
                                     '<img src="../img/icons/login-icon.png" class="tag-info-icon">' +
                                     '<p class="text-center font-large font-bold color-darkcyan">' + newTag.name.toUpperCase() + '</p>' +
-                                    '<div><p class="float-left">Latitude: </p><p class="float-right">' + newTag.gps_north_degree+ '</p></div>' +
+                                    '<div><p class="float-left">Latitude: </p><p class="float-right">' + newTag.gps_north_degree + '</p></div>' +
                                     '<div class="clear-float"><p class="float-left">Longitude: </p><p class="float-right">' + newTag.gps_east_degree + '</p></div>' +
                                     '</div>'
                             })
@@ -1674,11 +1859,13 @@
     }
 
     registryController.$inject = ['$scope', '$mdDialog', '$timeout', 'socketService'];
+
     function registryController($scope, $mdDialog, $timeout, socketService) {
 
     }
 
     anchorsController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', 'socketService'];
+
     function anchorsController($scope, $mdDialog, $mdEditDialog, socketService) {
 
     }
@@ -1687,8 +1874,8 @@
      * Funciton that handles the change password request
      * @type {string[]}
      */
-    recoverPassController.$inject = ['$scope', 'recoverPassService', '$location'];
-    function recoverPassController($scope, recoverPassService, $location) {
+    recoverPassController.$inject = ['$scope', '$state', 'recoverPassService', '$location'];
+    function recoverPassController($scope, $state, recoverPassService, $location) {
         $scope.email          = '';
         $scope.code           = '';
         $scope.username       = '';
@@ -1707,7 +1894,7 @@
             promise.then(
                 function (response) {
                     if (response.data.response) {
-                        $location.path('/recover-password-code')
+                        $state.go('recover-password-code');
                     } else {
                         $scope.errorHandeling.wrongData = true;
                     }
@@ -1734,7 +1921,7 @@
                 promise.then(
                     function (response) {
                         if (response.data.response) {
-                            $location.path('/');
+                            $state.go('login');
                         } else {
                             $scope.errorHandeling.wrongData = true;
                             $scope.error                    = response.data.message;

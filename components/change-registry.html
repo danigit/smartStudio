@@ -13,7 +13,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">VISUALIZZAZIONE WETAG</h1>
+                <h1 class=" font-iceberg font-x-large">TABELLA WETAG</h1>
             </div>
         </div>
     </md-toolbar>
@@ -30,15 +30,19 @@
 
                     <thead md-head md-order="query.order">
                     <tr md-row>
-                        <th md-column ><span>id</span></th>
-                        <th md-column ><span>nome</span></th>
+                        <!--<th md-column ><span>id</span></th>-->
+                        <th md-column ><span class="color-darkcyan">NOME</span></th>
+                        <th md-column ><span class="color-darkcyan">TIPO TAG</span></th>
+                        <!--<th md-column ><span>MACS</span></th>-->
                     </tr>
                     </thead>
 
                     <tbody md-body>
                     <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true" ng-repeat="tag in tags | limitTo: query.limit: (query.page -1 ) * query.limit">
-                        <td md-cell>{{tag.id}}</td>
+                        <!--<td md-cell>{{tag.id}}</td>-->
                         <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">{{tag.name || 'Inserire nome'}}</td>
+                        <td md-cell ng-click="editCell($event, tag, 'type')" ng-class="{'md-placeholder': !tag.type}">{{tag.type || 'Inserire tipo'}}</td>
+                        <!--<td md-cell ng-click="editCell($event, tag, 'type')" ng-class="{'md-placeholder': !tag.type}"></td>-->
                     </tr>
                     </tbody>
                 </table>

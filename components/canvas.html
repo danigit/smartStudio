@@ -1,5 +1,15 @@
 <div>
     <div layout="column"  class="height-100-vh">
+        <div  layout="column" class="top-corner background-transparent-white">
+            <img ng-show="canvasCtrl.showAlarmsIcon" ng-click="showAlarms()"  class="margin-bottom-3" src="../img/icons/alarm-icon.png">
+            <img ng-show="canvasCtrl.showOfflineTagsIcon" ng-click="showOfflineTagsIndoor()" class="margin-bottom-5-px" src="../img/icons/offline_tags_alert_64.png">
+            <img ng-show="canvasCtrl.showOfflineAnchorsIcon" ng-click="showOfflineAnchorsIndoor()" src="../img/icons/offline_anchors_alert_64.png">
+        </div>
+
+        <div  class="bottom-corner">
+            <img ng-click="showEmergencyZone()" src="../img/icons/evacuation-alarm.png"><br>
+        </div>
+
         <!--draw button-->
         <div class="top-corner" ng-show="drawing.showDrawing">
 
@@ -36,7 +46,7 @@
         <div layout="row" layout-align="center center" class="background-ottanio width-100" style="padding-left: 3%;">
             <img src="../img/icons/login-icon.png" class="canvas-header-image" alt="Smart Track" title="Smart Track">
             <div class="margin-bottom-30-px width-30">
-                <p class="canvas-location color-darkcyan text-center">{{canvasCtrl.floorData.location.name | uppercase}}</p>
+                <p class="canvas-location color-darkcyan text-center">{{canvasCtrl.floorData.location | uppercase}}</p>
                 <p class="canvas-floor color-cyan text-center">{{canvasCtrl.floorData.defaultFloorName}}</p>
             </div>
         </div>
@@ -73,16 +83,30 @@
 
                         <div layout="column" id="menu-container">
                             <md-list ng-controller="menuController">
-                                <md-list-item ng-click="registry()"><p>Aggiorna WeTag</p><img src="../img/icons/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="showAnchorsTable()"><p>Tabella Ancore</p><img src="../img/icons/anchor-online-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="floorUpdate()"><p>Tabella piani</p><img src="../img/icons/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click=""><p>Cerca WeTAG</p><img src="../img/icons/tag-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="viewHistory()"><p>Storico</p><img src="../img/icons/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="changePassword()"><p>Cambia password</p><img src="../img/icons/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="logout()"><p>Logout</p><img src="../img/icons/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="registry()"><p>Tabella WeTag</p><img src="../img/icons/menu/anagrafica-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="showAnchorsTable()"><p>Tabella Ancore</p><img src="../img/icons/menu/anchor-online-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="floorUpdate()"><p>Tabella piani</p><img src="../img/icons/menu/floor-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="viewHistory()"><p>Storico</p><img src="../img/icons/menu/history_icon_16.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="changePassword()"><p>Cambia password</p><img src="../img/icons/menu/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="logout()"><p class="color-red">Logout</p><img src="../img/icons/menu/logout_icon_16.png" class="menu-list-icon" alt=""></md-list-item>
                             </md-list>
 
-                            <md-subheader class="background-lightcyan color-black margin-bottom-10-px margin-top-10-px">Azzioni immediate</md-subheader>
+                            <md-subheader class="background-lightcyan color-white margin-bottom-10-px margin-top-10-px text-center">AZZIONI VELOCI</md-subheader>
+
+                            <div id="search-tag-container" layout="column" class="padding-10-px" layout-align="center center">
+
+                                <md-input-container class="margin-bottom-0 margin-top-10 width-100">
+
+                                    <label>Cerca WeTag</label>
+
+                                    <md-select ng-model="selectedTag">
+
+                                        <md-option ng-repeat="tag in tags" ng-value="tag.name">
+                                            {{tag.name}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
 
                             <div id="change-floor-container" layout="column" class="padding-10-px" layout-align="center center">
 
@@ -90,7 +114,7 @@
 
                                     <label>Selezione piano</label>
 
-                                    <md-select ng-model="floorData.defaultFloorName">
+                                    <md-select ng-model="canvasCtrl.floorData.defaultFloorName">
                                         <md-option ng-repeat="floor in canvasCtrl.floors" ng-value="floor.name">
                                             {{floor.name}}
                                         </md-option>
@@ -105,7 +129,7 @@
                                 </div>
 
                                 <md-slider-container flex="100">
-                                    <md-slider md-discrete ng-model="floorData.gridSpacing" min="10" max="1000" step="10" aria-label="Selezionare la densita' della griglia" class="md-primary"></md-slider>
+                                    <md-slider md-discrete ng-model="canvasCtrl.floorData.gridSpacing" min="10" max="500" step="10" aria-label="Selezionare la densita' della griglia" class="md-primary"></md-slider>
                                 </md-slider-container>
                             </div>
 
@@ -128,7 +152,7 @@
                                         <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Passsa in modalita' fullscreen" ng-model="switch.fullscreen">
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Passsa in modalita' fullscreen" ng-model="canvasCtrl.switch.fullscreen">
                                     </md-switch>
                                 </div>
                             </div>
@@ -157,17 +181,17 @@
                                 </div>
                             </div>
 
-                            <div layout="row" layout-align="center center">
+                            <!--<div layout="row" layout-align="center center">-->
 
-                                <div id="drawing-on-off-container" layout="column" class="padding-10-px width-100" layout-align="center center">
-                                    <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="switch.showDrawing">Modalita' disegna: <b class="color-green">ON</b></md-subheader>
-                                        <md-subheader class="padding-0" ng-show="!switch.showDrawing">Modalita' disegna: <b class="color-red">OFF</b></md-subheader>
-                                    </div>
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi strumenti disegno" ng-model="switch.showDrawing">
-                                    </md-switch>
-                                </div>
-                            </div>
+                                <!--<div id="drawing-on-off-container" layout="column" class="padding-10-px width-100" layout-align="center center">-->
+                                    <!--<div flex="100" layout layout-align="center center">-->
+                                        <!--<md-subheader class="padding-0" ng-show="canvasCtrl.switch.showDrawing">Modalita' disegna: <b class="color-green">ON</b></md-subheader>-->
+                                        <!--<md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showDrawing">Modalita' disegna: <b class="color-red">OFF</b></md-subheader>-->
+                                    <!--</div>-->
+                                    <!--<md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Mostra/nascondi strumenti disegno" ng-model="canvasCtrl.switch.showDrawing">-->
+                                    <!--</md-switch>-->
+                                <!--</div>-->
+                            <!--</div>-->
                         </div>
                     </md-content>
                 </md-sidenav>

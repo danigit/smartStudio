@@ -284,6 +284,28 @@ class Connection{
         return $this->result;
     }
 
+    function get_location_info($location){
+        $this->query = 'SELECT location.NAME, LATITUDE, LONGITUDE, ICON, RADIUS, IS_INSIDE FROM location WHERE location.NAME = ?';
+
+        $statement = $this->execute_selecting($this->query, 's', $location);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+
+        $this->result = $statement->get_result();
+        $result_array = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+
+            $result_array[] = array('name' => $row['NAME'], 'description' => $row['DESCRIPTION'], 'latitude' => $row['LATITUDE'], 'longitude' => $row['LONGITUDE'],
+                                    "icon" => $row['ICON'], 'radius' => $row['radius'], 'is_inside' => $row['IS_INSIDE']);
+        }
+
+        return $result_array;
+    }
+
     function get_history($fromDate, $toDate, $tag, $event){
 
         $statement = null;
@@ -291,22 +313,22 @@ class Connection{
         if ($tag == null && $event == null) {
             $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, floor.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
                             JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID JOIN location l on tag.LOCATION_ID = l.ID
-                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE history.TIME BETWEEN ? AND ?";
+                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE history.TIME BETWEEN ? AND ? ORDER BY history.time DESC";
             $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
         } else if ($event == null && $tag != null) {
             $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, floor.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
                             JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID JOIN location l on tag.LOCATION_ID = l.ID
-                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE tag.NAME = ? AND history.TIME BETWEEN ? AND ?";
+                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE tag.NAME = ? AND history.TIME BETWEEN ? AND ? ORDER BY history.time DESC";
             $statement = $this->execute_selecting($this->query, 'sss', $tag, $fromDate, $toDate);
         } else if ($event != null && $tag == null){
             $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, floor.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
                             JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID JOIN location l on tag.LOCATION_ID = l.ID
-                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE event.DESCRIPTION = ? AND history.TIME BETWEEN ? AND ?";
+                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE event.DESCRIPTION = ? AND history.TIME BETWEEN ? AND ? ORDER BY history.time DESC";
             $statement = $this->execute_selecting($this->query, 'sss', $event, $fromDate, $toDate);
         } else if ($event != null && $tag != null){
             $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, floor.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS FROM history 
                             JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID JOIN tag ON history.TAG_ID = tag.ID JOIN location l on tag.LOCATION_ID = l.ID
-                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND history.TIME BETWEEN ? AND ?";
+                            JOIN floor ON l.ID = floor.LOCATION_ID WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND history.TIME BETWEEN ? AND ? ORDER BY history.time DESC";
             $statement = $this->execute_selecting($this->query, 'ssss', $event, $tag, $fromDate, $toDate);
         }
 
@@ -373,11 +395,34 @@ class Connection{
         return $result_array;
     }
 
-    function get_anchors_by_floor($floor){
-        $this->query = 'SELECT anchor.ID, anchor.NAME, X_POS, Y_POS, Z_POS, RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, TYPE, PERMITTED_ASSET, IS_ONLINE FROM anchor JOIN floor ON anchor.FLOOR_ID = floor.ID
-                        WHERE floor.NAME = ?';
+    function get_tag_floor($tag){
+        $this->query = 'SELECT floor.ID, floor.NAME, floor.IMAGE_MAP, floor.MAP_WIDTH, l.NAME AS location_name FROM tag JOIN anchor ON tag.ANCHOR_ID = anchor.ID JOIN floor 
+                        ON anchor.FLOOR_ID = floor.ID JOIN location l on floor.LOCATION_ID = l.ID WHERE tag.ID = ?';
 
-        $statement = $this->execute_selecting($this->query, 's', $floor);
+        $statement = $this->execute_selecting($this->query, 'i', $tag);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+
+        $this->result = $statement->get_result();
+        $result_array = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'image_map' => $row['IMAGE_MAP'], 'width' => $row['MAP_WIDTH'],
+                                    'location_name' => $row['location_name']);
+        }
+
+        return $result_array;
+    }
+
+    function get_anchors_by_floor_and_location($floor, $location){
+        $this->query = 'SELECT anchor.ID, anchor.MAC, anchor.NAME, X_POS, Y_POS, Z_POS, anchor.RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, TYPE, PERMITTED_ASSET, IS_ONLINE, 
+                        EMERGENCY_ZONE, NEIGHBORS, BATTERY_STATUS, FLOOR_ID, location.NAME AS LOCATION_NAME FROM anchor JOIN floor ON anchor.FLOOR_ID = floor.ID JOIN location l ON floor.LOCATION_ID = l.ID
+                        JOIN location ON floor.LOCATION_ID = location.ID WHERE floor.NAME = ? AND l.NAME = ?';
+
+        $statement = $this->execute_selecting($this->query, 'ss', $floor, $location);
 
         if ($statement instanceof db_errors)
             return $statement;
@@ -388,9 +433,10 @@ class Connection{
         $result_array = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'],
+            $result_array[] = array('id' => $row['ID'], 'mac' => $row['MAC'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'],
                 'z_pos' => $row['Z_POS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'],
-                'type' => $row['TYPE'], 'permitted_asset' => $row['PERMITTED_ASSET'], 'is_online' => $row['IS_ONLINE']);
+                'type' => $row['TYPE'], 'permitted_asset' => $row['PERMITTED_ASSET'], 'is_online' => $row['IS_ONLINE'], 'emergency_zone' => $row['EMERGENCY_ZONE'],
+                'neighbors' => $row['NEIGHBORS'], 'battery_status' => $row['BATTERY_STATUS'], 'floor_id' => $row['FLOOR_ID'], 'location_name' => $row['LOCATION_NAME']);
         }
 
         return $result_array;
@@ -419,11 +465,11 @@ class Connection{
         return $result_array;
     }
 
-    function get_cameras($floor){
-        $this->query = 'SELECT camera.ID, DESCRIPTION, USERNAME, PASSWORD, X_POS, Y_POS, RADIUS, IS_ONLINE FROM camera 
-                        JOIN floor ON FLOOR_ID = floor.ID WHERE floor.NAME = ?';
+    function get_cameras_by_floor_and_location($floor, $location){
+        $this->query = 'SELECT camera.ID, camera.DESCRIPTION, USERNAME, PASSWORD, X_POS, Y_POS, camera.RADIUS, IS_ONLINE FROM camera 
+                        JOIN floor ON FLOOR_ID = floor.ID JOIN location ON floor.LOCATION_ID = location.ID WHERE floor.NAME = ? AND location.NAME = ?';
 
-        $statement = $this->execute_selecting($this->query, 's', $floor);
+        $statement = $this->execute_selecting($this->query, 'ss', $floor, $location);
 
         if ($statement instanceof db_errors)
             return $statement;
@@ -465,9 +511,11 @@ class Connection{
 
     function get_tags_by_user($user){
 
-        $this->query = 'SELECT t.ID, t.NAME FROM user JOIN user_has_location uhl ON user.ID = uhl.USER_ID
+        $this->query = 'SELECT t.ID, t.NAME, tt.NAME AS TYPE, t.X_POS, t.Y_POS, t.GPS_NORTH_DEGREE, t.GPS_EAST_DEGREE, t.GPS_TIME, t.BATTERY_STATUS, t.MAN_DOWN,
+                        t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, tt.NAME AS type_name, tt.SLEEP_TIME_INDOOR,
+                        tt.SLEEP_TIME_OUTDOOR, tt.ICON FROM user JOIN user_has_location uhl ON user.ID = uhl.USER_ID
                         JOIN location l ON uhl.LOCATION_ID = l.ID JOIN floor ON l.ID = floor.LOCATION_ID JOIN anchor ON floor.ID = anchor.FLOOR_ID
-                        JOIN tag t on anchor.ID = t.ANCHOR_ID WHERE user.USERNAME = ?';
+                        JOIN tag t ON anchor.ID = t.ANCHOR_ID JOIN tag_types AS tt ON t.TYPE = tt.ID WHERE user.USERNAME = ?';
 
         $statement = $this->execute_selecting($this->query, 's', $user);
 
@@ -480,19 +528,29 @@ class Connection{
         $result_array = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME']);
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'type' => $row['TYPE'], 'x_pos' => $row['X_POS'], 'y_pos' => $row['Y_POS'],
+                                    'gps_north_degree' => $row['GPS_NORTH_DEGREE'], 'gps_east_degree' => $row['GPS_EAST_DEGREE'], 'radio_switched_off' => $row['RADIO_SWITCHED_OFF'],
+                                    'battery_status' => $row['BATTERY_STATUS'], 'man_down' => $row['MAN_DOWN'],
+                                    'man_down_disabled' => $row['MAN_DOWN_DISABLED'], 'man_down_tacitated' => $row['MAN_DOWN_TACITATED'],
+                                    'sos' => $row['SOS'], 'man_in_quote' => $row['MAN_IN_QUOTE'], 'call_me_alarm' => $row['CALL_ME_ALARM'],
+                                    'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'gps_time' => $row['GPS_TIME'], 'type_name' => $row['type_name'],
+                                    'sleep_time_outdoor' => $row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => $row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON']);
         }
 
         return $result_array;
     }
 
-    function get_tags_by_floor($floor){
+    function get_tags_by_floor_and_location($floor, $location){
 
-        $this->query = 'SELECT tag.ID, tag.NAME, tag.X_POS, tag.Y_POS, tag.BATTERY_STATUS, tag.BATTERY_STATUS_ALERTED, tag.MAN_DOWN, tag.MAN_DOWN_ALERTED,
+        $this->query = 'SELECT tag.ID, tag.NAME, tag.X_POS, tag.Y_POS, tag.GPS_TIME, tag.BATTERY_STATUS, tag.GPS_NORTH_DEGREE, tag.MAN_DOWN, tag.GPS_EAST_DEGREE,
                         tag.MAN_DOWN_DISABLED, tag.MAN_DOWN_DISABLED_ALERTED, tag.MAN_DOWN_TACITATED, tag.SOS, tag.SOS_ALERTED, tag.MAN_IN_QUOTE, tag.MAN_IN_QUOTE_ALERTED,
-                        tag.CALL_ME_ALARM, tag.EVACUATION_ALARM, tag.RADIO_SWITCHED_OFF, tag.DIAGNOSTIC_REQUEST, tag.IS_EXIT FROM tag JOIN anchor a ON tag.ANCHOR_ID = a.ID JOIN floor ON a.FLOOR_ID = floor.ID WHERE floor.ID = ?';
+                        tag.CALL_ME_ALARM, tag.EVACUATION_ALARM, tag.RADIO_SWITCHED_OFF, tag.DIAGNOSTIC_REQUEST, tag.IS_EXIT, floor.NAME AS FLOOR_NAME, a.NAME AS ANCHOR_NAME, 
+                        tag_types.ID AS TYPE_ID, tag_types.NAME AS TAG_TYPE_NAME, tag_types.SLEEP_TIME_INDOOR, dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
+                        FROM tag JOIN anchor a ON tag.ANCHOR_ID = a.ID JOIN floor ON a.FLOOR_ID = floor.ID JOIN tag_types ON tag. TYPE = tag_types.ID 
+                        JOIN location l ON floor.LOCATION_ID = l.ID JOIN dress_alarm ON tag.ID = dress_alarm.TAG_ID
+                        WHERE floor.ID = ? AND l.NAME = ? AND tag.GPS_NORTH_DEGREE = 0 AND tag.GPS_EAST_DEGREE = 0';
 
-        $statement = $this->execute_selecting($this->query, 's', $floor);
+        $statement = $this->execute_selecting($this->query, 'ss', $floor, $location);
 
         if ($statement instanceof db_errors)
             return $statement;
@@ -503,12 +561,14 @@ class Connection{
         $result_array = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], 'y_pos' => $row['Y_POS'], 'battery_status' => $row['BATTERY_STATUS'],
-                'battery_status_alerted' => $row['BATTERY_STATUS_ALERTED'], 'man_down' => $row['MAN_DOWN'], 'man_down_alerted' => $row['MAN_DOWN_ALERTED'],
-                'man_down_disabled' => $row['MAN_DOWN_DISABLED'], 'man_down_disabled_alerted' => $row['MAN_DOWN_DISABLED_ALERTED'], 'man_down_tacitaded' => $row['MAN_DOWN_TACITATED'],
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], 'y_pos' => $row['Y_POS'], 'gps_time' => $row['GPS_TIME'], 'battery_status' => $row['BATTERY_STATUS'],
+                'gps_north_degree' => $row['GPS_NORTH_DEGREE'], 'man_down' => $row['MAN_DOWN'], 'gps_east_degree' => $row['GPS_EAST_DEGREE'],
+                'man_down_disabled' => $row['MAN_DOWN_DISABLED'], 'man_down_disabled_alerted' => $row['MAN_DOWN_DISABLED_ALERTED'], 'man_down_tacitated' => $row['MAN_DOWN_TACITATED'],
                 'sos' => $row['SOS'], 'sos_alerted' => $row['SOS_ALERTED'], 'man_in_quote' => $row['MAN_IN_QUOTE'], 'man_in_quote_alerted' => $row['MAN_IN_QUOTE_ALERTED'],
                 'call_me_alarm' => $row['CALL_ME_ALARM'], 'evacuation_alarm' => $row['EVACUATION_ALARM'], 'radio_switched_off' => $row['RADIO_SWITCHED_OFF'],
-                'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'is_exit' => $row['IS_EXIT']);
+                'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'is_exit' => $row['IS_EXIT'], 'floor_name' => $row['FLOOR_NAME'], 'anchor_name' => $row['ANCHOR_NAME'],
+                'tag_type_id' => $row['TYPE_ID'], 'tag_type_name' => $row['TAG_TYPE_NAME'], 'sleep_time_indoor' => $row['SLEEP_TIME_INDOOR'],
+                'helmet_dpi' => $row['HELMET_DPI'], 'belt_dpi' => $row['BELT_DPI'], 'glove_dpi' => $row['GLOVE_DPI'], 'shoe_dpi' => $row['SHOE_DPI']);
         }
 
         return $result_array;
@@ -516,7 +576,10 @@ class Connection{
 
     function get_tags_by_location($location){
 
-        $this->query = 'SELECT tag.ID, tag.NAME FROM tag JOIN location l ON tag.LOCATION_ID = l.ID WHERE l.NAME = ?';
+        $this->query = 'SELECT t.ID, t.NAME, t.TYPE, t.X_POS, t.Y_POS, t.GPS_NORTH_DEGREE, t.GPS_EAST_DEGREE, t.GPS_TIME, t.BATTERY_STATUS, t.MAN_DOWN,
+                        t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, tt.NAME AS type_name, tt.SLEEP_TIME_INDOOR,
+                        tt.SLEEP_TIME_OUTDOOR, tt.ICON FROM tag AS t JOIN tag_types AS tt ON t.TYPE = tt.ID JOIN location l ON t.LOCATION_ID = l.ID 
+                        WHERE l.NAME = ?';
 
         $statement = $this->execute_selecting($this->query, 's', $location);
 
@@ -529,7 +592,13 @@ class Connection{
         $result_array = array();
 
         while ($row = mysqli_fetch_assoc($this->result)) {
-            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME']);
+            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'type' => $row['TYPE'], 'x_pos' => $row['X_POS'], 'y_pos' => $row['Y_POS'],
+                'gps_north_degree' => $row['GPS_NORTH_DEGREE'], 'gps_east_degree' => $row['GPS_EAST_DEGREE'], 'radio_switched_off' => $row['RADIO_SWITCHED_OFF'],
+                'battery_status' => $row['BATTERY_STATUS'], 'man_down' => $row['MAN_DOWN'],
+                'man_down_disabled' => $row['MAN_DOWN_DISABLED'], 'man_down_tacitated' => $row['MAN_DOWN_TACITATED'],
+                'sos' => $row['SOS'], 'man_in_quote' => $row['MAN_IN_QUOTE'], 'call_me_alarm' => $row['CALL_ME_ALARM'],
+                'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'gps_time' => $row['GPS_TIME'], 'type_name' => $row['type_name'],
+                'sleep_time_outdoor' => $row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => $row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON']);
         }
 
         return $result_array;
@@ -626,6 +695,27 @@ class Connection{
         $this->result =  $this->connection->affected_rows;
 
         return $this->result;
+    }
+
+    function get_emergency_info($location, $floor){
+        $this->query = 'SELECT tag.NAME AS TAG_NAME, a.NAME AS ANCHOR_NAME FROM tag JOIN anchor a ON tag.ANCHOR_ID = a.ID JOIN floor ON a.FLOOR_ID = floor.ID JOIN location l ON floor.LOCATION_ID = l.ID
+                        WHERE l.NAME = ? AND floor.NAME = ? AND a.EMERGENCY_ZONE = 1';
+
+        $statement = $this->execute_selecting($this->query, 'ss', $location, $floor);
+
+        if ($statement instanceof db_errors)
+            return $statement;
+        else if ($statement == false)
+            return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+
+        $this->result = $statement->get_result();
+        $result_array = array();
+
+        while ($row = mysqli_fetch_assoc($this->result)) {
+            $result_array[] = array('tag_name' => $row['TAG_NAME'], 'anchor_name' => $row['ANCHOR_NAME']);
+        }
+
+        return $result_array;
     }
 
     /**

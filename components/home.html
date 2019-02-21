@@ -1,9 +1,16 @@
     <div>
+
         <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
             <!--map container-->
             <div id="map-div">
-                <ng-map center="{{mapConfiguration.center}}" zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="height-100-vh">
+                <!--<div ng-show="homeCtrl.isAdmin" class="top-corner">-->
+                    <!--<img src="../img/icons/alarm-bel.png"><br>-->
+                    <!--<img src="../img/icons/tag-offline-alert-icon.png">-->
+                <!--</div>-->
+                <ng-map id="main-map" ng-init="homeCtrl.markerClicked()" center="{{mapConfiguration.center}}" zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="height-100-vh">
+
                     <custom-marker ng-repeat="marker in homeCtrl.positions"
+                                   on-click="homeCtrl.markerClicked()"
                                    id="custom-marker-{{$index}}"
                                    position="{{marker.position}}">
                         <div>
@@ -40,26 +47,35 @@
 
                             <div layout="column">
                                 <md-list>
-                                    <md-list-item ng-show="isAdmin" ng-click="insertLocation()"><p>Insert location</p><img src="../img/icons/add-location.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click="viewHistory()"><p>Storico</p><img src="../img/icons/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click="changePassword()"><p>Cambia password</p><img src="../img/icons/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                    <md-list-item ng-click="logout()"><p>Logout</p><img src="../img/icons/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-show="homeCtrl.isAdmin" ng-click="insertLocation()"><p>Insert location</p><img src="../img/icons/add-location.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click="viewHistory()"><p>Storico</p><img src="../img/icons/menu/history_icon_16.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click="changePassword()"><p>Cambia password</p><img src="../img/icons/menu/password_icon_16.png" class="menu-list-icon" alt=""></md-list-item>
+                                    <md-list-item ng-click="logout()"><p class="color-red">Logout</p><img src="../img/icons/menu/logout_icon_16.png" class="menu-list-icon" alt=""></md-list-item>
                                 </md-list>
 
-                                <md-subheader class="background-lightcyan color-black margin-bottom-10-px margin-top-10-px">Azzioni immediate</md-subheader>
+                                <md-subheader class="background-lightcyan color-white margin-bottom-10-px margin-top-10-px text-center">AZZIONI VELOCI</md-subheader>
 
                                 <div id="change-floor-container" layout="column" class="padding-10-px" layout-align="center center">
 
                                     <md-input-container class="margin-bottom-0 margin-top-10">
                                         <label>Cerca WeTag</label>
-
-                                        <md-select ng-model="search.selectedTag">
+                                        <md-select ng-model="selectedTag">
 
                                             <md-option ng-repeat="tag in tags" ng-value="tag.name">
                                                 {{tag.name}}
                                             </md-option>
                                         </md-select>
                                     </md-input-container>
+                                </div>
+
+                                <div id="fullscreen-on-off-container" layout="column" class="padding-10-px width-100" layout-align="center center">
+
+                                    <div flex="100" layout layout-align="center center">
+                                        <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b></md-subheader>
+                                    </div>
+
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Passsa in modalita' fullscreen" ng-model="switch.mapFullscreen">
+                                    </md-switch>
                                 </div>
                             </div>
                         </md-content>

@@ -68,14 +68,14 @@
 
                         <thead md-head md-order="query.order">
                         <tr md-row>
-                            <th md-column ><span>Data</span></th>
-                            <th md-column ><span>Evento</span></th>
-                            <th md-column md-numeric><span>Tag</span></th>
-                            <th md-column md-numeric><span>Ancora</span></th>
-                            <th md-column md-numeric><span>Sito</span></th>
-                            <th md-column md-numeric><span>Piano</span></th>
-                            <th md-column md-numeric><span>Coordinate x</span></th>
-                            <th md-column md-numeric><span>Coordinate y</span></th>
+                            <th md-column ><span class="color-darkcyan">DATA</span></th>
+                            <th md-column ><span class="color-darkcyan">EVENTO</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">TAG</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">ANCORA</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">SITO</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">PIANO</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">COORDINATA X</span></th>
+                            <th md-column md-numeric><span class="color-darkcyan">COORDINATA Y</span></th>
 
                         </tr>
                         </thead>
@@ -90,6 +90,9 @@
                                 <td md-cell ng-class="{'md-placeholder': !row.floor}">{{row.floor || 'Dato non disponibile'}}</td>
                                 <td md-cell ng-class="{'md-placeholder': !row.tag_x_pos.toString()}">{{row.tag_x_pos.toString() || 'Dato non disponibile'}}</td>
                                 <td md-cell ng-class="{'md-placeholder': !row.tag_y_pos.toString()}">{{row.tag_y_pos.toString() || 'Dato non disponibile'}}</td>
+                            </tr>
+                            <tr md-row ng-show="tableEmpty">
+                                <td md-cell colspan="8" class="text-center color-orange">Nessun risultato trovato</td>
                             </tr>
                         </tbody>
                     </table>

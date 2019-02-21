@@ -211,11 +211,14 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
-            case 'get_location':{
-                $result['action'] = 'get_location';
+            case 'get_location_info':{
+                $result['action'] = 'get_location_info';
 
                 if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'], $_SESSION['location'])) {
                     $result['result'] = $_SESSION['location'];
+                    $query = $this->connection->get_location_info($result['result']);
+
+                    ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
                 } else
                     $result['result'] = 'location_not_found';
 
@@ -231,9 +234,18 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
-            case 'get_anchors_by_floor':{
-                $result['action'] = 'get_anchors_by_floor';
-                $query = $this->connection->get_anchors_by_floor($decoded_message['data']['floor']);
+            case 'get_tag_floor':{
+                $result['action'] = 'get_tag_floor';
+                $query = $this->connection->get_tag_floor($decoded_message['data']['tag']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'get_anchors_by_floor_and_location':{
+                $result['action'] = 'get_anchors_by_floor_and_location';
+                $query = $this->connection->get_anchors_by_floor_and_location($decoded_message['data']['floor'], $decoded_message['data']['location']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -249,9 +261,9 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
-            case 'get_cameras':{
-                $result['action'] = 'get_cameras';
-                $query = $this->connection->get_cameras($decoded_message['data']['floor']);
+            case 'get_cameras_by_floor_and_location':{
+                $result['action'] = 'get_cameras_by_floor_and_location';
+                $query = $this->connection->get_cameras_by_floor_and_location($decoded_message['data']['floor'], $decoded_message['data']['location']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -267,9 +279,9 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
-            case 'get_tags_by_floor':{
-                $result['action'] = 'get_tags_by_floor';
-                $query = $this->connection->get_tags_by_floor($decoded_message['data']['floor']);
+            case 'get_tags_by_floor_and_location':{
+                $result['action'] = 'get_tags_by_floor_and_location';
+                $query = $this->connection->get_tags_by_floor_and_location($decoded_message['data']['floor'], $decoded_message['data']['location']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -325,6 +337,15 @@ class webSocketServer implements MessageComponentInterface{
             case 'change_floor_field':{
                 $result['action'] = 'change_floor_field';
                 $query = $this->connection->change_floor_field($decoded_message['data']['floor_id'], $decoded_message['data']['floor_field'], $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'get_emergency_info':{
+                $result['action'] = 'get_emergency_info';
+                $query = $this->connection->get_emergency_info($decoded_message['data']['location'], $decoded_message['data']['floor']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

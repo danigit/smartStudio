@@ -43,8 +43,9 @@ class recover_password extends communication {
                 $mail->addAddress($this->email);
                 $mail->Subject = "Recupero password";
                 $mail->msgHTML("Sei stato contattato da Smart Track per un cambio password riguardante l'account Smart Studio<br><br>
-                                  Il codice per il cambio della email è: <b class='color-ottanio'>" . $this->code . "</b><br><br>Clicca sul seguente link e inserisci il 
-                                  codice presente nella mail: http://danielfotografo.altervista.org/smartStudio/#!/ <br>");
+                                  Il codice per il cambio della email è: <b class='color-ottanio'>" . $this->code . "</b><br><br>");
+//                                  Clicca sul seguente link e inserisci il 
+//                                  codice presente nella mail: http://danielfotografo.altervista.org/smartStudio/#!/ <br>");
                 if (!$mail->send()) //telnet smtp.aruba.it 587
                     $this->json_error("Mail non spedita per motivo sconosciuto" . $mail->ErrorInfo);
             }catch (Exception $e){
