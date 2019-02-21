@@ -1,0 +1,86 @@
+<div>
+    <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
+        <!--map container-->
+        <div id="map-div">
+            <div ng-show="outdoorCtrl.isAdmin" class="top-corner">
+                <img ng-click="showAlarms()" src="../img/icons/alarm-icon.png"><br>
+                <img ng-click="showOfflineTags()" src="../img/icons/alert-offline-tags.png">
+            </div>
+            <ng-map id="outdoor-map" center="{{outdoorCtrl.mapConfiguration.center}}" zoom="{{outdoorCtrl.mapConfiguration.zoom}}" mape-type-id="{{outdoorCtrl.mapConfiguration.map_type}}" class="height-100-vh">
+
+                <custom-marker ng-repeat="marker in outdoorCtrl.positions"
+                               on-click="outdoorCtrl.markerClicked()"
+                               id="custom-marker-{{$index}}"
+                               position="{{marker.position}}">
+                    <div>
+                        <img ng-src="../img/markers-images/{{marker.icon}}" alt="{{marker.name}}" title="{{marker.name}}">
+                    </div>
+                </custom-marker>
+            </ng-map>
+        </div>
+        <!--end map container-->
+
+        <!--menu container-->
+        <div flex="100" ng-controller="menuController">
+
+            <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
+                <img id="open-menu-icon" src="../img/icons/menu-arrow.png" alt="">
+            </div>
+            <section layout="row" flex>
+
+                <md-sidenav id="menu-panel" class="md-sidenav-left" md-component-id="left" md-disable-backdrop md-whiteframe="4">
+
+                    <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
+                        <h1 class="md-toolbar-tools color-black">Menu</h1>
+                        <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
+                            <img src="../img/icons/close-menu.png" alt="Close" title="Close">
+                        </div>
+                    </md-toolbar>
+
+                    <md-content layout-margin class="margin-top-10">
+
+                        <div layout="column" layout-align="center center">
+                            <img src="../img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track" title="Smart Track">
+                            <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
+                        </div>
+
+                        <div layout="column">
+                            <md-list>
+                                <md-list-item ng-show="outdoorCtrl.isAdmin" ng-click="insertLocation()"><p>Insert location</p><img src="../img/icons/add-location.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="viewHistory()"><p>Storico</p><img src="../img/icons/menu/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="changePassword()"><p>Cambia password</p><img src="../img/icons/menu/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="logout()"><p>Logout</p><img src="../img/icons/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                            </md-list>
+
+                            <md-subheader class="background-lightcyan color-black margin-bottom-10-px margin-top-10-px">Azzioni immediate</md-subheader>
+
+                            <div id="change-floor-container" layout="column" class="padding-10-px" layout-align="center center">
+
+                                <md-input-container class="margin-bottom-0 margin-top-10">
+                                    <label>Cerca WeTag</label>
+                                    <md-select ng-model="selectedTag">
+
+                                        <md-option ng-repeat="tag in tags" ng-value="tag.name">
+                                            {{tag.name}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+
+                            <div id="fullscreen-on-off-container" layout="column" class="padding-10-px width-50 width-100" layout-align="center center">
+
+                                <div flex="100" layout layout-align="center center">
+                                    <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b></md-subheader>
+                                </div>
+
+                                <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged" md-no-ink aria-label="Passsa in modalita' fullscreen" ng-model="switch.mapFullscreen">
+                                </md-switch>
+                            </div>
+                        </div>
+                    </md-content>
+                </md-sidenav>
+            </section>
+        </div>
+        <!--end menu container-->
+    </div>
+</div>

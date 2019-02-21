@@ -1,0 +1,39 @@
+<div>
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="../img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="../img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{floorData.location}} - {{floorData.floorName}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+    <!--end popup header-->
+
+    <div layout="column">
+        <!--header text-->
+        <!--<div layout="row" layout-align="center center" class="background-ottanio width-100" style="padding-left: 3%;">-->
+            <!--<img src="../img/icons/login-icon.png" class="canvas-header-image" alt="Smart Track" title="Smart Track">-->
+            <!--<div class="margin-bottom-30-px width-30">-->
+                <!--<p class="canvas-location color-darkcyan text-center">{{floorData.location | uppercase}}</p>-->
+                <!--<p class="canvas-floor color-cyan text-center">{{floorData.floorName}}</p>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--&lt;!&ndash;end header text&ndash;&gt;-->
+
+        <!--canvas container-->
+        <div id="search-canvas-container" layout="row"  layout-align="center start" class="parent-size background-ottanio">
+            <canvas id="search-canvas-id" ng-init="" class="width-100"></canvas>
+        </div>
+        <!--end canvas container-->
+    </div>
+</div>
