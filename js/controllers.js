@@ -649,7 +649,8 @@
             //TODO - control if drawing is off, - control if interval is undefined and start it if so, - resetting the switch buttons
             //     - if drawing is on stop the interval and set it to undefined, - reset the switch buttons, - reload canvas
 
-            canvasCtrl.loadFloor(false, false, false)
+            //THE FACT THAT I AM CALLING HERE UPDATE FLOOR IS CREATING THE GLITCH
+            // canvasCtrl.loadFloor(false, false, false)
         });
 
         //watching the fullscreen switch button
@@ -678,10 +679,10 @@
 
                 //updating the canvas and drawing border
                 updateCanvas(canvas.width, canvas.height, context, img);
-
-                //constantly updating the canvas
-                constantUpdateCanvas();
             };
+
+            //constantly updating the canvas
+            constantUpdateCanvas();
         };
 
         //controlling the alarms and setting the alarm icon
@@ -891,6 +892,8 @@
                 }
             }, 1000);
         };
+
+        canvasCtrl.loadFloor();
 
         //loading images and drawing them on canvas
         let loadAndDrawImagesOnCanvas = function (objects, objectType, hasToBeDrawn) {
@@ -1169,11 +1172,12 @@
         //showing the info window with the online/offline tags
         $scope.showOfflineTagsIndoor = function () {
             $mdDialog.show({
+                locals: {defaultFloor: canvasCtrl.defaultFloor.id},
                 templateUrl        : '../components/indoor_offline_tags_info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', function ($scope) {
+                controller         : ['$scope', 'defaultFloor', 'socketService', function ($scope, defaultFloor, socketService) {
 
                     $scope.offlineTagsIndoor = [];
 
@@ -1185,15 +1189,26 @@
                     $scope.colors = ["#D3D3D3", "#4BAE5A"];
                     $scope.labels = ["Tags disativati", "Tag attivi"];
 
-                    $scope.offlineTagsIndoor = dataService.tags.filter(t => (t.is_exit && !t.radio_switched_off));
+                    let interval = undefined;
+                    interval = $interval(function () {
+                        socketService.sendRequest('get_tags_by_floor_and_location', {
+                            floor   : defaultFloor,
+                            location: dataService.location
+                        })
+                            .then(function (response) {
 
-                    $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
-                    $scope.tagsStateIndoor.online  = dataService.tags.length - $scope.offlineTagsIndoor.length;
+                                $scope.offlineTagsIndoor = response.result.filter(t => (t.is_exit && !t.radio_switched_off));
 
-                    $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online];
+                                $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
+                                $scope.tagsStateIndoor.online  = response.result.length - $scope.offlineTagsIndoor.length;
+
+                                $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online];
+                            })
+                    }, 1000);
 
                     $scope.hide = function () {
                         $mdDialog.hide();
+                        $interval.cancel(interval);
                     }
                 }]
             })
@@ -1220,15 +1235,28 @@
                     $scope.colors = ["#D3D3D3", "#4BAE5A"];
                     $scope.labels = ["Ancore disativate", "Ancore attive"];
 
-                    $scope.offlineAnchors = dataService.anchors.filter(a => !a.is_online);
+                    let interval = undefined;
+                    interval = $interval(function () {
+                        socketService.sendRequest('get_anchors_by_floor_and_location', {
+                            floor   : floor,
+                            location: dataService.location
+                        })
+                            .then(function (response) {
 
-                    $scope.anchorsState.offline = $scope.offlineAnchors.length;
-                    $scope.anchorsState.online  = dataService.anchors.length - $scope.offlineAnchors.length;
+                                $scope.offlineAnchors = response.result.filter(a => !a.is_online);
 
-                    $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online];
+                                $scope.anchorsState.offline = $scope.offlineAnchors.length;
+                                $scope.anchorsState.online  = response.result.length - $scope.offlineAnchors.length;
+
+                                $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online];
+                            })
+                    }, 1000);
+
+
 
                     $scope.hide = function () {
                         $mdDialog.hide();
+                        $interval.cancel(interval);
                     }
                 }]
             })
