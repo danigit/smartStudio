@@ -4,7 +4,7 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="29">
+          <list size="36">
             <item index="0" class="java.lang.String" itemvalue="layout" />
             <item index="1" class="java.lang.String" itemvalue="layout-align" />
             <item index="2" class="java.lang.String" itemvalue="md-numeric" />
@@ -34,6 +34,13 @@
             <item index="26" class="java.lang.String" itemvalue="mape-type-id" />
             <item index="27" class="java.lang.String" itemvalue="md-placeholder" />
             <item index="28" class="java.lang.String" itemvalue="md-open-on-focus" />
+            <item index="29" class="java.lang.String" itemvalue="chart-data" />
+            <item index="30" class="java.lang.String" itemvalue="chart-labels" />
+            <item index="31" class="java.lang.String" itemvalue="chart-colors" />
+            <item index="32" class="java.lang.String" itemvalue="md-mode" />
+            <item index="33" class="java.lang.String" itemvalue="input-aria-label" />
+            <item index="34" class="java.lang.String" itemvalue="input-aria-describedby" />
+            <item index="35" class="java.lang.String" itemvalue="md-diameter" />
           </list>
         </value>
       </option>
@@ -42,7 +49,7 @@
     <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="7">
+          <list size="8">
             <item index="0" class="java.lang.String" itemvalue="nobr" />
             <item index="1" class="java.lang.String" itemvalue="noembed" />
             <item index="2" class="java.lang.String" itemvalue="comment" />
@@ -50,6 +57,7 @@
             <item index="4" class="java.lang.String" itemvalue="embed" />
             <item index="5" class="java.lang.String" itemvalue="script" />
             <item index="6" class="java.lang.String" itemvalue="md-table-container" />
+            <item index="7" class="java.lang.String" itemvalue="md-chip-template" />
           </list>
         </value>
       </option>

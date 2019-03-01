@@ -3,8 +3,8 @@
         <!--map container-->
         <div id="map-div">
             <div ng-show="outdoorCtrl.isAdmin" class="top-corner">
-                <img ng-click="showAlarms()" src="../img/icons/alarm-icon.png"><br>
-                <img ng-click="showOfflineTags()" src="../img/icons/alert-offline-tags.png">
+                <img ng-click="showAlarms()" src="../SMARTSTUDIO/img/icons/alarm-icon.png"><br>
+                <img ng-click="showOfflineTags()" src="../SMARTSTUDIO/img/icons/alert-offline-tags.png">
             </div>
             <ng-map id="outdoor-map" center="{{outdoorCtrl.mapConfiguration.center}}" zoom="{{outdoorCtrl.mapConfiguration.zoom}}" mape-type-id="{{outdoorCtrl.mapConfiguration.map_type}}" class="height-100-vh">
 
@@ -13,7 +13,7 @@
                                id="custom-marker-{{$index}}"
                                position="{{marker.position}}">
                     <div>
-                        <img ng-src="../img/markers-images/{{marker.icon}}" alt="{{marker.name}}" title="{{marker.name}}">
+                        <img ng-src="../SMARTSTUDIO/img/markers-images/{{marker.icon}}" alt="{{marker.name}}" title="{{marker.name}}">
                     </div>
                 </custom-marker>
             </ng-map>
@@ -24,7 +24,7 @@
         <div flex="100" ng-controller="menuController">
 
             <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
-                <img id="open-menu-icon" src="../img/icons/menu-arrow.png" alt="">
+                <img id="open-menu-icon" src="../SMARTSTUDIO/img/icons/menu-arrow.png" alt="">
             </div>
             <section layout="row" flex>
 
@@ -33,23 +33,23 @@
                     <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
                         <h1 class="md-toolbar-tools color-black">Menu</h1>
                         <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
-                            <img src="../img/icons/close-menu.png" alt="Close" title="Close">
+                            <img src="../SMARTSTUDIO/img/icons/close-menu.png" alt="Close" title="Close">
                         </div>
                     </md-toolbar>
 
                     <md-content layout-margin class="margin-top-10">
 
                         <div layout="column" layout-align="center center">
-                            <img src="../img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track" title="Smart Track">
+                            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track" title="Smart Track">
                             <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
                         </div>
 
                         <div layout="column">
                             <md-list>
-                                <md-list-item ng-show="outdoorCtrl.isAdmin" ng-click="insertLocation()"><p>Insert location</p><img src="../img/icons/add-location.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="viewHistory()"><p>Storico</p><img src="../img/icons/menu/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="changePassword()"><p>Cambia password</p><img src="../img/icons/menu/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="logout()"><p>Logout</p><img src="../img/icons/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-show="outdoorCtrl.isAdmin" ng-click="insertLocation()"><p>Insert location</p><img src="../SMARTSTUDIO/img/icons/add-location.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="viewHistory()"><p>Storico</p><img src="../SMARTSTUDIO/img/icons/menu/history-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="changePassword()"><p>Cambia password</p><img src="../SMARTSTUDIO/img/icons/menu/password-icon.png" class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="logout()"><p>Logout</p><img src="../SMARTSTUDIO/img/icons/logout-icon.png" class="menu-list-icon" alt=""></md-list-item>
                             </md-list>
 
                             <md-subheader class="background-lightcyan color-black margin-bottom-10-px margin-top-10-px">Azzioni immediate</md-subheader>

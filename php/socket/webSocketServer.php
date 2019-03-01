@@ -18,9 +18,13 @@ class webSocketServer implements MessageComponentInterface{
     private $connection;
 
     public function __construct(){
-//        echo "SERVER IS LISTENING...\n\n";
         $this->clients = [];
         $this->connection = new Connection();
+        error_reporting(E_ALL);
+        ini_set('display_errors', 0);
+        ini_set('log_errors', 1);
+        ini_set('error_log', 'SmartStudioErrorLog.txt');
+        error_log('SERVER IN ASCOLTO DAL: ' . date("Y-m-d H:i:s"));
     }
 
     /**
@@ -29,15 +33,18 @@ class webSocketServer implements MessageComponentInterface{
      * @throws \Exception
      */
     function onOpen(ConnectionInterface $conn){
-        if (!isset($_SESSION)) {
+        error_log('UTENTE ' . $conn->resourceId . 'CONNESSO.');
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id();
+            error_log('SESSIONE RIGENERATA, ID SESSIONE: ' . session_id());
+        }else if (session_status() !== PHP_SESSION_ACTIVE){
             session_start();
+            error_log('SESSIONE CON ID ' . session_id() . ' INIZIATA');
+        }else{
+            error_log('IMPOSSIBILE APRIRE UNA SESSIONE');
         }
-        session_regenerate_id();
 
-        // TODO: Implement onOpen() method.
-        echo "CONNECTION ESTABLISHED WITH ({$conn->resourceId})!\n";
         $this->clients[$conn->resourceId] = $conn;
-//        $conn->send(json_encode(array('connectionId' => $conn->resourceId)));
     }
 
     /**
@@ -261,6 +268,15 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'get_anchors_by_user':{
+                $result['action'] = 'get_anchors_by_user';
+                $query = $this->connection->get_anchors_by_user($decoded_message['data']['user']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             case 'get_cameras_by_floor_and_location':{
                 $result['action'] = 'get_cameras_by_floor_and_location';
                 $query = $this->connection->get_cameras_by_floor_and_location($decoded_message['data']['floor'], $decoded_message['data']['location']);
@@ -306,9 +322,18 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
-            case 'get_floors':{
-                $result['action'] = 'get_floors';
-                $query = $this->connection->get_floors($decoded_message['data']['location']);
+            case 'get_floors_by_location':{
+                $result['action'] = 'get_floors_by_location';
+                $query = $this->connection->get_floors_by_location($decoded_message['data']['location']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'get_floors_by_user':{
+                $result['action'] = 'get_floors_by_user';
+                $query = $this->connection->get_floors_by_user($decoded_message['data']['user']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

@@ -12,5 +12,5 @@
 
 define('PATH', 'localhost');
 define('USERNAME', 'root');
-define('PASSWORD', 'password');
+define('PASSWORD', 'dani');
 define('DATABASE', 'smartStudioNew');

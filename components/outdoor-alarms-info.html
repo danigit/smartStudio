@@ -3,12 +3,12 @@
     <md-toolbar id="popup-toolbar" class="background-red">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" alt="Close" title="Close"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
@@ -23,17 +23,17 @@
     <md-content class="popup-padding">
         <div layout="column" layout-align="center center">
             <md-list>
-                <md-divider ></md-divider>
+                <md-divider></md-divider>
                 <md-list-item class="md-3-line" ng-repeat="alarm in alarms" ng-click="null">
-                    <md-divider ></md-divider>
-                    <img ng-src="{{alarm.image}}" class="md-avatar" alt="{{item.who}}" />
+                    <md-divider></md-divider>
+                    <img ng-src="{{alarm.image}}" class="md-avatar" alt="{{item.who}}"/>
                     <div class="md-list-item-text" layout="column">
                         <h3>{{ alarm.tag }}</h3>
                         <h4>{{ alarm.name }}</h4>
                         <p>{{ alarm.description }}</p>
                     </div>
                 </md-list-item>
-                <md-divider ></md-divider>
+                <md-divider></md-divider>
             </md-list>
         </div>
     </md-content>

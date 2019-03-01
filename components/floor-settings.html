@@ -1,14 +1,14 @@
 <div>
     <!--popup header-->
-    <md-toolbar id="popup-toolbar" ng-class="changePassword.resultClass">
+    <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" alt="Close" title="Close"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
@@ -25,35 +25,45 @@
 
             <md-table-container>
 
-                <table md-table md-row-select="options.rowSelection" multiple="true" ng-model="selected" md-progress="promise">
+                <table md-table md-row-select="options.rowSelection" multiple="true" ng-model="selected"
+                       md-progress="promise">
 
                     <thead md-head md-order="query.order">
-                        <tr md-row>
-                            <!--<th md-column ><span>id</span></th>-->
-                            <th md-column ><span class="color-darkcyan">NOME</span></th>
-                            <th md-column ><span class="color-darkcyan">LUNGHEZZA</span></th>
-                            <th md-column ><span class="color-darkcyan">SPAZIATURA</span></th>
-                        </tr>
+                    <tr md-row>
+                        <!--<th md-column ><span>id</span></th>-->
+                        <th md-column><span class="color-darkcyan">NOME</span></th>
+                        <th md-column><span class="color-darkcyan">LUNGHEZZA</span></th>
+                        <th md-column><span class="color-darkcyan">SPAZIATURA</span></th>
+                    </tr>
                     </thead>
 
                     <tbody md-body>
-                        <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true" ng-repeat="floor in floors | limitTo: query.limit: (query.page -1 ) * query.limit">
-                            <!--<td md-cell>{{floor.id}}</td>-->
-                            <td md-cell ng-click="editCell($event, floor, 'name')" ng-class="{'md-placeholder': !floor.name}">{{floor.name || 'Inserire nome'}}</td>
-                            <td md-cell ng-click="editCell($event, floor, 'map_width')" ng-class="{'md-placeholder': !floor.width}">{{floor.width || 'Inserire lunghezza'}}</td>
-                            <td md-cell ng-click="editCell($event, floor, 'map_spacing')" ng-class="{'md-placeholder': !floor.map_spacing}">{{floor.map_spacing || 'Inserire spaziatura tacche'}}</td>
-                            <td md-cell ng-show="isAdmin" ng-click="uploadFloorImage(floor.id)"><md-button class="color-orange"><label><input onchange="angular.element(this).scope().fileNameChanged()" type="file" class="ng-hide" id="floor-image-{{floor.id}}"></label>SELEZIONA IMMAGINE</md-button></td>
-                            <!--<td md-cell ><md-button ng-click="uploadFloorImage(floor.id)" class="color-orange">CARICA IMMAGINE</md-button></td>-->
-                        </tr>
+                    <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true"
+                        ng-repeat="floor in floors | limitTo: query.limit: (query.page -1 ) * query.limit">
+                        <td md-cell ng-click="editCell($event, floor, 'name')"
+                            ng-class="{'md-placeholder': !floor.name}">{{floor.name || 'Inserire nome'}}
+                        </td>
+                        <td md-cell ng-click="editCell($event, floor, 'map_width')"
+                            ng-class="{'md-placeholder': !floor.width}">{{floor.width || 'Inserire lunghezza'}}
+                        </td>
+                        <td md-cell ng-click="editCell($event, floor, 'map_spacing')"
+                            ng-class="{'md-placeholder': !floor.map_spacing}">{{floor.map_spacing || 'Inserire spaziatura tacche'}}
+                        </td>
+                        <td md-cell ng-show="isAdmin" ng-click="uploadFloorImage(floor.id)">
+                            <md-button class="color-orange"><label><input
+                                    onchange="angular.element(this).scope().fileNameChanged()" type="file"
+                                    class="ng-hide" id="floor-image-{{floor.id}}"></label>SELEZIONA IMMAGINE
+                            </md-button>
+                        </td>
+                        <!--<td md-cell ><md-button ng-click="uploadFloorImage(floor.id)" class="color-orange">CARICA IMMAGINE</md-button></td>-->
+                    </tr>
                     </tbody>
                 </table>
             </md-table-container>
 
-            <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page" md-total="{{floors.length}}" md-on-paginate="getFloorsfloor()"></md-table-pagination>
-            <!--<div layout="row" layout-align="end end" class="width-100">-->
-            <!--<md-button class="md-primary" ng-click="saveAnchors()">Salva</md-button>-->
-            <!--<md-button class="md-primary" ng-click="hideAnchors()">Cancella</md-button>-->
-            <!--</div>-->
+            <md-table-pagination md-limit="query.limit" md-limit-options="query.limitOptions" md-page="query.page"
+                                 md-total="{{floors.length}}" md-on-paginate="getFloorsfloor()">
+            </md-table-pagination>
         </div>
     </md-content>
     <!--end popup content-->

@@ -3,12 +3,12 @@
     <md-toolbar id="popup-toolbar" ng-class="location.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" alt="Close" title="Close"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
@@ -25,30 +25,38 @@
 
             <form id="insertLocationForm" name="insertLocationForm">
                 <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
-                    <input required type="text" ng-model="location.name" name="locationName" placeholder="Inserisci un nome">
-                    <div ng-messages="insertLocationForm.locationName.$error || insertLocationForm.$submitted" role="alert">
+                    <input required type="text" ng-model="location.name" name="locationName"
+                           placeholder="Inserisci un nome">
+                    <div ng-messages="insertLocationForm.locationName.$error || insertLocationForm.$submitted"
+                         role="alert">
                         <div ng-message=" required">Inserire un nome</div>
                     </div>
                 </md-input-container>
 
                 <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
-                    <input required type="text" ng-model="location.description" name="locationDescription" placeholder="Inserisci una descrizione">
-                    <div ng-messages="insertLocationForm.locationDescription.$error || insertLocationForm.$submitted" role="alert">
+                    <input required type="text" ng-model="location.description" name="locationDescription"
+                           placeholder="Inserisci una descrizione">
+                    <div ng-messages="insertLocationForm.locationDescription.$error || insertLocationForm.$submitted"
+                         role="alert">
                         <div ng-message=" required">Inserire una descrizione</div>
                     </div>
                 </md-input-container>
 
                 <div layout="row">
                     <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
-                        <input required type="number" ng-model="location.latitude" name="locationLat" placeholder="latitude">
-                        <div ng-messages="insertLocationForm.locationLat.$error || insertLocationForm.$submitted" role="alert">
+                        <input required type="number" ng-model="location.latitude" name="locationLat"
+                               placeholder="latitude">
+                        <div ng-messages="insertLocationForm.locationLat.$error || insertLocationForm.$submitted"
+                             role="alert">
                             <div ng-message=" required">Inserire la latitudine</div>
                         </div>
                     </md-input-container>
 
                     <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                        <input required type="number" ng-model="location.longitude" name="locationLon" placeholder="longitude">
-                        <div ng-messages="insertLocationForm.locationLon.$error || insertLocationForm.$submitted" role="alert">
+                        <input required type="number" ng-model="location.longitude" name="locationLon"
+                               placeholder="longitude">
+                        <div ng-messages="insertLocationForm.locationLon.$error || insertLocationForm.$submitted"
+                             role="alert">
                             <div ng-message=" required">Inserire la longitudine</div>
                         </div>
                     </md-input-container>
@@ -66,9 +74,17 @@
 
                 <div layout="row" layout-align="end end" class="width-100">
                     <div layout="column" layout-align="end start" class="width-100">
-                        <md-button ng-click="uploadMarkerImage()" class="color-orange"><label><input type="file" class="ng-hide" id="marker-image"></label>SELEZIONA IMMAGINE</md-button>
+                        <md-button ng-click="uploadMarkerImage()" class="color-orange">
+                            <label>
+                                <input type="file"
+                                       class="ng-hide"
+                                       id="marker-image">
+                            </label>
+                            SELEZIONA IMMAGINE
+                        </md-button>
                     </div>
-                    <md-button ng-click="insertLocation(insertLocationForm)" class="md-warn color-darkblue">INVIA</md-button>
+                    <md-button ng-click="insertLocation(insertLocationForm)" class="md-warn color-darkblue">INVIA
+                    </md-button>
                 </div>
             </form>
         </div>

@@ -3,12 +3,12 @@
     <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
@@ -26,33 +26,37 @@
 
             <md-table-container>
 
-                <table md-table md-row-select="options.rowSelection" multiple="true" ng-model="selected" md-progress="promise">
+                <table md-table md-row-select="options.rowSelection" ng-model="selected"
+                       md-progress="promise">
 
                     <thead md-head md-order="query.order">
                     <tr md-row>
-                        <!--<th md-column ><span>id</span></th>-->
-                        <th md-column ><span class="color-darkcyan">NOME</span></th>
-                        <th md-column ><span class="color-darkcyan">TIPO TAG</span></th>
-                        <!--<th md-column ><span>MACS</span></th>-->
+                        <th md-column></th>
+                        <th md-column><span class="color-darkcyan">NOME</span></th>
+                        <th md-column><span class="color-darkcyan">TIPO TAG</span></th>
                     </tr>
                     </thead>
 
                     <tbody md-body>
-                    <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true" ng-repeat="tag in tags | limitTo: query.limit: (query.page -1 ) * query.limit">
-                        <!--<td md-cell>{{tag.id}}</td>-->
-                        <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">{{tag.name || 'Inserire nome'}}</td>
-                        <td md-cell ng-click="editCell($event, tag, 'type')" ng-class="{'md-placeholder': !tag.type}">{{tag.type || 'Inserire tipo'}}</td>
-                        <!--<td md-cell ng-click="editCell($event, tag, 'type')" ng-class="{'md-placeholder': !tag.type}"></td>-->
+                    <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
+                        ng-repeat="tag in tags | limitTo: query.limit: (query.page -1 ) * query.limit">
+                        <td md-cell><img
+                                ng-src="{{tag.is_exit ? '../SMARTSTUDIO/img/icons/tags/offline_tag_24.png' : '../SMARTSTUDIO/img/icons/tags/online_tag_24.png'}}"
+                                alt="Stato tag" title="Stato tag"></td>
+                        <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">
+                            {{tag.name || 'Inserire nome'}}
+                        </td>
+                        <td md-cell ng-click="editCell($event, tag, 'type')"
+                            ng-class="{'md-placeholder': !tag.type_name}">{{tag.type_name || 'Inserire tipo'}}
+                        </td>
                     </tr>
                     </tbody>
                 </table>
             </md-table-container>
 
-            <md-table-pagination md-limit="query.limit" md-limit-options="[5, 10, 15]" md-page="query.page" md-total="{{tags.length}}" md-on-paginate=""></md-table-pagination>
-            <!--<div layout="row" layout-align="end end" class="width-100">-->
-            <!--<md-button class="md-primary" ng-click="saveAnchors()">Salva</md-button>-->
-            <!--<md-button class="md-primary" ng-click="hideAnchors()">Cancella</md-button>-->
-            <!--</div>-->
+            <md-table-pagination md-limit="query.limit" md-limit-options="query.limitOptions" md-page="query.page"
+                                 md-total="{{tags.length}}" md-on-paginate="">
+            </md-table-pagination>
         </div>
     </md-content>
     <!--end popup content-->

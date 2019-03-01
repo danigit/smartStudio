@@ -1,8 +1,8 @@
 /**
  * Function that draw the border of the canvas
- * @param canvas - the canvas on which to draw
+ * @param canvasWidth
+ * @param canvasHeight
  * @param context - the context of the canvas
- * @param space
  */
 function drawCanvasBorder(canvasWidth, canvasHeight, context) {
     context.fillStyle   = '#0093c4';
@@ -16,33 +16,56 @@ function drawCanvasBorder(canvasWidth, canvasHeight, context) {
     context.stroke();
 }
 
+/**
+ * Function that encodes the request to be sent to the server in a json object
+ * @param action - the type of the request
+ * @param data - the data of the request
+ * @returns {string} - json object with the encoded request
+ */
 function encodeRequest(action, data) {
     return JSON.stringify({action: action, data: data});
 }
 
-function drawDashedLine(canvas, context, length, pattern, spacing, width, direction) {
-    let virtualWidth = scaleSize(width, canvas) * spacing;
+/**
+ * Function that draws the grid on the canvas
+ * @param canvasWidth
+ * @param canvasHeight
+ * @param context
+ * @param spacing
+ * @param floorWidth
+ * @param direction
+ */
+function drawDashedLine(canvasWidth, canvasHeight, context, spacing, floorWidth, direction) {
+    let virtualWidth = scaleSize(floorWidth, canvasWidth) * spacing;
     context.strokeStyle = 'lightgray';
 
     if (direction === 'horizontal') {
-        for (let i = 25; i < canvas.height - 25; i += virtualWidth){
+        console.log('drawing horizontal line');
+        for (let i = canvasBorderSpace; i < canvasHeight - canvasBorderSpace; i += virtualWidth){
             context.beginPath();
-            context.setLineDash(pattern);
-            context.moveTo(25, i);
-            context.lineTo(length - 25, i);
+            context.setLineDash(canvasGridPattern);
+            context.moveTo(canvasBorderSpace, i);
+            context.lineTo(canvasWidth - canvasBorderSpace, i);
             context.stroke();
         }
     }else if (direction === 'vertical'){
-        for (let i = 25; i < canvas.width - 25; i += virtualWidth){
+        for (let i = canvasBorderSpace; i < canvasWidth - canvasBorderSpace; i += virtualWidth){
             context.beginPath();
-            context.setLineDash(pattern);
-            context.moveTo(i, 25);
-            context.lineTo(i, length - 25);
+            context.setLineDash(canvasGridPattern);
+            context.moveTo(i, canvasBorderSpace);
+            context.lineTo(i, canvasHeight - canvasBorderSpace);
             context.stroke();
         }
     }
 }
 
+/**
+ * Function that clear the canvas and redraw the background and the border
+ * @param canvasWidth
+ * @param canvasHeight
+ * @param context
+ * @param image
+ */
 function updateCanvas(canvasWidth, canvasHeight, context, image) {
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     if (image !== undefined) {
@@ -54,45 +77,113 @@ function updateCanvas(canvasWidth, canvasHeight, context, image) {
 }
 
 
-function drawIcon(value, context, img, width, canvas, isTag) {
+/**
+ * Function that draw an image on the canvas
+ * @param value - informations of the object to be drawn
+ * @param context
+ * @param img
+ * @param width
+ * @param canvasWidth
+ * @param canvasHeight
+ * @param isTag - true if the object to be drawn is a tag
+ */
+function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) {
     let id = 0;
+    let realHeight = (width * canvasHeight) / canvasWidth;
 
-    let virtualRadius = scaleSize(width, canvas) * value.radius;
+    let virtualRadius = scaleSize(width, canvasWidth) * value.radius;
+    let virtualTag = scaleIconSize(value.x_pos, value.y_pos, width, realHeight, canvasWidth, canvasHeight);
+
     context.beginPath();
     if (isTag){
         context.fillStyle = 'red';
-        (value.id < 10) ? id = '0' + value.id : id = value.id;
-        context.fillText(id, value.x_pos + 5, value.y_pos - 3);
+        // (value.id < 10) ? id = '0' + value.id : id = value.id;
+        context.fillText(value.name, virtualTag.width + 5, virtualTag.height - 3);
     } else {
         context.fillStyle = '#0093c4';
-        context.fillRect(value.x_pos, value.y_pos - 17, 17, 16);
+        context.fillRect(virtualTag.width, virtualTag.height - 17, 17, 16);
         context.fillStyle = 'white';
         (value.id < 10) ? id = '0' + value.id : id = value.id;
-        context.fillText(id, value.x_pos + 2, value.y_pos - 5);
+        context.fillText(id, virtualTag.width + 2, virtualTag.height - 5);
     }
 
-    context.drawImage(img, value.x_pos, value.y_pos);
+    context.drawImage(img, virtualTag.width, virtualTag.height);
     context.strokeStyle = '#ff000015';
     context.stroke();
     if (value.radius > 0){
         context.beginPath();
         context.setLineDash([]);
-        context.arc(value.x_pos + 5, value.y_pos - 6, virtualRadius, 0, 2 * Math.PI);
+        context.arc(virtualTag.width + 5, virtualTag.height - 6, virtualRadius, 0, 2 * Math.PI);
         context.fillStyle = '#ff000009';
         context.fill();
         context.stroke();
     }
 }
 
-function drawCumulativeIcons(value, tagsNumber, context, img, width, canvas) {
-    context.drawImage(img, value.x_pos, value.y_pos);
+/**
+ * Function that draws the icon of a cloud of tags
+ * @param value - the informations of a tha inside the cloud
+ * @param context
+ * @param img
+ * @param width
+ * @param canvasWidth
+ * @param canvasHeight
+ * @param tagsNumber - the number of the tags in the cloud
+ */
+function drawCloudIcon(value, context, img, width, canvasWidth, canvasHeight, tagsNumber) {
+    let id = 0;
+    let realHeight = (width * canvasHeight) / canvasWidth;
+    let virtualTag = scaleIconSize(value.x_pos, value.y_pos, width, realHeight, canvasWidth, canvasHeight);
+
+    context.beginPath();
+    context.fillStyle = 'red';
+    (tagsNumber < 10) ? id = '0' + tagsNumber : id = tagsNumber;
+    context.fillText(id, virtualTag.width + 9, virtualTag.height - 3);
+
+    context.drawImage(img, virtualTag.width, virtualTag.height);
+    context.strokeStyle = '#ff000015';
     context.stroke();
 }
 
-function scaleSize(width, canvas) {
-    return (100/width) * (canvas.width/100);
+/**
+ * Function that scales the size of the real map in the size of the image map
+ * @param width - real map width
+ * @param canvasWidth
+ * @returns {number}
+ */
+function scaleSize(width, canvasWidth) {
+    return (100/width) * (canvasWidth/100);
 }
 
+/**
+ * Function that scales the size of the position of an icon respect to the measure in the real map
+ * @param width
+ * @param height
+ * @param realWidth
+ * @param realHeight
+ * @param canvasWidth
+ * @param canvasHeight
+ * @returns {{width: number, height: number}}
+ */
+function scaleIconSize(width, height, realWidth, realHeight, canvasWidth, canvasHeight) {
+    let scaledSize = {
+        width: 0,
+        height: 0
+    };
+
+    let realPercentX = (width * 100) / parseInt(realWidth);
+    let realPercentY = (height * 100) / parseInt(realHeight);
+
+    scaledSize.width = (realPercentX * canvasWidth) / 100;
+    scaledSize.height = (realPercentY * canvasHeight) / 100;
+
+    return scaledSize;
+}
+
+/**
+ * Function that shows the element passed as parameter in full screen
+ * @param elem
+ */
 function openFullScreen(elem) {
     if (elem.requestFullscreen) {
         elem.requestFullscreen();
@@ -105,9 +196,14 @@ function openFullScreen(elem) {
     }
 }
 
+/**
+ * Function that converts an image to a base 64 string
+ * @param img
+ * @returns {Promise<any>}
+ */
 function convertImageToBase64(img) {
     if (img == null)
-        return;
+        return Promise.resolve(null);
 
     let image = new Image();
     image.src = URL.createObjectURL(img);
@@ -130,6 +226,8 @@ function convertImageToBase64(img) {
     })
 }
 
-let markerInfo = '<div>' +
-    '' +
-    '</div>'
+function isTagOffline(tags) {
+    return tags.some(function (tag) {
+        return tag.is_exit && !tag.radio_switched_off;
+    })
+}

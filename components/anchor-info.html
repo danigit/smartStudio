@@ -3,12 +3,12 @@
     <md-toolbar id="popup-toolbar" ng-class="isAnchorOnline">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
@@ -24,19 +24,24 @@
         <div layout="column" layout-align="center center">
             <md-list>
                 <md-list-item class="width-300-px">
-                    <p class="float-left margin-right-50-px">Ip:</p> <p class="float-right text-right">{{anchor.ip}}</p>
+                    <p class="float-left margin-right-50-px">Ip:</p>
+                    <p class="float-right text-right">{{anchor.ip}}</p>
                 </md-list-item>
                 <md-list-item class="width-300-px">
-                    <p class="float-left">Edificio:</p> <p class="float-right text-right">{{anchor.location_name}}</p>
+                    <p class="float-left">Edificio:</p>
+                    <p class="float-right text-right">{{anchor.location_name}}</p>
                 </md-list-item>
                 <md-list-item class="width-300-px">
-                    <p class="float-left">Mac:</p> <p class="float-right text-right">{{anchor.mac}}</p>
+                    <p class="float-left">Mac:</p>
+                    <p class="float-right text-right">{{anchor.mac}}</p>
                 </md-list-item>
                 <md-list-item class="width-300-px">
-                    <p class="float-left">Tipologia:</p> <p class="float-right text-right">{{anchor.type}}</p>
+                    <p class="float-left">Tipologia:</p>
+                    <p class="float-right text-right">{{anchor.type}}</p>
                 </md-list-item>
                 <md-list-item class="width-300-px">
-                    <p class="float-left">Soglie RSSI:</p> <p class="float-right text-right">{{anchor.rssi}}</p>
+                    <p class="float-left">Soglie RSSI:</p>
+                    <p class="float-right text-right">{{anchor.rssi}}</p>
                 </md-list-item>
 
             </md-list>
