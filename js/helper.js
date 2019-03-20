@@ -225,6 +225,15 @@ function convertImageToBase64(img) {
     })
 }
 
+/**
+ * Function that scales the size from the canvas to the real size
+ * @param floorWidth
+ * @param canvasWidth
+ * @param canvasHeight
+ * @param elemWidth
+ * @param elemHeight
+ * @returns {{x: number, y: number}}
+ */
 function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemWidth, elemHeight) {
     let realHeight       = (floorWidth * canvasHeight) / canvasWidth;
     let reversePositionX = ((elemWidth * floorWidth * 100) / canvasWidth) / 100;
@@ -233,6 +242,17 @@ function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemW
     return {x: reversePositionX, y: reversePositionY};
 }
 
+/**
+ * Function that clears the canvas and drawing the background and the grid system
+ * @param lines
+ * @param canvasWidth
+ * @param canvasHeight
+ * @param canvasContext
+ * @param image
+ * @param map_spacing
+ * @param floorWidth
+ * @param showDrawing
+ */
 function updateDrawingCanvas(lines, canvasWidth, canvasHeight, canvasContext, image, map_spacing, floorWidth, showDrawing) {
     // console.log('showdrawing: ', showDrawing);
     updateCanvas(canvasWidth, canvasHeight, canvasContext, image);
@@ -246,6 +266,14 @@ function updateDrawingCanvas(lines, canvasWidth, canvasHeight, canvasContext, im
     });
 }
 
+/**
+ * Functiont that draws a line on the canvas
+ * @param begin
+ * @param end
+ * @param type
+ * @param drawingContext
+ * @param showDrawing
+ */
 function drawLine(begin, end, type, drawingContext, showDrawing) {
     // console.log(showDrawing);
     drawingContext.setLineDash([]);
@@ -276,6 +304,11 @@ function drawLine(begin, end, type, drawingContext, showDrawing) {
     drawingContext.closePath();
 }
 
+/**
+ * Function that draws a rectangle on the canvas
+ * @param begin
+ * @param drawingContext
+ */
 function drawRect(begin, drawingContext) {
     drawingContext.fillStyle = 'black';
     drawingContext.fillRect(begin.x - 5, begin.y - 5, 10, 10);

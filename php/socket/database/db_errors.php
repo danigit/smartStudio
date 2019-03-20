@@ -24,6 +24,29 @@ class db_errors
     public static $ERROR_ON_UPDATING_TAG = 13;
     public static $ERROR_ON_CHANGING_PASSWORD_WRONG_OLD = 14;
     public static $ERROR_ON_GETTING_LOCATIONS = 15;
+    public static $CONNECTION_ERROR = 16;
+    public static $ERROR_ON_DELETING_MAC = 17;
+    public static $ERROR_ON_DELETING_ANCHOR = 18;
+    public static $ERROR_ON_DELETING_FLOOR = 19;
+    public static $ERROR_ON_GETTING_MAC_TYPES = 20;
+    public static $ERROR_ON_GETTING_TAG_MACS = 21;
+    public static $ERROR_ON_INSERTING_MAC = 22;
+    public static $ERROR_ON_SAVING_DRAWING = 23;
+    public static $ERROR_ON_GETTING_DRAWING = 24;
+    public static $ERROR_ON_UPDATING_ANCHOR_POSITION = 25;
+    public static $ERROR_ON_INSERTING_FLOOR = 26;
+    public static $ERROR_ON_GETTING_LOCATION_INFO = 27;
+    public static $ERROR_ON_GETTING_LOCATION_BY_USER = 28;
+    public static $ERROR_ON_GETTING_HISTORY = 29;
+    public static $ERROR_ON_GETTING_FLOOR_INFO = 30;
+    public static $ERROR_ON_GETTING_ANCHORS = 31;
+    public static $ERROR_ON_GETTING_CAMERAS = 32;
+    public static $ERROR_ON_GETTING_ANCHOR_TYPES = 33;
+    public static $ERROR_ON_GETTING_EVENTS = 34;
+    public static $ERROR_ON_GETTING_FLOORS = 35;
+    public static $ERROR_ON_UPDATING_FLOOR_IMAGE = 36;
+    public static $ERROR_ON_CHANGING_FIELD = 37;
+    public static $ERROR_ON_GETTING_EMERGENCY = 38;
 
     private $error;
 
@@ -84,6 +107,52 @@ class db_errors
                 return 'ERROR_ON_CHANGING_PASSWORD_WRONG_OLD';
             case 15:
                 return 'ERROR_ON_GETTING_LOCATIONS';
+            case 16:
+                return 'CONNECTION_ERROR';
+            case 17:
+                return 'ERROR_ON_DELETING_MAC';
+            case 18:
+                return 'ERROR_ON_DELETING_ANCHOR';
+            case 19:
+                return 'ERROR_ON_DELETING_FLOOR';
+            case 20:
+                return 'ERROR_ON_GETTING_MAC_TYPES';
+            case 21:
+                return 'ERROR_ON_GETTING_TAG_MACS';
+            case 22:
+                return 'ERROR_ON_INSERTING_MAC';
+            case 23:
+                return 'ERROR_ON_SAVING_DRAWING';
+            case 24:
+                return 'ERROR_ON_GETTING_DRAWING';
+            case 25:
+                return 'ERROR_ON_UPDATING_ANCHOR_POSITION';
+            case 26:
+                return 'ERROR_ON_INSERTING_FLOOR';
+            case 27:
+                return 'ERROR_ON_GETTING_LOCATION_INFO';
+            case 28:
+                return 'ERROR_ON_GETTING_LOCATION_BY_USER';
+            case 29:
+                return 'ERROR_ON_GETTING_HISTORY';
+            case 30:
+                return 'ERROR_ON_GETTING_FLOOR_INFO';
+            case 31:
+                return 'ERROR_ON_GETTING_ANCHORS';
+            case 32:
+                return 'ERROR_ON_GETTING_CAMERAS';
+            case 33:
+                return 'ERROR_ON_GETTING_ANCHOR_TYPES';
+            case 34:
+                return 'ERROR_ON_GETTING_EVENTS';
+            case 35:
+                return 'ERROR_ON_GETTING_FLOORS';
+            case 36:
+                return 'ERROR_ON_UPDATING_FLOOR_IMAGE';
+            case 37:
+                return 'ERROR_ON_CHANGING_FIELD';
+            case 38:
+                return 'ERROR_ON_GETTING_EMERGENCY';
             default:
                 return 'UNKNOWN_ERROR';
         }

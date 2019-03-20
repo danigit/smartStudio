@@ -76,6 +76,7 @@
             center  : mapCenter
         };
 
+        //function that updates the alert notifications
         let constantUpdateNotifications = () => {
             dataService.homeTimer = $interval(() => {
                 socketService.sendConstantAlertRequest('get_all_tags', {})
@@ -191,7 +192,6 @@
                     let tags      = null;
                     $scope.alarms = [];
 
-
                     socketService.sendRequest('get_all_tags', {})
                         .then((response) => {
                             tags = response.result;
@@ -231,8 +231,6 @@
                                 .catch((error) => {
                                     console.log('loadLocation error => ', error);
                                 });
-
-                            //TODO - have to see all the locations and see on wich location the tag is in range
                         } else {
                             let indoorTag = [];
                             socketService.sendRequest('get_tags_by_user', {user: dataService.username})
@@ -262,6 +260,7 @@
             })
         };
 
+        //on destroying the pag I release the resources
         $scope.$on('$destroy', function () {
             $mdDialog.hide();
             $interval.cancel(dataService.homeTimer);
@@ -329,6 +328,7 @@
                             console.log('showAlarmsOutdoor error => ', error);
                         });
 
+                    //function that load a location when an alarm is clicked
                     $scope.loadLocation = (alarm) => {
                         let tag = tags.filter(t => t.name === alarm.tag)[0];
 
@@ -436,8 +436,6 @@
                 .then((response) => {
                     locationInfo = response.result;
 
-                    let locationCenter = new google.maps.LatLng(locationInfo.latitude, locationInfo.longitude);
-
                     new google.maps.Circle({
                         strokeColor  : '#0093c4',
                         strokeOpacity: 0.9,
@@ -445,9 +443,8 @@
                         fillColor    : '#0093c4',
                         fillOpacity  : 0.03,
                         map          : map,
-                        center       : locationCenter,
+                        center       : new google.maps.LatLng(locationInfo.latitude, locationInfo.longitude),
                         radius       : locationInfo.radius * 111000,
-                        // editable: true
                     });
 
                     dataService.updateMapTimer = $interval(() => {
@@ -627,6 +624,7 @@
                                         }
                                     }
                                 });
+
                                 if (dataService.dynamicTags.length === 1) {
                                     map.setCenter(bounds.getCenter());
                                     map.setZoom(mapZoom)
@@ -690,6 +688,7 @@
             dataService.goHome();
         };
 
+        //releasing the resources on page destroy
         $scope.$on('$destroy', () => {
             $mdDialog.hide();
             $interval.cancel(dataService.updateMapTimer);
@@ -754,6 +753,7 @@
             showFullscreen: false,
         };
 
+        //drawing button
         canvasCtrl.speedDial = {
             isOpen           : false,
             selectedDirection: 'left',
@@ -810,15 +810,17 @@
                 })[0]];
 
             canvasCtrl.floorData.defaultFloorName = canvasCtrl.defaultFloor[0].name;
+            dataService.defaultFloorName = canvasCtrl.defaultFloor[0].name;
             canvasCtrl.floorData.gridSpacing      = canvasCtrl.defaultFloor[0].map_spacing;
             canvasCtrl.floorData.floor_image_map  = canvasCtrl.defaultFloor[0].image_map;
             context.clearRect(0, 0, canvas.width, canvas.height);
         });
 
+        //function that handles the click on the drawing mode
         canvasCtrl.speedDialClicked = (button) => {
             if (button === 'drop_anchor') {
                 $mdDialog.show({
-                    templateUrl        : '../SMARTSTUDIO/components/select_drop_anchor.html',
+                    templateUrl        : componentsPath + 'select_drop_anchor.html',
                     parent             : angular.element(document.body),
                     targetEvent        : event,
                     clickOutsideToClose: true,
@@ -1161,13 +1163,12 @@
                                     context.drawImage(bufferCanvas, 0, 0);
                                 });
 
-                            //showing the offline anchors and alarm button
-                            canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
-
-                            return socketService.sendConstantRequest('get_tags_by_user', {user: dataService.username})
+                            return socketService.sendConstantRequest('get_all_tags', {user: dataService.username})
                         })
                         .then((response) =>  {
                             canvasCtrl.showAlarmsIcon = checkTagsStateAlarmNoAlarmOffline(response.result).withAlarm;
+                            //showing the offline anchors and alarm button
+                            canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
                         })
                         .catch((error) => {
                             console.log('constantUpdateCanvas error => ', error);
@@ -1309,6 +1310,7 @@
             let realHeight  = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
             mouseDownCoords = canvas.canvasMouseClickCoords(event);
 
+            //drawing on canvas
             if (canvasCtrl.switch.showDrawing && canvasCtrl.speedDial.clickedButton !== 'delete' && canvasCtrl.speedDial.clickedButton !== 'drop_anchor') {
                 dragingStarted++;
 
@@ -1345,11 +1347,13 @@
                 }
             }
 
+            //changing anchor position
             if (canvasCtrl.speedDial.clickedButton === 'drop_anchor') {
                 dropAnchorPosition = {width: mouseDownCoords.x, height: mouseDownCoords.y};
                 context.drawImage(drawAnchorImage, dropAnchorPosition.width, dropAnchorPosition.height);
             }
 
+            //deleting drawings
             if (canvasCtrl.speedDial.clickedButton === 'delete') {
                 let toBeRemoved = drawedLines.filter(l => ((l.begin.x - 5 <= mouseDownCoords.x && mouseDownCoords.x <= l.begin.x + 5) && (l.begin.y - 5 <= mouseDownCoords.y && mouseDownCoords.y <= l.begin.y + 5))
                     || ((l.end.x - 5 <= mouseDownCoords.x && mouseDownCoords.x <= l.end.x + 5) && (l.end.y - 5 <= mouseDownCoords.y && mouseDownCoords.y <= l.end.y + 5)));
@@ -1374,7 +1378,7 @@
                             if (!dialogShown) {
                                 $mdDialog.show({
                                     locals             : {tags: tagCloud.groupTags},
-                                    templateUrl        : '../SMARTSTUDIO/components/tags-info.html',
+                                    templateUrl        : componentsPath + 'tags-info.html',
                                     parent             : angular.element(document.body),
                                     targetEvent        : event,
                                     clickOutsideToClose: true,
@@ -1404,7 +1408,7 @@
                                 if (!(tag.is_exit && tag.radio_switched_off)) {
                                     $mdDialog.show({
                                         locals             : {tag: tag},
-                                        templateUrl        : '../SMARTSTUDIO/components/tag-info.html',
+                                        templateUrl        : componentsPath + 'tag-info.html',
                                         parent             : angular.element(document.body),
                                         targetEvent        : event,
                                         clickOutsideToClose: true,
@@ -1428,7 +1432,7 @@
                             } else if (dataService.checkIfTagHasAlarm(tag) || (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor)) {
                                 $mdDialog.show({
                                     locals             : {tag: tag},
-                                    templateUrl        : '../SMARTSTUDIO/components/tag-info.html',
+                                    templateUrl        : componentsPath + 'tag-info.html',
                                     parent             : angular.element(document.body),
                                     targetEvent        : event,
                                     clickOutsideToClose: true,
@@ -1459,7 +1463,7 @@
                     if (((virtualAnchorPosition.width - 20) < mouseDownCoords.x && mouseDownCoords.x < (virtualAnchorPosition.width + 20)) && ((virtualAnchorPosition.height - 20) < mouseDownCoords.y && mouseDownCoords.y < (virtualAnchorPosition.height + 20))) {
                         $mdDialog.show({
                             locals             : {anchor: anchor},
-                            templateUrl        : '../SMARTSTUDIO/components/anchor-info.html',
+                            templateUrl        : componentsPath + 'anchor-info.html',
                             parent             : angular.element(document.body),
                             targetEvent        : event,
                             clickOutsideToClose: true,
@@ -1486,7 +1490,7 @@
                     let virtualCamerasPosition = scaleIconSize(camera.x_pos, camera.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                     if (((virtualCamerasPosition.width - 20) < mouseDownCoords.x && mouseDownCoords.x < (virtualCamerasPosition.width + 20)) && ((virtualCamerasPosition.height - 20) < mouseDownCoords.y && mouseDownCoords.y < (virtualCamerasPosition.height + 20))) {
                         $mdDialog.show({
-                            templateUrl        : '../SMARTSTUDIO/components/video-camera.html',
+                            templateUrl        : componentsPath + 'video-camera.html',
                             parent             : angular.element(document.body),
                             targetEvent        : event,
                             clickOutsideToClose: true,
@@ -1506,7 +1510,7 @@
         //showing the info window with all the alarms
         $scope.showAlarms = function () {
             $mdDialog.show({
-                templateUrl        : '../SMARTSTUDIO/components/indoor-alarms-info.html',
+                templateUrl        : componentsPath + 'indoor-alarms-info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
@@ -1529,9 +1533,9 @@
                             console.log('showAlarms error => ', error);
                         });
 
+                    //handeling the click of an alarm and opening the associate location
                     $scope.loadLocation = (alarm) => {
                         let outdoorTag = tags.filter(t => t.name === alarm.tag)[0];
-
 
                         if (dataService.isOutdoor(outdoorTag)) {
                             socketService.sendRequest('get_all_locations', {})
@@ -1597,10 +1601,11 @@
             dataService.showOfflineAnchors(true);
         };
 
-        $scope.showEmergencyZone = function () {
+        //functionthat handles the emergency zone dialog
+        $scope.showEmergencyZone = () => {
             $mdDialog.show({
                 locals             : {floor: canvasCtrl.defaultFloor[0].name, tags: dataService.floorTags},
-                templateUrl        : '../SMARTSTUDIO/components/emergency-alarm-info.html',
+                templateUrl        : componentsPath + 'emergency-alarm-info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
@@ -1638,10 +1643,12 @@
             })
         };
 
+        //function that returns you to home
         canvasCtrl.goHome = () => {
             dataService.goHome();
         };
 
+        //freeing the resources on page destroy
         $scope.$on("$destroy", function () {
             $mdDialog.hide();
             $interval.cancel(canvasCtrl.canvasInterval);
@@ -1663,10 +1670,12 @@
             mapFullscreen: false
         };
 
+        //opening and closing the menu
         $scope.toggleLeft = () => {
             $mdSidenav('left').toggle();
         };
 
+        //function that show the locations table
         $scope.openLocations = () => {
 
             let locationsHasChanged     = false;
@@ -1674,7 +1683,7 @@
 
             let locationDialog = {
                 locals             : {admin: $scope.isAdmin},
-                templateUrl        : '../SMARTSTUDIO/components/locations-table.html',
+                templateUrl        : componentsPath + 'locations-table.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
@@ -1753,6 +1762,7 @@
                         }
                     };
 
+                    //deleting a location
                     $scope.deleteRow = (location) => {
                         let confirm = $mdDialog.confirm()
                             .title('CANCELLAZIONE SITO')
@@ -1778,6 +1788,7 @@
                         });
                     };
 
+                    //adding a location
                     $scope.addNewRow = () => {
                         $mdDialog.show(addLocationDialog);
                     };
@@ -1795,7 +1806,7 @@
             $mdDialog.show(locationDialog);
 
             let addLocationDialog = {
-                templateUrl        : '../SMARTSTUDIO/components/insert-location.html',
+                templateUrl        : componentsPath + 'insert-location.html',
                 parent             : angular.element(document.body),
                 clickOutsideToClose: true,
                 multiple           : true,
@@ -1815,6 +1826,7 @@
                         resultClass: ''
                     };
 
+                    //insert location dialog
                     $scope.insertLocation = (form) => {
                         form.$submitted = true;
 
@@ -1912,9 +1924,10 @@
             }
         };
 
+        //history table
         $scope.viewHistory = function () {
             $mdDialog.show({
-                templateUrl        : '../SMARTSTUDIO/components/history-table.html',
+                templateUrl        : componentsPath + 'history-table.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
@@ -1979,9 +1992,10 @@
             });
         };
 
-        $scope.changePassword = function () {
+        //function that handles the password change
+        $scope.changePassword = () => {
             $mdDialog.show({
-                templateUrl        : '../SMARTSTUDIO/components/change-password.html',
+                templateUrl        : componentsPath + 'change-password.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
@@ -2049,11 +2063,12 @@
             });
         };
 
-        $scope.registry = function () {
+        //function that handle the tags crud
+        $scope.registry = () => {
             $scope.clickedTag = null;
 
             let addRowDialog = {
-                templateUrl        : '../SMARTSTUDIO/components/insert-tags-row.html',
+                templateUrl        : componentsPath + 'insert-tags-row.html',
                 parent             : angular.element(document.body),
                 clickOutsideToClose: true,
                 multiple           : true,
@@ -2078,6 +2093,7 @@
                             console.log('registry error => ', error);
                         });
 
+                    //insert a tag
                     $scope.addTag = function (form) {
                         form.$submitted = true;
 
@@ -2114,7 +2130,7 @@
 
             let registryDialog = {
                 locals             : {admin: $scope.isAdmin},
-                templateUrl        : '../SMARTSTUDIO/components/tags-table.html',
+                templateUrl        : componentsPath + 'tags-table.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
@@ -2168,6 +2184,7 @@
                         }
                     };
 
+                    //deleting tag
                     $scope.deleteRow = (tag) => {
                         let confirm = $mdDialog.confirm()
                             .title('CANCELLAZIONE WETAG')
@@ -2192,15 +2209,17 @@
                         });
                     };
 
+                    //inserting tag
                     $scope.addNewRow = () => {
                         $mdDialog.show(addRowDialog);
                     };
 
+                    //handeling tag macs
                     $scope.tagMacs = (tag) => {
                         $scope.clickedTag = tag;
                         let tagMacsDialog = {
                             locals             : {tag: tag},
-                            templateUrl        : '../SMARTSTUDIO/components/insert-tag-mac.html',
+                            templateUrl        : componentsPath + 'insert-tag-mac.html',
                             parent             : angular.element(document.body),
                             targetEvent        : event,
                             clickOutsideToClose: true,
@@ -2224,6 +2243,7 @@
                                         console.log('tagMacs error => ', error);
                                     });
 
+                                //deleting a mac
                                 $scope.deleteMac = (event, mac) => {
                                     let confirm = $mdDialog.confirm()
                                         .title('CANCELLAZIONE MAC')
@@ -2248,11 +2268,12 @@
                                     });
                                 };
 
+                                //inserting a mac
                                 $scope.addNewMac = () => {
                                     $mdDialog.hide();
                                     $mdDialog.show({
                                         locals             : {tag: tag},
-                                        templateUrl        : '../SMARTSTUDIO/components/insert-mac-row.html',
+                                        templateUrl        : componentsPath + 'insert-mac-row.html',
                                         parent             : angular.element(document.body),
                                         targetEvent        : event,
                                         clickOutsideToClose: true,
@@ -2353,11 +2374,12 @@
             $mdDialog.show(registryDialog);
         };
 
+        //showing the anchors table
         $scope.showAnchorsTable = function () {
             let floor = dataService.userFloors.filter(f => f.name === dataService.defaultFloorName)[0];
 
             let addRowDialog = {
-                templateUrl        : '../SMARTSTUDIO/components/insert-anchor-row.html',
+                templateUrl        : componentsPath + 'insert-anchor-row.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
@@ -2401,6 +2423,7 @@
                         event.stopPropagation();
                     };
 
+                    //inserting an anchor
                     $scope.addAnchor = (form) => {
                         form.$submitted = true;
 
@@ -2459,7 +2482,7 @@
 
             let anchorsDialog = {
                 locals             : {admin: $scope.isAdmin},
-                templateUrl        : '../SMARTSTUDIO/components/anchors-table.html',
+                templateUrl        : componentsPath + 'anchors-table.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
@@ -2519,11 +2542,12 @@
                         }
                     };
 
+                    //inserting an anchor
                     $scope.addNewRow = () => {
-                        // $mdDialog.hide();
                         $mdDialog.show(addRowDialog);
                     };
 
+                    //deleting an anchor
                     $scope.deleteRow = (anchor) => {
                         let confirm = $mdDialog.confirm()
                             .title('CANCELLAZIONE ANCORA')
@@ -2556,9 +2580,10 @@
             $mdDialog.show(anchorsDialog);
         };
 
+        //showing floors table
         $scope.floorUpdate = () => {
             let addRowDialog = {
-                templateUrl        : '../SMARTSTUDIO/components/insert-floor-row.html',
+                templateUrl        : componentsPath + 'insert-floor-row.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
@@ -2577,6 +2602,7 @@
                         resultClass: ''
                     };
 
+                    //inserting a new floor
                     $scope.insertFloor = (form) => {
                         form.$submitted = true;
 
@@ -2683,7 +2709,7 @@
 
             let floorDialog = {
                 locals             : {admin: $scope.isAdmin},
-                templateUrl        : '../SMARTSTUDIO/components/floor-settings.html',
+                templateUrl        : componentsPath + 'floor-settings.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
@@ -2717,7 +2743,7 @@
                                         floor_field: floorName,
                                         field_value: input.$modelValue
                                     })
-                                    .then(function (response) {
+                                    .then((response) => {
                                         if (response.result !== 1)
                                             console.log(response.result);
                                     })
@@ -2736,10 +2762,12 @@
                         }
                     };
 
+                    //inserting a new floor
                     $scope.addNewRow = () => {
                         $mdDialog.show(addRowDialog);
                     };
 
+                    //deleting a floor
                     $scope.deleteRow = (floor) => {
                         let confirm = $mdDialog.confirm()
                             .title('CANCELLAZIONE PIANO')
@@ -2786,14 +2814,14 @@
 
                         if (file != null) {
                             convertImageToBase64(file)
-                                .then(function (result) {
+                                .then((result) => {
                                     return socketService.sendRequest('save_floor_image', {
                                         id   : $scope.floorId,
                                         image: result,
                                         name : fileName
                                     })
                                 })
-                                .then(function (response) {
+                                .then((response) => {
                                     console.log(response);
                                 })
                                 .catch((error) => {
@@ -2823,6 +2851,7 @@
                 })
         };
 
+        //handeling search tags functionality
         $scope.$watch('selectedTag', function (newValue) {
             let newStringValue = "" + newValue;
             if (newStringValue !== '') {
@@ -2833,7 +2862,7 @@
                             //TODO mostrare tag su canvas
                             $mdDialog.show({
                                 locals             : {tags: response.result, outerScope: $scope},
-                                templateUrl        : '../SMARTSTUDIO/components/search-tag-inside.html',
+                                templateUrl        : componentsPath + 'search-tag-inside.html',
                                 parent             : angular.element(document.body),
                                 targetEvent        : event,
                                 clickOutsideToClose: true,
@@ -2972,6 +3001,7 @@
         $scope.error          = '';
         $scope.errorHandeling = {noConnection: false, wrongData: false, passwordNotMatch: false};
 
+        //sending the recoverPassword request
         $scope.sendRecoverPassword = (form) => {
             form.$submitted                    = 'true';
             $scope.errorHandeling.noConnection = false;
@@ -2994,6 +3024,7 @@
             )
         };
 
+        //reseting the password
         $scope.resetPassword = (form) => {
             form.$submitted                        = 'true';
             $scope.errorHandeling.noConnection     = false;

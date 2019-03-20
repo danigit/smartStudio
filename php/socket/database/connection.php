@@ -58,6 +58,8 @@ class Connection
 
             return $this->connection->insert_id;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
     /**
@@ -88,6 +90,7 @@ class Connection
 
             return new db_errors(db_errors::$ERROR_ON_LOGIN);
         }
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
     /**
@@ -137,6 +140,7 @@ class Connection
 
             return $this->result;
         }
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
     /**
@@ -207,8 +211,16 @@ class Connection
 
             return $this->result;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that changes the password
+     * @param $old_password
+     * @param $new_password
+     * @return db_errors|int|mysqli_stmt
+     */
     function change_password($old_password, $new_password)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -248,6 +260,8 @@ class Connection
 
             return $this->connection->affected_rows;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
     /**
@@ -284,9 +298,17 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function delete_mac($mac){
+    /**
+     * Function that deletes a marker from database
+     * @param $mac
+     * @return db_errors|int|mysqli_stmt
+     */
+    function delete_mac($mac)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -297,13 +319,21 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+                return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
 
             return $statement->affected_rows;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function delete_anchor($anchor){
+    /**
+     * Funzione che cancella un'ancora
+     * @param $anchor
+     * @return db_errors|int|mysqli_stmt
+     */
+    function delete_anchor($anchor)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -314,13 +344,21 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+                return new db_errors(db_errors::$ERROR_ON_DELETING_ANCHOR);
 
             return $statement->affected_rows;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function delete_floor($floor_id){
+    /**
+     * Funzione che cancella un piano
+     * @param $floor_id
+     * @return db_errors|int|mysqli_stmt
+     */
+    function delete_floor($floor_id)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -331,13 +369,21 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+                return new db_errors(db_errors::$ERROR_ON_DELETING_FLOOR);
 
             return $statement->affected_rows;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function delete_tag($tag){
+    /**
+     * Funzione che cancella un tag
+     * @param $tag
+     * @return array|db_errors
+     */
+    function delete_tag($tag)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -405,9 +451,17 @@ class Connection
             $this->connection->commit();
             return $errors;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function delete_location($location){
+    /**
+     * Funzione che cancella una location
+     * @param $location
+     * @return array|db_errors
+     */
+    function delete_location($location)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -442,9 +496,16 @@ class Connection
 
             return $errors;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function get_all_types(){
+    /**
+     * Funzione che recupera tutti i tipi di un tag
+     * @return array|db_errors
+     */
+    function get_all_types()
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -453,7 +514,7 @@ class Connection
             $this->result = $this->connection->query($this->query);
 
             if ($this->result == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATIONS);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_MAC_TYPES);
 
             $result_array = array();
 
@@ -463,8 +524,15 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Funzione che recupera tutti i tag di un mac
+     * @param $tag
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_tag_macs($tag)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -477,7 +545,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_TAG_MACS);
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -488,8 +556,17 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Funzione che inserisce un nuovo mac
+     * @param $name
+     * @param $type
+     * @param $tag_id
+     * @return bool|db_errors|mixed
+     */
     function insert_mac($name, $type, $tag_id)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -502,12 +579,21 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+                return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
 
             return $this->connection->insert_id;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Funzione che inserisce un nuovo tag
+     * @param $name
+     * @param $type
+     * @param $macs
+     * @return array|db_errors
+     */
     function insert_tag($name, $type, $macs)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -639,8 +725,16 @@ class Connection
 
             return $errors;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Funzione che salva un disegno sul canvas
+     * @param $lines
+     * @param $floor
+     * @return db_errors|int|mysqli_stmt
+     */
     function save_drawing($lines, $floor)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -654,12 +748,19 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+                return new db_errors(db_errors::$ERROR_ON_SAVING_DRAWING);
 
             return $this->connection->affected_rows;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Funzione che recupera un disegno salvato in precedenza
+     * @param $floor
+     * @return db_errors|mysqli_stmt
+     */
     function get_drawing($floor)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -673,7 +774,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_DRAWING);
 
             $statement->bind_result($res_draw);
             $fetch = $statement->fetch();
@@ -681,8 +782,23 @@ class Connection
             if ($fetch)
                 return $res_draw;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Funzione che inserisce un'ancora
+     * @param $name
+     * @param $mac
+     * @param $type
+     * @param $ip
+     * @param $rssi
+     * @param $proximity
+     * @param $permitted
+     * @param $neighbors
+     * @param $floor
+     * @return array|db_errors
+     */
     function insert_anchor($name, $mac, $type, $ip, $rssi, $proximity, $permitted, $neighbors, $floor)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -749,8 +865,17 @@ class Connection
 
             return $errors;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that updates anchor position
+     * @param $x
+     * @param $y
+     * @param $id
+     * @return db_errors|int|mysqli_stmt
+     */
     function update_anchor_position($x, $y, $id)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -763,12 +888,26 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+                return new db_errors(db_errors::$ERROR_ON_UPDATING_ANCHOR_POSITION);
 
             return $this->connection->affected_rows;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that inserts a new location
+     * @param $user
+     * @param $name
+     * @param $description
+     * @param $latitude
+     * @param $longitude
+     * @param $image_name
+     * @param $radius
+     * @param $is_indoor
+     * @return array|db_errors
+     */
     function insert_location($user, $name, $description, $latitude, $longitude, $image_name, $radius, $is_indoor)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -815,8 +954,19 @@ class Connection
 
             return $errors;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that inserts a new floor
+     * @param $name
+     * @param $map_image
+     * @param $map_width
+     * @param $spacing
+     * @param $location
+     * @return bool|db_errors|mixed
+     */
     function insert_floor($name, $map_image, $map_width, $spacing, $location)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -829,12 +979,19 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+                return new db_errors(db_errors::$ERROR_ON_INSERTING_FLOOR);
 
             return $this->connection->insert_id;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets the location info
+     * @param $location
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_location_info($location)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -847,7 +1004,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATION_INFO);
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -860,9 +1017,16 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function get_all_locations(){
+    /**
+     * Function that returns all the locations
+     * @return array|db_errors
+     */
+    function get_all_locations()
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -882,9 +1046,17 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function get_locations_by_user($user){
+    /**
+     * Function that gets all the locations of the user
+     * @param $user
+     * @return array|db_errors|mysqli_stmt
+     */
+    function get_locations_by_user($user)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -895,7 +1067,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATION_BY_USER);
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -907,9 +1079,20 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function get_history($fromDate, $toDate, $tag, $event){
+    /**
+     * Function that returns the history
+     * @param $fromDate
+     * @param $toDate
+     * @param $tag
+     * @param $event
+     * @return array|db_errors|mysqli_stmt|null
+     */
+    function get_history($fromDate, $toDate, $tag, $event)
+    {
 
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
@@ -963,7 +1146,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
 
             $this->result = $statement->get_result();
 
@@ -976,35 +1159,17 @@ class Connection
             }
 
             return $array_result;
-//        $statement = $this->execute_selecting($this->query, 's', $username);
-
-//        if ($statement instanceof db_errors)
-//            return $statement;
-//        else if ($statement == false)
-//            return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
-//
-//        $this->result = $statement->get_result();
-//        $result_array = array();
-//
-//        while ($row = mysqli_fetch_assoc($this->result)) {
-//            $position = array();
-//            $position[] = $row['latitude'];
-//            $position[] = $row['longitude'];
-//
-//            $result_array[] = array('name' => $row['name'], 'position' => $position, "icon" => $row['icon']);
-//        }
-
-//        return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
     /**
      * Function that retrieve the image of the floor passed as the parameter on the location passed as parameter
      * @param $location - the location where the floor is
-     * @param $floor - the floor for witch to retrieve the map
      * @return db_errors|array
      */
-    function get_floor_info($location, $floor)
+    function get_floor_info($location)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
@@ -1016,7 +1181,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_INFO);
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -1027,8 +1192,15 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets all the tags of a certain floor
+     * @param $tag
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_tag_floor($tag)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1054,8 +1226,16 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets all the anchors of a certain floor in a certain location
+     * @param $floor
+     * @param $location
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_anchors_by_floor_and_location($floor, $location)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1070,7 +1250,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_ANCHORS);
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -1084,8 +1264,15 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets the anchors of a certain location
+     * @param $location
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_anchors_by_location($location)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1099,7 +1286,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_ANCHORS);
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -1112,8 +1299,15 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets all the anchors of a certain user
+     * @param $user
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_anchors_by_user($user)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1128,7 +1322,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_ANCHORS);
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -1141,8 +1335,16 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets all the cameras from a certain floor in a certain location
+     * @param $floor
+     * @param $location
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_cameras_by_floor_and_location($floor, $location)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1156,7 +1358,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_IMAGE);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_CAMERAS);
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -1168,30 +1370,15 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-//    function get_tags_by_location($location){
-//
-//        $this->query = 'SELECT tag.id, tag.name FROM tag JOIN anchor ON tag.anchor_id = anchor.id
-//                        JOIN floor ON anchor.floor_id = floor.id JOIN location ON floor.location_id = location.id WHERE location.name = ?';
-//
-//        $statement = $this->execute_selecting($this->query, 's', $location);
-//
-//        if ($statement instanceof db_errors)
-//            return $statement;
-//        else if ($statement == false)
-//            return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
-//
-//        $this->result = $statement->get_result();
-//        $result_array = array();
-//
-//        while ($row = mysqli_fetch_assoc($this->result)) {
-//            $result_array[] = array('id' => $row['id'], 'name' => $row['name']);
-//        }
-//
-//        return $result_array;
-//    }
-
+    /**
+     * Function that gets all the tags of a certain user
+     * @param $user
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_tags_by_user($user)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1230,8 +1417,14 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets all the tags
+     * @return array|db_errors
+     */
     function get_all_tags()
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1264,8 +1457,14 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets all the anchors types
+     * @return array|db_errors
+     */
     function get_anchor_types()
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1276,7 +1475,7 @@ class Connection
             $this->result = $this->connection->query($this->query);
 
             if ($this->result == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_ANCHOR_TYPES);
 
             $result_array = array();
 
@@ -1286,8 +1485,16 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets all the tags from a certain floor in a certain location
+     * @param $floor
+     * @param $location
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_tags_by_floor_and_location($floor, $location)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1324,39 +1531,14 @@ class Connection
 
             return $result_array;
         }
-    }
-//
-//    function get_tags_by_location($location)
-//    {
-//
-//        $this->query = 'SELECT t.ID, t.NAME, t.TYPE, t.X_POS, t.Y_POS, t.GPS_NORTH_DEGREE, t.GPS_EAST_DEGREE, t.GPS_TIME, t.BATTERY_STATUS, t.MAN_DOWN,
-//                        t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, tt.DESCRIPTION AS type_name, tt.SLEEP_TIME_INDOOR,
-//                        tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME FROM tag AS t JOIN tag_types AS tt ON t.TYPE = tt.ID JOIN location l ON t.LOCATION_ID = l.ID
-//                        WHERE l.NAME = ?';
-//
-//        $statement = $this->execute_selecting($this->query, 's', $location);
-//
-//        if ($statement instanceof db_errors)
-//            return $statement;
-//        else if ($statement == false)
-//            return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
-//
-//        $this->result = $statement->get_result();
-//        $result_array = array();
-//
-//        while ($row = mysqli_fetch_assoc($this->result)) {
-//            $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'type' => $row['TYPE'], 'x_pos' => $row['X_POS'], 'y_pos' => $row['Y_POS'],
-//                'gps_north_degree' => $row['GPS_NORTH_DEGREE'], 'gps_east_degree' => $row['GPS_EAST_DEGREE'], 'radio_switched_off' => $row['RADIO_SWITCHED_OFF'],
-//                'battery_status' => $row['BATTERY_STATUS'], 'man_down' => $row['MAN_DOWN'],
-//                'man_down_disabled' => $row['MAN_DOWN_DISABLED'], 'man_down_tacitated' => $row['MAN_DOWN_TACITATED'],
-//                'sos' => $row['SOS'], 'man_in_quote' => $row['MAN_IN_QUOTE'], 'call_me_alarm' => $row['CALL_ME_ALARM'],
-//                'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'gps_time' => $row['GPS_TIME'], 'type_name' => $row['DESCRIPTION'],
-//                'sleep_time_outdoor' => $row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => $row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON']);
-//        }
-//
-//        return $result_array;
-//    }
 
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Function that gets all the events
+     * @return array|db_errors
+     */
     function get_events()
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1367,7 +1549,7 @@ class Connection
             $this->result = $this->connection->query($this->query);
 
             if ($this->result == false)
-                return new db_errors(db_errors::$ERROR_ON_TEST);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_EVENTS);
 
             $array_result = array();
 
@@ -1377,8 +1559,15 @@ class Connection
 
             return $array_result;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets all the floors in a certain location
+     * @param $location
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_floors_by_location($location)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1391,7 +1580,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_FLOORS);
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -1402,8 +1591,15 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets all the floors of a certain user
+     * @param $user
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_floors_by_user($user)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1418,7 +1614,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_FLOORS);
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -1429,8 +1625,16 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that updates the floor image
+     * @param $name
+     * @param $id
+     * @return db_errors|int|mysqli_stmt
+     */
     function update_floor_image($name, $id)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1443,12 +1647,21 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+                return new db_errors(db_errors::$ERROR_ON_UPDATING_FLOOR_IMAGE);
 
             return $this->connection->affected_rows;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that change the value of a mac field
+     * @param $mac_id
+     * @param $mac_field
+     * @param $field_value
+     * @return db_errors|int|mysqli_stmt
+     */
     function change_mac_field($mac_id, $mac_field, $field_value)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1460,14 +1673,23 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_UPDATING_TAG);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
 
             $this->result = $this->connection->affected_rows;
 
             return $this->result;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that change the value of a tag field
+     * @param $tag_id
+     * @param $tag_field
+     * @param $field_value
+     * @return db_errors|int|mysqli_stmt
+     */
     function change_tag_field($tag_id, $tag_field, $field_value)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1479,14 +1701,23 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_UPDATING_TAG);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
 
             $this->result = $this->connection->affected_rows;
 
             return $this->result;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that changes the value of a location field
+     * @param $location_id
+     * @param $location_field
+     * @param $field_value
+     * @return db_errors|int|mysqli_stmt
+     */
     function change_location_field($location_id, $location_field, $field_value)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1498,12 +1729,21 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_UPDATING_TAG);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
 
             return $this->connection->affected_rows;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that changes the value of an anchor field
+     * @param $anchor_id
+     * @param $anchor_field
+     * @param $field_value
+     * @return db_errors|int|mysqli_stmt
+     */
     function change_anchor_field($anchor_id, $anchor_field, $field_value)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1515,14 +1755,23 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_UPDATING_TAG);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
 
             $this->result = $this->connection->affected_rows;
 
             return $this->result;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that changes the value of a floor field
+     * @param $floor_id
+     * @param $floor_field
+     * @param $field_value
+     * @return db_errors|int|mysqli_stmt
+     */
     function change_floor_field($floor_id, $floor_field, $field_value)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1534,14 +1783,22 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_UPDATING_TAG);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
 
             $this->result = $this->connection->affected_rows;
 
             return $this->result;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets the emergency state
+     * @param $location
+     * @param $floor
+     * @return array|db_errors|mysqli_stmt
+     */
     function get_emergency_info($location, $floor)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -1555,7 +1812,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_EMERGENCY);
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -1566,6 +1823,8 @@ class Connection
 
             return $result_array;
         }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
     /**
@@ -1580,7 +1839,7 @@ class Connection
         $statement = $this->connection->prepare($query);
         $bind_names[] = $bind_string;
 
-        if($statement !== false) {
+        if ($statement !== false) {
 
             for ($i = 0; $i < count($params); $i++) {
                 $bind_name = 'bind' . $i;
@@ -1613,7 +1872,7 @@ class Connection
     function execute_selecting($query, $bind_string, ...$params)
     {
         $statement = $this->connection->prepare($query);
-        if($statement !== false) {
+        if ($statement !== false) {
             $bind_names[] = $bind_string;
 
             for ($i = 0; $i < count($params); $i++) {
