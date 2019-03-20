@@ -13,6 +13,10 @@ DIMENSIONS
     width: 30%;
 }
 
+.width-20{
+    width: 20%;
+}
+
 .width-50{
     width: 50%;
 }
@@ -37,8 +41,6 @@ DIMENSIONS
     width: 100%;
     height: 100%;
 }
-
-
 
 
 
@@ -110,9 +112,27 @@ FRAMEWORK
 *******************************************************************/
 md-progress-circular svg path { stroke: #E52846; }
 
+.md-confirm-button{
+    background-color: #E12315!important;
+    color: #ffffff!important;
+}
 
+.md-cancel-button{
+    background-color: #4BAE5A!important;
+    color: #ffffff!important;
+}
 
+md-table-pagination md-icon.ng-scope{
+    color: #E12315!important;
+}
 
+.no-wrap{
+    white-space: nowrap!important;
+}
+
+/*.md-select-icon{*/
+    /*color: #E12315!important;*/
+/*}*/
 
 
 
@@ -146,6 +166,10 @@ MARGINS
 
 .margin-top-10{
     margin-top: 10% !important;
+}
+
+.margin-top-15-px{
+    margin-top: 15px;
 }
 
 .margin-top--20-px{
@@ -186,6 +210,10 @@ MARGINS
 
 .margin-right-10-px{
     margin-right: 10px;
+}
+
+.margin-left-10-px{
+    margin-left: 10px;
 }
 
 .margin-left--8-px{
@@ -315,7 +343,7 @@ COLOR
 }
 
 .color-red{
-    color: #E12315;
+    color: #E12315!important;
 }
 
 .color-darkred{
@@ -354,6 +382,9 @@ COLOR
     color: #121212;
 }
 
+.color-lightgray{
+    color: #9c9c9c !important;
+}
 
 
 
@@ -381,6 +412,10 @@ OTHER
     z-index: 100!important;
 }
 
+.search-tag-map{
+    width: 1000px;
+    height: 500px;
+}
 
 
 
@@ -463,7 +498,9 @@ BACKGROUND
     background-color: #4fc3f7!important;
 }
 
-
+.background-orange{
+    background-color: #F76E41!important;
+}
 
 
 

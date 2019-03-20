@@ -5,7 +5,7 @@
  * @param context - the context of the canvas
  */
 function drawCanvasBorder(canvasWidth, canvasHeight, context) {
-    context.fillStyle   = '#0093c4';
+    context.fillStyle = '#0093c4';
 
     //drawing the border
     context.beginPath();
@@ -36,20 +36,19 @@ function encodeRequest(action, data) {
  * @param direction
  */
 function drawDashedLine(canvasWidth, canvasHeight, context, spacing, floorWidth, direction) {
-    let virtualWidth = scaleSize(floorWidth, canvasWidth) * spacing;
+    let virtualWidth    = scaleSize(floorWidth, canvasWidth) * spacing;
     context.strokeStyle = 'lightgray';
 
     if (direction === 'horizontal') {
-        console.log('drawing horizontal line');
-        for (let i = canvasBorderSpace; i < canvasHeight - canvasBorderSpace; i += virtualWidth){
+        for (let i = canvasBorderSpace; i < canvasHeight - canvasBorderSpace; i += virtualWidth) {
             context.beginPath();
             context.setLineDash(canvasGridPattern);
             context.moveTo(canvasBorderSpace, i);
             context.lineTo(canvasWidth - canvasBorderSpace, i);
             context.stroke();
         }
-    }else if (direction === 'vertical'){
-        for (let i = canvasBorderSpace; i < canvasWidth - canvasBorderSpace; i += virtualWidth){
+    } else if (direction === 'vertical') {
+        for (let i = canvasBorderSpace; i < canvasWidth - canvasBorderSpace; i += virtualWidth) {
             context.beginPath();
             context.setLineDash(canvasGridPattern);
             context.moveTo(i, canvasBorderSpace);
@@ -88,17 +87,17 @@ function updateCanvas(canvasWidth, canvasHeight, context, image) {
  * @param isTag - true if the object to be drawn is a tag
  */
 function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) {
-    let id = 0;
+    let id         = 0;
     let realHeight = (width * canvasHeight) / canvasWidth;
 
     let virtualRadius = scaleSize(width, canvasWidth) * value.radius;
-    let virtualTag = scaleIconSize(value.x_pos, value.y_pos, width, realHeight, canvasWidth, canvasHeight);
+    let virtualTag    = scaleIconSize(value.x_pos, value.y_pos, width, realHeight, canvasWidth, canvasHeight);
 
     context.beginPath();
-    if (isTag){
+    if (isTag) {
         context.fillStyle = 'red';
         // (value.id < 10) ? id = '0' + value.id : id = value.id;
-        context.fillText(value.name, virtualTag.width + 5, virtualTag.height - 3);
+        context.fillText(value.name, virtualTag.width - 5, virtualTag.height - 3);
     } else {
         context.fillStyle = '#0093c4';
         context.fillRect(virtualTag.width, virtualTag.height - 17, 17, 16);
@@ -110,7 +109,7 @@ function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) 
     context.drawImage(img, virtualTag.width, virtualTag.height);
     context.strokeStyle = '#ff000015';
     context.stroke();
-    if (value.radius > 0){
+    if (value.radius > 0) {
         context.beginPath();
         context.setLineDash([]);
         context.arc(virtualTag.width + 5, virtualTag.height - 6, virtualRadius, 0, 2 * Math.PI);
@@ -131,7 +130,7 @@ function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) 
  * @param tagsNumber - the number of the tags in the cloud
  */
 function drawCloudIcon(value, context, img, width, canvasWidth, canvasHeight, tagsNumber) {
-    let id = 0;
+    let id         = 0;
     let realHeight = (width * canvasHeight) / canvasWidth;
     let virtualTag = scaleIconSize(value.x_pos, value.y_pos, width, realHeight, canvasWidth, canvasHeight);
 
@@ -152,7 +151,7 @@ function drawCloudIcon(value, context, img, width, canvasWidth, canvasHeight, ta
  * @returns {number}
  */
 function scaleSize(width, canvasWidth) {
-    return (100/width) * (canvasWidth/100);
+    return (100 / width) * (canvasWidth / 100);
 }
 
 /**
@@ -167,14 +166,14 @@ function scaleSize(width, canvasWidth) {
  */
 function scaleIconSize(width, height, realWidth, realHeight, canvasWidth, canvasHeight) {
     let scaledSize = {
-        width: 0,
+        width : 0,
         height: 0
     };
 
     let realPercentX = (width * 100) / parseInt(realWidth);
     let realPercentY = (height * 100) / parseInt(realHeight);
 
-    scaledSize.width = (realPercentX * canvasWidth) / 100;
+    scaledSize.width  = (realPercentX * canvasWidth) / 100;
     scaledSize.height = (realPercentY * canvasHeight) / 100;
 
     return scaledSize;
@@ -208,13 +207,13 @@ function convertImageToBase64(img) {
     let image = new Image();
     image.src = URL.createObjectURL(img);
 
-    let canvas = document.createElement('canvas');
+    let canvas  = document.createElement('canvas');
     let context = canvas.getContext('2d');
-    let data = '';
+    let data    = '';
 
     return new Promise(function (resolve) {
 
-        image.onload = function() {
+        image.onload = function () {
             canvas.height = this.height;
             canvas.width  = this.width;
 
@@ -226,8 +225,58 @@ function convertImageToBase64(img) {
     })
 }
 
-function isTagOffline(tags) {
-    return tags.some(function (tag) {
-        return tag.is_exit && !tag.radio_switched_off;
-    })
+function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemWidth, elemHeight) {
+    let realHeight       = (floorWidth * canvasHeight) / canvasWidth;
+    let reversePositionX = ((elemWidth * floorWidth * 100) / canvasWidth) / 100;
+    let reversePositionY = ((elemHeight * realHeight * 100) / canvasHeight) / 100;
+
+    return {x: reversePositionX, y: reversePositionY};
+}
+
+function updateDrawingCanvas(lines, canvasWidth, canvasHeight, canvasContext, image, map_spacing, floorWidth, showDrawing) {
+    // console.log('showdrawing: ', showDrawing);
+    updateCanvas(canvasWidth, canvasHeight, canvasContext, image);
+
+    drawDashedLine(canvasWidth, canvasHeight, canvasContext, map_spacing, floorWidth, 'vertical');
+    //drawing horizontal lines
+    drawDashedLine(canvasWidth, canvasHeight, canvasContext, map_spacing, floorWidth, 'horizontal');
+
+    lines.forEach((line) => {
+        drawLine(line.begin, line.end, line.type, canvasContext, showDrawing);
+    });
+}
+
+function drawLine(begin, end, type, drawingContext, showDrawing) {
+    // console.log(showDrawing);
+    drawingContext.setLineDash([]);
+    drawingContext.lineWidth   = 2;
+    drawingContext.strokeStyle = 'black';
+    drawingContext.beginPath();
+    drawingContext.moveTo(begin.x, begin.y);
+    if (type === 'vertical') {
+        if (showDrawing) {
+            drawRect(begin, drawingContext);
+            drawRect({x: begin.x, y: end.y}, drawingContext);
+        }
+        drawingContext.lineTo(begin.x, end.y);
+    } else if (type === 'horizontal') {
+        if (showDrawing) {
+            drawRect(begin, drawingContext);
+            drawRect({x: end.x, y: begin.y}, drawingContext);
+        }
+        drawingContext.lineTo(end.x, begin.y);
+    } else if (type === 'inclined') {
+        if (showDrawing) {
+            drawRect(begin, drawingContext);
+            drawRect(end, drawingContext);
+        }
+        drawingContext.lineTo(end.x, end.y)
+    }
+    drawingContext.stroke();
+    drawingContext.closePath();
+}
+
+function drawRect(begin, drawingContext) {
+    drawingContext.fillStyle = 'black';
+    drawingContext.fillRect(begin.x - 5, begin.y - 5, 10, 10);
 }

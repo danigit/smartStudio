@@ -35,6 +35,10 @@
                     <p class="float-left">Ancora:</p>
                     <p class="float-right text-right">{{tag.anchor_name}}</p>
                 </md-list-item>
+                <md-list-item class="width-300-px">
+                    <p class="float-left">Livello batteria:</p>
+                    <p class="float-right text-right">{{tag.battery_status === 0 ? '100' : '0'}}</p>
+                </md-list-item>
             </md-list>
             <md-list>
                 <md-list-item class="md-3-line" ng-repeat="alarm in alarms" ng-click="null">

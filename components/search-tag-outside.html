@@ -1,0 +1,41 @@
+<div>
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{locationName}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+    <!--end popup header-->
+
+    <md-content>
+        <!--canvas container-->
+        <div id="search-canvas-container" layout="row" layout-align="center start">
+            <ng-map id="search-map" center="{{mapConfiguration.center}}"
+                    zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="search-tag-map">
+
+                <!--<custom-marker ng-repeat="marker in homeCtrl.positions"-->
+                               <!--on-click="homeCtrl.markerClicked()"-->
+                               <!--id="custom-marker-{{$index}}"-->
+                               <!--position="{{marker.position}}">-->
+                    <!--<div>-->
+                        <!--<img ng-src="../SMARTSTUDIO/img/markers-images/{{marker.icon}}" alt="{{marker.name}}"-->
+                             <!--title="{{marker.name}}">-->
+                    <!--</div>-->
+                <!--</custom-marker>-->
+            </ng-map>
+        </div>
+        <!--end canvas container-->
+    </md-content>

@@ -13,50 +13,65 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">STATO TAG DISATTIVATI</h1>
+                <h1 class=" font-iceberg font-x-large">STATO WETAGS</h1>
             </div>
         </div>
     </md-toolbar>
-    <!--end popup header-->
-
-    <!--popup content-->
-    <md-content class="popup-padding">
-        <div layout="row" layout-align="center center">
-            <div layout="column">
-                <md-progress-circular ng-show="data.length === 0" md-diameter="100" md-mode="indeterminate"
-                                      class="margin-left-right-50-px"></md-progress-circular>
-                <canvas ng-show="data.length !== 0" class="chart chart-doughnut"
-                        chart-data="data" chart-labels="labels" chart-colors="colors">
-                </canvas>
-            </div>
-            <div layout="column">
-                <md-list>
-                    <md-list-item class="md-2-line">
-                        <img src="../SMARTSTUDIO/img/icons/tags/online_tag_24.png" class="md-avatar" alt="Tag online"
-                             title="Tag online">
-                        <div class="md-list-item-text" layout="column">
-                            <h3>Tags online: <b class="color-green">{{tagsStateIndoor.online}}</b></h3>
-                            <h4>{{ tagsStateIndoor.online }} tag/s e'/sono online e trasmette/ono dati</h4>
-                        </div>
-                    </md-list-item>
-                    <md-list-item class="md-3-line">
-                        <img src="../SMARTSTUDIO/img/icons/tags/offline_tag_24.png" class="md-avatar" alt="Tag offline"
-                             title="Tag offline">
-                        <div class="md-list-item-text" layout="column">
-                            <h3>Tags offline: <b class="color-darkgray">{{ offlineTagsIndoor.length }}</b></h3>
-                            <h4>{{ offlineTagsIndoor.length }} tag/s e'/sono offline e non trasmette/ono dati</h4>
-                            <p>
-                                <md-chips ng-model="offlineTagsIndoor" readonly="true"
-                                          input-aria-label="Tag in area sicura"
-                                          input-aria-describedby="staticChipsNote">
-                                    <md-chip-template>{{$chip.name}}</md-chip-template>
-                                </md-chips>
-                            </p>
-                        </div>
-                    </md-list-item>
-                </md-list>
-            </div>
-        </div>
-    </md-content>
-    <!--end popup content-->
 </div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="row" layout-align="center center">
+        <div layout="column">
+            <md-progress-circular ng-show="data.length === 0" md-diameter="100" md-mode="indeterminate"
+                                  class="margin-left-right-50-px"></md-progress-circular>
+            <canvas ng-show="data.length !== 0" class="chart chart-doughnut"
+                    chart-data="data" chart-labels="labels" chart-colors="colors">
+            </canvas>
+        </div>
+        <div layout="column">
+            <md-list>
+                <md-list-item class="md-2-line">
+                    <img src="../SMARTSTUDIO/img/icons/tags/online_tag_24.png" class="md-avatar" alt="Tag online"
+                         title="Tag online">
+                    <div class="md-list-item-text" layout="column">
+                        <h3>Tags online: <b class="color-green">{{tagsStateIndoor.online}}</b></h3>
+                        <h4>{{ tagsStateIndoor.online }} tag/s e'/sono online e trasmette/ono dati</h4>
+                    </div>
+                </md-list-item>
+                <md-list-item class="md-3-line">
+                    <img src="../SMARTSTUDIO/img/icons/tags/offline_tag_24.png" class="md-avatar" alt="Tag offline"
+                         title="Tag offline">
+                    <div class="md-list-item-text" layout="column">
+                        <h3>Tags offline: <b class="color-darkgray">{{ offlineTagsIndoor.length }}</b></h3>
+                        <h4>{{ offlineTagsIndoor.length }} tag/s e'/sono offline e non trasmette/ono dati</h4>
+                        <p>
+                            <md-chips ng-model="offlineTagsIndoor" readonly="true"
+                                      input-aria-label="Tag in area sicura"
+                                      input-aria-describedby="staticChipsNote">
+                                <md-chip-template>{{$chip.name}}</md-chip-template>
+                            </md-chips>
+                        </p>
+                    </div>
+                </md-list-item>
+                <md-list-item class="md-2-line">
+                    <img src="../SMARTSTUDIO/img/icons/tags/offline_tag_24.png" class="md-avatar" alt="Tag dispersi"
+                         title="Tag dispersi">
+                    <div class="md-list-item-text" layout="column">
+                        <h3>Tags dispersi: <b class="color-red">{{tagsStateIndoor.offgrid}}</b></h3>
+                        <h4>{{ tagsStateIndoor.offgrid }} tag/s e'/sono dispersi</h4>
+                        <p>
+                            <md-chips ng-model="offgridTags" readonly="true"
+                                      input-aria-label="Tag in area sicura"
+                                      input-aria-describedby="staticChipsNote">
+                                <md-chip-template>{{$chip.name}}</md-chip-template>
+                            </md-chips>
+                        </p>
+                    </div>
+                </md-list-item>
+            </md-list>
+        </div>
+    </div>
+</md-content>
+<!--end popup content-->

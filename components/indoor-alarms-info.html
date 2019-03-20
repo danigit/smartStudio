@@ -17,25 +17,26 @@
             </div>
         </div>
     </md-toolbar>
-    <!--end popup header-->
-
-    <!--popup content-->
-    <md-content class="popup-padding">
-        <div layout="column" layout-align="center center">
-            <md-progress-circular ng-show="alarms.length === 0" md-diameter="100" md-mode="indeterminate"></md-progress-circular>
-            <md-list>
-                <md-divider ></md-divider>
-                <md-list-item class="md-3-line" ng-repeat="alarm in alarms" ng-click="loadLocation(alarm)">
-                    <md-divider ></md-divider>
-                    <img ng-src="{{alarm.image}}" class="md-avatar" alt="{{alarm.name}}" />
-                    <div class="md-list-item-text" layout="column">
-                        <h3>{{ alarm.tag }}</h3>
-                        <h4>{{ alarm.name }}</h4>
-                        <p>{{ alarm.description }}</p>
-                    </div>
-                </md-list-item>
-            </md-list>
-        </div>
-    </md-content>
-    <!--end popup content-->
 </div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center">
+        <md-progress-circular ng-show="alarms.length === 0" md-diameter="100"
+                              md-mode="indeterminate"></md-progress-circular>
+        <md-list>
+            <md-divider></md-divider>
+            <md-list-item class="md-3-line" ng-repeat="alarm in alarms" ng-click="loadLocation(alarm)">
+                <md-divider></md-divider>
+                <img ng-src="{{alarm.image}}" class="md-avatar" alt="{{alarm.name}}"/>
+                <div class="md-list-item-text" layout="column">
+                    <h3>{{ alarm.tag }}</h3>
+                    <h4>{{ alarm.name }}</h4>
+                    <p>{{ alarm.description }}</p>
+                </div>
+            </md-list-item>
+        </md-list>
+    </div>
+</md-content>
+<!--end popup content-->
