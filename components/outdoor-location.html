@@ -1,0 +1,116 @@
+<div>
+    <!--<div id="home-button" class="margin-left&#45;&#45;8-px">-->
+    <!--<md-button ng-click="outdoorCtrl.goHome()" class="background-darkcyan md-raised color-white">HOME</md-button>-->
+    <!--</div>-->
+    <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
+        <div layout="column" class="top-corner">
+            <img ng-show="outdoorCtrl.showAlarmsIcon" ng-click="outdoorCtrl.showAlarms()" class="margin-bottom-3"
+                 src="../SMARTSTUDIO/img/icons/alarm-icon.png" alt="Alarmi attivi" title="Alarmi attivi">
+            <img ng-show="outdoorCtrl.showOfflineTagsIcon" ng-click="outdoorCtrl.showOfflineTags()"
+                 class="margin-bottom-5-px" src="../SMARTSTUDIO/img/icons/offline_tags_alert_64.png"
+                 alt="Tags offline" title="Tags offline">
+            <img ng-show="outdoorCtrl.showOfflineAnchorsIcon" ng-click="outdoorCtrl.showOfflineAnchors()"
+                 src="../SMARTSTUDIO/img/icons/offline_anchors_alert_64.png" alt="Ancore offline"
+                 title="Ancore offline">
+        </div>
+        <!--map container-->
+        <div id="map-div">
+            <ng-map id="outdoor-map" center="{{outdoorCtrl.mapConfiguration.center}}"
+                    zoom="{{outdoorCtrl.mapConfiguration.zoom}}"
+                    mape-type-id="{{outdoorCtrl.mapConfiguration.map_type}}" class="height-100-vh">
+
+                <custom-marker ng-repeat="marker in outdoorCtrl.positions"
+                               on-click="outdoorCtrl.markerClicked()"
+                               id="custom-marker-{{$index}}"
+                               position="{{marker.position}}">
+                    <div>
+                        <img ng-src="../SMARTSTUDIO/img/markers-images/{{marker.icon}}" alt="{{marker.name}}"
+                             title="{{marker.name}}">
+                    </div>
+                </custom-marker>
+            </ng-map>
+        </div>
+        <!--end map container-->
+
+        <!--menu container-->
+        <div flex="100" ng-controller="menuController">
+
+            <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
+                <img id="open-menu-icon" src="../SMARTSTUDIO/img/icons/menu-arrow.png" alt="">
+            </div>
+
+            <div ng-show="!canvasCtrl.switch.showDrawing" id="home-button" ng-click="outdoorCtrl.goHome()"
+                 class="margin-left--8-px cursor-pointer outline-none">
+                <img id="home-button-icon" src="../SMARTSTUDIO/img/icons/home_16.png" alt="Menu" title="Menu">
+            </div>
+
+            <section layout="row" flex>
+
+                <md-sidenav id="menu-panel" class="md-sidenav-left" md-component-id="left" md-whiteframe="4">
+
+                    <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
+                        <h1 class="md-toolbar-tools color-black">Menu</h1>
+                        <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
+                            <img src="../SMARTSTUDIO/img/icons/menu/close-menu.png" alt="Close" title="Close">
+                        </div>
+                    </md-toolbar>
+
+                    <md-content layout-margin class="margin-top-10">
+
+                        <div layout="column" layout-align="center center">
+                            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track"
+                                 title="Smart Track">
+                            <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
+                        </div>
+
+                        <div layout="column" id="menu-container">
+                            <md-list ng-controller="menuController">
+                                <md-list-item ng-click="registry()"><p>Tabella WeTag</p><img
+                                        src="../SMARTSTUDIO/img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
+                                <md-list-item ng-click="viewHistory()"><p>Storico</p><img
+                                        src="../SMARTSTUDIO/img/icons/menu/history_icon_16.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
+                                <md-list-item ng-click="changePassword()"><p>Cambia password</p><img
+                                        src="../SMARTSTUDIO/img/icons/menu/password_icon_16.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
+                                <md-list-item ng-click="logout()"><p class="color-red">Logout</p><img
+                                        src="../SMARTSTUDIO/img/icons/menu/logout_icon_16.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
+                            </md-list>
+
+                            <div id="change-floor-container" layout="column" class="padding-10-px"
+                                 layout-align="center center">
+
+                                <md-input-container class="margin-bottom-0 margin-top-10">
+                                    <label>Cerca WeTag</label>
+                                    <md-select ng-model="selectedTag">
+
+                                        <md-option ng-repeat="tag in tags" ng-value="tag.name">
+                                            {{tag.name}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+
+                            <div id="fullscreen-on-off-container" layout="column"
+                                 class="padding-10-px width-50 width-100" layout-align="center center">
+
+                                <div flex="100" layout layout-align="center center">
+                                    <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b>
+                                    </md-subheader>
+                                </div>
+
+                                <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                                           md-no-ink aria-label="Passsa in modalita' fullscreen"
+                                           ng-model="switch.mapFullscreen">
+                                </md-switch>
+                            </div>
+                        </div>
+                    </md-content>
+                </md-sidenav>
+            </section>
+        </div>
+        <!--end menu container-->
+    </div>
+</div>

@@ -1,0 +1,82 @@
+<div>
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="insertFloor.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">INSERIMENTO PIANO</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center">
+
+        <form id="insertFloorForm" name="insertFloorForm">
+            <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <input required type="text" ng-model="insertFloor.floorName" name="insertFloorFloorName"
+                       placeholder="Nome">
+                <div ng-messages="insertFloorForm.insertFloorName.$error || insertFloorForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">Inserire un nome</div>
+                </div>
+            </md-input-container>
+
+            <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <input required type="number" ng-model="insertFloor.mapWidth" name="insertFloorMapWidth"
+                       placeholder="Lunghezza">
+                <div ng-messages="insertFloorForm.insertFloorMapWidth.$error || insertFloorForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">Inserire una lunghezza</div>
+                </div>
+            </md-input-container>
+            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <input required type="number" ng-model="insertFloor.spacing" name="insertFloorSpacing"
+                       placeholder="Spaziatura">
+                <div ng-messages="insertFloorForm.insertFloorSpacing.$error || insertFloorForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">Inserire una spaziatura</div>
+                </div>
+            </md-input-container>
+
+            <div class="background-transparent-white text-center color-green font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                 ng-show="insertFloor.showSuccess">
+                {{insertFloor.message}}
+            </div>
+
+            <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                 ng-show="insertFloor.showError">
+                {{insertFloor.message}}
+            </div>
+
+            <div layout="row" layout-align="center end" class="margin-top-15-px">
+                <div layout="column" layout-align="end start" class="">
+                    <md-button ng-click="uploadFloorImage()" class="md-raised background-orange color-white">
+                        <label>
+                            <input type="file"
+                                   class="ng-hide"
+                                   id="marker-image">
+                        </label>
+                        SELEZIONA IMMAGINE
+                    </md-button>
+                </div>
+                <md-button ng-click="insertFloor(insertFloorForm)" class="md-raised  background-darkcyan color-white">
+                    INSERISCI PIANO
+                </md-button>
+            </div>
+        </form>
+    </div>
+</md-content>
+<!--end popup content-->

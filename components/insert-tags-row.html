@@ -1,0 +1,55 @@
+<div>
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="insertTag.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">INSERIMENTO WETAG</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center">
+
+        <form id="insertTagRowForm" name="insertTagRowForm">
+            <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <input required type="text" ng-model="insertTag.name" name="insertTagName"
+                       placeholder="Nome">
+                <div ng-messages="insertTagRowForm.insertTagName.$error || insertTagRowForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">Inserire un nome</div>
+                </div>
+            </md-input-container>
+
+            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <label>Tipologia</label>
+                <md-select ng-model="selectedType">
+                    <md-option><em>Nessuno</em></md-option>
+                    <md-option ng-repeat="tagType in tagTypes track by $index" ng-value="tagType.description">
+                        {{tagType.description}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+
+            <div layout="row" layout-align="center end" class="width-100 margin-top-15-px">
+                <md-button ng-click="addTag(insertTagRowForm)" class="md-raised background-darkcyan color-white">
+                    INSERISCI TAG
+                </md-button>
+            </div>
+        </form>
+    </div>
+</md-content>
+<!--end popup content-->

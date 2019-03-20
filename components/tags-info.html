@@ -1,0 +1,57 @@
+<div>
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="isTagInAlarm">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class="font-iceberg font-x-large" ng-repeat="tag in tags">-{{tag.name}}-</h1>
+            </div>
+        </div>
+    </md-toolbar>
+    <!--end popup header-->
+
+    <!--popup content-->
+    <md-content class="popup-padding">
+        <div layout="column" layout-align="center center">
+            <md-list>
+                <md-list-item ng-repeat="tag in tags">
+                    <md-list>
+                        <md-list-item class="width-300-px">
+                            <p class="float-left">Nome:</p>
+                            <p class="float-right text-right">{{tag.name}}</p>
+                        </md-list-item>
+                        <md-list-item class="width-300-px">
+                            <p class="float-left">Piano:</p>
+                            <p class="float-right text-right">{{tag.floor_name}}</p>
+                        </md-list-item>
+                        <md-list-item class="width-300-px">
+                            <p class="float-left">Ancora:</p>
+                            <p class="float-right text-right">{{tag.anchor_name}}</p>
+                        </md-list-item>
+                    </md-list>
+                    <md-divider></md-divider>
+                </md-list-item>
+            </md-list>
+            <md-list>
+                <md-list-item class="md-3-line" ng-repeat="alarm in alarms" ng-click="null">
+                    <img ng-src="{{alarm.image}}" class="md-avatar" alt=""/>
+                    <div class="md-list-item-text" layout="column">
+                        <h3>{{ alarm.tag }}</h3>
+                        <h4>{{ alarm.name }}</h4>
+                        <p>{{ alarm.description }}</p>
+                    </div>
+                </md-list-item>
+            </md-list>
+        </div>
+    </md-content>
+    <!--end popup content-->
+</div>

@@ -4,8 +4,11 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="jspdf.debug" level="application" />
     <orderEntry type="library" name="angular-material" level="application" />
     <orderEntry type="library" name="markerclusterer" level="application" />
+    <orderEntry type="library" name="markerclusterer" level="application" />
+    <orderEntry type="library" name="angular-material" level="application" />
+    <orderEntry type="library" name="Chart" level="application" />
+    <orderEntry type="library" name="Chart" level="application" />
   </component>
 </module>
