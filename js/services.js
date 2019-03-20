@@ -37,24 +37,27 @@
         service.offlineTagsIsOpen    = false;
         service.offlineAnchorsIsOpen = false;
 
+        //function that show the offline tags
         service.showOfflineTags = (isOutside, constantUpdateNotifications) => {
             $mdDialog.show({
-                templateUrl        : '../SMARTSTUDIO/components/indoor_offline_tags_info.html',
+                templateUrl        : componentsPath + 'indoor_offline_tags_info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 controller         : ['$scope', 'socketService', 'dataService', function ($scope, socketService, dataService) {
                     $scope.offlineTagsIndoor = [];
                     $scope.offgridTags       = [];
+                    $scope.offTags       = [];
                     $scope.data              = [];
 
                     $scope.tagsStateIndoor = {
                         offline: 0,
                         online : 0,
-                        offgrid: 0
+                        offgrid: 0,
+                        offTags: 0
                     };
 
-                    $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315"];
+                    $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315", "#F76E41"];
                     $scope.labels = ["Tags disativati", "Tag attivi"];
 
                     let interval = undefined;
@@ -65,6 +68,9 @@
                         .then((response) => {
                             let offgridTagsIndoor  = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
                             let offgridTagsOutdoor = response.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+
+                            $scope.offTags = response.result.filter(t => (t.type_id === 1 || t.type_id === 14) && (t.is_exit && t.radio_switched_off));
+                            $scope.tagsStateIndoor.offTags = $scope.offTags.length;
 
                             let tempOffgrid = [];
                             offgridTagsIndoor.forEach(elem => {
@@ -78,10 +84,10 @@
                             $scope.offlineTagsIndoor       = response.result.filter(t => (t.is_exit && !t.radio_switched_off));
                             $scope.offgridTags             = tempOffgrid;
                             $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
-                            $scope.tagsStateIndoor.online  = response.result.length - $scope.offlineTagsIndoor.length - (offgridTagsIndoor.length + offgridTagsOutdoor.length);
+                            $scope.tagsStateIndoor.online  = response.result.length - $scope.offlineTagsIndoor.length - (offgridTagsIndoor.length + offgridTagsOutdoor.length) - $scope.offTags.length;
                             $scope.tagsStateIndoor.offgrid = offgridTagsIndoor.length + offgridTagsOutdoor.length;
 
-                            $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online, $scope.tagsStateIndoor.offgrid];
+                            $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online, $scope.tagsStateIndoor.offTags, $scope.tagsStateIndoor.offgrid];
                         })
                         .catch((error) => {
                             console.log('showOfllineTags error => ', error);
@@ -109,7 +115,7 @@
             return tags.some(function (tag) {
                 return tag.is_exit && !tag.radio_switched_off;
             })
-        }
+        };
 
         //checking if there is at least an anchor offline
         service.checkIfAnchorsAreOffline = (anchors) => {
@@ -121,7 +127,7 @@
         //showing the info window with the online/offline anchors
         service.showOfflineAnchors = (isOutside, constantUpdateNotifications) => {
             $mdDialog.show({
-                templateUrl        : '../SMARTSTUDIO/components/indoor_offline_anchors_info.html',
+                templateUrl        : componentsPath + 'indoor_offline_anchors_info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
@@ -225,6 +231,7 @@
             return alarms;
         };
 
+        //function that controls if the passed alarm is in the array passed as well as parameter
         let controlIfAlarmIsInArray = (alarms, tag, alarmType) => {
             let result = false;
             alarms.forEach(function (alarm) {
@@ -236,6 +243,7 @@
             return result;
         };
 
+        //function that controls if the passed array has the passed alarm
         let controlIfArrayHasAlarm = (alarms, alarmType) => {
             let result = false;
             alarms.forEach(function (alarm) {
@@ -246,6 +254,7 @@
             return result;
         };
 
+        //function that filters the alarms by the passed parameter
         let filterAlarms = (alarms, tag, alarmType) => {
             let resultAlarms = [];
             alarms.forEach(function (alarm) {
@@ -258,6 +267,7 @@
             return resultAlarms;
         };
 
+        //function that checks if at least one tag has an alarm
         service.checkIfTagsHaveAlarms = (tags) => {
             return tags.some(function (tag) {
                 return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
@@ -266,6 +276,7 @@
             })
         };
 
+        //function that palay the alarms audio of the tags passed as parameter
         service.playAlarmsAudio = (tags) => {
             let audio;
             tags.forEach(function (tag) {
@@ -325,6 +336,7 @@
                 || tag.call_me_alarm || tag.diagnostic_request;
         };
 
+        //function that returs the images of the alarms of the tags passed as parameter
         service.getTagAlarms = (tag) => {
             let tagAlarmsImages = [];
 
@@ -373,10 +385,10 @@
             return Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
         };
 
+        //function that control if the tag is indoor
         service.isOutdoor = (tag) => {
             return tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0;
         };
-
 
         service.goHome = () => {
             $state.go('home');

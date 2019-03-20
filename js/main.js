@@ -17,7 +17,7 @@
         //changing to the login page
             .state('login', {
                 url        : '/login',
-                templateUrl: '../SMARTSTUDIO/components/login.html',
+                templateUrl: componentsPath + 'login.html',
                 controller : 'loginController as loginCtr',
                 resolve    : {
                     goToHomeIfLoggedIn: ['socketService', '$state', function (socketService, $state) {
@@ -33,21 +33,21 @@
             //changing to the recover password page
             .state('recover-password', {
                 url        : '/recover-password',
-                templateUrl: '../SMARTSTUDIO/components/recover-password.html',
+                templateUrl: componentsPath + 'recover-password.html',
                 controller : 'recoverPassController as recoverPassCtr',
             })
 
             //changing to the recover password code page
             .state('recover-password-code', {
                 url        : '/recover-password-code',
-                templateUrl: '../SMARTSTUDIO/components/recover-password-code.html',
+                templateUrl: componentsPath + 'recover-password-code.html',
                 controller : 'recoverPassController as recoverPassCtr',
             })
 
             //changing to the home page
             .state('home', {
                 url        : '/home',
-                templateUrl: '../SMARTSTUDIO/components/home.html',
+                templateUrl: componentsPath + 'home.html',
                 controller : 'homeController as homeCtrl',
                 resolve    : {
                     homeData: ['socketService', 'dataService', '$state', '$q', function (socketService, dataService, $state, $q) {
@@ -86,7 +86,7 @@
             //changing to the outdoor-location page
             .state('outdoor-location', {
                 url        : '/outdoor-location',
-                templateUrl: '../SMARTSTUDIO/components/outdoor-location.html',
+                templateUrl: componentsPath + 'outdoor-location.html',
                 controller : 'outdoorController as outdoorCtrl',
                 resolve    : {
                     outdoorData: ['socketService', 'dataService', '$state', '$q', function (socketService, dataService, $state, $q) {
@@ -141,7 +141,7 @@
             //changing to the canvas page
             .state('canvas', {
                 url        : '/canvas',
-                templateUrl: '../SMARTSTUDIO/components/canvas.html',
+                templateUrl: componentsPath + 'canvas.html',
                 controller : 'canvasController as canvasCtrl',
                 resolve    : {
                     canvasData: ['socketService', 'dataService', '$state', '$q', function (socketService, dataService, $state, $q) {

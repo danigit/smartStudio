@@ -59,10 +59,25 @@
                     <img src="../SMARTSTUDIO/img/icons/tags/offline_tag_24.png" class="md-avatar" alt="Tag dispersi"
                          title="Tag dispersi">
                     <div class="md-list-item-text" layout="column">
-                        <h3>Tags dispersi: <b class="color-red">{{tagsStateIndoor.offgrid}}</b></h3>
+                        <h3>Tags dispersi: <b class="color-orange">{{tagsStateIndoor.offgrid}}</b></h3>
                         <h4>{{ tagsStateIndoor.offgrid }} tag/s e'/sono dispersi</h4>
                         <p>
                             <md-chips ng-model="offgridTags" readonly="true"
+                                      input-aria-label="Tag in area sicura"
+                                      input-aria-describedby="staticChipsNote">
+                                <md-chip-template>{{$chip.name}}</md-chip-template>
+                            </md-chips>
+                        </p>
+                    </div>
+                </md-list-item>
+                <md-list-item class="md-2-line">
+                    <img src="../SMARTSTUDIO/img/icons/tags/offline_tag_24.png" class="md-avatar" alt="Tag dispersi"
+                         title="Tag dispersi">
+                    <div class="md-list-item-text" layout="column">
+                        <h3>Tags spenti: <b class="color-red">{{tagsStateIndoor.offTags}}</b></h3>
+                        <h4>{{ tagsStateIndoor.offTags }} tag/s e'/sono spenti</h4>
+                        <p>
+                            <md-chips ng-model="offTags" readonly="true"
                                       input-aria-label="Tag in area sicura"
                                       input-aria-describedby="staticChipsNote">
                                 <md-chip-template>{{$chip.name}}</md-chip-template>
