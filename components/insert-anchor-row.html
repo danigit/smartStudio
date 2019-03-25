@@ -18,116 +18,118 @@
         </div>
     </md-toolbar>
 </div>
-    <!--end popup header-->
+<!--end popup header-->
 
-    <!--popup content-->
-    <md-content class="popup-padding">
-        <div layout="column" layout-align="center center">
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center">
 
-            <form id="insertAnchorForm" name="insertAnchorForm">
-                <div layout="row">
-                    <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
-                        <input required type="text" ng-model="insertAnchor.name" name="insertAnchorName"
-                               placeholder="Nome">
-                        <div ng-messages="insertAnchorForm.insertAnchorName.$error || insertAnchorForm.$submitted"
-                             role="alert">
-                            <div ng-message=" required">Inserire un nome</div>
-                        </div>
-                    </md-input-container>
-
-                    <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
-                        <input required type="text" ng-model="insertAnchor.mac" name="insertAnchorMac"
-                               placeholder="Mac">
-                        <div ng-messages="insertAnchorForm.insertAnchorMac.$error || insertAnchorForm.$submitted"
-                             role="alert">
-                            <div ng-message=" required">Inserire un mac</div>
-                        </div>
-                    </md-input-container>
-                </div>
-                <div layout="row">
-                    <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0 width-50">
-                        <label>Tipologia</label>
-                        <md-select ng-model="insertAnchor.selectedType">
-                            <md-option><em>Nessuno</em></md-option>
-                            <md-option ng-repeat="anchorType in anchorTypes track by $index" ng-value="anchorType.description">
-                                {{anchorType.description}}
-                            </md-option>
-                        </md-select>
-                    </md-input-container>
-                    <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                        <input required type="text" ng-model="insertAnchor.ip" name="insertAnchorIp"
-                               placeholder="Ip">
-                        <div ng-messages="insertAnchorForm.insertAnchorIp.$error || insertAnchorForm.$submitted"
-                             role="alert">
-                            <div ng-message=" required">Inserire un ip</div>
-                        </div>
-                    </md-input-container>
-                </div>
-
-                <div layout="row">
-                    <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                        <input required type="number" ng-model="insertAnchor.proximity" name="insertAnchorProximity"
-                               placeholder="Proximity">
-                        <div ng-messages="insertAnchorForm.insertAnchorProximity.$error || insertAnchorForm.$submitted"
-                             role="alert">
-                            <div ng-message=" required">Inserire proximity</div>
-                        </div>
-                    </md-input-container>
-                    <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                        <input required type="number" ng-model="insertAnchor.rssi" name="insertAnchorRssi"
-                               placeholder="Rssi">
-                        <div ng-messages="insertAnchorForm.insertAnchorRssi.$error || insertAnchorForm.$submitted"
-                             role="alert">
-                            <div ng-message=" required">Inserire rssi</div>
-                        </div>
+        <form id="insertAnchorForm" name="insertAnchorForm">
+            <div layout="row">
+                <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                    <input required type="text" ng-model="insertAnchor.name" name="insertAnchorName"
+                           placeholder="Nome">
+                    <div ng-messages="insertAnchorForm.insertAnchorName.$error || insertAnchorForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire un nome</div>
+                    </div>
                 </md-input-container>
-                </div>
 
-                <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                    <label>Neighbors</label>
-                    <md-select ng-model="selectedNeighbors"
-                               md-on-close="clearSearch()"
-                               multiple>
-                        <md-select-header class="multiple-selection-list-header">
-                            <input ng-model="searchString"
-                                   type="search"
-                                   placeholder="Cerca un'ancora..."
-                                   class="search-input"
-                                   ng-keydown="updateSearch($event)">
-                        </md-select-header>
-                        <md-optgroup>
-                            <md-option ng-value="neighbor.name" ng-repeat="neighbor in neighbors | filter:searchString" >
-                                {{neighbor.name}}
-                            </md-option>
-                        </md-optgroup>
+                <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                    <input required type="text" ng-model="insertAnchor.mac" name="insertAnchorMac"
+                           placeholder="Mac">
+                    <div ng-messages="insertAnchorForm.insertAnchorMac.$error || insertAnchorForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire un mac</div>
+                    </div>
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0 width-50">
+                    <label>Tipologia</label>
+                    <md-select ng-model="insertAnchor.selectedType">
+                        <md-option><em>Nessuno</em></md-option>
+                        <md-option ng-repeat="anchorType in anchorTypes track by $index"
+                                   ng-value="anchorType.description">
+                            {{anchorType.description}}
+                        </md-option>
                     </md-select>
                 </md-input-container>
-
                 <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                    <label>Permitted</label>
-                    <md-select ng-model="selectedPermitteds"
-                               md-on-close="clearSearch()"
-                               multiple>
-                        <md-select-header class="multiple-selection-list-header">
-                            <input ng-model="searchString"
-                                   type="search"
-                                   placeholder="Cerca un tag..."
-                                   class="search-input"
-                                   ng-keydown="updateSearch($event)">
-                        </md-select-header>
-                        <md-optgroup>
-                            <md-option ng-value="permitted.name" ng-repeat="permitted in permitteds | filter:searchString" >
-                                {{permitted.name}}
-                            </md-option>
-                        </md-optgroup>
-                    </md-select>
+                    <input required type="text" ng-model="insertAnchor.ip" name="insertAnchorIp"
+                           placeholder="Ip">
+                    <div ng-messages="insertAnchorForm.insertAnchorIp.$error || insertAnchorForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire un ip</div>
+                    </div>
                 </md-input-container>
+            </div>
 
-                <div layout="row" layout-align="center end" class="width-100 margin-top-15-px">
-                    <md-button ng-click="addAnchor(insertAnchorForm)" class="md-raised background-darkcyan color-white">INSERISCI ANCORA
-                    </md-button>
-                </div>
-            </form>
-        </div>
-    </md-content>
-    <!--end popup content-->
+            <div layout="row">
+                <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                    <input required type="number" ng-model="insertAnchor.proximity" name="insertAnchorProximity"
+                           placeholder="Proximity">
+                    <div ng-messages="insertAnchorForm.insertAnchorProximity.$error || insertAnchorForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire proximity</div>
+                    </div>
+                </md-input-container>
+                <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                    <input required type="number" ng-model="insertAnchor.rssi" name="insertAnchorRssi"
+                           placeholder="Rssi">
+                    <div ng-messages="insertAnchorForm.insertAnchorRssi.$error || insertAnchorForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire rssi</div>
+                    </div>
+                </md-input-container>
+            </div>
+
+            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <label>Neighbors</label>
+                <md-select ng-model="selectedNeighbors"
+                           md-on-close="clearSearch()"
+                           multiple>
+                    <md-select-header class="multiple-selection-list-header">
+                        <input ng-model="searchString"
+                               type="search"
+                               placeholder="Cerca un'ancora..."
+                               class="search-input"
+                               ng-keydown="updateSearch($event)">
+                    </md-select-header>
+                    <md-optgroup>
+                        <md-option ng-value="neighbor.name" ng-repeat="neighbor in neighbors | filter:searchString">
+                            {{neighbor.name}}
+                        </md-option>
+                    </md-optgroup>
+                </md-select>
+            </md-input-container>
+
+            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <label>Permitted</label>
+                <md-select ng-model="selectedPermitteds"
+                           md-on-close="clearSearch()"
+                           multiple>
+                    <md-select-header class="multiple-selection-list-header">
+                        <input ng-model="searchString"
+                               type="search"
+                               placeholder="Cerca un tag..."
+                               class="search-input"
+                               ng-keydown="updateSearch($event)">
+                    </md-select-header>
+                    <md-optgroup>
+                        <md-option ng-value="permitted.name" ng-repeat="permitted in permitteds | filter:searchString">
+                            {{permitted.name}}
+                        </md-option>
+                    </md-optgroup>
+                </md-select>
+            </md-input-container>
+
+            <div layout="row" layout-align="center end" class="width-100 margin-top-15-px">
+                <md-button ng-click="addAnchor(insertAnchorForm)" class="md-raised background-darkcyan color-white">
+                    INSERISCI ANCORA
+                </md-button>
+            </div>
+        </form>
+    </div>
+</md-content>
+<!--end popup content-->
