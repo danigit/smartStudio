@@ -1,0 +1,78 @@
+<div>
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">SITI</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+    <!--end popup header-->
+
+    <!--popup content-->
+    <md-content class="popup-padding">
+
+        <div layout="column" layout-align="center center">
+
+            <md-table-container>
+
+                <table md-table md-row-select="options.rowSelection" ng-model="selected"
+                       md-progress="promise">
+
+                    <thead md-head md-order="query.order">
+                    <tr md-row>
+                        <th md-column><span class="color-darkcyan">NOME</span></th>
+                        <th md-column><span class="color-darkcyan">LATITUDE</span></th>
+                        <th md-column><span class="color-darkcyan">LONGITUDE</span></th>
+                        <th md-column><span class="color-darkcyan">RAGGIO</span></th>
+                        <th md-column></th>
+                    </tr>
+                    </thead>
+
+                    <tbody md-body>
+                    <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
+                        ng-repeat="location in locationsTable | limitTo: query.limit: (query.page -1 ) * query.limit">
+                        <td md-cell class="no-wrap" ng-click="editCell($event, location, 'name')" ng-class="{'md-placeholder': !location.name}">
+                            {{location.name || 'Inserire nome'}}
+                        </td>
+                        <td md-cell class="no-wrap" ng-click="editCell($event, location, 'latitude')"
+                            ng-class="{'md-placeholder': !location.latitude}">{{location.latitude || 'Inserire latitudine'}}
+                        </td>
+                        <td md-cell class="no-wrap" ng-click="editCell($event, location, 'longitude')"
+                            ng-class="{'md-placeholder': !location.longitude}">{{location.longitude || 'Inserire longitudine'}}
+                        </td>
+                        <td md-cell class="no-wrap" ng-click="editCell($event, location, 'radius')"
+                            ng-class="{'md-placeholder': !location.radius.toString()}">{{location.radius}}
+                        </td>
+                        <td md-cell class="no-wrap" ng-click="deleteRow(location)"><img src="../SMARTSTUDIO/img/icons/delete_trash_24.png"></td>
+                    </tr>
+                    <tr md-row ng-show="tableEmpty">
+                        <td md-cell colspan="8" class="text-center color-red">Nessun risultato trovato</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
+
+            <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
+                <div layout="row" layout-align="center end" class="margin-bottom-30-px">
+                    <img src="../SMARTSTUDIO/img/icons/add_row_32.png" class="outline-none cursor-pointer" ng-click="addNewRow()">
+                </div>
+            </md-input-container>
+
+            <md-table-pagination class="color-red" md-limit="query.limit" md-limit-options="query.limitOptions" md-page="query.page"
+                                 md-total="{{locationsTable.length}}" md-on-paginate="">
+            </md-table-pagination>
+        </div>
+    </md-content>
+    <!--end popup content-->
