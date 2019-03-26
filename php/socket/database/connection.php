@@ -825,6 +825,9 @@ class Connection
                     $permittedString .= $row['MAC'] . ',';
                 }
 
+                if (substr($permittedString, -1, 1) == ',')
+                    $permittedString = substr($permittedString, 0, -1);
+
                 $statement->close();
             }
 
@@ -1041,7 +1044,7 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'description' => $row['DESCRIPTION'], 'latitude' => (double)$row['LATITUDE'],
-                    'longitude' => (double)$row['LONGITUDE'], 'radius' => (int)$row['RADIUS']);
+                    'longitude' => (double)$row['LONGITUDE'], 'radius' => $row['RADIUS']);
             }
 
             return $result_array;

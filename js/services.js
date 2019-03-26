@@ -58,7 +58,7 @@
                     };
 
                     $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315", "#F76E41"];
-                    $scope.labels = ["Tags disativati", "Tag attivi"];
+                    $scope.labels = ["Tags disativati", "Tag attivi", "Tag spenti", "Tag dispersi"];
 
                     let interval = undefined;
                     interval     = $interval(function () {
@@ -379,6 +379,7 @@
 
         //calculating the distance of the tag from the location center
         service.getTagDistanceFromLocationOrigin = (tag, origin) => {
+
             let distX = Math.abs(tag.gps_north_degree - origin[0]);
             let distY = Math.abs(tag.gps_east_degree - origin[1]);
 

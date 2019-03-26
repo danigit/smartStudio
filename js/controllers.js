@@ -772,6 +772,7 @@
                 canvasCtrl.showAlarmsIcon         = false;
                 canvasCtrl.showOfflineTagsIcon    = false;
                 canvasCtrl.showOfflineAnchorsIcon = false;
+                canvasCtrl.speedDial.clickedButton = 'horizontal';
 
                 $mdSidenav('left').close();
 
@@ -814,6 +815,8 @@
             canvasCtrl.floorData.gridSpacing      = canvasCtrl.defaultFloor[0].map_spacing;
             canvasCtrl.floorData.floor_image_map  = canvasCtrl.defaultFloor[0].image_map;
             context.clearRect(0, 0, canvas.width, canvas.height);
+            $interval.cancel(canvasCtrl.canvasInterval);
+            constantUpdateCanvas();
         });
 
         //function that handles the click on the drawing mode
@@ -1019,12 +1022,13 @@
         //constantly updating the canvas with the objects position from the server
         let constantUpdateCanvas = () => {
             let alarmsCounts          = new Array(100).fill(0);
-            canvasCtrl.canvasInterval = $interval(function () {
-                canvasImage.src = floorPath + canvasCtrl.floorData.floor_image_map;
+            canvasImage.onload = function () {
+                canvas.width = this.naturalWidth;
+                canvas.height = this.naturalHeight;
+                bufferCanvas.width  = this.naturalWidth;
+                bufferCanvas.height = this.naturalHeight;
 
-                canvasImage.onload = function () {
-                    bufferCanvas.width  = this.naturalWidth;
-                    bufferCanvas.height = this.naturalHeight;
+                canvasCtrl.canvasInterval = $interval(function () {
 
                     //updating the canvas and drawing border
                     updateCanvas(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasImage);
@@ -1165,8 +1169,8 @@
 
                             return socketService.sendConstantRequest('get_all_tags', {user: dataService.username})
                         })
-                        .then((response) =>  {
-                            canvasCtrl.showAlarmsIcon = checkTagsStateAlarmNoAlarmOffline(response.result).withAlarm;
+                        .then((response) => {
+                            canvasCtrl.showAlarmsIcon      = checkTagsStateAlarmNoAlarmOffline(response.result).withAlarm;
                             //showing the offline anchors and alarm button
                             canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
                         })
@@ -1174,8 +1178,10 @@
                             console.log('constantUpdateCanvas error => ', error);
                         })
 
-                }
-            }, 1000);
+                }, 1000);
+            };
+
+            canvasImage.src = floorPath + canvasCtrl.floorData.floor_image_map;
         };
 
         canvasCtrl.loadFloor();
@@ -1250,8 +1256,8 @@
                 if (drawAnchor !== null) {
                     let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, dropAnchorPosition.width, dropAnchorPosition.height);
                     socketService.sendConstantRequest('update_anchor_position', {
-                        x : scaledSize.x,
-                        y : scaledSize.y,
+                        x : scaledSize.x.toFixed(2),
+                        y : scaledSize.y.toFixed(2),
                         id: drawAnchor.id
                     })
                     .then((response) => {
@@ -1404,7 +1410,7 @@
                             }
                             dialogShown = true;
                         } else {
-                            if (tag.tag_type_id === 1 || tag.tag_type_id === 5) {
+                            if (tag.tag_type_id === 1 || tag.tag_type_id === 14) {
                                 if (!(tag.is_exit && tag.radio_switched_off)) {
                                     $mdDialog.show({
                                         locals             : {tag: tag},
@@ -2138,6 +2144,7 @@
                 controller         : ['$scope', 'admin', function ($scope, admin) {
                     $scope.selected = [];
                     $scope.tags     = [];
+                    $scope.tagsOnline = [];
                     $scope.query    = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
@@ -2148,7 +2155,34 @@
                     socketService.sendRequest('get_all_tags', {user: dataService.username})
                         .then((response) => {
                             $scope.tags = response.result;
+
+                            let offgridTagsIndoor  = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
+                            let offgridTagsOutdoor = response.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+
+                            console.log('offgridoutdoor: ', offgridTagsOutdoor);
+                            console.log('offgridindoor: ', offgridTagsIndoor);
+                            let offTags = response.result.filter(t => (t.type_id === 1 || t.type_id === 14) && ((t.is_exit && t.radio_switched_off) || (t.is_exit && !t.radio_switched_off)));
+
+                            console.log('offtags: ', offTags);
+                            let tempOffgrid = [];
+                            offgridTagsIndoor.forEach(elem => {
+                                tempOffgrid.push(elem);
+                            });
+
+                            offgridTagsOutdoor.forEach(elem => {
+                                tempOffgrid.push(elem);
+                            });
+
+                            offTags.forEach(elem => {
+                                tempOffgrid.push(elem);
+                            });
+
+                            $scope.tagsOnline = $scope.tags.filter(t => !tempOffgrid.some( to => to.id === t.id));
                         });
+
+                    $scope.tagsContainTag = (tags, tag) => {
+                        return tags.some(t => t.id === tag.id);
+                    };
 
                     $scope.editCell = (event, tag, tagName) => {
 
@@ -2434,6 +2468,8 @@
                                 .forEach((anchor) => {
                                     neighborsString += anchor.mac + ',';
                                 });
+
+                            neighborsString = neighborsString.replace(/,\s*$/, "");
 
                             $scope.permitteds = $scope.permitteds.filter(t => $scope.selectedPermitteds.some(st => st === t.name))
                                 .forEach((t) => {
