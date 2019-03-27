@@ -26,6 +26,14 @@ function encodeRequest(action, data) {
     return JSON.stringify({action: action, data: data});
 }
 
+function encodeRequestWithId(id, action, data) {
+    return JSON.stringify({id: id, action: action, data: data});
+}
+
+function parseResponse(response) {
+    return JSON.parse(response.data);
+}
+
 /**
  * Function that draws the grid on the canvas
  * @param canvasWidth

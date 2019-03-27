@@ -42,7 +42,7 @@
                 <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
                     ng-repeat="tag in tags | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell><img
-                            ng-src="{{tag.is_exit ? '../SMARTSTUDIO/img/icons/tags/offline_tag_24.png' : '../SMARTSTUDIO/img/icons/tags/online_tag_24.png'}}"
+                            ng-src="{{!tagsContainTag(tagsOnline, tag) ? '../SMARTSTUDIO/img/icons/tags/offline_tag_24.png' : '../SMARTSTUDIO/img/icons/tags/online_tag_24.png'}}"
                             alt="Stato tag" title="Stato tag"></td>
                     <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">
                         {{tag.name || 'Inserire nome'}}

@@ -1,0 +1,64 @@
+<div>
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">SMART STUDIO - VERSIONI</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center">
+
+        <md-table-container>
+
+            <table md-table md-row-select="options.rowSelection" multiple="true" ng-model="selected"
+                   md-progress="promise">
+
+                <thead md-head md-order="query.order">
+                <tr md-row>
+                    <th md-column><span class="color-darkcyan">VERSIONE</span></th>
+                    <th md-column><span class="color-darkcyan">DESCRIZIONE</span></th>
+                    <th md-column><span class="color-darkcyan">DATA</span></th>
+                </tr>
+                </thead>
+
+                <tbody md-body>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell>1.0.0</td>
+                    <td md-cell>Prima versione in produzione del gestionale Smart Studio</td>
+                    <td md-cell>20/03/2019</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell>1.1.0</td>
+                    <td md-cell>
+                        Aggiunta la possibilita' di vedere i tag spenti e dispersi, oltre a quelli online e offline<br>
+                        Aggiunto nella tabella dei tag la visualizzazione dei tag online(verde) e offline/spenti/dispersi(grigi)<br>
+                        Aggiunta la visualizzazione dell'icona dei tag offline anche quando c'e' almeno un tag disperso/spento<br>
+                        BUG FIX: Rimossa la virgola in fondo alla stringa dei Neighbors e Permitted<br>
+                        BUG FIX: Il tag di tipo 14 sul canvas non riceveva l'evento click<br>
+                        BUG FIX: Risolto il problema della visualizzazione di alcune mappe dei piani(immagini) sul canvas<br>
+                        BUG FIX: Risolto il problema del click su un alarme di un tag outdoor che non portava alla location<br>
+                    </td>
+                    <td md-cell>25/03/2019</td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+    </div>
+</md-content>
+<!--end popup content-->

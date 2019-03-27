@@ -113,7 +113,9 @@
         //checking if there is at least one tag offline
         service.checkIfTagsAreOffline = (tags) => {
             return tags.some(function (tag) {
-                return tag.is_exit && !tag.radio_switched_off;
+                return ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && (tag.type_id === 1 || tag.type_id === 14) && (tag.is_exit && !tag.radio_switched_off))
+                    || ((tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0) && (((Date.now() - new Date(tag.gps_time)) > tag.sleep_time_outdoor)))
+                    || ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && (tag.type_id !== 1 && tag.type_id !== 14) && (((Date.now() - new Date(tag.time)) > tag.sleep_time_indoor)));
             })
         };
 
@@ -409,6 +411,10 @@
         let constantUpdateSocket = new WebSocket('ws://localhost:8090');
         let constantAlertSocket  = new WebSocket('ws://localhost:8090');
 
+        service.getSocket = () => {
+            return server;
+        };
+
         let isConstantAlertOpen = false;
 
         constantAlertSocket.onopen = function () {
@@ -417,6 +423,11 @@
 
         constantAlertSocket.onerror = function () {
             console.log('error on connection')
+        };
+
+        constantAlertSocket.onerror = function() {
+            $state.go('login');
+            service.socketClosed = true;
         };
 
         let isConstantOpen = false;
@@ -429,6 +440,11 @@
             console.log('error on connection')
         };
 
+        constantUpdateSocket.onerror = function() {
+            $state.go('login');
+            service.socketClosed = true;
+        };
+
         let isOpen = false;
 
         service.floor = {
@@ -437,9 +453,6 @@
 
         server.onopen = function () {
             isOpen = true;
-        };
-
-        server.onerror = function () {
         };
 
         server.onclose = () => {
@@ -475,15 +488,15 @@
             return new Promise(function (resolve, reject) {
 
                 if (isOpen) {
-                    server.send(encodeRequest(action, data));
-                    server.onmessage = function (message) {
+                    constantAlertSocket.send(encodeRequest(action, data));
+                    constantAlertSocket.onmessage = function (message) {
                         resolve(JSON.parse(message.data));
                     };
                 }
 
                 server.onopen = function () {
-                    server.send(encodeRequest(action, data));
-                    server.onmessage = function (message) {
+                    constantAlertSocket.send(encodeRequest(action, data));
+                    constantAlertSocket.onmessage = function (message) {
                         resolve(JSON.parse(message.data));
                         isConstantAlertOpen = true;
                     };

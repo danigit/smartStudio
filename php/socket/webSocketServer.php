@@ -88,6 +88,7 @@ class webSocketServer implements MessageComponentInterface{
         switch ($decoded_message['action']){
             //handeling login
             case 'login':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'login';
                 $query = $this->connection->login($decoded_message['data']['username'], $decoded_message['data']['password']);
 
@@ -157,6 +158,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //saving a location
             case 'save_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_location';
 
                 if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'])) {
@@ -181,6 +183,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting a location infos
             case 'get_location_info':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_location_info';
 
                 if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'], $_SESSION['location'])) {
@@ -196,6 +199,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting all the locations
             case 'get_all_locations':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_all_locations';
 
                 $query = $this->connection->get_all_locations();
@@ -387,6 +391,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting all the tags
             case 'get_all_tags':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_all_tags';
                 $query = $this->connection->get_all_tags();
 
@@ -397,6 +402,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the tags by user
             case 'get_tags_by_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_tags_by_user';
                 $query = $this->connection->get_tags_by_user($decoded_message['data']['user']);
 
@@ -557,6 +563,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the anchors by user
             case 'get_anchors_by_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_anchors_by_user';
                 $query = $this->connection->get_anchors_by_user($decoded_message['data']['user']);
 
