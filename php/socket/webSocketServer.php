@@ -308,6 +308,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the floors by location
             case 'get_floors_by_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_floors_by_location';
                 $query = $this->connection->get_floors_by_location($decoded_message['data']['location']);
 
@@ -318,6 +319,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the floors by user
             case 'get_floors_by_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_floors_by_user';
                 $query = $this->connection->get_floors_by_user($decoded_message['data']['user']);
 
@@ -338,6 +340,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //save the canvas drawing
             case 'save_drawing':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_drawing';
                 $query = $this->connection->save_drawing($decoded_message['data']['lines'], $decoded_message['data']['floor']);
 
@@ -348,6 +351,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the saved drawing
             case 'get_drawing':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_drawing';
                 $query = $this->connection->get_drawing($decoded_message['data']['floor']);
 
@@ -413,6 +417,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the tags by floor and location
             case 'get_tags_by_floor_and_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_tags_by_floor_and_location';
                 $query = $this->connection->get_tags_by_floor_and_location($decoded_message['data']['floor'], $decoded_message['data']['location']);
 
@@ -532,6 +537,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //updating the achor pasition
             case 'update_anchor_position':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'update_anchor_position';
 
                 $query = $this->connection->update_anchor_position($decoded_message['data']['x'], $decoded_message['data']['y'], $decoded_message['data']['id']);
@@ -543,6 +549,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the anchors by floor and location
             case 'get_anchors_by_floor_and_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_anchors_by_floor_and_location';
                 $query = $this->connection->get_anchors_by_floor_and_location($decoded_message['data']['floor'], $decoded_message['data']['location']);
 
@@ -553,6 +560,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the anchors by location
             case 'get_anchors_by_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_anchors_by_location';
                 $query = $this->connection->get_anchors_by_location($decoded_message['data']['location']);
 
@@ -600,6 +608,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the cameras by floor and location
             case 'get_cameras_by_floor_and_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_cameras_by_floor_and_location';
                 $query = $this->connection->get_cameras_by_floor_and_location($decoded_message['data']['floor'], $decoded_message['data']['location']);
 
