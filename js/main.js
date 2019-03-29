@@ -67,7 +67,7 @@
                             })
                             .then((response) => {
                                 result.markers = response.result;
-                                if (response.result.length === 1){
+                                if (response.result.length === 1 && response.result[0].one_location){
                                     socketService.sendRequest('save_location', {location: response.result[0].name})
                                         .then((response) => {
                                             if (response.result === 'location_saved') {

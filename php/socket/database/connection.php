@@ -160,7 +160,7 @@ class Connection
             $this->connection->autocommit(false);
             $errors = array();
 
-            $this->query = 'SELECT EMAIL FROM recover_password WHERE  CODE = ?';
+            $this->query = "SELECT EMAIL FROM recover_password WHERE  CODE = ?";
             $statement = $this->execute_selecting($this->query, 's', strtoupper($code));
 
             if ($statement instanceof db_errors)
@@ -274,7 +274,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT location.NAME, LATITUDE, LONGITUDE, ICON FROM location 
+            $this->query = 'SELECT location.NAME, LATITUDE, LONGITUDE, ICON, ONE_LOCATION FROM location 
                   JOIN user_has_location uhl ON location.ID = uhl.LOCATION_ID 
                   JOIN user u on uhl.USER_ID = u.ID WHERE USERNAME = ?';
 
@@ -293,7 +293,8 @@ class Connection
                 $position[] = $row['LATITUDE'];
                 $position[] = $row['LONGITUDE'];
 
-                $result_array[] = array('name' => $row['NAME'], 'position' => $position, "icon" => $row['ICON']);
+                $result_array[] = array('name' => $row['NAME'], 'position' => $position, "icon" => $row['ICON'],
+                    'one_location' => $row['ONE_LOCATION']);
             }
 
             return $result_array;

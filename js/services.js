@@ -533,7 +533,7 @@
         service.recoverPassword = (email) => {
             return $http({
                 method: 'POST',
-                url   : mainPath + 'php/ajax/recover_password.php',
+                url   : mainPath + 'php/socket/ajax/recover_password.php',
                 params: {email: email}
             })
         };
@@ -541,7 +541,7 @@
         service.resetPassword = (code, username, password, repassword) => {
             return $http({
                 method: 'POST',
-                url   : mainPath + 'php/ajax/reset_password.php',
+                url   : mainPath + 'php/socket/ajax/reset_password.php',
                 params: {code: code, username: username, password: password, repassword: repassword}
             })
         }
