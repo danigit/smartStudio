@@ -191,6 +191,12 @@
                 controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
                     let tags      = null;
                     $scope.alarms = [];
+                    $scope.query = {
+                        limitOptions: [5, 10, 15],
+                        order       : 'name',
+                        limit       : 5,
+                        page        : 1
+                    };
 
                     socketService.sendRequest('get_all_tags', {})
                         .then((response) => {
@@ -311,7 +317,12 @@
                 controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
                     let tags      = null;
                     $scope.alarms = [];
-
+                    $scope.query = {
+                        limitOptions: [5, 10, 15],
+                        order       : 'name',
+                        limit       : 5,
+                        page        : 1
+                    };
 
                     socketService.sendRequest('get_all_tags', {user: dataService.username})
                         .then((response) => {
@@ -1523,7 +1534,12 @@
                 controller         : ['$scope', 'socketService', 'dataService', function ($scope, socketService, dataService) {
                     let tags      = null;
                     $scope.alarms = [];
-
+                    $scope.query = {
+                        limitOptions: [5, 10, 15],
+                        order       : 'name',
+                        limit       : 5,
+                        page        : 1
+                    };
 
                     socketService.sendRequest('get_all_tags', {user: dataService.username})
                         .then((response) => {
