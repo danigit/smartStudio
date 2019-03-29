@@ -36,6 +36,8 @@
         service.isSearchingTag       = false;
         service.offlineTagsIsOpen    = false;
         service.offlineAnchorsIsOpen = false;
+        service.offlineTagsInterval = undefined;
+        service.offlineAnchorsInterval = undefined;
 
         //function that show the offline tags
         service.showOfflineTags = (isOutside, constantUpdateNotifications) => {
@@ -60,53 +62,66 @@
                     $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315", "#F76E41"];
                     $scope.labels = ["Tags disativati", "Tag attivi", "Tag spenti", "Tag dispersi"];
 
-                    let interval = undefined;
-                    interval     = $interval(function () {
-                        socketService.sendConstantAlertRequest('get_all_tags', {
-                            user: dataService.username
-                        })
-                        .then((response) => {
-                            let offgridTagsIndoor  = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
-                            let offgridTagsOutdoor = response.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+                    let socket = socketService.getSocket();
+                    service.offlineTagsInterval = $interval(function () {
+                        let id = ++requestId;
+                        socket.send(encodeRequestWithId(id, 'get_all_tags'));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            if (parsedResponse.id === id){
+                                let offgridTagsIndoor  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
+                                let offgridTagsOutdoor = parsedResponse.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
 
-                            $scope.offTags = response.result.filter(t => (t.type_id === 1 || t.type_id === 14) && (t.is_exit && t.radio_switched_off));
-                            $scope.tagsStateIndoor.offTags = $scope.offTags.length;
+                                let tempOffTags = parsedResponse.result.filter(t => (t.type_id === 1 || t.type_id === 14) && (t.is_exit && t.radio_switched_off));
 
-                            let tempOffgrid = [];
-                            offgridTagsIndoor.forEach(elem => {
-                                tempOffgrid.push(elem);
-                            });
+                                if (!angular.equals(tempOffTags, $scope.offTags)){
+                                    $scope.offTags = tempOffTags;
+                                }
 
-                            offgridTagsOutdoor.forEach(elem => {
-                                tempOffgrid.push(elem);
-                            });
+                                $scope.tagsStateIndoor.offTags = $scope.offTags.length;
 
-                            $scope.offlineTagsIndoor       = response.result.filter(t => (t.is_exit && !t.radio_switched_off));
-                            $scope.offgridTags             = tempOffgrid;
-                            $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
-                            $scope.tagsStateIndoor.online  = response.result.length - $scope.offlineTagsIndoor.length - (offgridTagsIndoor.length + offgridTagsOutdoor.length) - $scope.offTags.length;
-                            $scope.tagsStateIndoor.offgrid = offgridTagsIndoor.length + offgridTagsOutdoor.length;
+                                let tempOffgrid = [];
+                                offgridTagsIndoor.forEach(elem => {
+                                    tempOffgrid.push(elem);
+                                });
 
-                            $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online, $scope.tagsStateIndoor.offTags, $scope.tagsStateIndoor.offgrid];
-                        })
-                        .catch((error) => {
-                            console.log('showOfllineTags error => ', error);
-                        });
+                                offgridTagsOutdoor.forEach(elem => {
+                                    tempOffgrid.push(elem);
+                                });
+
+                                console.log(tempOffgrid);
+                                console.log($scope.offgridTags);
+                                if (!angular.equals(tempOffgrid, $scope.offgridTags)){
+                                    console.log('different');
+                                    $scope.offgridTags             = tempOffgrid;
+                                }
+                                $scope.offlineTagsIndoor       = parsedResponse.result.filter(t => (t.is_exit && !t.radio_switched_off));
+                                $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
+                                $scope.tagsStateIndoor.online  = parsedResponse.result.length - $scope.offlineTagsIndoor.length - (offgridTagsIndoor.length + offgridTagsOutdoor.length) - $scope.offTags.length;
+                                $scope.tagsStateIndoor.offgrid = offgridTagsIndoor.length + offgridTagsOutdoor.length;
+
+                                $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online, $scope.tagsStateIndoor.offTags, $scope.tagsStateIndoor.offgrid];
+
+                            }
+                        };
 
                         if (angular.element(document).find('md-dialog').length === 0) {
-                            $interval.cancel(interval);
-                            if (!isOutside)
-                                constantUpdateNotifications();
+
                         }
                     }, 1000);
 
                     $scope.hide = () => {
                         $mdDialog.hide();
-                        $interval.cancel(interval);
-                        if (!isOutside)
-                            constantUpdateNotifications();
                     }
-                }]
+                }],
+                onRemoving: function(event, removePromise){
+                    console.log('closing interval: ', service.offlineTagsInterval.toString());
+                    $interval.cancel(service.offlineTagsInterval);
+                    if (!isOutside) {
+                        $interval.cancel(service.homeTimer);
+                        constantUpdateNotifications();
+                    }
+                },
             });
         };
 
@@ -134,7 +149,6 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 controller         : ['$scope', 'dataService', 'socketService', function ($scope, dataService, socketService) {
-
                     $scope.offlineAnchors = [];
                     $scope.data           = [];
 
@@ -146,39 +160,42 @@
                     $scope.colors = ["#D3D3D3", "#4BAE5A"];
                     $scope.labels = ["Ancore disativate", "Ancore attive"];
 
-                    let interval = undefined;
-                    interval     = $interval(function () {
-                        socketService.sendConstantAlertRequest('get_anchors_by_user', {
-                            user: dataService.username
-                        })
-                        .then((response) => {
+                    let socket = socketService.getSocket();
+                    $interval.cancel(service.offlineTagsInterval);
+                    service.offlineAnchorsInterval = $interval(function () {
+                        let id = ++requestId;
+                        socket.send(encodeRequestWithId(id, 'get_anchors_by_user', {user: dataService.username}));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            if (parsedResponse.id === id){
+                                let tempOfflineAnchors = parsedResponse.result.filter(a => !a.is_online);
 
-                            $scope.offlineAnchors = response.result.filter(a => !a.is_online);
+                                if (!angular.equals(tempOfflineAnchors, $scope.offlineAnchors)) {
+                                    $scope.offlineAnchors = tempOfflineAnchors;
+                                }
 
-                            $scope.anchorsState.offline = $scope.offlineAnchors.length;
-                            $scope.anchorsState.online  = response.result.length - $scope.offlineAnchors.length;
+                                $scope.anchorsState.offline = $scope.offlineAnchors.length;
+                                $scope.anchorsState.online  = parsedResponse.result.length - $scope.offlineAnchors.length;
 
-                            $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online];
-                        })
-                        .catch((error) => {
-                            console.log('showOfflineAnchors error => ', error);
-                        });
-
-                        if (angular.element(document).find('md-dialog').length === 0) {
-                            $interval.cancel(interval);
-                            if (!isOutside)
-                                constantUpdateNotifications();
-                        }
+                                $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online];
+                            }
+                        };
                     }, 1000);
 
 
                     $scope.hide = () => {
                         $mdDialog.hide();
-                        $interval.cancel(interval);
                         if (!isOutside)
                             constantUpdateNotifications();
                     }
-                }]
+                }],
+                onRemoving: function(event, removePromise){
+                    $interval.cancel(service.offlineAnchorsInterval);
+                    if (!isOutside) {
+                        $interval.cancel(service.homeTimer);
+                        constantUpdateNotifications();
+                    }
+                },
             })
         };
 
@@ -408,39 +425,23 @@
         let service              = this;
         service.socketClosed     = false;
         let server               = new WebSocket('ws://localhost:8090');
-        let constantUpdateSocket = new WebSocket('ws://localhost:8090');
-        let constantAlertSocket  = new WebSocket('ws://localhost:8090');
+        let serializedSocket = new WebSocket('ws://localhost:8090');
 
         service.getSocket = () => {
-            return server;
-        };
-
-        let isConstantAlertOpen = false;
-
-        constantAlertSocket.onopen = function () {
-            isConstantAlertOpen = true;
-        };
-
-        constantAlertSocket.onerror = function () {
-            console.log('error on connection')
-        };
-
-        constantAlertSocket.onerror = function() {
-            $state.go('login');
-            service.socketClosed = true;
+            return serializedSocket;
         };
 
         let isConstantOpen = false;
 
-        constantUpdateSocket.onopen = function () {
+        serializedSocket.onopen = function () {
             isConstantOpen = true;
         };
 
-        constantUpdateSocket.onerror = function () {
+        serializedSocket.onerror = function () {
             console.log('error on connection')
         };
 
-        constantUpdateSocket.onerror = function() {
+        serializedSocket.onerror = function() {
             $state.go('login');
             service.socketClosed = true;
         };
@@ -483,55 +484,6 @@
                 }
             });
         };
-
-        service.sendConstantAlertRequest = (action, data) => {
-            return new Promise(function (resolve, reject) {
-
-                if (isOpen) {
-                    constantAlertSocket.send(encodeRequest(action, data));
-                    constantAlertSocket.onmessage = function (message) {
-                        resolve(JSON.parse(message.data));
-                    };
-                }
-
-                server.onopen = function () {
-                    constantAlertSocket.send(encodeRequest(action, data));
-                    constantAlertSocket.onmessage = function (message) {
-                        resolve(JSON.parse(message.data));
-                        isConstantAlertOpen = true;
-                    };
-                };
-
-                server.onerror = function (error) {
-                    reject(error);
-                }
-            });
-        };
-
-        service.sendConstantRequest = (action, data) => {
-            return new Promise(function (resolve, reject) {
-
-                if (isConstantOpen) {
-                    constantUpdateSocket.send(encodeRequest(action, data));
-                    constantUpdateSocket.onmessage = function (message) {
-                        resolve(JSON.parse(message.data));
-                    }
-                }
-
-                constantUpdateSocket.onopen = function () {
-                    constantUpdateSocket.send(encodeRequest(action, data));
-                    constantUpdateSocket.onmessage = function (message) {
-                        resolve(JSON.parse(message.data));
-                        isConstantOpen = true;
-                    }
-                };
-
-                constantUpdateSocket.onerror = function (error) {
-                    reject(error);
-                }
-            })
-        };
-
     }
 
     /**

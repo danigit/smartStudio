@@ -46,13 +46,9 @@
                     <div class="md-list-item-text" layout="column">
                         <h3>Tags offline: <b class="color-darkgray">{{ offlineTagsIndoor.length }}</b></h3>
                         <h4>{{ offlineTagsIndoor.length }} tag/s e'/sono offline e non trasmette/ono dati</h4>
-                        <p>
-                            <md-chips ng-model="offlineTagsIndoor" readonly="true"
-                                      input-aria-label="Tag in area sicura"
-                                      input-aria-describedby="staticChipsNote">
-                                <md-chip-template>{{$chip.name}}</md-chip-template>
-                            </md-chips>
-                        </p>
+                        <md-select ng-if="offTags.length > 0" ng-model="antani" placeholder="WeTags Offline">
+                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offTags">{{tag.name}}</md-option>
+                        </md-select>
                     </div>
                 </md-list-item>
                 <md-list-item class="md-2-line">
@@ -61,13 +57,9 @@
                     <div class="md-list-item-text" layout="column">
                         <h3>Tags dispersi: <b class="color-orange">{{tagsStateIndoor.offgrid}}</b></h3>
                         <h4>{{ tagsStateIndoor.offgrid }} tag/s e'/sono dispersi</h4>
-                        <p>
-                            <md-chips ng-model="offgridTags" readonly="true"
-                                      input-aria-label="Tag in area sicura"
-                                      input-aria-describedby="staticChipsNote">
-                                <md-chip-template>{{$chip.name}}</md-chip-template>
-                            </md-chips>
-                        </p>
+                        <md-select ng-if="offgridTags.length > 0" ng-model="antani" placeholder="WeTags Dispersi">
+                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offgridTags">{{tag.name}}</md-option>
+                        </md-select>
                     </div>
                 </md-list-item>
                 <md-list-item class="md-2-line">
@@ -76,13 +68,10 @@
                     <div class="md-list-item-text" layout="column">
                         <h3>Tags spenti: <b class="color-red">{{tagsStateIndoor.offTags}}</b></h3>
                         <h4>{{ tagsStateIndoor.offTags }} tag/s e'/sono spenti</h4>
-                        <p>
-                            <md-chips ng-model="offTags" readonly="true"
-                                      input-aria-label="Tag in area sicura"
-                                      input-aria-describedby="staticChipsNote">
-                                <md-chip-template>{{$chip.name}}</md-chip-template>
-                            </md-chips>
-                        </p>
+
+                        <md-select ng-if="offTags.length > 0" ng-model="antani" placeholder="WeTags Spenti">
+                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offTags">{{tag.name}}</md-option>
+                        </md-select>
                     </div>
                 </md-list-item>
             </md-list>

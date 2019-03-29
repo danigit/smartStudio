@@ -44,13 +44,9 @@
                     <div class="md-list-item-text" layout="column">
                         <h3>Anchore offline: <b class="color-darkgray">{{ offlineAnchors.length }}</b></h3>
                         <h4>{{ offlineAnchors.length }} anchora/e e'/sono offline e non trasmette/ono dati</h4>
-                        <p>
-                            <md-chips ng-model="offlineAnchors" readonly="true"
-                                      input-aria-label="Tag in area sicura"
-                                      input-aria-describedby="staticChipsNote">
-                                <md-chip-template>{{$chip.name}}</md-chip-template>
-                            </md-chips>
-                        </p>
+                        <md-select ng-if="offlineAnchors.length > 0" ng-model="antani" placeholder="Ancore offline">
+                            <md-option ng-value="anchor" ng-disabled="$index + 1" ng-repeat="anchor in offlineAnchors">{{anchor.name}}</md-option>
+                        </md-select>
                     </div>
                 </md-list-item>
             </md-list>

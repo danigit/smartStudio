@@ -25,9 +25,6 @@
                             .then(function (response) {
                                 if (response.result !== 'no_user')
                                     $state.go('home');
-                            })
-                            .catch((error) => {
-                                console.error('loginState error => ', error);
                             });
                     }]
                 }
