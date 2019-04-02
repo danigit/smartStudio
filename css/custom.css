@@ -110,7 +110,12 @@ FONTS
 /******************************************************************
 FRAMEWORK
 *******************************************************************/
+
 md-progress-circular svg path { stroke: #E52846; }
+
+#drawing-on-off-container .md-subheader-inner{
+    padding: 0!important;
+}
 
 .md-confirm-button{
     background-color: #E12315!important;

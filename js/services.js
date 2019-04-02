@@ -46,17 +46,17 @@
                         showGrid      : (response.result[0].grid_on === 1),
                         showAnchors   : (response.result[0].anchors_on === 1),
                         showCameras   : (response.result[0].cameras_on === 1),
+                        playAudio: (response.result[0].sound_on === 1),
                         showRadius    : true,
-                        showDrawing   : false,
-                        showFullscreen: false,
                     };
+                    console.log(service.switch);
                 })
         };
 
         service.updateUserSettings = () => {
             console.log('saving user settings');
             console.log('saving settings');
-            let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, fullscreen_on: service.switch.showFullscreen};
+            let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, sound_on: service.switch.playAudio};
             let stringifyData = JSON.stringify(data);
             socketService.sendRequest('update_user_settings', {username: service.username, data: stringifyData})
                 .then((response) => {
@@ -351,20 +351,20 @@
                 }
             });
 
-            if (service.alarmsSounds.length > 1 && service.playAlarm) {
+            if (service.alarmsSounds.length > 1 && service.playAlarm && service.switch.playAudio) {
                 audio = new Audio(audioPath + 'sndMultipleAlarm.mp3');
                 audio.play();
                 service.playAlarm = false;
             } else {
-                if (controlIfArrayHasAlarm(service.alarmsSounds, 'battery') && service.playAlarm) {
+                if (controlIfArrayHasAlarm(service.alarmsSounds, 'battery') && service.playAlarm && service.switch.playAudio) {
                     audio = new Audio(audioPath + 'sndBatteryAlarm.mp3');
                     audio.play();
                 }
-                if (controlIfArrayHasAlarm(service.alarmsSounds, 'mandown') && service.playAlarm) {
+                if (controlIfArrayHasAlarm(service.alarmsSounds, 'mandown') && service.playAlarm && service.switch.playAudio) {
                     audio = new Audio(audioPath + 'sndManDownAlarm.mp3');
                     audio.play();
                 }
-                if (controlIfArrayHasAlarm(service.alarmsSounds, 'sos') && service.playAlarm) {
+                if (controlIfArrayHasAlarm(service.alarmsSounds, 'sos') && service.playAlarm && service.switch.playAudio) {
                     audio = new Audio(audioPath + 'indila-sos.mp3');
                     audio.play();
                 }

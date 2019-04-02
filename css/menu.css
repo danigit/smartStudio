@@ -72,6 +72,14 @@
     background-color: #0093c4;
 }
 
+#sound-on-off-container md-switch.md-checked.md-primary .md-bar{
+    background-color: #4fc3f7;
+}
+
+#sound-on-off-container md-switch.md-checked.md-primary .md-thumb{
+    background-color: #0093c4;
+}
+
 #menu-container .md-button:not([disabled]):hover{
     background-color: #8bf6ff30;
 }

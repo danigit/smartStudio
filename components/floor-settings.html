@@ -32,15 +32,15 @@
                 <thead md-head md-order="query.order">
                 <tr md-row>
                     <!--<th md-column ><span>id</span></th>-->
-                    <th md-column><span class="color-darkcyan">NOME</span></th>
-                    <th md-column><span class="color-darkcyan">LUNGHEZZA</span></th>
-                    <th md-column><span class="color-darkcyan">SPAZIATURA</span></th>
+                    <th md-column md-order-by="name"><span class="color-darkcyan">NOME</span></th>
+                    <th md-column md-order-by="width"><span class="color-darkcyan">LUNGHEZZA</span></th>
+                    <th md-column md-order-by="map_spacing"><span class="color-darkcyan">SPAZIATURA</span></th>
                 </tr>
                 </thead>
 
                 <tbody md-body>
                 <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true"
-                    ng-repeat="floor in floors | limitTo: query.limit: (query.page -1 ) * query.limit">
+                    ng-repeat="floor in floors | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell ng-click="editCell($event, floor, 'name')"
                         ng-class="{'md-placeholder': !floor.name}">{{floor.name || 'Inserire nome'}}
                     </td>

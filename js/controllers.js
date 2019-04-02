@@ -885,14 +885,19 @@
 
         dataService.loadUserSettings();
 
+        canvasCtrl.switch = {
+            showDrawing: false,
+            showFullscreen: false,
+        };
+
         //watching for changes in switch buttons in menu
-        $scope.$watchGroup(['dataService.switch.showGrid', 'dataService.switch.showAnchors', 'dataService.switch.showCameras', 'dataService.switch.showFullscreen', 'canvasCtrl.floorData.gridSpacing', 'dataService.switch.showDrawing'], function (newValues) {
+        $scope.$watchGroup(['dataService.switch.showGrid', 'dataService.switch.showAnchors', 'dataService.switch.showCameras', 'canvasCtrl.switch.showFullscreen', 'canvasCtrl.floorData.gridSpacing', 'canvasCtrl.switch.showDrawing'], function (newValues) {
             if (canvasCtrl.defaultFloor[0].map_spacing !== newValues[4])
                 canvasCtrl.defaultFloor[0].map_spacing = newValues[4];
 
             if (newValues[3]) {
                 openFullScreen(document.querySelector('#canvas-container'));
-                dataService.switch.fullscreen = false;
+                canvasCtrl.switch.showFullscreen = false;
             }
 
             if (newValues[5] === true) {
@@ -916,7 +921,7 @@
                             drawedLines        = (parsedResponse === null) ? [] : parsedResponse;
 
                             if (drawedLines !== null)
-                                updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, dataService.switch.showDrawing);
+                                updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
                         }
                     })
             } else if (newValues[5] === false) {
@@ -1192,7 +1197,7 @@
                             let parsedDraw = JSON.parse(response.result);
                             if (parsedDraw !== null) {
                                 parsedDraw.forEach((line) => {
-                                    drawLine(line.begin, line.end, line.type, bufferContext, dataService.switch.showDrawing);
+                                    drawLine(line.begin, line.end, line.type, bufferContext, canvasCtrl.switch.showDrawing);
                                 });
                             }
                             return socketService.sendConstantRequest('get_anchors_by_floor_and_location', {
@@ -1410,7 +1415,7 @@
 
                 dataService.switch.showAnchors = true;
                 dataService.switch.showCameras = true;
-                dataService.switch.showDrawing = false;
+                canvasCtrl.switch.showDrawing = false;
 
                 dropAnchorPosition                 = null;
                 drawAnchorImage                    = null;
@@ -1424,9 +1429,9 @@
 
         //handeling the canvas click
         canvas.addEventListener('mousemove', (event) => {
-            if (dataService.switch !== undefined && dataService.switch.showDrawing) {
+            if (dataService.switch !== undefined && canvasCtrl.switch.showDrawing) {
                 if (drawedLines !== null) {
-                    updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, dataService.switch.showDrawing);
+                    updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
 
                     if (dragingStarted === 1) {
                         if (drawedLines.some(l => ((l.begin.x - 5 <= prevClick.x && prevClick.x <= l.begin.x + 5) && (l.begin.y - 5 <= prevClick.y && prevClick.y <= l.begin.y + 5)))) {
@@ -1455,7 +1460,7 @@
             mouseDownCoords = canvas.canvasMouseClickCoords(event);
 
             //drawing on canvas
-            if (dataService.switch.showDrawing && canvasCtrl.speedDial.clickedButton !== 'delete' && canvasCtrl.speedDial.clickedButton !== 'drop_anchor') {
+            if (canvasCtrl.switch.showDrawing && canvasCtrl.speedDial.clickedButton !== 'delete' && canvasCtrl.speedDial.clickedButton !== 'drop_anchor') {
                 dragingStarted++;
 
                 if (dragingStarted === 1) {
@@ -1507,7 +1512,7 @@
                     drawedLines = drawedLines.filter(l => !toBeRemoved.some(r => r.begin.x === l.begin.x && r.begin.y === l.begin.y
                         && r.end.x === l.end.x && r.end.y === l.end.y));
 
-                    updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, dataService.switch.showDrawing);
+                    updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
                 }
             }
 
@@ -1516,7 +1521,7 @@
                 let virtualTagPosition = scaleIconSize(tag.x_pos, tag.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                 tagCloud               = groupNearTags(dataService.floorTags, tag);
 
-                if ((tag.gps_north_degree === 0 || tag.gps_east_degree === 0) && !dataService.switch.showDrawing) {
+                if ((tag.gps_north_degree === 0 || tag.gps_east_degree === 0) && !canvasCtrl.switch.showDrawing) {
                     if (((virtualTagPosition.width - 45) < mouseDownCoords.x && mouseDownCoords.x < (virtualTagPosition.width + 45)) && ((virtualTagPosition.height - 45) < mouseDownCoords.y && mouseDownCoords.y < (virtualTagPosition.height + 45))) {
                         if (tagCloud.groupTags.length > 1) {
                             if (!dialogShown) {
@@ -1602,7 +1607,7 @@
 
             //listen for anchors click events
             dataService.anchors.forEach(function (anchor) {
-                if (!isTagAtCoords(mouseDownCoords) && !dataService.switch.showDrawing) {
+                if (!isTagAtCoords(mouseDownCoords) && !canvasCtrl.switch.showDrawing) {
                     let virtualAnchorPosition = scaleIconSize(anchor.x_pos, anchor.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                     if (((virtualAnchorPosition.width - 20) < mouseDownCoords.x && mouseDownCoords.x < (virtualAnchorPosition.width + 20)) && ((virtualAnchorPosition.height - 20) < mouseDownCoords.y && mouseDownCoords.y < (virtualAnchorPosition.height + 20))) {
                         $mdDialog.show({
@@ -1630,7 +1635,7 @@
 
             //listen for the cameras click events
             dataService.cameras.forEach(function (camera) {
-                if (!isTagAtCoords(mouseDownCoords) && !dataService.switch.showDrawing) {
+                if (!isTagAtCoords(mouseDownCoords) && !canvasCtrl.switch.showDrawing) {
                     let virtualCamerasPosition = scaleIconSize(camera.x_pos, camera.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                     if (((virtualCamerasPosition.width - 20) < mouseDownCoords.x && mouseDownCoords.x < (virtualCamerasPosition.width + 20)) && ((virtualCamerasPosition.height - 20) < mouseDownCoords.y && mouseDownCoords.y < (virtualCamerasPosition.height + 20))) {
                         $mdDialog.show({
@@ -3087,23 +3092,33 @@
                 clickOutsideToClose: true,
                 controller: ['$scope', '$interval', 'dataService', function ($scope, $interval, dataService) {
 
-                    dataService.loadUserSettings();
-
                     $scope.switch = {
                         showGrid: true,
                         showAnchors: true,
-                        showCameras: true
+                        showCameras: true,
+                        playAudio: true
                     };
+
+                    socketService.sendRequest('get_user_settings', {username: dataService.username})
+                        .then((response) => {
+                            $scope.switch.showGrid      = (response.result[0].grid_on === 1);
+                            $scope.switch.showAnchors   = (response.result[0].anchors_on === 1);
+                            $scope.switch.showCameras   = (response.result[0].cameras_on === 1);
+                            $scope.switch.playAudio     = (response.result[0].sound_on === 1);
+                        });
+                    // dataService.loadUserSettings();
 
                     $scope.updateUserSettings = () => {
                         dataService.updateUserSettings();
+                        $mdDialog.hide();
                     };
 
-                    $scope.$watchGroup(['switch.showGrid', "switch.showAnchors", 'switch.showCameras'], function (newValues) {
+                    $scope.$watchGroup(['switch.showGrid', "switch.showAnchors", 'switch.showCameras', 'switch.playAudio'], function (newValues) {
                         console.log('watching');
                         dataService.switch.showGrid = (newValues[0]);
                         dataService.switch.showAnchors = (newValues[1]);
                         dataService.switch.showCameras = (newValues[2]);
+                        dataService.switch.playAudio = (newValues[3]);
                     })
                 }]
             });

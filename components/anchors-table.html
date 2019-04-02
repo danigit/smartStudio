@@ -33,23 +33,23 @@
                 <thead md-head md-order="query.order">
                     <tr md-row>
                         <th md-column><span class="color-darkcyan"></span></th>
-                        <th md-column><span class="color-darkcyan">NOME</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">X-POS</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">Y-POS</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">Z-POS</span></th>
-                        <th md-column><span class="color-darkcyan">PIANO</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">RAGGIO</span></th>
-                        <th md-column><span class="color-darkcyan">IP</span></th>
-                        <th md-column md-numeric=""><span class="color-darkcyan">RSSI</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">PROXIMITY</span></th>
-                        <th md-column><span class="color-darkcyan">TYPE</span></th>
-                        <th md-column><span class="color-darkcyan">PERMITTED ASSET</span></th>
+                        <th md-column md-order-by="name"><span class="color-darkcyan">NOME</span></th>
+                        <th md-column md-order-by="x_pos" md-numeric><span class="color-darkcyan">X-POS</span></th>
+                        <th md-column md-order-by="y_pos" md-numeric><span class="color-darkcyan">Y-POS</span></th>
+                        <th md-column md-order-by="z_pos" md-numeric><span class="color-darkcyan">Z-POS</span></th>
+                        <th md-column md-order-by="floor_name"><span class="color-darkcyan">PIANO</span></th>
+                        <th md-column md-order-by="radius" md-numeric><span class="color-darkcyan">RAGGIO</span></th>
+                        <th md-column md-order-by="ip"><span class="color-darkcyan">IP</span></th>
+                        <th md-column md-order-by="rssi" md-numeric=""><span class="color-darkcyan">RSSI</span></th>
+                        <th md-column md-order-by="proximity" md-numeric><span class="color-darkcyan">PROXIMITY</span></th>
+                        <th md-column md-order-by="type"><span class="color-darkcyan">TYPE</span></th>
+                        <th md-column md-order-by="permitted_asset"><span class="color-darkcyan">PERMITTED ASSET</span></th>
                     </tr>
                 </thead>
 
                 <tbody md-body>
                 <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
-                    ng-repeat="anchor in anchors | limitTo: query.limit: (query.page -1 ) * query.limit">
+                    ng-repeat="anchor in anchors | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell><img alt="Stato ancora" title="Stato ancora"
                                      ng-src="{{anchor.is_online ? '../SMARTSTUDIO/img/icons/tags/anchor_online_16.png' : '../SMARTSTUDIO/img/icons/tags/anchor_offline_16.png'}}">
                     </td>

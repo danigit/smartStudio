@@ -32,17 +32,17 @@
 
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column><span class="color-darkcyan">NOME</span></th>
-                    <th md-column><span class="color-darkcyan">LATITUDE</span></th>
-                    <th md-column><span class="color-darkcyan">LONGITUDE</span></th>
-                    <th md-column><span class="color-darkcyan">RAGGIO</span></th>
+                    <th md-column md-order-by="name"><span class="color-darkcyan">NOME</span></th>
+                    <th md-column md-order-by="latitude"><span class="color-darkcyan">LATITUDE</span></th>
+                    <th md-column md-order-by="longitude"><span class="color-darkcyan">LONGITUDE</span></th>
+                    <th md-column md-order-by="radius"><span class="color-darkcyan">RAGGIO</span></th>
                     <th md-column></th>
                 </tr>
                 </thead>
 
                 <tbody md-body>
                 <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
-                    ng-repeat="location in locationsTable | limitTo: query.limit: (query.page -1 ) * query.limit">
+                    ng-repeat="location in locationsTable | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell class="no-wrap" ng-click="editCell($event, location, 'name')"
                         ng-class="{'md-placeholder': !location.name}">
                         {{location.name || 'Inserire nome'}}

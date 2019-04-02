@@ -188,20 +188,33 @@
                                 </md-slider-container>
                             </div>
 
-                            <div layout="row" layout-align="center center">
+                            <div layout="row" layout-align="center center" class="width-300-px" >
 
-                                <div id="drawing-on-off-container" layout="column" class="padding-10-px width-100"
+                                <div id="drawing-on-off-container" layout="column" class="padding-10-px width-50"
                                      layout-align="center center">
                                     <div flex="100" layout layout-align="center center">
                                         <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showDrawing">
-                                            Modalita' disegna: <b class="color-green">ON</b></md-subheader>
+                                            Disegna: <b class="color-green">ON</b></md-subheader>
                                         <md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showDrawing">
-                                            Modalita' disegna: <b class="color-red">OFF</b></md-subheader>
+                                            Disegna: <b class="color-red">OFF</b></md-subheader>
                                     </div>
-                                    <p>{{canvasCtrl.switch.showDrawing}}</p>
                                     <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
                                                md-no-ink aria-label="Mostra/nascondi strumenti disegno"
                                                ng-model="canvasCtrl.switch.showDrawing">
+                                    </md-switch>
+                                </div>
+
+                                <div id="fullscreen-on-off-container" layout="column" class="padding-10-px width-50"
+                                     layout-align="center center">
+
+                                    <div flex="100" layout layout-align="center center">
+                                        <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b>
+                                        </md-subheader>
+                                    </div>
+
+                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                                               md-no-ink aria-label="Passsa in modalita' fullscreen"
+                                               ng-model="canvasCtrl.switch.showFullscreen">
                                     </md-switch>
                                 </div>
                             </div>

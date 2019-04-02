@@ -27,7 +27,6 @@
                 <div id="grid-on-off-container" layout="column" class="padding-10-px width-50"
                      layout-align="center center">
 
-                    <p>Grid: {{dataService.switch.showGrid}}</p>
                     <div flex="100" layout layout-align="center center">
                         <md-subheader class="padding-0" ng-show="switch.showGrid">Griglia: <b
                                 class="color-green">ON</b></md-subheader>
@@ -41,17 +40,20 @@
                     </md-switch>
                 </div>
 
-                <div id="fullscreen-on-off-container" layout="column" class="padding-10-px width-50"
+                <div id="sound-on-off-container" layout="column" class="padding-10-px width-50"
                      layout-align="center center">
 
+                    <p>Audio: {{switch.playAudio}}</p>
                     <div flex="100" layout layout-align="center center">
-                        <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b>
-                        </md-subheader>
+                        <md-subheader class="padding-0" ng-show="switch.playAudio">Audio: <b
+                                class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.playAudio">Audio:
+                            <b class="color-red">OFF</b></md-subheader>
                     </div>
 
                     <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
-                               md-no-ink aria-label="Passsa in modalita' fullscreen"
-                               ng-model="canvasCtrl.switch.fullscreen">
+                               md-no-ink aria-label="Attiva/disattiva audio"
+                               ng-model="switch.playAudio">
                     </md-switch>
                 </div>
             </div>

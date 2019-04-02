@@ -73,21 +73,21 @@
 
                     <thead md-head md-order="query.order">
                     <tr md-row>
-                        <th md-column><span class="color-darkcyan">DATA</span></th>
-                        <th md-column><span class="color-darkcyan">EVENTO</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">TAG</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">ANCORA</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">SITO</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">PIANO</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">COORDINATA X</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">COORDINATA Y</span></th>
+                        <th md-column md-order-by="time"><span class="color-darkcyan">DATA</span></th>
+                        <th md-column md-order-by="event"><span class="color-darkcyan">EVENTO</span></th>
+                        <th md-column md-order-by="tag"><span class="color-darkcyan">TAG</span></th>
+                        <th md-column md-order-by="anchor"><span class="color-darkcyan">ANCORA</span></th>
+                        <th md-column md-order-by="location"><span class="color-darkcyan">SITO</span></th>
+                        <th md-column md-order-by="floor"><span class="color-darkcyan">PIANO</span></th>
+                        <th md-column md-order-by="tag_x_pos" md-numeric><span class="color-darkcyan">COORDINATA X</span></th>
+                        <th md-column md-order-by="tag_y_pos" md-numeric><span class="color-darkcyan">COORDINATA Y</span></th>
 
                     </tr>
                     </thead>
 
                     <tbody md-body>
                     <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
-                        ng-repeat="row in historyRows | limitTo: query.limit: (query.page -1 ) * query.limit track by $index">
+                        ng-repeat="row in historyRows | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit track by $index">
                         <td md-cell class="no-wrap">{{row.time}}</td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.event}">{{row.event || 'Dato non disponibile'}}
                         </td>
