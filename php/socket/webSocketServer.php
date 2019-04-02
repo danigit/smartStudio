@@ -673,6 +673,28 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //getting the zones
+            case 'delete_floor_zone':{
+                $result['action'] = 'delete_floor_zone';
+
+                $query = $this->connection->delete_floor_zone($decoded_message['data']['zone_id']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
+            case 'change_zone_field':{
+                $result['action'] = 'change_zone_field';
+                $query = $this->connection->change_zone_field($decoded_message['data']['zone_id'], $decoded_message['data']['zone_field'],
+                    $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             default:
                 $this->clients[$from->resourceId]->send(json_encode(array('result' => 'no_action')));
         }

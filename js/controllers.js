@@ -2717,8 +2717,8 @@
                                     input.$invalid = true;
                                     zone[zoneName] = input.$modelValue;
                                     socketService.sendRequest('change_zone_field', {
-                                        tag_id     : zone.id,
-                                        tag_field  : zoneName,
+                                        zone_id     : zone.id,
+                                        zone_field  : zoneName,
                                         field_value: input.$modelValue
                                     })
                                         .then((response) => {
@@ -2751,9 +2751,9 @@
                             .cancel('ANNULLA');
 
                         $mdDialog.show(confirm).then(() => {
-                            socketService.sendRequest('delete_zone', {zone_id: zone.id})
+                            socketService.sendRequest('delete_floor_zone', {zone_id: zone.id})
                                 .then((response) => {
-                                    if (response.result.length === 0) {
+                                    if (response.result === 1) {
                                         $scope.zones = $scope.zones.filter(z => z.id !== zone.id);
                                     }
                                 })

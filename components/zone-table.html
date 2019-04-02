@@ -13,7 +13,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">WETAG</h1>
+                <h1 class=" font-iceberg font-x-large">ZONE</h1>
             </div>
         </div>
     </md-toolbar>
@@ -47,16 +47,16 @@
                     <td md-cell ng-click="editCell($event, zone, 'name')" ng-class="{'md-placeholder': !zone.name}">
                         {{zone.name || 'Inserire nome'}}
                     </td>
-                    <td md-cell
+                    <td md-cell ng-click="editCell($event, zone, 'x_left')"
                         ng-class="{'md-placeholder': !zone.x_left}">{{zone.x_left || 'Inserire valore'}}
                     </td>
-                    <td md-cell
+                    <td md-cell ng-click="editCell($event, zone, 'x_right')"
                         ng-class="{'md-placeholder': !zone.x_right}">{{zone.x_right || 'Inserire valore'}}
                     </td>
-                    <td md-cell
+                    <td md-cell ng-click="editCell($event, zone, 'y_up')"
                         ng-class="{'md-placeholder': !zone.y_up}">{{zone.y_up || 'Inserire valore'}}
                     </td>
-                    <td md-cell
+                    <td md-cell ng-click="editCell($event, zone, 'y_down')"
                         ng-class="{'md-placeholder': !zone.y_down}">{{zone.y_down || 'Inserire valore'}}
                     </td>
                     <td md-cell ng-click="deleteRow(zone)"><img src="../SMARTSTUDIO/img/icons/delete_trash_24.png" alt="Cancella tag" title="Cancella tag"></td>

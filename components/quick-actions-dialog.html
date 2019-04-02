@@ -43,7 +43,6 @@
                 <div id="sound-on-off-container" layout="column" class="padding-10-px width-50"
                      layout-align="center center">
 
-                    <p>Audio: {{switch.playAudio}}</p>
                     <div flex="100" layout layout-align="center center">
                         <md-subheader class="padding-0" ng-show="switch.playAudio">Audio: <b
                                 class="color-green">ON</b></md-subheader>
@@ -92,7 +91,7 @@
                 </div>
             </div>
 
-            <md-button ng-click="updateUserSettings()">Conferma</md-button>
+            <md-button class="md-primary md-raised background-darkcyan" ng-click="updateUserSettings()">SALVA CONFIGURAZIONE</md-button>
         </div>
     </md-content>
     <!--end popup content-->

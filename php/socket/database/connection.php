@@ -1970,6 +1970,58 @@ class Connection
     }
 
     /**
+     * Function that change the value of a tag field
+     * @param $tag_id
+     * @param $tag_field
+     * @param $field_value
+     * @return db_errors|int|mysqli_stmt
+     */
+    function change_zone_field($zone_id, $zone_field, $field_value)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE zone SET " . strtoupper($zone_field) . " = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'ss', $field_value, $zone_id);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+
+            $this->result = $this->connection->affected_rows;
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /** Funzione che recupera tutti i tipi di un tag
+     * @param $zone_id
+     * @return array|db_errors
+     */
+    function delete_floor_zone($zone_id)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'DELETE FROM zone WHERE ID = ?';
+
+            $statement = $this->execute_selecting($this->query, 'i', $zone_id);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+
+            return $statement->affected_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
      * Function that uses the execute statement to execute a query with the prepare statement
      * @param $query - the query to be executed
      * @param $bind_string - the string containing the types of the parameters of the query
