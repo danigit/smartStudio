@@ -188,11 +188,11 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                multiple: true,
+                multiple           : true,
                 controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
                     let tags      = null;
                     $scope.alarms = [];
-                    $scope.query = {
+                    $scope.query  = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
                         limit       : 5,
@@ -211,9 +211,9 @@
                                         tagAlarms.forEach((tagAlarm) => {
                                             $scope.alarms.push(tagAlarm);
                                         })
-                                });
+                                    });
 
-                            });
+                                });
                         })
                         .catch((error) => {
                             console.log('showAlarmsHome error => ', error);
@@ -276,11 +276,11 @@
                             clickOutsideToClose: true,
                             controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
 
-                                let tag             = null;
+                                let tag = null;
 
                                 $scope.isTagOutOfLocation = 'background-red';
-                                $scope.locationName = tagName.tag + ' FUORI SITO';
-                                $scope.mapConfiguration = {
+                                $scope.locationName       = tagName.tag + ' FUORI SITO';
+                                $scope.mapConfiguration   = {
                                     zoom    : 8,
                                     map_type: mapType,
                                 };
@@ -375,11 +375,11 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                multiple: true,
+                multiple           : true,
                 controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
                     let tags      = null;
                     $scope.alarms = [];
-                    $scope.query = {
+                    $scope.query  = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
                         limit       : 5,
@@ -469,11 +469,11 @@
                             clickOutsideToClose: true,
                             controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
 
-                                let tag             = null;
+                                let tag = null;
 
                                 $scope.isTagOutOfLocation = 'background-red';
-                                $scope.locationName = tagName.tag + ' FUORI SITO';
-                                $scope.mapConfiguration = {
+                                $scope.locationName       = tagName.tag + ' FUORI SITO';
+                                $scope.mapConfiguration   = {
                                     zoom    : 8,
                                     map_type: mapType,
                                 };
@@ -886,7 +886,7 @@
         dataService.loadUserSettings();
 
         canvasCtrl.switch = {
-            showDrawing: false,
+            showDrawing   : false,
             showFullscreen: false,
         };
 
@@ -903,9 +903,9 @@
             if (newValues[5] === true) {
                 dataService.switch.showAnchors     = false;
                 dataService.switch.showCameras     = false;
-                canvasCtrl.showAlarmsIcon         = false;
-                canvasCtrl.showOfflineTagsIcon    = false;
-                canvasCtrl.showOfflineAnchorsIcon = false;
+                canvasCtrl.showAlarmsIcon          = false;
+                canvasCtrl.showOfflineTagsIcon     = false;
+                canvasCtrl.showOfflineAnchorsIcon  = false;
                 canvasCtrl.speedDial.clickedButton = 'horizontal';
 
                 $mdSidenav('left').close();
@@ -927,7 +927,7 @@
             } else if (newValues[5] === false) {
                 console.log('show drawing false');
                 console.log(canvasCtrl.canvasInterval);
-                if (canvasCtrl.canvasInterval === undefined){
+                if (canvasCtrl.canvasInterval === undefined) {
                     if (angular.element(document).find('md-dialog').length === 0) {
                         console.log('constant updating canvas');
                         constantUpdateCanvas();
@@ -952,7 +952,7 @@
                 })[0]];
 
             canvasCtrl.floorData.defaultFloorName = canvasCtrl.defaultFloor[0].name;
-            dataService.defaultFloorName = canvasCtrl.defaultFloor[0].name;
+            dataService.defaultFloorName          = canvasCtrl.defaultFloor[0].name;
             canvasCtrl.floorData.gridSpacing      = canvasCtrl.defaultFloor[0].map_spacing;
             canvasCtrl.floorData.floor_image_map  = canvasCtrl.defaultFloor[0].image_map;
             context.clearRect(0, 0, canvas.width, canvas.height);
@@ -1030,7 +1030,7 @@
 
             //constantly updating the canvas
             if (canvasCtrl.canvasInterval === undefined)
-               constantUpdateCanvas();
+                constantUpdateCanvas();
         };
 
         //controlling the alarms and setting the alarm icon
@@ -1163,10 +1163,10 @@
 
         //constantly updating the canvas with the objects position from the server
         let constantUpdateCanvas = () => {
-            let alarmsCounts          = new Array(100).fill(0);
+            let alarmsCounts   = new Array(100).fill(0);
             canvasImage.onload = function () {
-                canvas.width = this.naturalWidth;
-                canvas.height = this.naturalHeight;
+                canvas.width        = this.naturalWidth;
+                canvas.height       = this.naturalHeight;
                 bufferCanvas.width  = this.naturalWidth;
                 bufferCanvas.height = this.naturalHeight;
 
@@ -1368,7 +1368,7 @@
         };
 
         //getting the coordinate of the click within respect the canvas
-        HTMLCanvasElement.prototype.canvasMouseClickCoords = function(event) {
+        HTMLCanvasElement.prototype.canvasMouseClickCoords = function (event) {
             let totalOffsetX   = 0;
             let totalOffsetY   = 0;
             let canvasX, canvasY;
@@ -1395,36 +1395,36 @@
                 lines: JSON.stringify(drawedLines),
                 floor: canvasCtrl.defaultFloor[0].id
             })
-            .then(() => {
-                if (drawAnchor !== null) {
-                    let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, dropAnchorPosition.width, dropAnchorPosition.height);
-                    socketService.sendConstantRequest('update_anchor_position', {
-                        x : scaledSize.x.toFixed(2),
-                        y : scaledSize.y.toFixed(2),
-                        id: drawAnchor.id
-                    })
-                    .then((response) => {
-                        if (response.result !== 0) {
-                            console.log('anchor position updated');
-                        }
-                    })
-                    .catch((error) => {
-                        console.log('saveDrawing errro => ', error);
-                    })
-                }
+                .then(() => {
+                    if (drawAnchor !== null) {
+                        let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, dropAnchorPosition.width, dropAnchorPosition.height);
+                        socketService.sendConstantRequest('update_anchor_position', {
+                            x : scaledSize.x.toFixed(2),
+                            y : scaledSize.y.toFixed(2),
+                            id: drawAnchor.id
+                        })
+                            .then((response) => {
+                                if (response.result !== 0) {
+                                    console.log('anchor position updated');
+                                }
+                            })
+                            .catch((error) => {
+                                console.log('saveDrawing errro => ', error);
+                            })
+                    }
 
-                dataService.switch.showAnchors = true;
-                dataService.switch.showCameras = true;
-                canvasCtrl.switch.showDrawing = false;
+                    dataService.switch.showAnchors = true;
+                    dataService.switch.showCameras = true;
+                    canvasCtrl.switch.showDrawing  = false;
 
-                dropAnchorPosition                 = null;
-                drawAnchorImage                    = null;
-                canvasCtrl.speedDial.clickedButton = '';
-                if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
-            })
-            .catch((error) => {
-                console.log('saveDrawing error => ', error);
-            })
+                    dropAnchorPosition                 = null;
+                    drawAnchorImage                    = null;
+                    canvasCtrl.speedDial.clickedButton = '';
+                    if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
+                })
+                .catch((error) => {
+                    console.log('saveDrawing error => ', error);
+                })
         };
 
         //handeling the canvas click
@@ -1572,7 +1572,7 @@
                                                     : $scope.isTagInAlarm = 'background-green';
                                             }
 
-                                            $scope.hide = () =>  {
+                                            $scope.hide = () => {
                                                 $mdDialog.hide();
                                             }
                                         }]
@@ -1666,7 +1666,7 @@
                 controller         : ['$scope', 'socketService', 'dataService', function ($scope, socketService, dataService) {
                     let tags      = null;
                     $scope.alarms = [];
-                    $scope.query = {
+                    $scope.query  = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
                         limit       : 5,
@@ -1745,11 +1745,11 @@
                             clickOutsideToClose: true,
                             controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
 
-                                let tag             = null;
+                                let tag = null;
 
                                 $scope.isTagOutOfLocation = 'background-red';
-                                $scope.locationName = tagName.tag + ' FUORI SITO';
-                                $scope.mapConfiguration = {
+                                $scope.locationName       = tagName.tag + ' FUORI SITO';
+                                $scope.mapConfiguration   = {
                                     zoom    : 8,
                                     map_type: mapType,
                                 };
@@ -2117,11 +2117,11 @@
                                         }, 1000);
                                     }
                                 }).catch(function () {
-                                    $scope.location.showSuccess = false;
-                                    $scope.location.showError   = true;
-                                    $scope.location.message     = 'Impossibile inserire la posizione';
-                                    $scope.location.resultClass = 'background-red';
-                                })
+                                $scope.location.showSuccess = false;
+                                $scope.location.showError   = true;
+                                $scope.location.message     = 'Impossibile inserire la posizione';
+                                $scope.location.resultClass = 'background-red';
+                            })
                         } else {
                             $scope.location.resultClass = 'background-red';
                         }
@@ -2240,31 +2240,31 @@
                                     oldPassword: $scope.changePassword.oldPassword,
                                     newPassword: $scope.changePassword.newPassword
                                 })
-                                .then((response) => {
-                                    if (response.result === 'wrong_old') {
-                                        $scope.changePassword.resultClass = 'background-red';
-                                        $scope.changePassword.showError   = true;
-                                        $scope.changePassword.showSuccess = false;
-                                        $scope.changePassword.message     = 'Vecchia password non valida';
-                                    } else if (response.result === 'error_on_changing_password') {
-                                        $scope.changePassword.resultClass = 'background-red';
-                                        $scope.changePassword.showSuccess = false;
-                                        $scope.changePassword.showError   = true;
-                                        $scope.changePassword.message     = "Impossibile cambiare la password!";
-                                        $timeout(function () {
-                                            $mdDialog.hide();
-                                        }, 1000);
-                                    } else {
-                                        $scope.changePassword.resultClass = 'background-green';
-                                        $scope.changePassword.showSuccess = true;
-                                        $scope.changePassword.showError   = false;
-                                        $scope.changePassword.message     = "Password cambiata correnttamente!";
-                                        $timeout(function () {
-                                            $mdDialog.hide();
-                                        }, 1000);
-                                    }
-                                    $scope.$apply();
-                                });
+                                    .then((response) => {
+                                        if (response.result === 'wrong_old') {
+                                            $scope.changePassword.resultClass = 'background-red';
+                                            $scope.changePassword.showError   = true;
+                                            $scope.changePassword.showSuccess = false;
+                                            $scope.changePassword.message     = 'Vecchia password non valida';
+                                        } else if (response.result === 'error_on_changing_password') {
+                                            $scope.changePassword.resultClass = 'background-red';
+                                            $scope.changePassword.showSuccess = false;
+                                            $scope.changePassword.showError   = true;
+                                            $scope.changePassword.message     = "Impossibile cambiare la password!";
+                                            $timeout(function () {
+                                                $mdDialog.hide();
+                                            }, 1000);
+                                        } else {
+                                            $scope.changePassword.resultClass = 'background-green';
+                                            $scope.changePassword.showSuccess = true;
+                                            $scope.changePassword.showError   = false;
+                                            $scope.changePassword.message     = "Password cambiata correnttamente!";
+                                            $timeout(function () {
+                                                $mdDialog.hide();
+                                            }, 1000);
+                                        }
+                                        $scope.$apply();
+                                    });
                             } else {
                                 $scope.changePassword.resultClass = 'background-red';
                             }
@@ -2318,20 +2318,20 @@
                                 type: $scope.selectedType,
                                 macs: macs
                             })
-                            .then((response) => {
-                                if (response.result.length === 0) {
-                                    $scope.insertTag.resultClass = 'background-green';
-                                    $timeout(function () {
-                                        $mdDialog.hide();
-                                        $mdDialog.hide(registryDialog);
-                                        $mdDialog.show(registryDialog);
-                                    }, 1000);
-                                    $scope.$apply();
-                                }
-                            })
-                            .catch((error) => {
-                                console.log('addTag error => ', error);
-                            })
+                                .then((response) => {
+                                    if (response.result.length === 0) {
+                                        $scope.insertTag.resultClass = 'background-green';
+                                        $timeout(function () {
+                                            $mdDialog.hide();
+                                            $mdDialog.hide(registryDialog);
+                                            $mdDialog.show(registryDialog);
+                                        }, 1000);
+                                        $scope.$apply();
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log('addTag error => ', error);
+                                })
                         } else {
                             $scope.insertTag.resultClass = 'background-red';
                         }
@@ -2351,10 +2351,10 @@
                 clickOutsideToClose: true,
                 multiple           : true,
                 controller         : ['$scope', 'admin', function ($scope, admin) {
-                    $scope.selected = [];
-                    $scope.tags     = [];
+                    $scope.selected   = [];
+                    $scope.tags       = [];
                     $scope.tagsOnline = [];
-                    $scope.query    = {
+                    $scope.query      = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
                         limit       : 5,
@@ -2386,7 +2386,7 @@
                                 tempOffgrid.push(elem);
                             });
 
-                            $scope.tagsOnline = $scope.tags.filter(t => !tempOffgrid.some( to => to.id === t.id));
+                            $scope.tagsOnline = $scope.tags.filter(t => !tempOffgrid.some(to => to.id === t.id));
                         });
 
                     $scope.tagsContainTag = (tags, tag) => {
@@ -2408,13 +2408,13 @@
                                         tag_field  : tagName,
                                         field_value: input.$modelValue
                                     })
-                                    .then((response) => {
-                                        if (response.result !== 1)
-                                            console.log(response.result);
-                                    })
-                                    .catch((error) => {
-                                        console.log('editCell error => ', error);
-                                    })
+                                        .then((response) => {
+                                            if (response.result !== 1)
+                                                console.log(response.result);
+                                        })
+                                        .catch((error) => {
+                                            console.log('editCell error => ', error);
+                                        })
                                 },
                                 targetEvent: event,
                                 title      : 'Inserisci un valore',
@@ -2538,21 +2538,21 @@
                                                         type  : $scope.insertMac.type,
                                                         tag_id: tag.id
                                                     })
-                                                    .then((response) => {
-                                                        if (response.result !== 0) {
-                                                            $scope.insertMac.resultClass = 'background-green';
-                                                            $timeout(function () {
-                                                                $mdDialog.hide();
-                                                                $mdDialog.show(tagMacsDialog);
-                                                            }, 1000);
-                                                            $scope.$apply();
-                                                        } else {
-                                                            $scope.insertTag.resultClass = 'background-red';
-                                                        }
-                                                    })
-                                                    .catch((error) => {
-                                                        console.log('addMac error => ', error);
-                                                    })
+                                                        .then((response) => {
+                                                            if (response.result !== 0) {
+                                                                $scope.insertMac.resultClass = 'background-green';
+                                                                $timeout(function () {
+                                                                    $mdDialog.hide();
+                                                                    $mdDialog.show(tagMacsDialog);
+                                                                }, 1000);
+                                                                $scope.$apply();
+                                                            } else {
+                                                                $scope.insertTag.resultClass = 'background-red';
+                                                            }
+                                                        })
+                                                        .catch((error) => {
+                                                            console.log('addMac error => ', error);
+                                                        })
                                                 } else {
                                                     $scope.insertTag.resultClass = 'background-red';
                                                 }
@@ -2580,13 +2580,13 @@
                                                     mac_field  : macName,
                                                     field_value: input.$modelValue
                                                 })
-                                                .then(function (response) {
-                                                    if (response.result !== 1)
-                                                        console.log(response.result);
-                                                })
-                                                .catch((error) => {
-                                                    console.log('editCell error => ', error);
-                                                })
+                                                    .then(function (response) {
+                                                        if (response.result !== 1)
+                                                            console.log(response.result);
+                                                    })
+                                                    .catch((error) => {
+                                                        console.log('editCell error => ', error);
+                                                    })
                                             },
                                             targetEvent: event,
                                             title      : 'Inserisci un valore',
@@ -2615,6 +2615,168 @@
             };
 
             $mdDialog.show(registryDialog);
+        };
+
+        $scope.zone = () => {
+            let floor = dataService.userFloors.filter(f => f.name === dataService.defaultFloorName)[0];
+
+            let addRowDialog = {
+                templateUrl        : componentsPath + 'insert-zones-row.html',
+                parent             : angular.element(document.body),
+                clickOutsideToClose: true,
+                multiple           : true,
+                controller         : ['$scope', function ($scope) {
+
+                    $scope.insertZone = {
+                        zoneName       : '',
+                        x_left     : '',
+                        x_right    : '',
+                        y_up       : '',
+                        y_down     : '',
+                        resultClass: '',
+                    };
+
+                    //insert a zone
+                    $scope.insertZone = function (form) {
+                        console.log('insert zone called');
+                        form.$submitted = true;
+
+                        if (form.$valid) {
+                            let data = {
+                                name   : $scope.insertZone.zoneName,
+                                x_left : $scope.insertZone.x_left,
+                                x_right: $scope.insertZone.x_right,
+                                y_up   : $scope.insertZone.y_up,
+                                y_down : $scope.insertZone.y_down,
+                                floor  : floor.id
+                            };
+
+                            let strigified = JSON.stringify(data);
+                            socketService.sendRequest('insert_floor_zone', {data: strigified})
+                                .then((response) => {
+                                    if (response.result !== 0) {
+                                        $scope.insertZone.resultClass = 'background-green';
+                                        $timeout(function () {
+                                            $mdDialog.hide(addRowDialog);
+                                            $mdDialog.hide(zoneDialog);
+                                            $mdDialog.show(zoneDialog);
+                                        }, 1000);
+                                        $scope.$apply();
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log('addTag error => ', error);
+                                })
+                        } else {
+                            $scope.insertTag.resultClass = 'background-red';
+                        }
+                    };
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    }
+                }]
+            };
+
+            let zoneDialog = {
+                locals             : {admin: $scope.isAdmin},
+                templateUrl        : componentsPath + 'zone-table.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
+                clickOutsideToClose: true,
+                multiple           : true,
+                controller         : ['$scope', 'admin', function ($scope, admin) {
+
+                    $scope.selected = [];
+                    $scope.zones    = [];
+                    $scope.query    = {
+                        limitOptions: [5, 10, 15],
+                        order       : 'name',
+                        limit       : 5,
+                        page        : 1
+                    };
+
+                    socketService.sendRequest('get_floor_zones', {
+                        floor   : floor.name,
+                        location: dataService.location,
+                        user    : dataService.username
+                    })
+                        .then((response) => {
+                            console.log(response);
+                            $scope.zones = response.result;
+                        });
+
+                    $scope.editCell = (event, zone, zoneName) => {
+
+                        event.stopPropagation();
+
+                        if (admin) {
+                            let editCell = {
+                                modelValue : zone[zoneName],
+                                save       : function (input) {
+                                    input.$invalid = true;
+                                    zone[zoneName] = input.$modelValue;
+                                    socketService.sendRequest('change_zone_field', {
+                                        tag_id     : zone.id,
+                                        tag_field  : zoneName,
+                                        field_value: input.$modelValue
+                                    })
+                                        .then((response) => {
+                                            if (response.result !== 1)
+                                                console.log(response.result);
+                                        })
+                                        .catch((error) => {
+                                            console.log('editCell error => ', error);
+                                        })
+                                },
+                                targetEvent: event,
+                                title      : 'Inserisci un valore',
+                                validators : {
+                                    'md-maxlength': 30
+                                }
+                            };
+
+                            $mdEditDialog.large(editCell);
+                        }
+                    };
+
+                    //deleting zone
+                    $scope.deleteRow = (zone) => {
+                        let confirm = $mdDialog.confirm()
+                            .title('CANCELLAZIONE ZONAG')
+                            .textContent('Sei sicuro di voler cancellare la zona?')
+                            .targetEvent(event)
+                            .multiple(true)
+                            .ok('CANCELLA ZONA')
+                            .cancel('ANNULLA');
+
+                        $mdDialog.show(confirm).then(() => {
+                            socketService.sendRequest('delete_zone', {zone_id: zone.id})
+                                .then((response) => {
+                                    if (response.result.length === 0) {
+                                        $scope.zones = $scope.zones.filter(z => z.id !== zone.id);
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log('deleteRow error => ', error);
+                                });
+                        }, function () {
+                            console.log('CANCELLATO!!!!');
+                        });
+                    };
+
+                    //inserting tag
+                    $scope.addNewRow = () => {
+                        $mdDialog.show(addRowDialog);
+                    };
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    }
+                }]
+            };
+
+            $mdDialog.show(zoneDialog);
         };
 
         //showing the anchors table
@@ -2696,20 +2858,20 @@
                                 neighbors : neighborsString,
                                 floor     : floor.id
                             })
-                            .then((response) => {
-                                if (response.result.length === 0) {
-                                    $scope.insertAnchor.resultClass = 'background-green';
-                                    $timeout(function () {
-                                        $mdDialog.hide();
-                                        $mdDialog.hide(anchorsDialog);
-                                        $mdDialog.show(anchorsDialog)
-                                    }, 1000);
-                                    $scope.$apply();
-                                }
-                            })
-                            .catch((error) => {
-                                console.log('addAnchor error => ', error);
-                            })
+                                .then((response) => {
+                                    if (response.result.length === 0) {
+                                        $scope.insertAnchor.resultClass = 'background-green';
+                                        $timeout(function () {
+                                            $mdDialog.hide();
+                                            $mdDialog.hide(anchorsDialog);
+                                            $mdDialog.show(anchorsDialog)
+                                        }, 1000);
+                                        $scope.$apply();
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log('addAnchor error => ', error);
+                                })
                         } else {
                             $scope.insertAnchor.resultClass = 'background-red';
                         }
@@ -2746,12 +2908,12 @@
                         floor   : floor.name,
                         location: dataService.location
                     })
-                    .then((response) => {
-                        $scope.anchors = response.result;
-                    })
-                    .catch((error) => {
-                        console.log('anchorDialog error => ', error);
-                    });
+                        .then((response) => {
+                            $scope.anchors = response.result;
+                        })
+                        .catch((error) => {
+                            console.log('anchorDialog error => ', error);
+                        });
 
                     $scope.editCell = (event, anchor, anchorName) => {
 
@@ -2768,13 +2930,13 @@
                                         anchor_field: anchorName,
                                         field_value : input.$modelValue
                                     })
-                                    .then((response) =>  {
-                                        if (response.result !== 1)
-                                            console.log(response.result);
-                                    })
-                                    .catch((error) => {
-                                        console.log('editCell error => ', error);
-                                    })
+                                        .then((response) => {
+                                            if (response.result !== 1)
+                                                console.log(response.result);
+                                        })
+                                        .catch((error) => {
+                                            console.log('editCell error => ', error);
+                                        })
                                 },
                                 targetEvent: event,
                                 title      : 'Inserisci un valore',
@@ -2872,57 +3034,57 @@
                                             spacing  : $scope.insertFloor.spacing,
                                             location : currentLocation.id
                                         })
-                                        .then((response) => {
-                                            if (response.result !== undefined && response.result !== 0) {
-                                                convertImageToBase64(file)
-                                                    .then((response) => {
-                                                        socketService.sendRequest('save_floor_image', {
-                                                            imageName: fileName,
-                                                            image    : response
-                                                        })
-                                                        .then(function (response) {
-                                                            if (response.result === false) {
-                                                                $scope.insertFloor.showSuccess = false;
-                                                                $scope.insertFloor.showError   = true;
-                                                                $scope.insertFloor.message     = "Piano inserito senza salvare l'immagine";
-                                                                $scope.insertFloor.resultClass = 'background-orange';
+                                            .then((response) => {
+                                                if (response.result !== undefined && response.result !== 0) {
+                                                    convertImageToBase64(file)
+                                                        .then((response) => {
+                                                            socketService.sendRequest('save_floor_image', {
+                                                                imageName: fileName,
+                                                                image    : response
+                                                            })
+                                                                .then(function (response) {
+                                                                    if (response.result === false) {
+                                                                        $scope.insertFloor.showSuccess = false;
+                                                                        $scope.insertFloor.showError   = true;
+                                                                        $scope.insertFloor.message     = "Piano inserito senza salvare l'immagine";
+                                                                        $scope.insertFloor.resultClass = 'background-orange';
 
-                                                                $scope.$apply();
+                                                                        $scope.$apply();
 
-                                                                $timeout(function () {
-                                                                    $mdDialog.hide();
-                                                                    $mdDialog.hide(floorDialog);
-                                                                    $mdDialog.show(floorDialog);
-                                                                }, 1000);
-                                                            } else {
-                                                                $scope.insertFloor.resultClass = 'background-green';
-                                                                $scope.insertFloor.showSuccess = true;
-                                                                $scope.insertFloor.showError   = false;
-                                                                $scope.insertFloor.message     = 'Piano inserito con successo';
+                                                                        $timeout(function () {
+                                                                            $mdDialog.hide();
+                                                                            $mdDialog.hide(floorDialog);
+                                                                            $mdDialog.show(floorDialog);
+                                                                        }, 1000);
+                                                                    } else {
+                                                                        $scope.insertFloor.resultClass = 'background-green';
+                                                                        $scope.insertFloor.showSuccess = true;
+                                                                        $scope.insertFloor.showError   = false;
+                                                                        $scope.insertFloor.message     = 'Piano inserito con successo';
 
-                                                                $scope.$apply();
+                                                                        $scope.$apply();
 
-                                                                $timeout(function () {
-                                                                    $mdDialog.hide();
-                                                                    $mdDialog.hide(floorDialog);
-                                                                    $mdDialog.show(floorDialog);
-                                                                }, 1000);
-                                                            }
-                                                        })
-                                                        .catch((error) => {
-                                                            console.log('insertFloor error => ', error);
-                                                        })
-                                                });
-                                            } else {
-                                                $scope.insertFloor.showSuccess = false;
-                                                $scope.insertFloor.showError   = true;
-                                                $scope.insertFloor.message     = 'Impossibile inserire il piano.';
-                                                $scope.insertFloor.resultClass = 'background-red';
-                                            }
-                                        })
-                                        .catch((error) => {
-                                            console.log('insertFloor error => ', error);
-                                        })
+                                                                        $timeout(function () {
+                                                                            $mdDialog.hide();
+                                                                            $mdDialog.hide(floorDialog);
+                                                                            $mdDialog.show(floorDialog);
+                                                                        }, 1000);
+                                                                    }
+                                                                })
+                                                                .catch((error) => {
+                                                                    console.log('insertFloor error => ', error);
+                                                                })
+                                                        });
+                                                } else {
+                                                    $scope.insertFloor.showSuccess = false;
+                                                    $scope.insertFloor.showError   = true;
+                                                    $scope.insertFloor.message     = 'Impossibile inserire il piano.';
+                                                    $scope.insertFloor.resultClass = 'background-red';
+                                                }
+                                            })
+                                            .catch((error) => {
+                                                console.log('insertFloor error => ', error);
+                                            })
                                     } else {
                                         $scope.insertFloor.showSuccess = false;
                                         $scope.insertFloor.showError   = true;
@@ -2988,13 +3150,13 @@
                                         floor_field: floorName,
                                         field_value: input.$modelValue
                                     })
-                                    .then((response) => {
-                                        if (response.result !== 1)
-                                            console.log(response.result);
-                                    })
-                                    .catch((error) => {
-                                        console.log('editCell error => ', error);
-                                    })
+                                        .then((response) => {
+                                            if (response.result !== 1)
+                                                console.log(response.result);
+                                        })
+                                        .catch((error) => {
+                                            console.log('editCell error => ', error);
+                                        })
                                 },
                                 targetEvent: event,
                                 title      : 'Inserisci un valore',
@@ -3047,7 +3209,7 @@
                         fileInput.click();
                     };
 
-                    $scope.fileNameChanged = () =>  {
+                    $scope.fileNameChanged = () => {
                         let fileInput = document.getElementById('floor-image-' + $scope.floorId);
                         let file      = null;
                         let fileName  = null;
@@ -3090,21 +3252,21 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller: ['$scope', '$interval', 'dataService', function ($scope, $interval, dataService) {
+                controller         : ['$scope', '$interval', 'dataService', function ($scope, $interval, dataService) {
 
                     $scope.switch = {
-                        showGrid: true,
+                        showGrid   : true,
                         showAnchors: true,
                         showCameras: true,
-                        playAudio: true
+                        playAudio  : true
                     };
 
                     socketService.sendRequest('get_user_settings', {username: dataService.username})
                         .then((response) => {
-                            $scope.switch.showGrid      = (response.result[0].grid_on === 1);
-                            $scope.switch.showAnchors   = (response.result[0].anchors_on === 1);
-                            $scope.switch.showCameras   = (response.result[0].cameras_on === 1);
-                            $scope.switch.playAudio     = (response.result[0].sound_on === 1);
+                            $scope.switch.showGrid    = (response.result[0].grid_on === 1);
+                            $scope.switch.showAnchors = (response.result[0].anchors_on === 1);
+                            $scope.switch.showCameras = (response.result[0].cameras_on === 1);
+                            $scope.switch.playAudio   = (response.result[0].sound_on === 1);
                         });
                     // dataService.loadUserSettings();
 
@@ -3115,10 +3277,10 @@
 
                     $scope.$watchGroup(['switch.showGrid', "switch.showAnchors", 'switch.showCameras', 'switch.playAudio'], function (newValues) {
                         console.log('watching');
-                        dataService.switch.showGrid = (newValues[0]);
+                        dataService.switch.showGrid    = (newValues[0]);
                         dataService.switch.showAnchors = (newValues[1]);
                         dataService.switch.showCameras = (newValues[2]);
-                        dataService.switch.playAudio = (newValues[3]);
+                        dataService.switch.playAudio   = (newValues[3]);
                     })
                 }]
             });
@@ -3303,10 +3465,10 @@
                     }
                 })
                 .catch((error) => {
-                    $scope.errorHandeling.noConnection = true;
-                    console.log('recoverPassword error => ', error);
-                }
-            )
+                        $scope.errorHandeling.noConnection = true;
+                        console.log('recoverPassword error => ', error);
+                    }
+                )
         };
 
         //reseting the password
@@ -3324,14 +3486,14 @@
 
                 promise
                     .then((response) => {
-                        if (response.data.response) {
-                            $state.go('login');
-                        } else {
-                            $scope.errorHandeling.wrongData = true;
-                            $scope.error                    = response.data.message;
+                            if (response.data.response) {
+                                $state.go('login');
+                            } else {
+                                $scope.errorHandeling.wrongData = true;
+                                $scope.error                    = response.data.message;
+                            }
                         }
-                    }
-                ).catch((error) => {
+                    ).catch((error) => {
                     $scope.errorHandeling.noConnection = true;
                     console.log('resetPassword error => ', error);
                 })

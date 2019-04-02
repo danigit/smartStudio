@@ -1,0 +1,88 @@
+<div>
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="insertZone.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">INSERIMENTO ZONE</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center">
+
+        <form id="insertZoneForm" name="insertZoneForm">
+            <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <input required type="text" ng-model="insertZone.zoneName" name="insertZoneName"
+                       placeholder="Nome">
+                <div ng-messages="insertZoneForm.insertZoneName.$error || insertZoneForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">Inserire un nome</div>
+                </div>
+            </md-input-container>
+
+            <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <input required type="number" ng-model="insertZone.x_left" name="insertZoneXLeft"
+                       placeholder="X sinistra">
+                <div ng-messages="insertZoneForm.insertZoneXLeft.$error || insertZoneForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">Inserire valore</div>
+                </div>
+            </md-input-container>
+            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <input required type="number" ng-model="insertZone.x_right" name="insertZoneXRight"
+                       placeholder="X destra">
+                <div ng-messages="insertZoneForm.insertZoneXRight.$error || insertZoneForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">Inserire valore</div>
+                </div>
+            </md-input-container>
+            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <input required type="number" ng-model="insertZone.y_up" name="insertZoneYUp"
+                       placeholder="Y su">
+                <div ng-messages="insertZoneForm.insertZoneYUp.$error || insertZoneForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">Inserire valore</div>
+                </div>
+            </md-input-container>
+            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <input required type="number" ng-model="insertZone.y_down" name="insertZoneYDown"
+                       placeholder="Y down">
+                <div ng-messages="insertZoneForm.insertZoneYDown.$error || insertZoneForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">Inserire valore</div>
+                </div>
+            </md-input-container>
+
+            <div class="background-transparent-white text-center color-green font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                 ng-show="insertZone.showSuccess">
+                {{insertZone.message}}
+            </div>
+
+            <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                 ng-show="insertZone.showError">
+                {{insertZone.message}}
+            </div>
+
+            <div layout="row" layout-align="center end" class="margin-top-15-px">
+                <md-button ng-click="insertZone(insertZoneForm)" class="md-raised  background-darkcyan color-white">
+                    INSERISCI ZONA
+                </md-button>
+            </div>
+        </form>
+    </div>
+</md-content>
+<!--end popup content-->

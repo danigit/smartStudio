@@ -32,29 +32,34 @@
 
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column></th>
                     <th md-column md-order-by="name"><span class="color-darkcyan">NOME</span></th>
-                    <th md-column md-order-by="type_name"><span class="color-darkcyan">TIPO TAG</span></th>
+                    <th md-column md-order-by="x_left"><span class="color-darkcyan">X LEFT</span></th>
+                    <th md-column md-order-by="x_right"><span class="color-darkcyan">X RIGHT</span></th>
+                    <th md-column md-order-by="y_up"><span class="color-darkcyan">Y UP</span></th>
+                    <th md-column md-order-by="y_down"><span class="color-darkcyan">Y DOWN</span></th>
                     <th md-column></th>
                 </tr>
                 </thead>
 
                 <tbody md-body>
                 <tr md-row md-select="tag" md-on-select="logItem" md-auto-select="true"
-                    ng-repeat="tag in tags | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
-                    <td md-cell><img
-                            ng-src="{{tag.is_exit ? '../SMARTSTUDIO/img/icons/tags/offline_tag_24.png' : '../SMARTSTUDIO/img/icons/tags/online_tag_24.png'}}"
-                            alt="Stato tag" title="Stato tag"></td>
-                    <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">
-                        {{tag.name || 'Inserire nome'}}
+                    ng-repeat="zone in zones | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
+                    <td md-cell ng-click="editCell($event, zone, 'name')" ng-class="{'md-placeholder': !zone.name}">
+                        {{zone.name || 'Inserire nome'}}
                     </td>
                     <td md-cell
-                        ng-class="{'md-placeholder': !tag.type_name}">{{tag.type_name || 'Inserire tipo'}}
+                        ng-class="{'md-placeholder': !zone.x_left}">{{zone.x_left || 'Inserire valore'}}
                     </td>
-                    <td md-cell>
-                        <md-button ng-click="tagMacs(tag)" class="md-raised background-darkcyan color-white">GESTIONE
-                            MACS
-                    <td md-cell ng-click="deleteRow(tag)"><img src="../SMARTSTUDIO/img/icons/delete_trash_24.png" alt="Cancella tag" title="Cancella tag"></td>
+                    <td md-cell
+                        ng-class="{'md-placeholder': !zone.x_right}">{{zone.x_right || 'Inserire valore'}}
+                    </td>
+                    <td md-cell
+                        ng-class="{'md-placeholder': !zone.y_up}">{{zone.y_up || 'Inserire valore'}}
+                    </td>
+                    <td md-cell
+                        ng-class="{'md-placeholder': !zone.y_down}">{{zone.y_down || 'Inserire valore'}}
+                    </td>
+                    <td md-cell ng-click="deleteRow(zone)"><img src="../SMARTSTUDIO/img/icons/delete_trash_24.png" alt="Cancella tag" title="Cancella tag"></td>
                 </tr>
                 </tbody>
             </table>
@@ -69,7 +74,7 @@
 
         <md-table-pagination class="color-red" md-limit="query.limit" md-limit-options="query.limitOptions"
                              md-page="query.page"
-                             md-total="{{tags.length}}" md-on-paginate="">
+                             md-total="{{zones.length}}" md-on-paginate="">
         </md-table-pagination>
     </div>
 </md-content>

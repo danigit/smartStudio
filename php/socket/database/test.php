@@ -66,10 +66,12 @@ class Test{
                 break;
             case 'save_user_settings': var_dump($this->conn->save_user_settings('simone', array('grid_on' => 1, 'anchors_on' => 1, 'cameras_on' => 1, 'fullscreen_on' => 0)));
                 break;
+            case 'insert_floor_zone': var_dump($this->conn->insert_floor_zone("{\"name\":\"fdsafdsa\",\"x_left\":1,\"x_right\":1,\"y_up\":1,\"y_down\":1,\"floor\":1}"));
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('save_user_settings');
+$test->test_function('insert_floor_zone');

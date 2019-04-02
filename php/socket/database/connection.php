@@ -1901,6 +1901,74 @@ class Connection
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
+
+    /**
+     * Funzione che recupera tutti i tipi di un tag
+     * @param $floor
+     * @param $location
+     * @param $user
+     * @return array|db_errors
+     */
+    function get_floor_zones($floor, $location, $user)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "SELECT zone.ID, zone.NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, FLOOR_ID FROM zone JOIN floor 
+                            ON FLOOR_ID = floor.ID JOIN location l on floor.LOCATION_ID = l.ID JOIN user_has_location 
+                            ON l.ID = user_has_location.LOCATION_ID JOIN user u ON user_has_location.USER_ID = u.ID 
+                            WHERE floor.NAME = ? AND l.NAME = ? AND u.NAME = ?";
+
+            $statement = $this->execute_selecting($this->query, 'sss', $floor, $location, $user);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
+
+            $this->result = $statement->get_result();
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_left' => $row['X_LEFT'],
+                    'x_right' => $row['X_RIGHT'], 'y_up' => $row['Y_UP'], 'y_down' => $row['Y_DOWN'], 'floor_id' => $row['FLOOR_ID']);
+            }
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Funzione che recupera tutti i tipi di un tag
+     * @param $floor
+     * @param $data
+     * @return array|db_errors
+     */
+    function insert_floor_zone($data)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $decoded = json_decode($data, true);
+
+            $this->query = "INSERT INTO zone (NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, FLOOR_ID) VALUES (?, ?, ?, ?, ?, ?)";
+
+            $statement = $this->execute_inserting($this->query, 'siiiii', $decoded['name'], $decoded['x_left'], $decoded['x_right'],
+                $decoded['y_up'], $decoded['y_down'], $decoded['floor']);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
+
+            return $this->connection->insert_id;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
     /**
      * Function that uses the execute statement to execute a query with the prepare statement
      * @param $query - the query to be executed

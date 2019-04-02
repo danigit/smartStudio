@@ -644,8 +644,29 @@ class webSocketServer implements MessageComponentInterface{
             //getting the user settings
             case 'update_user_settings':{
                 $result['action'] = 'update_user_settings';
-//                $result['sended_data'] = $decoded_message['data']['data'];
                 $query = $this->connection->update_user_settings($decoded_message['data']['username'], $decoded_message['data']['data']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //getting the zones
+            case 'get_floor_zones':{
+                $result['action'] = 'get_floor_zones';
+
+                $query = $this->connection->get_floor_zones($decoded_message['data']['floor'], $decoded_message['data']['location'], $decoded_message['data']['user']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //getting the zones
+            case 'insert_floor_zone':{
+                $result['action'] = 'insert_floor_zone';
+
+                $query = $this->connection->insert_floor_zone($decoded_message['data']['data']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

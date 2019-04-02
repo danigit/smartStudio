@@ -54,8 +54,6 @@
         };
 
         service.updateUserSettings = () => {
-            console.log('saving user settings');
-            console.log('saving settings');
             let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, sound_on: service.switch.playAudio};
             let stringifyData = JSON.stringify(data);
             socketService.sendRequest('update_user_settings', {username: service.username, data: stringifyData})
