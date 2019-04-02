@@ -133,6 +133,9 @@
                                 <md-list-item ng-click="viewHistory()"><p>Storico</p><img
                                         src="../SMARTSTUDIO/img/icons/menu/history_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
+                                <md-list-item ng-click="quickActions()"><p>Comandi rapidi</p><img
+                                        src="../SMARTSTUDIO/img/icons/menu/quick_action_16.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
                                 <md-list-item ng-click="changePassword()"><p>Cambia password</p><img
                                         src="../SMARTSTUDIO/img/icons/menu/password_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
@@ -187,73 +190,6 @@
 
                             <div layout="row" layout-align="center center">
 
-                                <div id="grid-on-off-container" layout="column" class="padding-10-px width-50"
-                                     layout-align="center center">
-
-                                    <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showGrid">Griglia: <b
-                                                class="color-green">ON</b></md-subheader>
-                                        <md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showGrid">Griglia:
-                                            <b class="color-red">OFF</b></md-subheader>
-                                    </div>
-
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
-                                               md-no-ink aria-label="Mostra/nascondi la griglia"
-                                               ng-model="canvasCtrl.switch.showGrid">
-                                    </md-switch>
-                                </div>
-
-                                <div id="fullscreen-on-off-container" layout="column" class="padding-10-px width-50"
-                                     layout-align="center center">
-
-                                    <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b>
-                                        </md-subheader>
-                                    </div>
-
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
-                                               md-no-ink aria-label="Passsa in modalita' fullscreen"
-                                               ng-model="canvasCtrl.switch.fullscreen">
-                                    </md-switch>
-                                </div>
-                            </div>
-                            <div layout="row" layout-align="center center">
-
-                                <div id="anchors-on-off-container" layout="column" class="padding-10-px width-50"
-                                     layout-align="center center">
-
-                                    <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showAnchors">Anchors:
-                                            <b class="color-green">ON</b></md-subheader>
-                                        <md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showAnchors">
-                                            Anchors: <b class="color-red">OFF</b></md-subheader>
-                                    </div>
-
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
-                                               md-no-ink aria-label="Mostra/nascondi le telecamere"
-                                               ng-model="canvasCtrl.switch.showAnchors">
-                                    </md-switch>
-                                </div>
-
-                                <div id="cameras-on-off-container" layout="column" class="padding-10-px width-50"
-                                     layout-align="center center">
-
-                                    <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showCameras">Cameras:
-                                            <b class="color-green">ON</b></md-subheader>
-                                        <md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showCameras">
-                                            Cameras: <b class="color-red">OFF</b></md-subheader>
-                                    </div>
-
-                                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
-                                               md-no-ink aria-label="Mostra/nascondi le telecamere"
-                                               ng-model="canvasCtrl.switch.showCameras">
-                                    </md-switch>
-                                </div>
-                            </div>
-
-                            <div layout="row" layout-align="center center">
-
                                 <div id="drawing-on-off-container" layout="column" class="padding-10-px width-100"
                                      layout-align="center center">
                                     <div flex="100" layout layout-align="center center">
@@ -262,6 +198,7 @@
                                         <md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showDrawing">
                                             Modalita' disegna: <b class="color-red">OFF</b></md-subheader>
                                     </div>
+                                    <p>{{canvasCtrl.switch.showDrawing}}</p>
                                     <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
                                                md-no-ink aria-label="Mostra/nascondi strumenti disegno"
                                                ng-model="canvasCtrl.switch.showDrawing">

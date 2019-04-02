@@ -62,10 +62,14 @@ class Test{
                 break;
             case 'update_anchor_position': var_dump($this->conn->update_anchor_position(17.555, 3.222, 13));
                 break;
+            case 'get_user_settings': var_dump($this->conn->get_user_settings('simone'));
+                break;
+            case 'save_user_settings': var_dump($this->conn->save_user_settings('simone', array('grid_on' => 1, 'anchors_on' => 1, 'cameras_on' => 1, 'fullscreen_on' => 0)));
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('insert_floor');
+$test->test_function('save_user_settings');

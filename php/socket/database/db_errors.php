@@ -47,6 +47,8 @@ class db_errors
     public static $ERROR_ON_UPDATING_FLOOR_IMAGE = 36;
     public static $ERROR_ON_CHANGING_FIELD = 37;
     public static $ERROR_ON_GETTING_EMERGENCY = 38;
+    public static $ERROR_ON_GETTING_TAG_OUTDOOR_LOCATION_ZOOM = 39;
+    public static $ERROR_ON_GETTING_USER_SETTINGS = 39;
 
     private $error;
 
@@ -153,6 +155,10 @@ class db_errors
                 return 'ERROR_ON_CHANGING_FIELD';
             case 38:
                 return 'ERROR_ON_GETTING_EMERGENCY';
+            case 39:
+                return '$ERROR_ON_GETTING_TAG_OUTDOOR_LOCATION_ZOOM';
+            case 40:
+                return '$ERROR_ON_GETTING_USER_SETTINGSM';
             default:
                 return 'UNKNOWN_ERROR';
         }

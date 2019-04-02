@@ -10,9 +10,9 @@
     main.service('recoverPassService', recoverPassService);
     main.service('socketService', socketService);
 
-    dataService.$inject = ['$mdDialog', '$interval', '$state'];
+    dataService.$inject = ['$mdDialog', '$interval', '$state', 'socketService'];
 
-    function dataService($mdDialog, $interval, $state) {
+    function dataService($mdDialog, $interval, $state, socketService) {
         let service = this;
 
 
@@ -36,6 +36,35 @@
         service.isSearchingTag       = false;
         service.offlineTagsIsOpen    = false;
         service.offlineAnchorsIsOpen = false;
+
+        service.loadUserSettings = () => {
+            console.log(service.username);
+            socketService.sendRequest('get_user_settings', {username: service.username})
+                .then((response) => {
+                    console.log(response);
+                    service.switch = {
+                        showGrid      : (response.result[0].grid_on === 1),
+                        showAnchors   : (response.result[0].anchors_on === 1),
+                        showCameras   : (response.result[0].cameras_on === 1),
+                        showRadius    : true,
+                        showDrawing   : false,
+                        showFullscreen: false,
+                    };
+                })
+        };
+
+        service.updateUserSettings = () => {
+            console.log('saving user settings');
+            console.log('saving settings');
+            let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, fullscreen_on: service.switch.showFullscreen};
+            let stringifyData = JSON.stringify(data);
+            socketService.sendRequest('update_user_settings', {username: service.username, data: stringifyData})
+                .then((response) => {
+                    console.log(response);
+                    service.loadUserSettings();
+                })
+        };
+
 
         //function that show the offline tags
         service.showOfflineTags = (isOutside, constantUpdateNotifications) => {
@@ -190,8 +219,17 @@
             };
         };
 
+        //function that control if the tag is indoor
+        service.isOutdoor = (tag) => {
+            return tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0;
+        };
+
+        service.getAllLocations = () => {
+            return socketService.sendRequest('get_all_locations');
+        };
+
         //getting all the alarms of the tag passed as parameter and creating the objects to be shown in info window
-        service.loadTagAlarmsForInfoWindow = (tag) => {
+        service.loadTagAlarmsForInfoWindow = (tag, locations) => {
             let alarms = [];
 
             if (tag.sos) {
@@ -227,7 +265,12 @@
             if (tag.call_me_alarm) {
                 alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Call me alarm', 'Call me alarm', tagsIconPath + 'call_me_alarm_24.png'));
             }
-
+            if (service.isOutdoor(tag)){
+                let isInLocation = locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
+                if (!isInLocation){
+                    alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png'));
+                }
+            }
             return alarms;
         };
 
@@ -384,11 +427,6 @@
             let distY = Math.abs(tag.gps_east_degree - origin[1]);
 
             return Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-        };
-
-        //function that control if the tag is indoor
-        service.isOutdoor = (tag) => {
-            return tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0;
         };
 
         service.goHome = () => {

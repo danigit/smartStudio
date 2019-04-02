@@ -46,7 +46,7 @@
                     <td md-cell class="no-wrap">{{alarm.tag}}</td>
                     <td md-cell class="no-wrap" >{{alarm.name}}</td>
                     <td md-cell class="no-wrap" >{{alarm.description}}</td>
-                    <td md-cell class="no-wrap" ><md-button ng-click="loadLocation(alarm)" class="md-raised background-darkcyan color-white">
+                    <td md-cell class="no-wrap" ><md-button ng-click="(alarm.name !== 'Tag fuori sito') ? loadLocation(alarm) : loadTagPosition(alarm)" class="md-raised background-darkcyan color-white">
                         Apri sito
                     </md-button></td>
                 </tr>

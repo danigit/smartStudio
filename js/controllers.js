@@ -188,6 +188,7 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
+                multiple: true,
                 controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
                     let tags      = null;
                     $scope.alarms = [];
@@ -201,12 +202,17 @@
                     socketService.sendRequest('get_all_tags', {})
                         .then((response) => {
                             tags = response.result;
-                            response.result.forEach((tag) => {
-                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag);
+                            dataService.getAllLocations()
+                                .then((response) => {
+                                    tags.forEach((tag) => {
 
-                                tagAlarms.forEach((tagAlarm) => {
-                                    $scope.alarms.push(tagAlarm);
-                                })
+                                        let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, response.result);
+
+                                        tagAlarms.forEach((tagAlarm) => {
+                                            $scope.alarms.push(tagAlarm);
+                                        })
+                                });
+
                             });
                         })
                         .catch((error) => {
@@ -215,6 +221,7 @@
 
                     //opening the location where the alarm is
                     $scope.loadLocation = (alarm) => {
+                        console.log('loading location');
                         let tag = tags.filter(t => t.name === alarm.tag)[0];
 
                         if (dataService.isOutdoor(tag)) {
@@ -257,6 +264,60 @@
                         }
 
                         $mdDialog.hide();
+                    };
+
+                    $scope.loadTagPosition = (alarm) => {
+                        console.log('loading tag position');
+                        $mdDialog.show({
+                            locals             : {tagName: alarm, outerScope: $scope},
+                            templateUrl        : componentsPath + 'search-tag-outside.html',
+                            parent             : angular.element(document.body),
+                            targetEvent        : event,
+                            clickOutsideToClose: true,
+                            controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
+
+                                let tag             = null;
+
+                                $scope.isTagOutOfLocation = 'background-red';
+                                $scope.locationName = tagName.tag + ' FUORI SITO';
+                                $scope.mapConfiguration = {
+                                    zoom    : 8,
+                                    map_type: mapType,
+                                };
+
+                                socketService.sendRequest('get_all_tags', {})
+                                    .then((response) => {
+                                        tag = response.result.filter(t => t.name === tagName.tag)[0];
+                                        return socketService.sendRequest('get_tag_outside_location_zoom');
+                                    })
+                                    .then((response) => {
+                                        $scope.mapConfiguration.zoom = response.result;
+                                        console.log(response.result);
+                                    })
+                                    .catch((error) => {
+                                        console.error('loadTagPosition error => ', error);
+                                    });
+
+                                NgMap.getMap('search-map').then((map) => {
+                                    map.set('styles', mapConfiguration);
+                                    let latLng = new google.maps.LatLng(tag.gps_north_degree, tag.gps_east_degree);
+
+                                    map.setCenter(latLng);
+
+                                    new google.maps.Marker({
+                                        position: latLng,
+                                        map     : map,
+                                        icon    : tagsIconPath + 'search-tag.png'
+                                    });
+
+                                });
+
+                                $scope.hide = () => {
+                                    outerScope.selectedTag = '';
+                                    $mdDialog.hide();
+                                }
+                            }]
+                        })
                     };
 
                     $scope.hide = () => {
@@ -314,6 +375,7 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
+                multiple: true,
                 controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
                     let tags      = null;
                     $scope.alarms = [];
@@ -327,13 +389,18 @@
                     socketService.sendRequest('get_all_tags', {user: dataService.username})
                         .then((response) => {
                             tags = response.result;
+                            dataService.getAllLocations()
+                                .then((response) => {
+                                    tags.forEach((tag) => {
 
-                            response.result.forEach((tag) => {
-                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag);
-                                tagAlarms.forEach((tagAlarm) => {
-                                    $scope.alarms.push(tagAlarm);
-                                })
-                            });
+                                        let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, response.result);
+
+                                        tagAlarms.forEach((tagAlarm) => {
+                                            $scope.alarms.push(tagAlarm);
+                                        })
+                                    });
+
+                                });
                         })
                         .catch((error) => {
                             console.log('showAlarmsOutdoor error => ', error);
@@ -345,7 +412,7 @@
 
                         socketService.sendRequest('save_location', {location: tag.location_name})
                             .then(() => {
-                                if (tag.gps_north_degree === 0 && tag.gps_east_degree === 0) {
+                                if (!dataService.isOutdoor(tag)) {
                                     socketService.sendRequest('get_tags_by_user', {user: dataService.username})
                                         .then((response) => {
                                             let indoorTag = response.result.filter(t => t.name === tag.name)[0];
@@ -390,6 +457,60 @@
                             .catch((error) => {
                                 console.log('loadLocationOutdoor error => ', error);
                             });
+                    };
+
+                    $scope.loadTagPosition = (alarm) => {
+                        console.log('loading tag position');
+                        $mdDialog.show({
+                            locals             : {tagName: alarm, outerScope: $scope},
+                            templateUrl        : componentsPath + 'search-tag-outside.html',
+                            parent             : angular.element(document.body),
+                            targetEvent        : event,
+                            clickOutsideToClose: true,
+                            controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
+
+                                let tag             = null;
+
+                                $scope.isTagOutOfLocation = 'background-red';
+                                $scope.locationName = tagName.tag + ' FUORI SITO';
+                                $scope.mapConfiguration = {
+                                    zoom    : 8,
+                                    map_type: mapType,
+                                };
+
+                                socketService.sendRequest('get_all_tags', {})
+                                    .then((response) => {
+                                        tag = response.result.filter(t => t.name === tagName.tag)[0];
+                                        return socketService.sendRequest('get_tag_outside_location_zoom');
+                                    })
+                                    .then((response) => {
+                                        $scope.mapConfiguration.zoom = response.result;
+                                        console.log(response.result);
+                                    })
+                                    .catch((error) => {
+                                        console.error('loadTagPosition error => ', error);
+                                    });
+
+                                NgMap.getMap('search-map').then((map) => {
+                                    map.set('styles', mapConfiguration);
+                                    let latLng = new google.maps.LatLng(tag.gps_north_degree, tag.gps_east_degree);
+
+                                    map.setCenter(latLng);
+
+                                    new google.maps.Marker({
+                                        position: latLng,
+                                        map     : map,
+                                        icon    : tagsIconPath + 'search-tag.png'
+                                    });
+
+                                });
+
+                                $scope.hide = () => {
+                                    outerScope.selectedTag = '';
+                                    $mdDialog.hide();
+                                }
+                            }]
+                        })
                     };
 
                     $scope.hide = () => {
@@ -711,9 +832,9 @@
      * Function that handles the canvas interaction
      * @type {string[]}
      */
-    canvasController.$inject = ['$scope', '$state', '$mdDialog', '$timeout', '$interval', '$mdSidenav', 'socketService', 'canvasData', 'dataService'];
+    canvasController.$inject = ['$scope', '$state', '$mdDialog', '$timeout', '$interval', '$mdSidenav', 'socketService', 'dataService'];
 
-    function canvasController($scope, $state, $mdDialog, $timeout, $interval, $mdSidenav, socketService, canvasData, dataService) {
+    function canvasController($scope, $state, $mdDialog, $timeout, $interval, $mdSidenav, socketService, dataService) {
         let canvasCtrl         = this;
         let canvas             = document.querySelector('#canvas-id');
         let context            = canvas.getContext('2d');
@@ -754,16 +875,6 @@
             floor_image_map : canvasCtrl.defaultFloor[0].image_map
         };
 
-        //canvas show/hide switch variable
-        canvasCtrl.switch = {
-            showGrid      : true,
-            showAnchors   : true,
-            showCameras   : true,
-            showRadius    : true,
-            showDrawing   : false,
-            showFullscreen: false,
-        };
-
         //drawing button
         canvasCtrl.speedDial = {
             isOpen           : false,
@@ -772,14 +883,21 @@
             clickedButton    : 'horizontal'
         };
 
-        //watching for changes in switch buttons in menu
-        $scope.$watchGroup(['canvasCtrl.switch.showGrid', 'canvasCtrl.switch.showAnchors', 'canvasCtrl.switch.showCameras', 'canvasCtrl.floorData.gridSpacing', 'canvasCtrl.switch.showDrawing'], function (newValues) {
-            if (canvasCtrl.defaultFloor[0].map_spacing !== newValues[3])
-                canvasCtrl.defaultFloor[0].map_spacing = newValues[3];
+        dataService.loadUserSettings();
 
-            if (newValues[4] === true) {
-                canvasCtrl.switch.showAnchors     = false;
-                canvasCtrl.switch.showCameras     = false;
+        //watching for changes in switch buttons in menu
+        $scope.$watchGroup(['dataService.switch.showGrid', 'dataService.switch.showAnchors', 'dataService.switch.showCameras', 'dataService.switch.showFullscreen', 'canvasCtrl.floorData.gridSpacing', 'dataService.switch.showDrawing'], function (newValues) {
+            if (canvasCtrl.defaultFloor[0].map_spacing !== newValues[4])
+                canvasCtrl.defaultFloor[0].map_spacing = newValues[4];
+
+            if (newValues[3]) {
+                openFullScreen(document.querySelector('#canvas-container'));
+                dataService.switch.fullscreen = false;
+            }
+
+            if (newValues[5] === true) {
+                dataService.switch.showAnchors     = false;
+                dataService.switch.showCameras     = false;
                 canvasCtrl.showAlarmsIcon         = false;
                 canvasCtrl.showOfflineTagsIcon    = false;
                 canvasCtrl.showOfflineAnchorsIcon = false;
@@ -798,21 +916,28 @@
                             drawedLines        = (parsedResponse === null) ? [] : parsedResponse;
 
                             if (drawedLines !== null)
-                                updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
+                                updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, dataService.switch.showDrawing);
                         }
                     })
-            } else if (newValues[4] === false) {
-                if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
+            } else if (newValues[5] === false) {
+                console.log('show drawing false');
+                console.log(canvasCtrl.canvasInterval);
+                if (canvasCtrl.canvasInterval === undefined){
+                    if (angular.element(document).find('md-dialog').length === 0) {
+                        console.log('constant updating canvas');
+                        constantUpdateCanvas();
+                    }
+                }
             }
         });
 
-        //watching the fullscreen switch button
-        $scope.$watch('canvasCtrl.switch.fullscreen', (newValue) => {
-            if (newValue) {
-                openFullScreen(document.querySelector('#canvas-container'));
-                canvasCtrl.switch.fullscreen = false;
-            }
-        });
+        // //watching the fullscreen switch button
+        // $scope.$watch('dataService.switch.fullscreen', (newValue) => {
+        //     if (newValue) {
+        //         openFullScreen(document.querySelector('#canvas-container'));
+        //         dataService.switch.fullscreen = false;
+        //     }
+        // });
 
         //watching the floor selection button
         $scope.$watch('canvasCtrl.floorData.defaultFloorName', (newValue) => {
@@ -827,7 +952,7 @@
             canvasCtrl.floorData.floor_image_map  = canvasCtrl.defaultFloor[0].image_map;
             context.clearRect(0, 0, canvas.width, canvas.height);
             $interval.cancel(canvasCtrl.canvasInterval);
-            constantUpdateCanvas();
+            if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
         });
 
         //function that handles the click on the drawing mode
@@ -899,7 +1024,8 @@
             };
 
             //constantly updating the canvas
-            constantUpdateCanvas();
+            if (canvasCtrl.canvasInterval === undefined)
+               constantUpdateCanvas();
         };
 
         //controlling the alarms and setting the alarm icon
@@ -1044,7 +1170,8 @@
                     //updating the canvas and drawing border
                     updateCanvas(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasImage);
 
-                    if (canvasCtrl.switch.showGrid) {
+                    console.log('showing grid: ', dataService.switch.showGrid);
+                    if (dataService.switch.showGrid) {
                         //drawing vertical
                         drawDashedLine(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, 'vertical');
                         //drawing horizontal lines
@@ -1065,7 +1192,7 @@
                             let parsedDraw = JSON.parse(response.result);
                             if (parsedDraw !== null) {
                                 parsedDraw.forEach((line) => {
-                                    drawLine(line.begin, line.end, line.type, bufferContext, canvasCtrl.switch.showDrawing);
+                                    drawLine(line.begin, line.end, line.type, bufferContext, dataService.switch.showDrawing);
                                 });
                             }
                             return socketService.sendConstantRequest('get_anchors_by_floor_and_location', {
@@ -1077,7 +1204,7 @@
                         .then((response) => {
                             dataService.anchors = response.result;
                             if (response.result.length > 0) {
-                                loadAndDrawImagesOnCanvas(response.result, 'anchor', canvasCtrl.switch.showAnchors);
+                                loadAndDrawImagesOnCanvas(response.result, 'anchor', dataService.switch.showAnchors);
                                 canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
                             }
 
@@ -1089,7 +1216,7 @@
                         //managing the cameras visualizzation
                         .then((response) => {
                             if (response.result.length > 0)
-                                loadAndDrawImagesOnCanvas(response.result, 'camera', canvasCtrl.switch.showCameras);
+                                loadAndDrawImagesOnCanvas(response.result, 'camera', dataService.switch.showCameras);
 
                             dataService.cameras = response.result;
 
@@ -1281,9 +1408,9 @@
                     })
                 }
 
-                canvasCtrl.switch.showAnchors = true;
-                canvasCtrl.switch.showCameras = true;
-                canvasCtrl.switch.showDrawing = false;
+                dataService.switch.showAnchors = true;
+                dataService.switch.showCameras = true;
+                dataService.switch.showDrawing = false;
 
                 dropAnchorPosition                 = null;
                 drawAnchorImage                    = null;
@@ -1297,9 +1424,9 @@
 
         //handeling the canvas click
         canvas.addEventListener('mousemove', (event) => {
-            if (canvasCtrl.switch.showDrawing) {
+            if (dataService.switch !== undefined && dataService.switch.showDrawing) {
                 if (drawedLines !== null) {
-                    updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
+                    updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, dataService.switch.showDrawing);
 
                     if (dragingStarted === 1) {
                         if (drawedLines.some(l => ((l.begin.x - 5 <= prevClick.x && prevClick.x <= l.begin.x + 5) && (l.begin.y - 5 <= prevClick.y && prevClick.y <= l.begin.y + 5)))) {
@@ -1328,7 +1455,7 @@
             mouseDownCoords = canvas.canvasMouseClickCoords(event);
 
             //drawing on canvas
-            if (canvasCtrl.switch.showDrawing && canvasCtrl.speedDial.clickedButton !== 'delete' && canvasCtrl.speedDial.clickedButton !== 'drop_anchor') {
+            if (dataService.switch.showDrawing && canvasCtrl.speedDial.clickedButton !== 'delete' && canvasCtrl.speedDial.clickedButton !== 'drop_anchor') {
                 dragingStarted++;
 
                 if (dragingStarted === 1) {
@@ -1380,7 +1507,7 @@
                     drawedLines = drawedLines.filter(l => !toBeRemoved.some(r => r.begin.x === l.begin.x && r.begin.y === l.begin.y
                         && r.end.x === l.end.x && r.end.y === l.end.y));
 
-                    updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
+                    updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, dataService.switch.showDrawing);
                 }
             }
 
@@ -1389,7 +1516,7 @@
                 let virtualTagPosition = scaleIconSize(tag.x_pos, tag.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                 tagCloud               = groupNearTags(dataService.floorTags, tag);
 
-                if ((tag.gps_north_degree === 0 || tag.gps_east_degree === 0) && !canvasCtrl.switch.showDrawing) {
+                if ((tag.gps_north_degree === 0 || tag.gps_east_degree === 0) && !dataService.switch.showDrawing) {
                     if (((virtualTagPosition.width - 45) < mouseDownCoords.x && mouseDownCoords.x < (virtualTagPosition.width + 45)) && ((virtualTagPosition.height - 45) < mouseDownCoords.y && mouseDownCoords.y < (virtualTagPosition.height + 45))) {
                         if (tagCloud.groupTags.length > 1) {
                             if (!dialogShown) {
@@ -1475,7 +1602,7 @@
 
             //listen for anchors click events
             dataService.anchors.forEach(function (anchor) {
-                if (!isTagAtCoords(mouseDownCoords) && !canvasCtrl.switch.showDrawing) {
+                if (!isTagAtCoords(mouseDownCoords) && !dataService.switch.showDrawing) {
                     let virtualAnchorPosition = scaleIconSize(anchor.x_pos, anchor.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                     if (((virtualAnchorPosition.width - 20) < mouseDownCoords.x && mouseDownCoords.x < (virtualAnchorPosition.width + 20)) && ((virtualAnchorPosition.height - 20) < mouseDownCoords.y && mouseDownCoords.y < (virtualAnchorPosition.height + 20))) {
                         $mdDialog.show({
@@ -1503,7 +1630,7 @@
 
             //listen for the cameras click events
             dataService.cameras.forEach(function (camera) {
-                if (!isTagAtCoords(mouseDownCoords) && !canvasCtrl.switch.showDrawing) {
+                if (!isTagAtCoords(mouseDownCoords) && !dataService.switch.showDrawing) {
                     let virtualCamerasPosition = scaleIconSize(camera.x_pos, camera.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                     if (((virtualCamerasPosition.width - 20) < mouseDownCoords.x && mouseDownCoords.x < (virtualCamerasPosition.width + 20)) && ((virtualCamerasPosition.height - 20) < mouseDownCoords.y && mouseDownCoords.y < (virtualCamerasPosition.height + 20))) {
                         $mdDialog.show({
@@ -1541,15 +1668,21 @@
                         page        : 1
                     };
 
-                    socketService.sendRequest('get_all_tags', {user: dataService.username})
+                    socketService.sendRequest('get_all_tags')
                         .then((response) => {
                             tags = response.result;
-                            response.result.forEach(function (tag) {
-                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag);
-                                tagAlarms.forEach(function (tagAlarm) {
-                                    $scope.alarms.push(tagAlarm);
-                                })
-                            });
+                            dataService.getAllLocations()
+                                .then((response) => {
+                                    tags.forEach((tag) => {
+
+                                        let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, response.result);
+
+                                        tagAlarms.forEach((tagAlarm) => {
+                                            $scope.alarms.push(tagAlarm);
+                                        })
+                                    });
+
+                                });
                         })
                         .catch((error) => {
                             console.log('showAlarms error => ', error);
@@ -1595,6 +1728,61 @@
                         }
 
                         $mdDialog.hide();
+                    };
+
+                    $scope.loadTagPosition = (alarm) => {
+                        console.log('loading tag position');
+                        $mdDialog.show({
+                            locals             : {tagName: alarm, outerScope: $scope},
+                            templateUrl        : componentsPath + 'search-tag-outside.html',
+                            parent             : angular.element(document.body),
+                            targetEvent        : event,
+                            clickOutsideToClose: true,
+                            controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
+
+                                let tag             = null;
+
+                                $scope.isTagOutOfLocation = 'background-red';
+                                $scope.locationName = tagName.tag + ' FUORI SITO';
+                                $scope.mapConfiguration = {
+                                    zoom    : 8,
+                                    map_type: mapType,
+                                };
+
+
+                                socketService.sendRequest('get_all_tags', {})
+                                    .then((response) => {
+                                        tag = response.result.filter(t => t.name === tagName.tag)[0];
+                                        return socketService.sendRequest('get_tag_outside_location_zoom');
+                                    })
+                                    .then((response) => {
+                                        $scope.mapConfiguration.zoom = response.result;
+                                        console.log(response.result);
+                                    })
+                                    .catch((error) => {
+                                        console.error('loadTagPosition error => ', error);
+                                    });
+
+                                NgMap.getMap('search-map').then((map) => {
+                                    map.set('styles', mapConfiguration);
+                                    let latLng = new google.maps.LatLng(tag.gps_north_degree, tag.gps_east_degree);
+
+                                    map.setCenter(latLng);
+
+                                    new google.maps.Marker({
+                                        position: latLng,
+                                        map     : map,
+                                        icon    : tagsIconPath + 'search-tag.png'
+                                    });
+
+                                });
+
+                                $scope.hide = () => {
+                                    outerScope.selectedTag = '';
+                                    $mdDialog.hide();
+                                }
+                            }]
+                        })
                     };
 
                     $scope.hide = () => {
@@ -2889,6 +3077,36 @@
             };
 
             $mdDialog.show(floorDialog);
+        };
+
+        $scope.quickActions = () => {
+            $mdDialog.show({
+                templateUrl        : componentsPath + 'quick-actions-dialog.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
+                clickOutsideToClose: true,
+                controller: ['$scope', '$interval', 'dataService', function ($scope, $interval, dataService) {
+
+                    dataService.loadUserSettings();
+
+                    $scope.switch = {
+                        showGrid: true,
+                        showAnchors: true,
+                        showCameras: true
+                    };
+
+                    $scope.updateUserSettings = () => {
+                        dataService.updateUserSettings();
+                    };
+
+                    $scope.$watchGroup(['switch.showGrid', "switch.showAnchors", 'switch.showCameras'], function (newValues) {
+                        console.log('watching');
+                        dataService.switch.showGrid = (newValues[0]);
+                        dataService.switch.showAnchors = (newValues[1]);
+                        dataService.switch.showCameras = (newValues[2]);
+                    })
+                }]
+            });
         };
 
         //function that makes the logout of the user

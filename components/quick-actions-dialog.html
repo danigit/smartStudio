@@ -1,0 +1,97 @@
+<div>
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="canvasCtrl.hide()">
+                <img src="../SMARTSTUDIO/img/icons/close-icon.png" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">COMANDI RAPIDI</h1>
+            </div>
+        </div>
+    </md-toolbar>
+    <!--end popup header-->
+
+    <!--popup content-->
+    <md-content class="popup-padding">
+        <div layout="column" layout-align="center center">
+            <div layout="row" layout-align="center center" class="width-300-px" >
+
+                <div id="grid-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <p>Grid: {{dataService.switch.showGrid}}</p>
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showGrid">Griglia: <b
+                                class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showGrid">Griglia:
+                            <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Mostra/nascondi la griglia"
+                               ng-model="switch.showGrid">
+                    </md-switch>
+                </div>
+
+                <div id="fullscreen-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b>
+                        </md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Passsa in modalita' fullscreen"
+                               ng-model="canvasCtrl.switch.fullscreen">
+                    </md-switch>
+                </div>
+            </div>
+            <div layout="row" layout-align="center center" class="width-300-px">
+
+                <div id="anchors-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showAnchors">Anchors:
+                            <b class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showAnchors">
+                            Anchors: <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Mostra/nascondi le telecamere"
+                               ng-model="switch.showAnchors">
+                    </md-switch>
+                </div>
+
+                <div id="cameras-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showCameras">Cameras:
+                            <b class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showCameras">
+                            Cameras: <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Mostra/nascondi le telecamere"
+                               ng-model="switch.showCameras">
+                    </md-switch>
+                </div>
+            </div>
+
+            <md-button ng-click="updateUserSettings()">Conferma</md-button>
+        </div>
+    </md-content>
+    <!--end popup content-->
+</div>

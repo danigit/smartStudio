@@ -621,6 +621,37 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //getting the emergency info
+            case 'get_tag_outside_location_zoom':{
+                $result['action'] = 'get_emergency_info';
+                $query = $this->connection->get_tag_outside_location_zoom();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //getting the user settings
+            case 'get_user_settings':{
+                $result['action'] = 'get_user_settings';
+                $query = $this->connection->get_user_settings($decoded_message['data']['username']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //getting the user settings
+            case 'update_user_settings':{
+                $result['action'] = 'update_user_settings';
+//                $result['sended_data'] = $decoded_message['data']['data'];
+                $query = $this->connection->update_user_settings($decoded_message['data']['username'], $decoded_message['data']['data']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             default:
                 $this->clients[$from->resourceId]->send(json_encode(array('result' => 'no_action')));
         }

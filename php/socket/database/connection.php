@@ -1830,6 +1830,77 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    function get_tag_outside_location_zoom(){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "SELECT ZOOM_TAG_OUTSIDE_LOCATION FROM rtls WHERE ID = ?";
+
+            $statement = $this->execute_selecting($this->query, 'i', 1);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_TAG_OUTDOOR_LOCATION_ZOOM);
+
+            $statement->bind_result($res_zoom);
+            $fetch = $statement->fetch();
+
+            if ($fetch)
+                return $res_zoom;
+        }
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function get_user_settings($user){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            var_dump($user);
+            $this->query = "SELECT grid_on, anchors_on, cameras_on, fullscreen_on FROM user JOIN user_settings ON USER_SETTINGS = user_settings.id WHERE NAME = ?";
+
+            $statement = $this->execute_selecting($this->query, 's', $user);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
+
+            $this->result = $statement->get_result();
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('grid_on' => $row['grid_on'], 'anchors_on' => $row['anchors_on'], 'cameras_on' => $row['cameras_on'],
+                    'fullscreen_on' => $row['fullscreen_on']);
+            }
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function update_user_settings($user, $data){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $decoded = json_decode($data, true);
+            $this->query = "UPDATE user_settings us JOIN user ON us.id = user.USER_SETTINGS 
+                            SET us.grid_on = ?, us.anchors_on = ?, us.cameras_on = ?, us.fullscreen_on = ? WHERE user.NAME = ?";
+
+            $statement = $this->execute_selecting($this->query, 'iiiis', $decoded['grid_on'], $decoded['anchors_on'],
+                $decoded['cameras_on'], $decoded['fullscreen_on'], $user);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+
+            return $this->connection->affected_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
     /**
      * Function that uses the execute statement to execute a query with the prepare statement
      * @param $query - the query to be executed
