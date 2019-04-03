@@ -286,7 +286,7 @@
         outdoorCtrl.isAdmin = outdoorData.isAdmin;
 
         outdoorCtrl.mapConfiguration = {
-            zoom    : 7,
+            zoom    : 11,
             map_type: mapType,
             center  : mapCenter
         };
@@ -627,14 +627,14 @@
 
                                 if (dataService.dynamicTags.length === 1) {
                                     map.setCenter(bounds.getCenter());
-                                    map.setZoom(mapZoom)
+                                    // map.setZoom(mapZoom)
                                 } else if (dataService.dynamicTags.length > 1) {
                                     map.setCenter(bounds.getCenter());
                                     map.fitBounds(bounds);
                                 } else {
                                     let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
                                     map.setCenter(latLng);
-                                    map.setZoom(mapZoom)
+                                    // map.setZoom(mapZoom)
                                 }
 
                                 return socketService.sendRequest('get_anchors_by_user', {user: dataService.username})
