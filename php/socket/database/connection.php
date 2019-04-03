@@ -274,7 +274,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT location.NAME, LATITUDE, LONGITUDE, ICON FROM location 
+            $this->query = 'SELECT location.NAME, LATITUDE, LONGITUDE, RADIUS, ICON, IS_INSIDE FROM location 
                   JOIN user_has_location uhl ON location.ID = uhl.LOCATION_ID 
                   JOIN user u on uhl.USER_ID = u.ID WHERE USERNAME = ?';
 
@@ -293,7 +293,8 @@ class Connection
                 $position[] = $row['LATITUDE'];
                 $position[] = $row['LONGITUDE'];
 
-                $result_array[] = array('name' => $row['NAME'], 'position' => $position, "icon" => $row['ICON']);
+                $result_array[] = array('name' => $row['NAME'], 'position' => $position, 'radius' => $row['RADIUS'],
+                    "icon" => $row['ICON'], 'is_inside' => $row['IS_INSIDE']);
             }
 
             return $result_array;
@@ -1316,7 +1317,8 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT anchor.ID, anchor.NAME, X_POS, Y_POS, Z_POS, anchor.RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, anchor_types.DESCRIPTION, PERMITTED_ASSET, IS_ONLINE, floor.NAME AS FLOOR_NAME
+            $this->query = 'SELECT anchor.ID, anchor.NAME, X_POS, Y_POS, Z_POS, BATTERY_STATUS, anchor.RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, 
+                        anchor_types.DESCRIPTION, PERMITTED_ASSET, IS_ONLINE, floor.NAME AS FLOOR_NAME, l.LATITUDE AS LOCATION_LATITUDE, l.LONGITUDE AS LOCATION_LONGITUDE
                         FROM anchor JOIN anchor_types ON anchor.TYPE = anchor_types.ID JOIN floor ON anchor.FLOOR_ID = floor.ID JOIN location l on floor.LOCATION_ID = l.ID 
                         JOIN user_has_location uhl on l.ID = uhl.LOCATION_ID JOIN user ON uhl.USER_ID = user.ID WHERE user.NAME = ? ORDER BY anchor.NAME';
 
@@ -1332,8 +1334,9 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'],
-                    'z_pos' => $row['Z_POS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'],
-                    'type' => $row['DESCRIPTION'], 'permitted_asset' => $row['PERMITTED_ASSET'], 'is_online' => $row['IS_ONLINE'], 'floor_name' => $row['FLOOR_NAME']);
+                    'z_pos' => $row['Z_POS'], 'battery_status' => $row['BATTERY_STATUS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'],
+                    'type' => $row['DESCRIPTION'], 'permitted_asset' => $row['PERMITTED_ASSET'], 'is_online' => $row['IS_ONLINE'], 'floor_name' => $row['FLOOR_NAME'],
+                    'location_longitude' => $row['LOCATION_LONGITUDE'], 'location_latitude' => $row['LOCATION_LATITUDE']);
             }
 
             return $result_array;
@@ -1390,7 +1393,7 @@ class Connection
             $this->query = 'SELECT t.ID, t.NAME, tt.DESCRIPTION AS TYPE, t.X_POS, t.Y_POS, t.TIME, t.BATTERY_STATUS, t.GPS_NORTH_DEGREE, t.MAN_DOWN, t.GPS_EAST_DEGREE,
                         t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, 
                         t.IS_EXIT, floor.NAME AS FLOOR_NAME, floor.IMAGE_MAP, anchor.NAME AS ANCHOR_NAME, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
-                        dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI, l.NAME AS LOCATION_NAME
+                        dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI, l.NAME AS LOCATION_NAME, l.LONGITUDE AS LOCATION_LONGITUDE, l.LATITUDE AS LOCATION_LATITUDE
                         FROM user JOIN user_has_location uhl ON user.ID = uhl.USER_ID
                         JOIN location l ON uhl.LOCATION_ID = l.ID JOIN floor ON l.ID = floor.LOCATION_ID JOIN anchor ON floor.ID = anchor.FLOOR_ID
                         JOIN tag t ON anchor.ID = t.ANCHOR_ID JOIN tag_types AS tt ON t.TYPE = tt.ID JOIN dress_alarm ON t.ID = dress_alarm.TAG_ID WHERE user.USERNAME = ?';
@@ -1413,7 +1416,7 @@ class Connection
                     'sos' => $row['SOS'], 'man_in_quote' => $row['MAN_IN_QUOTE'], 'call_me_alarm' => $row['CALL_ME_ALARM'],
                     'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'],
                     'sleep_time_outdoor' => $row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => $row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON_NAME'],
-                    'location_name' => $row['LOCATION_NAME'], 'floor_name' => $row['FLOOR_NAME'], 'floor_image' => $row['IMAGE_MAP'],
+                    'location_name' => $row['LOCATION_NAME'], 'location_longitude' => $row['LOCATION_LONGITUDE'], 'location_latitude' => $row['LOCATION_LATITUDE'], 'floor_name' => $row['FLOOR_NAME'], 'floor_image' => $row['IMAGE_MAP'],
                     'time' => $row['TIME'], 'is_exit' => $row['IS_EXIT'], 'anchor_name' => $row['ANCHOR_NAME'], 'type_id' => $row['TYPE_ID'],
                     'helmet_dpi' => $row['HELMET_DPI'], 'belt_dpi' => $row['BELT_DPI'], 'glove_dpi' => $row['GLOVE_DPI'], 'shoe_dpi' => $row['SHOE_DPI']);
             }

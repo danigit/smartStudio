@@ -226,6 +226,10 @@
             return socketService.sendRequest('get_all_locations');
         };
 
+        service.isTagInLocation = (tag, location) => {
+            return service.getTagDistanceFromLocationOrigin(tag, location.position) <= location.radius;
+        };
+
         //getting all the alarms of the tag passed as parameter and creating the objects to be shown in info window
         service.loadTagAlarmsForInfoWindow = (tag, locations) => {
             let alarms = [];

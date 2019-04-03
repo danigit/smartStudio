@@ -60,11 +60,14 @@
 
     function homeController($scope, $state, $mdDialog, $interval, NgMap, homeData, socketService, dataService) {
 
+        console.log(homeData);
         let homeCtrl = this;
         let markers  = homeData.markers;
         let bounds   = new google.maps.LatLngBounds();
         let tags     = null;
         let anchors  = null;
+        let alarmLocations = [];
+        let imageIndex = 0;
 
         //visualizing the data according if the user is admin or not
         homeCtrl.isAdmin = homeData.isAdmin;
@@ -76,9 +79,97 @@
             center  : mapCenter
         };
 
+        dataService.loadUserSettings();
+        let getLocationAnchors = (location, anchors) => {
+            let locationAnchors = [];
+            anchors.forEach((anchor) => {
+                if (anchor.location_latitude === location.position[0] && anchor.location_longitude === location.position[1])
+                    locationAnchors.push(anchor);
+            });
+            return locationAnchors;
+        };
+
+        let checkIfAnchorsHaveAlarms = (anchors) => {
+            return anchors.some(a => a.battery_status);
+        };
+
+        let alarmLocationsContainLocation = (location) => {
+            return alarmLocations.some(l => angular.equals(l.position, location.position))
+        };
+
+        let getLocationTags = (location, tags) => {
+            let locationTags = [];
+            tags.forEach((tag) => {
+                if (dataService.isTagInLocation(tag, location)){
+                    locationTags.push(tag);
+                }
+            });
+            return locationTags;
+        };
+
+        let getIndoorLocationTags = (location, tags) => {
+            let locationTags = [];
+            tags.forEach((tag) => {
+                if( location.position[0] === tag.location_latitude && location.position[1] === tag.location_longitude ){
+                    locationTags.push(tag);
+                }
+            });
+            return locationTags;
+        };
+
+        let findTagLocation = (allTags, indoorTags, anchors) => {
+            markers.forEach((marker) => {
+                let tags = getLocationTags(marker, allTags);
+                let markerObject = new google.maps.Marker({
+                    position : new google.maps.LatLng(marker.position[0], marker.position[1]),
+                });
+                let markerSelected = homeCtrl.dynamicMarkers.filter(m => m.getPosition().lat() === markerObject.getPosition().lat() && m.getPosition().lng() === markerObject.getPosition().lng())[0];
+
+                if (!marker.is_inside){
+
+                    if (dataService.checkIfTagsHaveAlarms(tags)){
+                        if (!alarmLocationsContainLocation(marker)){
+                            alarmLocations.push(marker);
+                        }
+                        markerSelected.setIcon(markersIconPath +  'alarm_marker_32.png');
+                    } else {
+                        markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
+                    }
+
+                }
+                if (marker.is_inside) {
+                    let locationAnchors = getLocationAnchors(marker, anchors);
+                    let locationTags = getIndoorLocationTags(marker, indoorTags);
+
+                    if (dataService.checkIfTagsHaveAlarms(locationTags)){
+                        if (!alarmLocationsContainLocation(marker) && imageIndex === 0){
+                            alarmLocations.push(marker);
+                        }
+                        markerSelected.setIcon(markersIconPath +  'alarm_marker_32.png');
+                    }else if (imageIndex === 0) {
+                        markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
+                    }
+
+                    let anchorsHaveAlarms = checkIfAnchorsHaveAlarms(locationAnchors);
+
+                    if (anchorsHaveAlarms && imageIndex === 1){
+                        markerSelected.setIcon(markersIconPath + 'alarm_anchor_marker_32.png');
+                    } else if (imageIndex === 1) {
+                        markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
+                    }
+                }
+            });
+
+            imageIndex++;
+            if (imageIndex === 2)
+                imageIndex = 0;
+
+        };
+
         //function that updates the alert notifications
         let constantUpdateNotifications = () => {
             dataService.homeTimer = $interval(() => {
+                let indoorTags = [];
                 socketService.sendConstantAlertRequest('get_all_tags', {})
                     .then((response) => {
                         tags                         = response.result;
@@ -87,9 +178,14 @@
 
                         dataService.playAlarmsAudio(response.result);
 
+                        return socketService.sendConstantAlertRequest('get_tags_by_user', {user: dataService.username});
+                    })
+                    .then((response) => {
+                        indoorTags = response.result;
                         return socketService.sendConstantAlertRequest('get_anchors_by_user', {user: dataService.username});
                     })
                     .then((response) => {
+                        findTagLocation(tags, indoorTags, response.result);
                         anchors                         = null;
                         homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
                     })
@@ -105,6 +201,7 @@
             map.set('styles', mapConfiguration);
 
             markers.forEach((marker) => {
+                console.log(marker);
                 let markerObject = new google.maps.Marker({
                     position : new google.maps.LatLng(marker.position[0], marker.position[1]),
                     animation: google.maps.Animation.DROP,
@@ -357,6 +454,8 @@
             map_type: mapType,
             center  : mapCenter
         };
+
+        dataService.loadUserSettings();
 
         //showing the info window with the online/offline tags
         outdoorCtrl.showOfflineTags = () => {
