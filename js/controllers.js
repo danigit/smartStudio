@@ -630,7 +630,7 @@
                                     // map.setZoom(mapZoom)
                                 } else if (dataService.dynamicTags.length > 1) {
                                     map.setCenter(bounds.getCenter());
-                                    map.fitBounds(bounds);
+                                    // map.fitBounds(bounds);
                                 } else {
                                     let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
                                     map.setCenter(latLng);
