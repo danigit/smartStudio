@@ -321,3 +321,9 @@ function drawRect(begin, drawingContext) {
     drawingContext.fillStyle = 'black';
     drawingContext.fillRect(begin.x - 5, begin.y - 5, 10, 10);
 }
+
+function handleSocketError(socket) {
+    socket.onerror = (error) => {
+        console.error('L\'errore e\' => ', error.message);
+    }
+}

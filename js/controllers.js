@@ -54,7 +54,9 @@
         //change the page to the recover password page
         $scope.recoverPassword = () => {
             $state.go('recover-password');
-        }
+        };
+
+        handleSocketError(socket);
     }
 
     /**
@@ -137,18 +139,22 @@
                 });
 
                 markerObject.addListener('click', () => {
+                    console.log('adding the marker click listenre: ', markerObject);
                     let id1 = ++requestId;
                     let id2 = -1;
 
                     socket.send(encodeRequestWithId(id1, 'save_location', {location: marker.name}));
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
+                        console.log('receivinte the save location response: ', parsedResponse);
                         if (parsedResponse.id === id1){
                             if (parsedResponse.result === 'location_saved') {
+                                console.log('save location response: ', parsedResponse.result);
                                 id2 = ++requestId;
                                 socket.send(encodeRequestWithId(id2, 'get_location_info'));
                             }
                         } else if( parsedResponse.id === id2){
+                            console.log('get_location_info response: ', parsedResponse.result);
                             dataService.location          = parsedResponse.result;
                             dataService.defaultFloorName  = '';
                             dataService.locationFromClick = '';
@@ -252,6 +258,7 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id4){
+                                    console.log('indoor tag response: ', parsedResponse.result);
                                     indoorTag = parsedResponse.result.filter(t => t.name === tag.name)[0];
                                     id5 = ++requestId;
                                     socket.send(encodeRequestWithId(id5, 'save_location', {location: indoorTag.location_name}));
@@ -280,7 +287,9 @@
             $mdDialog.hide();
             $interval.cancel(dataService.homeTimer);
             $interval.cancel(dataService.mapInterval);
-        })
+        });
+
+        handleSocketError(socket);
     }
 
     /**
@@ -707,7 +716,9 @@
             $mdDialog.hide();
             $interval.cancel(dataService.updateMapTimer);
             bounds = new google.maps.LatLngBounds(null);
-        })
+        });
+
+        handleSocketError(socket);
     }
 
     /**
@@ -1067,9 +1078,18 @@
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id) {
                             if (!angular.equals(canvasCtrl.floors, parsedResponse.result)) {
-                                let newFloor      = parsedResponse.result.filter(f => !canvasCtrl.floors.some(cf => f.id === cf.id))[0];
+                                console.log('floors are not equals')
+                                console.log(parsedResponse.result);
+                                console.log(canvasCtrl.floors);
+                                let newFloor = null;
+                                if (parsedResponse.result.length > canvasCtrl.floors.length) {
+                                    newFloor = parsedResponse.result.filter(f => !canvasCtrl.floors.some(cf => f.id === cf.id))[0];
+                                    dataService.userFloors.push(newFloor);
+                                }else{
+                                    newFloor = canvasCtrl.floors.filter( f => !parsedResponse.result.some(pf => f.id === pf.id))[0];
+                                    dataService.userFloors = dataService.userFloors.filter(f => f.id !== newFloor.id);
+                                }
                                 canvasCtrl.floors = parsedResponse.result;
-                                dataService.userFloors.push(newFloor);
                             }
                             id1 = ++requestId;
                             socket.send(encodeRequestWithId(id1, 'get_drawing', {floor: canvasCtrl.defaultFloor[0].id}));
@@ -1671,6 +1691,8 @@
             $mdDialog.hide();
             $interval.cancel(canvasCtrl.canvasInterval);
         });
+
+        handleSocketError(socket);
     }
 
     /**
@@ -2468,6 +2490,8 @@
 
         //showing the anchors table
         $scope.showAnchorsTable = function () {
+            console.log(dataService.userFloors);
+            console.log(dataService.defaultFloorName);
             let floor = dataService.userFloors.filter(f => f.name === dataService.defaultFloorName)[0];
 
             let addRowDialog = {
