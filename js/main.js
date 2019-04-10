@@ -67,12 +67,32 @@
                             })
                             .then((response) => {
                                 result.markers = response.result;
-
+                                if (response.result.length === 1 && response.result[0].one_location){
+                                    socketService.sendRequest('save_location', {location: response.result[0].name})
+                                        .then((response) => {
+                                            if (response.result === 'location_saved') {
+                                                return socketService.sendRequest('get_location_info', {})
+                                            }
+                                        })
+                                        .then((response) => {
+                                            dataService.defaultFloorName  = '';
+                                            dataService.locationFromClick = '';
+                                            if (response.result.is_inside)
+                                                $state.go('canvas')
+                                        })
+                                        .catch((error) => {
+                                            console.log('markerAddListener error => ', error);
+                                        });
+                                }else {
+                                    return socketService.sendRequest('get_all_tags', {});
+                                }
                                 return socketService.sendRequest('get_all_tags', {});
                             })
                             .then((response) => {
-                                dataService.allTags = response.result;
-                                promise.resolve(result);
+                                if (response !== null && response !== undefined) {
+                                    dataService.allTags = response.result;
+                                    promise.resolve(result);
+                                }
                             })
                             .catch((error) => {
                                 console.log('homeState error => ', error);
