@@ -68,4 +68,4 @@ class Test{
 }
 
 $test = new Test();
-$test->test_function('insert_floor');
+$test->test_function('register');

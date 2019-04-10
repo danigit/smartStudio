@@ -55,6 +55,9 @@
                             MACS
                     <td md-cell ng-click="deleteRow(tag)"><img src="../SMARTSTUDIO/img/icons/delete_trash_24.png" alt="Cancella tag" title="Cancella tag"></td>
                 </tr>
+                <tr md-row ng-show="tableEmpty">
+                    <td md-cell colspan="8" class="text-center color-red">Nessun risultato trovato</td>
+                </tr>
                 </tbody>
             </table>
         </md-table-container>

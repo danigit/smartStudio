@@ -51,6 +51,7 @@ class Connection
 
             $this->result = $this->execute_inserting($this->query, 'ssssi', $username, $hash_code, 'dani@gmail.com', 'dani', 1);
 
+            var_dump($this->result);
             if ($this->result instanceof db_errors)
                 return $this->result;
             elseif ($this->result == false)
@@ -274,7 +275,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT location.NAME, LATITUDE, LONGITUDE, ICON FROM location 
+            $this->query = 'SELECT location.NAME, LATITUDE, LONGITUDE, ICON, IS_INSIDE FROM location 
                   JOIN user_has_location uhl ON location.ID = uhl.LOCATION_ID 
                   JOIN user u on uhl.USER_ID = u.ID WHERE USERNAME = ?';
 
@@ -293,7 +294,7 @@ class Connection
                 $position[] = $row['LATITUDE'];
                 $position[] = $row['LONGITUDE'];
 
-                $result_array[] = array('name' => $row['NAME'], 'position' => $position, "icon" => $row['ICON']);
+                $result_array[] = array('name' => $row['NAME'], 'position' => $position, "icon" => $row['ICON'], 'is_inside' => $row['IS_INSIDE']);
             }
 
             return $result_array;
@@ -1841,7 +1842,7 @@ class Connection
     {
         $statement = $this->connection->prepare($query);
         $bind_names[] = $bind_string;
-
+        $result = null;
         if ($statement !== false) {
 
             for ($i = 0; $i < count($params); $i++) {

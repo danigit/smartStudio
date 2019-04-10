@@ -189,6 +189,7 @@
                             constantUpdateNotifications();
                     }
                 }],
+
                 onRemoving: function(event, removePromise){
                     $interval.cancel(service.offlineAnchorsInterval);
                     if (!isOutside) {

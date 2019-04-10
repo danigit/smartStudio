@@ -118,7 +118,7 @@
                 let markerObject = new google.maps.Marker({
                     position : new google.maps.LatLng(marker.position[0], marker.position[1]),
                     animation: google.maps.Animation.DROP,
-                    icon     : markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png')
+                    icon     : markersIconPath + ((marker.icon) ? marker.icon : (marker.is_inside) ? 'location-marker.png' : 'mountain.png')
                 });
 
                 let infoWindow = new google.maps.InfoWindow({
@@ -270,12 +270,14 @@
                                                 clickOutsideToClose: true,
                                                 controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
 
+                                                    $scope.title = "TAG NON TROVATO";
+                                                    $scope.message = "Il tag non appartiene all'user logato!";
                                                     $scope.hide = () => {
                                                         $mdDialog.hide();
                                                     }
                                                 }]
                                             })
-                                        });
+                                        }, 1000);
                                     } else {
                                         id5 = ++requestId;
                                         socket.send(encodeRequestWithId(id5, 'save_location', {location: indoorTag.location_name}));
@@ -1768,12 +1770,10 @@
 
                             dataService.mapInterval = $interval(function () {
                                 id1 = ++requestId;
-                                console.log('getting locations', id1);
                                 socket.send(encodeRequestWithId(id1, 'get_locations_by_user', {user: dataService.username}));
                                 socket.onmessage = (response) => {
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id1){
-                                        console.log('get_locations', parsedResponse);
                                         $scope.tableEmpty = $scope.locationsTable.length === 0;
                                         if (!angular.equals($scope.locationsTable, parsedResponse.result)) {
                                             locationsHasChanged   = true;
@@ -1934,6 +1934,17 @@
                                                         }));
                                                     }
                                                 })
+                                        }else {
+                                            $scope.location.showSuccess = true;
+                                            $scope.location.showError   = false;
+                                            $scope.location.message     = "Posizione inserita senza salvare l'immagine";
+                                            $scope.resultClass          = 'background-orange';
+
+                                            $scope.$apply();
+                                            $timeout(function () {
+                                                $mdDialog.hide();
+                                                // window.location.reload();
+                                            }, 1000);
                                         }
                                     } else {
                                         $scope.location.showSuccess = false;
@@ -2184,8 +2195,12 @@
                     $scope.addTag = function (form) {
                         form.$submitted = true;
 
+                        console.log(form.$valid);
                         if (form.$valid) {
                             let id1 = ++requestId;
+                            console.log($scope.insertTag.name);
+                            console.log($scope.selectedType);
+                            console.log(macs);
                             socket.send(encodeRequestWithId(id1, 'insert_tag', {
                                 name: $scope.insertTag.name,
                                 type: $scope.selectedType,
@@ -2193,6 +2208,7 @@
                             }));
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
+                                console.log(parsedResponse)
                                 if (parsedResponse.id === id1) {
                                     if (parsedResponse.result.length === 0) {
                                         $scope.insertTag.resultClass = 'background-green';
@@ -2227,6 +2243,7 @@
                     let id3 = ++requestId;
                     $scope.selected = [];
                     $scope.tags     = [];
+                    $scope.tableEmpty     = false;
                     $scope.tagsOnline = [];
                     $scope.query    = {
                         limitOptions: [5, 10, 15],
@@ -2240,6 +2257,9 @@
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id3){
                             $scope.tags = parsedResponse.result;
+                            ($scope.tags.length === 0)
+                                ? $scope.tableEmpty = true
+                                : $scope.tableEmpty = false;
 
                             let offgridTagsIndoor  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
                             let offgridTagsOutdoor = parsedResponse.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
@@ -3009,61 +3029,103 @@
                     if (parsedResponse.id === id){
                         let newTag = $filter('filter')(parsedResponse.result, newValue)[0];
                         if (newTag.gps_north_degree === 0 && newTag.gps_east_degree === 0) {
-                            //TODO mostrare tag su canvas
-                            $mdDialog.show({
-                                locals             : {tags: parsedResponse.result, outerScope: $scope},
-                                templateUrl        : componentsPath + 'search-tag-inside.html',
-                                parent             : angular.element(document.body),
-                                targetEvent        : event,
-                                clickOutsideToClose: true,
-                                controller         : ['$scope', 'tags', 'outerScope', 'socketService', function ($scope, tags, outerScope, socketService) {
-                                    let canvas  = null;
-                                    let context = null;
-                                    let id1 = ++requestId;
+                            let id1 = ++requestId;
+                            socket.send(encodeRequestWithId(id1, 'get_tag_floor', {tag: newTag.id}));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id1){
+                                    if (parsedResponse.result.location_name === undefined || parsedResponse.result.name === undefined) {
+                                        $mdDialog.show({
+                                            templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                                            parent             : angular.element(document.body),
+                                            targetEvent        : event,
+                                            clickOutsideToClose: true,
+                                            controller         : ['$scope', ($scope) => {
 
-                                    $scope.floorData = {
-                                        location : '',
-                                        floorName: ''
-                                    };
+                                                $scope.title = "TAG NON TROVATO";
+                                                $scope.message = "Il tag e' stato censito ma non e' mai stato localizzato!"
 
-                                    $timeout(function () {
-                                        canvas  = document.querySelector('#search-canvas-id');
-                                        context = canvas.getContext('2d');
-                                    }, 0);
 
-                                    socket.send(encodeRequestWithId(id1, 'get_tag_floor', {tag: newTag.id}));
-                                    socket.onmessage = (response) => {
-                                        let parsedResponse = parseResponse(response);
-                                        if (parsedResponse.id === id1){
-                                            $scope.floorData.location  = parsedResponse.result.location_name;
-                                            $scope.floorData.floorName = parsedResponse.result.name;
-
-                                            let img = new Image();
-                                            img.src = imagePath + 'floors/' + parsedResponse.result.image_map;
-
-                                            img.onload = function () {
-                                                canvas.width  = this.naturalWidth;
-                                                canvas.height = this.naturalHeight;
-
-                                                //updating the canvas and drawing border
-                                                updateCanvas(canvas.width, canvas.height, context, img);
-
-                                                let tagImg = new Image();
-                                                tagImg.src = imagePath + 'icons/tags/online_tag_24.png';
-
-                                                tagImg.onload = function () {
-                                                    drawIcon(newTag, context, tagImg, parsedResponse.result.width, canvas.width, canvas.height, true);
+                                                $scope.hide = () => {
+                                                    $mdDialog.hide();
                                                 }
-                                            };
-                                        }
-                                    };
-                                    $scope.hide = () => {
-                                        outerScope.selectedTag = '';
-                                        $mdDialog.hide();
-                                    }
-                                }]
-                            })
+                                            }],
 
+                                            onRemoving: function(){
+                                                $scope.selectedTag = '';
+                                            },
+                                        })
+                                    } else {
+                                        $mdDialog.show({
+                                            locals             : {tags: parsedResponse.result, outerScope: $scope},
+                                            templateUrl        : componentsPath + 'search-tag-inside.html',
+                                            parent             : angular.element(document.body),
+                                            targetEvent        : event,
+                                            clickOutsideToClose: true,
+                                            controller         : ['$scope', 'tags', 'outerScope', 'socketService', function ($scope, tags, outerScope, socketService) {
+                                                let canvas  = null;
+                                                let context = null;
+
+                                                $scope.floorData = {
+                                                    location : '',
+                                                    floorName: ''
+                                                };
+
+                                                $timeout(function () {
+                                                    canvas  = document.querySelector('#search-canvas-id');
+                                                    context = canvas.getContext('2d');
+                                                }, 0);
+
+                                                if (parsedResponse.id === id1){
+                                                    if (parsedResponse.result.location_name === undefined || parsedResponse.result.name === undefined) {
+                                                        $mdDialog.hide();
+                                                        $timeout(function () {
+                                                            $mdDialog.show({
+                                                                templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                                                                parent             : angular.element(document.body),
+                                                                targetEvent        : event,
+                                                                clickOutsideToClose: true,
+                                                                controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
+
+                                                                    $scope.hide = () => {
+                                                                        $mdDialog.hide();
+                                                                    }
+                                                                }]
+                                                            })
+                                                        });
+                                                    } else {
+                                                        $scope.floorData.location  = parsedResponse.result.location_name;
+                                                        $scope.floorData.floorName = parsedResponse.result.name;
+
+                                                        let img = new Image();
+                                                        img.src = imagePath + 'floors/' + parsedResponse.result.image_map;
+
+                                                        img.onload = function () {
+                                                            canvas.width  = this.naturalWidth;
+                                                            canvas.height = this.naturalHeight;
+
+                                                            //updating the canvas and drawing border
+                                                            updateCanvas(canvas.width, canvas.height, context, img);
+
+                                                            let tagImg = new Image();
+                                                            tagImg.src = imagePath + 'icons/tags/online_tag_24.png';
+
+                                                            tagImg.onload = function () {
+                                                                drawIcon(newTag, context, tagImg, parsedResponse.result.width, canvas.width, canvas.height, true);
+                                                            }
+                                                        };
+                                                    }
+                                                }
+
+                                                $scope.hide = () => {
+                                                    outerScope.selectedTag = '';
+                                                    $mdDialog.hide();
+                                                }
+                                            }]
+                                        })
+                                    }
+                                }
+                            };
                         } else {
                             $mdDialog.show({
                                 locals             : {tagName: newValue, outerScope: $scope},
