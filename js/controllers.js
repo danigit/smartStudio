@@ -63,9 +63,9 @@
      * Function that manges the home page functionalities
      * @type {string[]}
      */
-    homeController.$inject = ['$scope', '$state', '$mdDialog', '$interval', 'NgMap', 'homeData', 'socketService', 'dataService'];
+    homeController.$inject = ['$scope', '$state', '$mdDialog', '$interval', '$timeout', 'NgMap', 'homeData', 'socketService', 'dataService'];
 
-    function homeController($scope, $state, $mdDialog, $interval, NgMap, homeData, socketService, dataService) {
+    function homeController($scope, $state, $mdDialog, $interval, $timeout, NgMap, homeData, socketService, dataService) {
 
         let homeCtrl = this;
         let markers  = homeData.markers;
@@ -260,8 +260,26 @@
                                 if (parsedResponse.id === id4){
                                     console.log('indoor tag response: ', parsedResponse.result);
                                     indoorTag = parsedResponse.result.filter(t => t.name === tag.name)[0];
-                                    id5 = ++requestId;
-                                    socket.send(encodeRequestWithId(id5, 'save_location', {location: indoorTag.location_name}));
+                                    if (indoorTag === undefined){
+                                        $mdDialog.hide();
+                                        $timeout(function () {
+                                            $mdDialog.show({
+                                                templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                                                parent             : angular.element(document.body),
+                                                targetEvent        : event,
+                                                clickOutsideToClose: true,
+                                                controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
+
+                                                    $scope.hide = () => {
+                                                        $mdDialog.hide();
+                                                    }
+                                                }]
+                                            })
+                                        });
+                                    } else {
+                                        id5 = ++requestId;
+                                        socket.send(encodeRequestWithId(id5, 'save_location', {location: indoorTag.location_name}));
+                                    }
                                 } else if (parsedResponse.id === id5){
                                     if (parsedResponse.result === 'location_saved') {
                                         dataService.defaultFloorName  = indoorTag.floor_name;
