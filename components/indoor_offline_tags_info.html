@@ -46,8 +46,8 @@
                     <div class="md-list-item-text" layout="column">
                         <h3>Tags offline: <b class="color-darkgray">{{ offlineTagsIndoor.length }}</b></h3>
                         <h4>{{ offlineTagsIndoor.length }} tag/s e'/sono offline e non trasmette/ono dati</h4>
-                        <md-select ng-if="offTags.length > 0" ng-model="antani" placeholder="WeTags Offline">
-                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offTags">{{tag.name}}</md-option>
+                        <md-select ng-if="offlineTagsIndoor.length > 0" ng-model="antani" placeholder="WeTags Offline">
+                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offlineTagsIndoor">{{tag.name}}</md-option>
                         </md-select>
                     </div>
                 </md-list-item>

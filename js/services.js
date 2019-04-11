@@ -89,13 +89,13 @@
                                     tempOffgrid.push(elem);
                                 });
 
-                                console.log(tempOffgrid);
-                                console.log($scope.offgridTags);
                                 if (!angular.equals(tempOffgrid, $scope.offgridTags)){
-                                    console.log('different');
                                     $scope.offgridTags             = tempOffgrid;
                                 }
-                                $scope.offlineTagsIndoor       = parsedResponse.result.filter(t => (t.is_exit && !t.radio_switched_off));
+                                let tempOfflineTagsIndoor = parsedResponse.result.filter(t => (t.is_exit && !t.radio_switched_off));
+                                if (!angular.equals(tempOfflineTagsIndoor, $scope.offlineTagsIndoor)){
+                                    $scope.offlineTagsIndoor       = tempOfflineTagsIndoor;
+                                }
                                 $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
                                 $scope.tagsStateIndoor.online  = parsedResponse.result.length - $scope.offlineTagsIndoor.length - (offgridTagsIndoor.length + offgridTagsOutdoor.length) - $scope.offTags.length;
                                 $scope.tagsStateIndoor.offgrid = offgridTagsIndoor.length + offgridTagsOutdoor.length;
@@ -115,7 +115,6 @@
                     }
                 }],
                 onRemoving: function(event, removePromise){
-                    console.log('closing interval: ', service.offlineTagsInterval.toString());
                     $interval.cancel(service.offlineTagsInterval);
                     if (!isOutside) {
                         $interval.cancel(service.homeTimer);

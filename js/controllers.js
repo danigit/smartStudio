@@ -139,22 +139,22 @@
                 });
 
                 markerObject.addListener('click', () => {
-                    console.log('adding the marker click listenre: ', markerObject);
+                    // console.log('adding the marker click listenre: ', markerObject);
                     let id1 = ++requestId;
                     let id2 = -1;
 
                     socket.send(encodeRequestWithId(id1, 'save_location', {location: marker.name}));
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
-                        console.log('receivinte the save location response: ', parsedResponse);
+                        // console.log('receivinte the save location response: ', parsedResponse);
                         if (parsedResponse.id === id1){
                             if (parsedResponse.result === 'location_saved') {
-                                console.log('save location response: ', parsedResponse.result);
+                                // console.log('save location response: ', parsedResponse.result);
                                 id2 = ++requestId;
                                 socket.send(encodeRequestWithId(id2, 'get_location_info'));
                             }
                         } else if( parsedResponse.id === id2){
-                            console.log('get_location_info response: ', parsedResponse.result);
+                            // console.log('get_location_info response: ', parsedResponse.result);
                             dataService.location          = parsedResponse.result;
                             dataService.defaultFloorName  = '';
                             dataService.locationFromClick = '';
@@ -258,7 +258,6 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id4){
-                                    console.log('indoor tag response: ', parsedResponse.result);
                                     indoorTag = parsedResponse.result.filter(t => t.name === tag.name)[0];
                                     if (indoorTag === undefined){
                                         $mdDialog.hide();
@@ -320,10 +319,11 @@
 
     function outdoorController($scope, $state, $interval, $mdDialog, NgMap, socketService, dataService, outdoorData) {
         let outdoorCtrl  = this;
-        let tags         = null;
         let bounds       = new google.maps.LatLngBounds();
         let locationInfo = [];
         let socket = socketService.getSocket();
+
+        outdoorCtrl.tags         = null;
 
         dataService.updateMapTimer = null;
         dataService.dynamicTags    = [];
@@ -472,7 +472,7 @@
             socket.send(encodeRequestWithId(id, 'get_location_info'));
             socket.onmessage = (response) => {
                 let parsedResponse = parseResponse(response);
-                console.log(parsedResponse)
+                // console.log(parsedResponse)
                 if (parsedResponse.id === id){
                     locationInfo = parsedResponse.result;
 
@@ -494,14 +494,14 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id1){
-                                tags = parsedResponse.result;
+                                outdoorCtrl.tags = parsedResponse.result;
 
                                 outdoorCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(parsedResponse.result);
                                 outdoorCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(parsedResponse.result);
 
                                 dataService.playAlarmsAudio(parsedResponse.result);
 
-                                if (compareLocalTagsWithRemote(tags, localTags).length > 0) {
+                                if (compareLocalTagsWithRemote(outdoorCtrl.tags, localTags).length > 0) {
                                     localTags.forEach((localTag) => {
                                         let marker = new google.maps.Marker({
                                             position: new google.maps.LatLng(localTag.gps_north_degree, localTag.gps_east_degree)
@@ -518,7 +518,7 @@
                                     localTags = [];
                                 }
 
-                                tags.forEach((tag, index) => {
+                                outdoorCtrl.tags.forEach((tag, index) => {
                                     if (dataService.isOutdoor(tag)) {
                                         if ((getTagDistanceFromLocationOrigin(tag, [locationInfo.latitude, locationInfo.longitude])) <= locationInfo.radius) {
                                             tagAlarms = dataService.getTagAlarms(tag);
@@ -847,7 +847,7 @@
         //watching the fullscreen switch button
         $scope.$watch('canvasCtrl.switch.fullscreen', (newValue) => {
             if (newValue) {
-                openFullScreen(document.querySelector('#canvas-container'));
+                openFullScreen(document.querySelector('body'));
                 canvasCtrl.switch.fullscreen = false;
             }
         });
@@ -1098,9 +1098,6 @@
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id) {
                             if (!angular.equals(canvasCtrl.floors, parsedResponse.result)) {
-                                console.log('floors are not equals')
-                                console.log(parsedResponse.result);
-                                console.log(canvasCtrl.floors);
                                 let newFloor = null;
                                 if (parsedResponse.result.length > canvasCtrl.floors.length) {
                                     newFloor = parsedResponse.result.filter(f => !canvasCtrl.floors.some(cf => f.id === cf.id))[0];
@@ -1315,11 +1312,7 @@
                     if (drawAnchor !== null) {
                         let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, dropAnchorPosition.width, dropAnchorPosition.height);
                         id1 = ++requestId;
-                        socket.send(encodeRequestWithId(id1, 'update_anchor_position'), {
-                            x : scaledSize.x.toFixed(2),
-                            y : scaledSize.y.toFixed(2),
-                            id: drawAnchor.id
-                        });
+                        socket.send(encodeRequestWithId(id1, 'update_anchor_position', {x : scaledSize.x.toFixed(2), y : scaledSize.y.toFixed(2), id: drawAnchor.id}));
                     }
 
                     canvasCtrl.switch.showAnchors = true;
@@ -1606,7 +1599,7 @@
                                     parsedResponse.result.forEach((location) => {
                                         if ((dataService.getTagDistanceFromLocationOrigin(outdoorTag, [location.latitude, location.longitude])) <= location.radius) {
                                             id2 = ++requestId;
-                                            socket.send(encodeRequestWithId(id2, 'save_location', {lcoation: location.name}));
+                                            socket.send(encodeRequestWithId(id2, 'save_location', {location: location.name}));
                                         }
                                     });
                                 } else if (parsedResponse.id === id2){
@@ -1909,7 +1902,6 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id4){
-                                    console.log(parsedResponse);
                                     id5 = ++requestId;
                                     socket.send(encodeRequestWithId(id5, 'insert_location', {
                                         user       : parsedResponse.result.id,
@@ -2185,7 +2177,6 @@
                     socket.send(encodeRequestWithId(id, "get_all_types"));
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
-                        console.log(parsedResponse);
                         if (parsedResponse.id === id){
                             $scope.tagTypes = parsedResponse.result;
                         }
@@ -2195,12 +2186,8 @@
                     $scope.addTag = function (form) {
                         form.$submitted = true;
 
-                        console.log(form.$valid);
                         if (form.$valid) {
                             let id1 = ++requestId;
-                            console.log($scope.insertTag.name);
-                            console.log($scope.selectedType);
-                            console.log(macs);
                             socket.send(encodeRequestWithId(id1, 'insert_tag', {
                                 name: $scope.insertTag.name,
                                 type: $scope.selectedType,
@@ -2208,7 +2195,6 @@
                             }));
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
-                                console.log(parsedResponse)
                                 if (parsedResponse.id === id1) {
                                     if (parsedResponse.result.length === 0) {
                                         $scope.insertTag.resultClass = 'background-green';
@@ -2528,8 +2514,6 @@
 
         //showing the anchors table
         $scope.showAnchorsTable = function () {
-            console.log(dataService.userFloors);
-            console.log(dataService.defaultFloorName);
             let floor = dataService.userFloors.filter(f => f.name === dataService.defaultFloorName)[0];
 
             let addRowDialog = {
@@ -2551,6 +2535,7 @@
                         proximity   : '',
                     };
 
+                    $scope.tableEmpty     = false;
                     $scope.searchString       = '';
                     $scope.anchorTypes        = [];
                     $scope.selectedPermitteds = [];
@@ -2659,12 +2644,15 @@
                     };
 
                     socket.send(encodeRequestWithId(id4, 'get_anchors_by_floor_and_location', {
-                        floor   : floor.name,
+                        floor   : (floor.name !== undefined) ? floor.name : '',
                         location: dataService.location
                     }));
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id4){
+                            if (parsedResponse.result.length === 0){
+                                $scope.tableEmpty     = true;
+                            }
                             $scope.anchors = parsedResponse.result;
                         }
                     };
@@ -3137,6 +3125,7 @@
 
                                     let tag             = null;
                                     let id2 = ++requestId;
+                                    let id3 = null;
                                     $scope.locationName = '';
 
                                     $scope.mapConfiguration = {
@@ -3190,7 +3179,7 @@
 
         $scope.$watch('switch.mapFullscreen', function (newValue) {
             if (newValue) {
-                openFullScreen(document.querySelector('#map-div'));
+                openFullScreen(document.querySelector('body'));
                 $scope.switch.mapFullscreen = false;
             }
         });

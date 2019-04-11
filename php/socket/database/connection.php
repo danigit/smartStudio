@@ -825,12 +825,11 @@ class Connection
                 while ($row = mysqli_fetch_assoc($this->result)) {
                     $permittedString .= $row['MAC'] . ',';
                 }
-
-                if (substr($permittedString, -1, 1) == ',')
-                    $permittedString = substr($permittedString, 0, -1);
-
                 $statement->close();
             }
+
+            if (substr($permittedString, -1, 1) == ',')
+                $permittedString = substr($permittedString, 0, -1);
 
             $this->query = 'SELECT ID FROM anchor_types WHERE DESCRIPTION = ?';
             $statement = $this->execute_selecting($this->query, 's', $type);
@@ -846,8 +845,6 @@ class Connection
             $statement->close();
 
             if ($fetch) {
-                var_dump($neighbors);
-                var_dump($permittedString);
                 $this->query = 'INSERT INTO anchor (MAC, NAME, TYPE, NEIGHBORS, PROXIMITY, IP, PERMITTED_ASSET, RSSI_THRESHOLD, FLOOR_ID) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?)';
 
                 $statement = $this->execute_inserting($this->query, 'ssisissii', $mac, $name, $res_id, $neighbors, $proximity, $ip, $permittedString, $rssi, $floor);
