@@ -1312,7 +1312,7 @@
                     if (drawAnchor !== null) {
                         let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, dropAnchorPosition.width, dropAnchorPosition.height);
                         id1 = ++requestId;
-                        socket.send(encodeRequestWithId(id1, 'update_anchor_position', {x : scaledSize.x.toFixed(2), y : scaledSize.y.toFixed(2), id: drawAnchor.id}));
+                        socket.send(encodeRequestWithId(id1, 'update_anchor_position', {x : scaledSize.x.toFixed(2), y : scaledSize.y.toFixed(2), id: drawAnchor.id, floor: canvasCtrl.floorData.defaultFloorName}));
                     }
 
                     canvasCtrl.switch.showAnchors = true;
@@ -3062,54 +3062,37 @@
                                                 $timeout(function () {
                                                     canvas  = document.querySelector('#search-canvas-id');
                                                     context = canvas.getContext('2d');
+
+                                                    $scope.floorData.location  = parsedResponse.result.location_name;
+                                                    $scope.floorData.floorName = parsedResponse.result.name;
+
+                                                    let img = new Image();
+                                                    img.src = imagePath + 'floors/' + parsedResponse.result.image_map;
+
+                                                    img.onload = function () {
+                                                        canvas.width  = this.naturalWidth;
+                                                        canvas.height = this.naturalHeight;
+
+                                                        //updating the canvas and drawing border
+                                                        updateCanvas(canvas.width, canvas.height, context, img);
+
+                                                        let tagImg = new Image();
+                                                        tagImg.src = imagePath + 'icons/tags/online_tag_24.png';
+
+                                                        tagImg.onload = function () {
+                                                            drawIcon(newTag, context, tagImg, parsedResponse.result.width, canvas.width, canvas.height, true);
+                                                        }
+                                                    };
                                                 }, 0);
-
-                                                if (parsedResponse.id === id1){
-                                                    if (parsedResponse.result.location_name === undefined || parsedResponse.result.name === undefined) {
-                                                        $mdDialog.hide();
-                                                        $timeout(function () {
-                                                            $mdDialog.show({
-                                                                templateUrl        : componentsPath + 'tag-not-found-alert.html',
-                                                                parent             : angular.element(document.body),
-                                                                targetEvent        : event,
-                                                                clickOutsideToClose: true,
-                                                                controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
-
-                                                                    $scope.hide = () => {
-                                                                        $mdDialog.hide();
-                                                                    }
-                                                                }]
-                                                            })
-                                                        });
-                                                    } else {
-                                                        $scope.floorData.location  = parsedResponse.result.location_name;
-                                                        $scope.floorData.floorName = parsedResponse.result.name;
-
-                                                        let img = new Image();
-                                                        img.src = imagePath + 'floors/' + parsedResponse.result.image_map;
-
-                                                        img.onload = function () {
-                                                            canvas.width  = this.naturalWidth;
-                                                            canvas.height = this.naturalHeight;
-
-                                                            //updating the canvas and drawing border
-                                                            updateCanvas(canvas.width, canvas.height, context, img);
-
-                                                            let tagImg = new Image();
-                                                            tagImg.src = imagePath + 'icons/tags/online_tag_24.png';
-
-                                                            tagImg.onload = function () {
-                                                                drawIcon(newTag, context, tagImg, parsedResponse.result.width, canvas.width, canvas.height, true);
-                                                            }
-                                                        };
-                                                    }
-                                                }
 
                                                 $scope.hide = () => {
                                                     outerScope.selectedTag = '';
                                                     $mdDialog.hide();
                                                 }
-                                            }]
+                                            }],
+                                            onRemoving: () => {
+                                                $scope.selectedTag = '';
+                                            }
                                         })
                                     }
                                 }
@@ -3169,7 +3152,10 @@
                                         outerScope.selectedTag = '';
                                         $mdDialog.hide();
                                     }
-                                }]
+                                }],
+                                onRemoving: () => {
+                                    $scope.selectedTag = '';
+                                }
                             })
                         }
                     }

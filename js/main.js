@@ -67,7 +67,7 @@
                             })
                             .then((response) => {
                                 result.markers = response.result;
-                                if (response.result.length === 1 && response.result[0].one_location){
+                                if (response.result.length === 1 && response.result[0].one_location === 1){
                                     socketService.sendRequest('save_location', {location: response.result[0].name})
                                         .then((response) => {
                                             if (response.result === 'location_saved') {
@@ -86,7 +86,6 @@
                                 }else {
                                     return socketService.sendRequest('get_all_tags', {});
                                 }
-                                return socketService.sendRequest('get_all_tags', {});
                             })
                             .then((response) => {
                                 if (response !== null && response !== undefined) {

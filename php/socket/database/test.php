@@ -24,7 +24,7 @@ class Test{
      */
     function test_function($function_name){
         switch ($function_name) {
-            case 'register': var_dump($this->conn->register('dani', 'da'));
+            case 'register': var_dump($this->conn->register('max', 'max'));
                 break;
             case 'login': var_dump($this->conn->login('danis', 'dani'));
                 break;
@@ -60,7 +60,7 @@ class Test{
                 break;
             case 'change_anchor_field': var_dump($this->conn->change_anchor_field(1, 'name', 'Anchor100'));
                 break;
-            case 'update_anchor_position': var_dump($this->conn->update_anchor_position(17.555, 3.222, 13));
+            case 'update_anchor_position': var_dump($this->conn->update_anchor_position(17.555, 3.222, 1, "Piano 0 Siit"));
                 break;
             default: var_dump('Funzione non esistente');
         }
@@ -68,4 +68,4 @@ class Test{
 }
 
 $test = new Test();
-$test->test_function('register');
+$test->test_function('update_anchor_position');
