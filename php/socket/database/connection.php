@@ -1859,7 +1859,6 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            var_dump($user);
             $this->query = "SELECT grid_on, anchors_on, cameras_on, sound_on FROM user JOIN user_settings ON USER_SETTINGS = user_settings.id WHERE NAME = ?";
 
             $statement = $this->execute_selecting($this->query, 's', $user);
