@@ -60,7 +60,6 @@
 
     function homeController($scope, $state, $mdDialog, $interval, NgMap, homeData, socketService, dataService) {
 
-        console.log(homeData);
         let homeCtrl = this;
         let markers  = homeData.markers;
         let bounds   = new google.maps.LatLngBounds();
@@ -68,6 +67,8 @@
         let anchors  = null;
         let alarmLocations = [];
         let imageIndex = 0;
+        let alarmLocationsLength = 0;
+        let allarmZoom = undefined;
 
         //visualizing the data according if the user is admin or not
         homeCtrl.isAdmin = homeData.isAdmin;
@@ -80,6 +81,7 @@
         };
 
         dataService.loadUserSettings();
+
         let getLocationAnchors = (location, anchors) => {
             let locationAnchors = [];
             anchors.forEach((anchor) => {
@@ -117,7 +119,8 @@
             return locationTags;
         };
 
-        let findTagLocation = (allTags, indoorTags, anchors) => {
+        let findTagLocation = (allTags, indoorTags, anchors, map) => {
+            bounds = new google.maps.LatLngBounds();
             markers.forEach((marker) => {
                 let tags = getLocationTags(marker, allTags);
                 let markerObject = new google.maps.Marker({
@@ -126,13 +129,15 @@
                 let markerSelected = homeCtrl.dynamicMarkers.filter(m => m.getPosition().lat() === markerObject.getPosition().lat() && m.getPosition().lng() === markerObject.getPosition().lng())[0];
 
                 if (!marker.is_inside){
-
-                    if (dataService.checkIfTagsHaveAlarms(tags)){
+                    if (dataService.checkIfTagsHaveAlarms(tags) && imageIndex === 0){
                         if (!alarmLocationsContainLocation(marker)){
                             alarmLocations.push(marker);
                         }
                         markerSelected.setIcon(markersIconPath +  'alarm_marker_32.png');
                     } else {
+                        if (alarmLocationsContainLocation(marker)) {
+                            alarmLocations = alarmLocations.filter(l => !angular.equals(l.position === marker.position));
+                        }
                         markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                     }
 
@@ -147,6 +152,9 @@
                         }
                         markerSelected.setIcon(markersIconPath +  'alarm_marker_32.png');
                     }else if (imageIndex === 0) {
+                        if (alarmLocationsContainLocation(marker)) {
+                            alarmLocations = alarmLocations.filter(l => angular.equals(l.position !== marker.position));
+                        }
                         markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                     }
 
@@ -158,7 +166,30 @@
                         markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                     }
                 }
+
+                if (alarmLocations.length > 0 && alarmLocations.length !== alarmLocationsLength){
+                    console.log(alarmLocations);
+                    alarmLocations.forEach(location => {
+                        // if (angular.equals(marker.position, location.position)){
+                        //     console.log('marker find: ', marker);
+                        //     let pos = new google.maps.LatLng(marker.position[0], marker.position[1]);
+                        //     bounds.extend(pos);
+                        //     map.fitBounds(bounds);
+                        // }
+                        let pos = new google.maps.LatLng(location.position[0], location.position[1]);
+                        bounds.extend(pos)
+                    });
+
+                    map.fitBounds(bounds);
+                    if (allarmZoom !== map.getZoom()){
+                        allarmZoom = map.getZoom();
+                    }
+
+                    console.log(allarmZoom);
+                    alarmLocationsLength = alarmLocations.length;
+                }
             });
+
 
             imageIndex++;
             if (imageIndex === 2)
@@ -167,7 +198,7 @@
         };
 
         //function that updates the alert notifications
-        let constantUpdateNotifications = () => {
+        let constantUpdateNotifications = (map) => {
             dataService.homeTimer = $interval(() => {
                 let indoorTags = [];
                 socketService.sendConstantAlertRequest('get_all_tags', {})
@@ -185,7 +216,7 @@
                         return socketService.sendConstantAlertRequest('get_anchors_by_user', {user: dataService.username});
                     })
                     .then((response) => {
-                        findTagLocation(tags, indoorTags, response.result);
+                        findTagLocation(tags, indoorTags, response.result, map);
                         anchors                         = null;
                         homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
                     })
@@ -195,9 +226,8 @@
             }, 1000);
         };
 
-        constantUpdateNotifications();
-
         NgMap.getMap('main-map').then((map) => {
+            constantUpdateNotifications(map);
             map.set('styles', mapConfiguration);
 
             markers.forEach((marker) => {
@@ -261,8 +291,8 @@
                 map.setZoom(11);
             }//if the map has more than one marker I let maps to set automatically the zoom
             else {
-                map.setCenter(bounds.getCenter());
-                map.fitBounds(bounds);
+                // map.setCenter(bounds.getCenter());
+                // map.fitBounds(bounds);
             }
         });
 
