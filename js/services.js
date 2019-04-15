@@ -32,6 +32,7 @@
         service.updateMapTimer       = null;
         service.canvasInterval       = undefined;
         service.mapInterval          = undefined;
+        service.userInterval          = undefined;
         service.playAlarm            = true;
         service.isSearchingTag       = false;
         service.offlineTagsIsOpen    = false;

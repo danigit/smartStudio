@@ -57,9 +57,13 @@
                             .then((response) => {
                                 if (response.result.session_name !== undefined) {
                                     dataService.username = response.result.session_name;
-                                    dataService.isAdmin  = response.result.is_admin;
-                                    result.isAdmin       = response.result.is_admin;
-
+                                    if (response.result.is_admin === 1) {
+                                        dataService.isAdmin = response.result.is_admin;
+                                        result.isAdmin      = response.result.is_admin;
+                                    }else if (response.result.is_admin === 2){
+                                        dataService.isUserManager = response.result.is_admin;
+                                        result.isUserManager      = response.result.is_admin;
+                                    }
                                     return socketService.sendRequest('get_markers', {username: response.result.session_name})
                                 } else {
                                     $state.go('login');

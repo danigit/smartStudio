@@ -72,6 +72,7 @@
 
         //visualizing the data according if the user is admin or not
         homeCtrl.isAdmin = homeData.isAdmin;
+        homeCtrl.isUserManager = homeData.userManager;
 
         homeCtrl.dynamicMarkers   = [];
         homeCtrl.mapConfiguration = {
@@ -2009,6 +2010,7 @@
 
         $scope.menuTags    = dataService.allTags;
         $scope.isAdmin     = dataService.isAdmin;
+        $scope.isUserManager     = dataService.isUserManager;
         $scope.selectedTag = '';
         $scope.switch      = {
             mapFullscreen: false
@@ -2026,15 +2028,17 @@
             let locationsHasBeenDeleted = false;
 
             let locationDialog = {
-                locals             : {admin: $scope.isAdmin},
+                locals             : {admin: $scope.isAdmin, userManager: $scope.isUserManager},
                 templateUrl        : componentsPath + 'locations-table.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', 'admin', function ($scope, admin) {
+                controller         : ['$scope', 'admin', 'userManager', function ($scope, admin, userManager) {
                     $scope.selected       = [];
                     $scope.locationsTable = [];
+                    $scope.isAdmin = admin;
+                    $scope.isUserManager = userManager;
                     $scope.tableEmpty     = false;
                     $scope.query          = {
                         limitOptions: [5, 10, 15],
@@ -2079,7 +2083,7 @@
 
                         event.stopPropagation();
 
-                        if (admin) {
+                        if (admin || userManager) {
                             let editCell = {
                                 modelValue : location[locationName],
                                 save       : function (input) {
@@ -2259,6 +2263,179 @@
                     $scope.uploadMarkerImage = () => {
                         fileInput = document.getElementById('marker-image');
                         fileInput.click();
+                    };
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    }
+                }]
+            }
+        };
+
+        $scope.openUserManager = function() {
+            let usersDialog = {
+                locals             : {admin: $scope.isAdmin, userManager: $scope.isUserManager},
+                templateUrl        : componentsPath + 'users-table.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
+                clickOutsideToClose: true,
+                multiple           : true,
+                controller         : ['$scope', 'admin', 'userManager', function ($scope, admin, userManager) {
+                    $scope.selected       = [];
+                    $scope.usersTable = [];
+                    $scope.isAdmin = admin;
+                    $scope.isUserManager = userManager;
+                    $scope.tableEmpty     = false;
+                    $scope.query          = {
+                        limitOptions: [5, 10, 15],
+                        limit       : 5,
+                        page        : 1
+                    };
+
+                    socketService.sendConstantRequest('get_generic_users')
+                        .then((response) => {
+                            $scope.usersTable = response.result;
+                            $scope.tableEmpty     = $scope.usersTable.length === 0;
+
+                            dataService.usersInterval = $interval(function () {
+                                socketService.sendConstantRequest('get_generic_users')
+                                    .then((response) => {
+                                        $scope.tableEmpty = $scope.usersTable.length === 0;
+                                        $scope.usersTable = response.result;
+                                    })
+                                    .catch((error) => {
+                                        console.log('locationDialog error => ', error);
+                                    });
+                            }, 1000);
+                        })
+                        .catch((error) => {
+                            console.log('locationDialog error => ', error);
+                        });
+
+
+                    $scope.editCell = (event, user, userName) => {
+
+                        event.stopPropagation();
+
+                        if (admin  || userManager) {
+                            let editCell = {
+                                modelValue : user[userName],
+                                save       : function (input) {
+                                    input.$invalid         = true;
+                                    user[userName] = input.$modelValue;
+                                    socketService.sendRequest('change_user_field', {
+                                        user_id   : user.id,
+                                        user_field: userName,
+                                        field_value   : input.$modelValue
+                                    })
+                                        .then(function (response) {
+                                            if (response.result !== 1)
+                                                console.log(response.result);
+                                        })
+                                },
+                                targetEvent: event,
+                                title      : 'Inserisci un valore',
+                                validators : {
+                                    'md-maxlength': 30
+                                }
+                            };
+
+                            $mdEditDialog.large(editCell);
+                        }
+                    };
+
+                    //deleting a location
+                    $scope.deleteRow = (user) => {
+                        let confirm = $mdDialog.confirm()
+                            .title('CANCELLAZIONE UTENTE')
+                            .textContent('Sei sicuro di voler cancellare l\'utente?')
+                            .targetEvent(event)
+                            .multiple(true)
+                            .ok('CANCELLA UTENTE')
+                            .cancel('ANNULLA');
+
+                        $mdDialog.show(confirm).then(() => {
+                            socketService.sendRequest('delete_user', {user_id: user.id})
+                                .then((response) => {
+                                    console.log(response);
+                                    if (response.result !== 0) {
+                                        $scope.usersTable   = $scope.usersTable.filter(u => u.id !== user.id);
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log('deleteRow error => ', error);
+                                });
+                        }, function () {
+                            console.log('CANCELLATO!!!!');
+                        });
+                    };
+
+                    //adding a location
+                    $scope.addNewRow = () => {
+                        $mdDialog.show(addUserDialog);
+                    };
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    }
+                }],
+                onRemoving: function () {
+                    $interval.cancel(dataService.usersInterval);
+                }
+            };
+
+            $mdDialog.show(usersDialog);
+
+            let addUserDialog = {
+                templateUrl        : componentsPath + 'insert-user.html',
+                parent             : angular.element(document.body),
+                clickOutsideToClose: true,
+                multiple           : true,
+                controller         : ['$scope', function ($scope) {
+                    let fileInput = null;
+
+                    $scope.user = {
+                        username       : '',
+                        name: '',
+                        showSuccess: false,
+                        showError  : false,
+                        isIndoor   : false,
+                        message    : '',
+                        resultClass: ''
+                    };
+
+                    //insert location dialog
+                    $scope.insertUser = (form) => {
+                        form.$submitted = true;
+
+                        if (form.$valid) {
+                            console.log($scope.user);
+                            socketService.sendRequest('insert_user', {username: $scope.user.username, name: $scope.user.name})
+                                .then((response) => {
+                                    if (response.result !== 'ERROR_ON_EXECUTE' && response.result !== 'ERROR_ON_INSERTING_USER'){
+                                        $scope.user.resultClass = 'background-green';
+                                        $scope.user.showSuccess = true;
+                                        $scope.user.showError   = false;
+                                        $scope.user.message     = 'Utente inserito con successo';
+
+                                        $scope.$apply();
+
+                                        $timeout(function () {
+                                            $mdDialog.hide();
+                                            $mdDialog.hide(usersDialog);
+                                            $mdDialog.show(usersDialog);
+                                        }, 1000);
+                                    }else{
+                                        $scope.user.showSuccess = false;
+                                        $scope.user.showError   = true;
+                                        $scope.user.message     = 'Impossibile inserire l\'utente.';
+                                        $scope.user.resultClass = 'background-red';
+                                        $scope.$apply();
+                                    }
+                                })
+                        } else {
+                            $scope.location.resultClass = 'background-red';
+                        }
                     };
 
                     $scope.hide = () => {
