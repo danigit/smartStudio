@@ -50,6 +50,7 @@ class db_errors
     public static $ERROR_ON_GETTING_TAG_OUTDOOR_LOCATION_ZOOM = 39;
     public static $ERROR_ON_GETTING_USER_SETTINGS = 40;
     public static $ERROR_ON_INSERTING_USER = 41;
+    public static $ERROR_ON_GETTING_USERS = 42;
 
     private $error;
 
@@ -162,6 +163,8 @@ class db_errors
                 return '$ERROR_ON_GETTING_USER_SETTINGSM';
             case 41:
                 return '$ERROR_ON_INSERTING_USER';
+            case 42:
+                return '$ERROR_ON_GETTING_USERS';
             default:
                 return 'UNKNOWN_ERROR';
         }

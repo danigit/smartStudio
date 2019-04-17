@@ -33,24 +33,24 @@
         service.canvasInterval       = undefined;
         service.mapInterval          = undefined;
         service.userInterval          = undefined;
+        service.superUserInterval          = undefined;
         service.playAlarm            = true;
         service.isSearchingTag       = false;
         service.offlineTagsIsOpen    = false;
         service.offlineAnchorsIsOpen = false;
 
         service.loadUserSettings = () => {
-            console.log(service.username);
             socketService.sendRequest('get_user_settings', {username: service.username})
                 .then((response) => {
-                    console.log(response);
-                    service.switch = {
-                        showGrid      : (response.result[0].grid_on === 1),
-                        showAnchors   : (response.result[0].anchors_on === 1),
-                        showCameras   : (response.result[0].cameras_on === 1),
-                        playAudio: (response.result[0].sound_on === 1),
-                        showRadius    : true,
-                    };
-                    console.log(service.switch);
+                    if(response.result.length !== 0) {
+                        service.switch = {
+                            showGrid   : (response.result[0].grid_on === 1),
+                            showAnchors: (response.result[0].anchors_on === 1),
+                            showCameras: (response.result[0].cameras_on === 1),
+                            playAudio  : (response.result[0].sound_on === 1),
+                            showRadius : true,
+                        };
+                    }
                 })
         };
 
@@ -354,20 +354,20 @@
                 }
             });
 
-            if (service.alarmsSounds.length > 1 && service.playAlarm && service.switch.playAudio) {
+            if (service.alarmsSounds.length > 1 && service.playAlarm && (service.switch && service.switch.playAudio)) {
                 audio = new Audio(audioPath + 'sndMultipleAlarm.mp3');
                 audio.play();
                 service.playAlarm = false;
             } else {
-                if (controlIfArrayHasAlarm(service.alarmsSounds, 'battery') && service.playAlarm && service.switch.playAudio) {
+                if (controlIfArrayHasAlarm(service.alarmsSounds, 'battery') && service.playAlarm && (service.switch && service.switch.playAudio)) {
                     audio = new Audio(audioPath + 'sndBatteryAlarm.mp3');
                     audio.play();
                 }
-                if (controlIfArrayHasAlarm(service.alarmsSounds, 'mandown') && service.playAlarm && service.switch.playAudio) {
+                if (controlIfArrayHasAlarm(service.alarmsSounds, 'mandown') && service.playAlarm && (service.switch && service.switch.playAudio)) {
                     audio = new Audio(audioPath + 'sndManDownAlarm.mp3');
                     audio.play();
                 }
-                if (controlIfArrayHasAlarm(service.alarmsSounds, 'sos') && service.playAlarm && service.switch.playAudio) {
+                if (controlIfArrayHasAlarm(service.alarmsSounds, 'sos') && service.playAlarm && (service.switch && service.switch.playAudio)) {
                     audio = new Audio(audioPath + 'indila-sos.mp3');
                     audio.play();
                 }

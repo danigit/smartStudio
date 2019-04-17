@@ -2107,6 +2107,52 @@ class Connection
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
+
+    function get_all_users(){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "SELECT ID, USERNAME, NAME, ROLE FROM user WHERE ROLE = 0 OR ROLE = 2";
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_USERS);
+
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('id' => $row['ID'], 'username' => $row['USERNAME'], 'name' => $row['NAME'], 'role' => $row['ROLE']);
+            }
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function insert_super_user($username, $name, $role)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+
+            $hash_code = password_hash('1234', PASSWORD_BCRYPT);
+
+            $this->query = "INSERT INTO user (USERNAME, PASSWORD, NAME, ROLE) VALUES (?, ?, ?, ?)";
+
+            $statement = $this->execute_inserting($this->query, 'sssi', $username, $hash_code, $name, $role);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_INSERTING_USER);
+
+            return $this->connection->insert_id;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
     /**
      * Function that uses the execute statement to execute a query with the prepare statement
      * @param $query - the query to be executed

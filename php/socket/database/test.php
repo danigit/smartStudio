@@ -70,10 +70,12 @@ class Test{
                 break;
             case 'insert_user': var_dump($this->conn->insert_user('antani', 'scapelli'));
                 break;
+            case 'insert_super_user': var_dump($this->conn->insert_super_user('antani', 'scapelli', 0));
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('insert_user');
+$test->test_function('insert_super_user');

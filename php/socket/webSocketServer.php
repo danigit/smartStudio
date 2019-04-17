@@ -736,6 +736,48 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //changing the location field
+            case 'get_all_users':{
+                $result['action'] = 'get_all_users';
+                $query = $this->connection->get_all_users();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //inserting a location
+            case 'insert_super_user':{
+                $result['action'] = 'insert_super_user';
+                $query = $this->connection->insert_super_user($decoded_message['data']['username'], $decoded_message['data']['name'],
+                    $decoded_message['data']['role']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //inserting a location
+            case 'delete_super_user':{
+                $result['action'] = 'delete_super_user';
+                $query = $this->connection->delete_user($decoded_message['data']['user_id']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
+            case 'change_super_user_field':{
+                $result['action'] = 'change_super_user_field';
+                $query = $this->connection->change_user_field($decoded_message['data']['super_user_id'], $decoded_message['data']['super_user_field'],
+                    $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             default:
                 $this->clients[$from->resourceId]->send(json_encode(array('result' => 'no_action')));
         }

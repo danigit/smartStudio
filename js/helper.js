@@ -56,6 +56,7 @@ function drawDashedLine(canvasWidth, canvasHeight, context, spacing, floorWidth,
             context.stroke();
         }
     }
+    context.closePath();
 }
 
 /**
@@ -66,6 +67,7 @@ function drawDashedLine(canvasWidth, canvasHeight, context, spacing, floorWidth,
  * @param image
  */
 function updateCanvas(canvasWidth, canvasHeight, context, image) {
+    console.log('clearing the canvas');
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     if (image !== undefined) {
         context.drawImage(image, 0, 0);
@@ -117,6 +119,7 @@ function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) 
         context.fill();
         context.stroke();
     }
+    context.closePath();
 }
 
 /**
@@ -142,6 +145,7 @@ function drawCloudIcon(value, context, img, width, canvasWidth, canvasHeight, ta
     context.drawImage(img, virtualTag.width, virtualTag.height);
     context.strokeStyle = '#ff000015';
     context.stroke();
+    context.closePath();
 }
 
 /**
@@ -275,29 +279,30 @@ function updateDrawingCanvas(lines, canvasWidth, canvasHeight, canvasContext, im
  * @param showDrawing
  */
 function drawLine(begin, end, type, drawingContext, showDrawing) {
-    // console.log(showDrawing);
     drawingContext.setLineDash([]);
     drawingContext.lineWidth   = 2;
     drawingContext.strokeStyle = 'black';
     drawingContext.beginPath();
-    drawingContext.moveTo(begin.x, begin.y);
     if (type === 'vertical') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect({x: begin.x, y: end.y}, drawingContext);
         }
+        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(begin.x, end.y);
     } else if (type === 'horizontal') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect({x: end.x, y: begin.y}, drawingContext);
         }
+        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(end.x, begin.y);
     } else if (type === 'inclined') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect(end, drawingContext);
         }
+        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(end.x, end.y)
     }
     drawingContext.stroke();
@@ -310,6 +315,36 @@ function drawLine(begin, end, type, drawingContext, showDrawing) {
  * @param drawingContext
  */
 function drawRect(begin, drawingContext) {
+    drawingContext.beginPath();
     drawingContext.fillStyle = 'black';
     drawingContext.fillRect(begin.x - 5, begin.y - 5, 10, 10);
+    drawingContext.closePath();
+}
+
+/**
+ * Function that draws a rectangle on the canvas
+ * @param begin
+ * @param drawingContext
+ * @param floorWidth
+ * @param canvasWidth
+ * @param canvasHeight
+ * @param color
+ */
+// drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
+function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color) {
+    let realHeight = (floorWidth * canvasHeight) / canvasWidth;
+
+    let virtualPositionTop    = scaleIconSize(begin.x, begin.y, floorWidth, realHeight, canvasWidth, canvasHeight);
+    let virtualPositionBottom    = scaleIconSize(begin.xx, begin.yy, floorWidth, realHeight, canvasWidth, canvasHeight);
+
+    let width = virtualPositionBottom.width - virtualPositionTop.width;
+    let height = virtualPositionBottom.height - virtualPositionTop.height;
+
+    drawingContext.beginPath();
+    drawingContext.globalAlpha = 0.2;
+    drawingContext.fillStyle = color;
+    drawingContext.fillRect(virtualPositionTop.width | 0, virtualPositionTop.height | 0, width | 0, height | 0);
+    drawingContext.globalAlpha = 1.0;
+    drawingContext.stroke();
+    drawingContext.closePath();
 }

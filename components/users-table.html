@@ -13,7 +13,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">UTENTI</h1>
+                <h1 class=" font-iceberg font-x-large">{{title}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -34,7 +34,7 @@
                 <tr md-row>
                     <th md-column md-order-by="name"><span class="color-darkcyan">USERNAME</span></th>
                     <th md-column md-order-by="latitude"><span class="color-darkcyan">NOME</span></th>
-                    <!--<th md-column md-order-by="longitude"><span class="color-darkcyan">RUOLO</span></th>-->
+                    <th md-column md-order-by="longitude" ng-show="isAdmin"><span class="color-darkcyan">RUOLO</span></th>
                     <th md-column ng-show="isAdmin || isUserManager"></th>
                 </tr>
                 </thead>
@@ -49,9 +49,9 @@
                     <td md-cell class="no-wrap" ng-click="editCell($event, user, 'name')"
                         ng-class="{'md-placeholder': !user.name}">{{user.name || 'Inserire nome'}}
                     </td>
-                    <!--<td md-cell class="no-wrap" ng-click="editCell($event, user, 'role')"-->
-                        <!--ng-class="{'md-placeholder': !user.role}">{{user.role || 'Inserire ruolo'}}-->
-                    <!--</td>-->
+                    <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'role')"
+                        ng-class="{'md-placeholder': !user.role}">{{user.role || 'Inserire ruolo'}}
+                    </td>
                     <td md-cell ng-show="isAdmin || isUserManager" class="no-wrap" ng-click="deleteRow(user)"><img
                             src="../SMARTSTUDIO/img/icons/delete_trash_24.png" alt="Cancella utente" title="Cancella utente"></td>
                 </tr>

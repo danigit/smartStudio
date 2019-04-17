@@ -60,7 +60,10 @@
                                 <md-list-item ng-show="homeCtrl.isAdmin || homeCtrl.isUserManager" ng-click="openLocations()"><p>Gestione siti
                                 </p><img src="../SMARTSTUDIO/img/icons/menu/add-location.png"
                                          class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="openUserManager()"><p>Gestione utenti
+                                <md-list-item ng-show="homeCtrl.isUserManager" ng-click="openUserManager()"><p>Gestione utenti
+                                </p><img src="../SMARTSTUDIO/img/icons/menu/user-manager-icon.png"
+                                         class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="openSuperuserManager()"><p>Gestione utenti intermedi
                                 </p><img src="../SMARTSTUDIO/img/icons/menu/user-manager-icon.png"
                                          class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click="registry()"><p>Gestione WeTag</p><img

@@ -72,7 +72,7 @@
 
         //visualizing the data according if the user is admin or not
         homeCtrl.isAdmin = homeData.isAdmin;
-        homeCtrl.isUserManager = homeData.userManager;
+        homeCtrl.isUserManager = homeData.isUserManager;
 
         homeCtrl.dynamicMarkers   = [];
         homeCtrl.mapConfiguration = {
@@ -978,10 +978,12 @@
         let drawAnchorImage    = null;
         let dropAnchorPosition = null;
         let dragingStarted     = 0;
-        let drawedLines        = [];
+        let drawedLines        = null;
+        let zones = null;
         let newBegin           = [];
         let newEnd             = [];
         let anchorToDrop       = '';
+        let zonesDrawed = false;
 
         canvasCtrl.canvasInterval         = undefined;
         canvasCtrl.floors                 = dataService.floors;
@@ -1042,9 +1044,17 @@
 
                 $interval.cancel(canvasCtrl.canvasInterval);
                 canvasCtrl.canvasInterval = undefined;
-                dragingImage.src          = imagePath + 'floors/' + canvasCtrl.floorData.floor_image_map;
 
-                socketService.sendRequest('get_drawing', {floor: canvasCtrl.defaultFloor[0].id})
+                socketService.sendRequest('get_floor_zones',
+                    {
+                        floor   : canvasCtrl.floorData.defaultFloorName,
+                        location: canvasCtrl.floorData.location,
+                        user    : dataService.username
+                    })
+                    .then((response) => {
+                        zones = response.result;
+                        return socketService.sendRequest('get_drawing', {floor: canvasCtrl.defaultFloor[0].id})
+                    })
                     .then((response) => {
                         dragingImage.onload = () => {
                             let parsedResponse = JSON.parse(response.result);
@@ -1052,7 +1062,13 @@
 
                             if (drawedLines !== null)
                                 updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
-                        }
+
+                            if (zones !== null)
+                                zones.forEach((zone) => {
+                                    drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red');
+                                })
+                        };
+                        dragingImage.src          = imagePath + 'floors/' + canvasCtrl.floorData.floor_image_map;
                     })
             } else if (newValues[5] === false) {
                 console.log('show drawing false');
@@ -1330,6 +1346,19 @@
                                     drawLine(line.begin, line.end, line.type, bufferContext, canvasCtrl.switch.showDrawing);
                                 });
                             }
+                            return socketService.sendConstantRequest('get_floor_zones', {
+                                floor   : canvasCtrl.floorData.defaultFloorName,
+                                location: canvasCtrl.floorData.location,
+                                user: dataService.username
+                            })
+                        })
+                        .then((response) => {
+                            // drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
+                            if (response.result.length > 0){
+                                response.result.forEach((zone) => {
+                                    drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, 'red');
+                                });
+                            }
                             return socketService.sendConstantRequest('get_anchors_by_floor_and_location', {
                                 floor   : canvasCtrl.floorData.defaultFloorName,
                                 location: canvasCtrl.floorData.location
@@ -1575,6 +1604,11 @@
                         }
                     }
 
+                }
+                if (zones !== null){
+                    zones.forEach((zone) => {
+                        drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red');
+                    })
                 }
                 if (drawAnchorImage !== null) {
                     context.drawImage(drawAnchorImage, dropAnchorPosition.width, dropAnchorPosition.height);
@@ -2281,6 +2315,7 @@
                 clickOutsideToClose: true,
                 multiple           : true,
                 controller         : ['$scope', 'admin', 'userManager', function ($scope, admin, userManager) {
+                    $scope.title = "UTENTI";
                     $scope.selected       = [];
                     $scope.usersTable = [];
                     $scope.isAdmin = admin;
@@ -2304,12 +2339,12 @@
                                         $scope.usersTable = response.result;
                                     })
                                     .catch((error) => {
-                                        console.log('locationDialog error => ', error);
+                                        console.log('usersnDialog error => ', error);
                                     });
                             }, 1000);
                         })
                         .catch((error) => {
-                            console.log('locationDialog error => ', error);
+                            console.log('usersDialog error => ', error);
                         });
 
 
@@ -2434,7 +2469,182 @@
                                     }
                                 })
                         } else {
-                            $scope.location.resultClass = 'background-red';
+                            $scope.user.resultClass = 'background-red';
+                        }
+                    };
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    }
+                }]
+            }
+        };
+
+        $scope.openSuperuserManager = function() {
+            let superUsersDialog = {
+                locals             : {admin: $scope.isAdmin, userManager: $scope.isUserManager},
+                templateUrl        : componentsPath + 'users-table.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
+                clickOutsideToClose: true,
+                multiple           : true,
+                controller         : ['$scope', 'admin', 'userManager', function ($scope, admin, userManager) {
+                    $scope.title = 'UTENTI INTERMEDI';
+                    $scope.selected       = [];
+                    $scope.usersTable = [];
+                    $scope.isAdmin = admin;
+                    $scope.isUserManager = userManager;
+                    $scope.tableEmpty     = false;
+                    $scope.query          = {
+                        limitOptions: [5, 10, 15],
+                        limit       : 5,
+                        page        : 1
+                    };
+
+                    socketService.sendConstantRequest('get_all_users')
+                        .then((response) => {
+                            $scope.usersTable = response.result;
+                            $scope.tableEmpty     = $scope.usersTable.length === 0;
+
+                            dataService.superUsersInterval = $interval(function () {
+                                socketService.sendConstantRequest('get_all_users')
+                                    .then((response) => {
+                                        $scope.tableEmpty = $scope.usersTable.length === 0;
+                                        $scope.usersTable = response.result;
+                                    })
+                                    .catch((error) => {
+                                        console.log('superUserDialog error => ', error);
+                                    });
+                            }, 1000);
+                        })
+                        .catch((error) => {
+                            console.log('superUserDialog error => ', error);
+                        });
+
+
+                    $scope.editCell = (event, superUser, superUserName) => {
+
+                        event.stopPropagation();
+
+                        if (admin) {
+                            let editCell = {
+                                modelValue : superUser[superUserName],
+                                save       : function (input) {
+                                    input.$invalid         = true;
+                                    superUser[superUserName] = input.$modelValue;
+                                    socketService.sendRequest('change_super_user_field', {
+                                        super_user_id   : superUser.id,
+                                        super_user_field: superUserName,
+                                        field_value   : input.$modelValue
+                                    })
+                                        .then(function (response) {
+                                            if (response.result !== 1)
+                                                console.log(response.result);
+                                        })
+                                },
+                                targetEvent: event,
+                                title      : 'Inserisci un valore',
+                                validators : {
+                                    'md-maxlength': 30
+                                }
+                            };
+
+                            $mdEditDialog.large(editCell);
+                        }
+                    };
+
+                    //deleting a location
+                    $scope.deleteRow = (user) => {
+                        let confirm = $mdDialog.confirm()
+                            .title('CANCELLAZIONE UTENTE')
+                            .textContent('Sei sicuro di voler cancellare l\'utente?')
+                            .targetEvent(event)
+                            .multiple(true)
+                            .ok('CANCELLA UTENTE')
+                            .cancel('ANNULLA');
+
+                        $mdDialog.show(confirm).then(() => {
+                            socketService.sendRequest('delete_super_user', {user_id: user.id})
+                                .then((response) => {
+                                    console.log(response);
+                                    if (response.result !== 0) {
+                                        $scope.usersTable   = $scope.usersTable.filter(u => u.id !== user.id);
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.log('deleteRow error => ', error);
+                                });
+                        }, function () {
+                            console.log('CANCELLATO!!!!');
+                        });
+                    };
+
+                    //adding a location
+                    $scope.addNewRow = () => {
+                        $mdDialog.show(addSuperUserDialog);
+                    };
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    }
+                }],
+                onRemoving: function () {
+                    $interval.cancel(dataService.superUsersInterval);
+                }
+            };
+
+            $mdDialog.show(superUsersDialog);
+
+            let addSuperUserDialog = {
+                templateUrl        : componentsPath + 'insert-super-user.html',
+                parent             : angular.element(document.body),
+                clickOutsideToClose: true,
+                multiple           : true,
+                controller         : ['$scope', function ($scope) {
+
+                    $scope.roles = ['Utente generico', 'Utente intermedio'];
+                    $scope.userRole = '';
+                    $scope.user = {
+                        username       : '',
+                        name: '',
+                        showSuccess: false,
+                        showError  : false,
+                        isIndoor   : false,
+                        message    : '',
+                        resultClass: ''
+                    };
+
+                    //insert location dialog
+                    $scope.insertUser = (form) => {
+                        form.$submitted = true;
+
+                        if (form.$valid) {
+                            console.log($scope.user);
+                            socketService.sendRequest('insert_super_user', {username: $scope.user.username, name: $scope.user.name, role: ($scope.userRole === 'Utente generico') ? 0 : 2})
+                                .then((response) => {
+                                    if (response.result !== 'ERROR_ON_EXECUTE' && response.result !== 'ERROR_ON_INSERTING_USER'){
+                                        $scope.user.resultClass = 'background-green';
+                                        $scope.user.showSuccess = true;
+                                        $scope.user.showError   = false;
+                                        $scope.user.message     = 'Utente inserito con successo';
+
+                                        $scope.$apply();
+
+                                        $timeout(function () {
+                                            $mdDialog.hide();
+                                            $mdDialog.hide(superUsersDialog);
+                                            $mdDialog.show(superUsersDialog);
+                                        }, 1000);
+                                    }else{
+                                        $scope.user.showSuccess = false;
+                                        $scope.user.showError   = true;
+                                        $scope.user.message     = 'Impossibile inserire l\'utente.';
+                                        $scope.user.resultClass = 'background-red';
+                                        $scope.$apply();
+                                    }
+                                })
+                        } else {
+                            $scope.user.resultClass = 'background-red';
                         }
                     };
 
