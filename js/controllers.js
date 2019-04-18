@@ -978,7 +978,8 @@
         let drawAnchorImage    = null;
         let dropAnchorPosition = null;
         let dragingStarted     = 0;
-        let drawedLines        = null;
+        let drawedLines        = [];
+        let drawedZones        = [];
         let zones = null;
         let newBegin           = [];
         let newEnd             = [];
@@ -1039,6 +1040,7 @@
                 canvasCtrl.showOfflineTagsIcon     = false;
                 canvasCtrl.showOfflineAnchorsIcon  = false;
                 canvasCtrl.speedDial.clickedButton = 'horizontal';
+                drawedZones = [];
 
                 $mdSidenav('left').close();
 
@@ -1156,6 +1158,10 @@
                 canvasCtrl.drawingImage = 'inclined-line.png';
             } else if (button === 'delete') {
                 canvasCtrl.drawingImage = 'erase_24.png';
+            } else if (button === 'deaw_zone'){
+                canvasCtrl.drawingImage = 'draw-zone.png'
+            } else if (button === 'delete_zone'){
+                canvasCtrl.drawingImage = 'delete-zone.png'
             }
 
             canvasCtrl.speedDial.clickedButton = button;
@@ -1550,9 +1556,21 @@
 
         //function that save the canvas drawing
         canvasCtrl.saveDrawing = () => {
+            let tempDrawZones = [];
+            drawedZones.forEach((zone) => {
+                let topLeft = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.topLeft.x, zone.topLeft.y);
+                let fixedTopLeft = {x: topLeft.x.toFixed(2), y: topLeft.y.toFixed(2)};
+                let bottomRight = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.bottomRight.x, zone.bottomRight.y);
+                let fixedBottomRightt = {x: bottomRight.x.toFixed(2), y: bottomRight.y.toFixed(2)};
+                console.log(fixedTopLeft);
+                console.log(fixedBottomRightt)
+                tempDrawZones.push({topLeft: fixedTopLeft, bottomRight: fixedBottomRightt, floor: zone.floor});
+            });
+
             socketService.sendConstantRequest('save_drawing', {
                 lines: JSON.stringify(drawedLines),
-                floor: canvasCtrl.defaultFloor[0].id
+                floor: canvasCtrl.defaultFloor[0].id,
+                zones: tempDrawZones
             })
                 .then(() => {
                     if (drawAnchor !== null) {
@@ -1592,7 +1610,7 @@
                 if (drawedLines !== null) {
                     updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
 
-                    if (dragingStarted === 1) {
+                    if (dragingStarted === 1 && canvasCtrl.speedDial.clickedButton !== 'draw_zone') {
                         if (drawedLines.some(l => ((l.begin.x - 5 <= prevClick.x && prevClick.x <= l.begin.x + 5) && (l.begin.y - 5 <= prevClick.y && prevClick.y <= l.begin.y + 5)))) {
                             newBegin = drawedLines.filter(l => (l.begin.x - 5 <= prevClick.x && prevClick.x <= l.begin.x + 5) && (l.begin.y - 5 <= prevClick.y && prevClick.y <= l.begin.y + 5))[0];
                             drawLine(newBegin.begin, canvas.canvasMouseClickCoords(event), canvasCtrl.speedDial.clickedButton, context);
@@ -1605,9 +1623,22 @@
                     }
 
                 }
+
+                if (dragingStarted === 1 && canvasCtrl.speedDial.clickedButton === 'draw_zone') {
+                    drawZoneRectFromDrawing({x: prevClick.x, y: prevClick.y, xx: canvas.canvasMouseClickCoords(event).x, yy: canvas.canvasMouseClickCoords(event).y}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red');
+                }
+
                 if (zones !== null){
+                    console.log('drawing zones:', zones);
                     zones.forEach((zone) => {
                         drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red');
+                    })
+                }
+
+                if (drawedZones !== null){
+                    console.log('drawing zones from drawing: ', drawedZones);
+                    drawedZones.forEach((zone) => {
+                        drawZoneRectFromDrawing({x: zone.topLeft.x, y: zone.topLeft.y, xx: zone.bottomRight.x, yy: zone.bottomRight.y}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red');
                     })
                 }
                 if (drawAnchorImage !== null) {
@@ -1623,12 +1654,14 @@
             let realHeight  = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
             mouseDownCoords = canvas.canvasMouseClickCoords(event);
 
+            console.log(drawedZones);
             //drawing on canvas
-            if (canvasCtrl.switch.showDrawing && canvasCtrl.speedDial.clickedButton !== 'delete' && canvasCtrl.speedDial.clickedButton !== 'drop_anchor') {
+            if (canvasCtrl.switch.showDrawing && canvasCtrl.speedDial.clickedButton !== 'delete' && canvasCtrl.speedDial.clickedButton !== 'drop_anchor' && canvasCtrl.speedDial.clickedButton !== 'draw_zone') {
                 dragingStarted++;
 
                 if (dragingStarted === 1) {
                     prevClick = canvas.canvasMouseClickCoords(event);
+                    console.log('prev click: ', prevClick);
                     if (drawedLines.some(l => ((l.begin.x - 5 <= prevClick.x && prevClick.x <= l.begin.x + 5) && (l.begin.y - 5 <= prevClick.y && prevClick.y <= l.begin.y + 5)))) {
                         prevClick = drawedLines.filter(l => (l.begin.x - 5 <= prevClick.x && prevClick.x <= l.begin.x + 5) && (l.begin.y - 5 <= prevClick.y && prevClick.y <= l.begin.y + 5))[0].begin;
                     } else if (drawedLines.some(l => ((l.end.x - 5 <= prevClick.x && prevClick.x <= l.end.x + 5) && (l.end.y - 5 <= prevClick.y && prevClick.y <= l.end.y + 5)))) {
@@ -1678,6 +1711,69 @@
 
                     updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
                 }
+            }
+
+            if (canvasCtrl.speedDial.clickedButton === 'draw_zone'){
+                dragingStarted++;
+                if (dragingStarted === 1) {
+                    prevClick = canvas.canvasMouseClickCoords(event);
+                }else if (dragingStarted === 2){
+                    console.log(prevClick);
+                    console.log(mouseDownCoords);
+                    let topLeft = null;
+                    let bottomRight = null;
+                    //up left
+                    if (prevClick.x < mouseDownCoords.x && prevClick.y < mouseDownCoords.y) {
+                        drawedZones.push({
+                            topLeft    : prevClick,
+                            bottomRight: mouseDownCoords,
+                            floor      : canvasCtrl.defaultFloor[0].id
+                        });
+                    }//up right
+                    else if( prevClick.x > mouseDownCoords.x && prevClick.y < mouseDownCoords.y){
+                        console.log('up right start');
+                        topLeft = {x: mouseDownCoords.x, y: prevClick.y};
+                        bottomRight = {x: prevClick.x, y: mouseDownCoords.y};
+                        drawedZones.push({
+                            topLeft    : topLeft,
+                            bottomRight: bottomRight,
+                            floor      : canvasCtrl.defaultFloor[0].id
+                        });
+                    }//down left
+                    else if( prevClick.x < mouseDownCoords.x &&  prevClick.y > mouseDownCoords.y){
+                        topLeft = {x: prevClick.x, y: mouseDownCoords.y};
+                        bottomRight = {x: mouseDownCoords.x, y: prevClick.y};
+                        drawedZones.push({
+                            topLeft    : topLeft,
+                            bottomRight: bottomRight,
+                            floor      : canvasCtrl.defaultFloor[0].id
+                        });
+                    }//down right
+                    else if( prevClick.x > mouseDownCoords.x &&  prevClick.y > mouseDownCoords.y){
+                        console.log('down right: ');
+                        drawedZones.push({
+                            topLeft    : mouseDownCoords,
+                            bottomRight: prevClick,
+                            floor      : canvasCtrl.defaultFloor[0].id
+                        });
+                    }else {
+                        console.log('no case finded');
+                    }
+                    dragingStarted = 0;
+                }
+            }
+
+            if (canvasCtrl.speedDial.clickedButton === 'delete_zone'){
+                let findedZones = findZone(mouseDownCoords, zones, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height);
+                console.log(findedZones);
+                socketService.sendRequest('delete_floor_zones', {zones: findedZones})
+                    .then((response) => {
+                        console.log(zones);
+                        //BUG WHEN I ACTIVATE ZONES FILTER
+                        zones = zones.filter(z => !findedZones.some(fz => fz === z.id));
+                        console.log(response);
+                        console.log(zones);
+                    })
             }
 
             //listen for the tags click

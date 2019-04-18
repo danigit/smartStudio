@@ -734,24 +734,49 @@ class Connection
      * Funzione che salva un disegno sul canvas
      * @param $lines
      * @param $floor
-     * @return db_errors|int|mysqli_stmt
+     * @param $zones
+     * @return array | db_errors
      */
-    function save_drawing($lines, $floor)
+    function save_drawing($lines, $floor, $zones)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
+
+            $this->connection->autocommit(false);
+            $errors = array();
 
             $this->query = "UPDATE floor SET DRAW_POINT = ? WHERE ID = ?";
 
             $statement = $this->execute_selecting($this->query, 'ss', $lines, $floor);
 
             if ($statement instanceof db_errors)
-                return $statement;
+                array_push($errors, 'db_error_draw_line');
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_SAVING_DRAWING);
+                array_push($errors, 'draw_line_false');
 
-            return $this->connection->affected_rows;
+            $statement->close();
+
+            for ($i = 0; $i < count($zones); $i++){
+                $this->query = "INSERT INTO zone (X_LEFT, X_RIGHT, Y_UP, Y_DOWN, FLOOR_ID) VALUES (?, ?, ?, ?, ?)";
+                $statement = $this->execute_inserting($this->query, 'iiiii', $zones[$i]['topLeft']['x'], $zones[$i]['bottomRight']['x'],
+                    $zones[$i]['topLeft']['y'], $zones[$i]['bottomRight']['y'], $floor);
+
+                if ($statement instanceof db_errors)
+                    array_push($errors, 'insert_zone_execute');
+                else if ($statement == false)
+                    array_push($errors, 'insert_zone_false');
+            }
+
+            if (!empty($errors)) {
+                $this->connection->rollback();
+
+                var_dump('roling back');
+                var_dump($errors);
+            }
+            $this->connection->commit();
+
+            return $errors;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);

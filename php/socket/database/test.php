@@ -23,6 +23,8 @@ class Test{
      * @param $function_name - the name of the function to be executed
      */
     function test_function($function_name){
+        $zones = array();
+        $zones[0] = array('topLeft' => array('x' => 15, 'y' => 15), 'bottomRight' => array('x' => 17, 'y' => 17));
         switch ($function_name) {
             case 'register': var_dump($this->conn->register('dani', 'da'));
                 break;
@@ -72,10 +74,12 @@ class Test{
                 break;
             case 'insert_super_user': var_dump($this->conn->insert_super_user('antani', 'scapelli', 0));
                 break;
+            case 'save_drawing': var_dump($this->conn->save_drawing("", 1, $zones));
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('insert_super_user');
+$test->test_function('save_drawing');

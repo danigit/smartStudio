@@ -67,7 +67,6 @@ function drawDashedLine(canvasWidth, canvasHeight, context, spacing, floorWidth,
  * @param image
  */
 function updateCanvas(canvasWidth, canvasHeight, context, image) {
-    console.log('clearing the canvas');
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     if (image !== undefined) {
         context.drawImage(image, 0, 0);
@@ -335,16 +334,54 @@ function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeig
     let realHeight = (floorWidth * canvasHeight) / canvasWidth;
 
     let virtualPositionTop    = scaleIconSize(begin.x, begin.y, floorWidth, realHeight, canvasWidth, canvasHeight);
-    let virtualPositionBottom    = scaleIconSize(begin.xx, begin.yy, floorWidth, realHeight, canvasWidth, canvasHeight);
+    let virtualPositionBottom = scaleIconSize(begin.xx, begin.yy, floorWidth, realHeight, canvasWidth, canvasHeight);
 
-    let width = virtualPositionBottom.width - virtualPositionTop.width;
+    let width  = virtualPositionBottom.width - virtualPositionTop.width;
     let height = virtualPositionBottom.height - virtualPositionTop.height;
 
     drawingContext.beginPath();
     drawingContext.globalAlpha = 0.2;
-    drawingContext.fillStyle = color;
+    drawingContext.fillStyle   = color;
     drawingContext.fillRect(virtualPositionTop.width | 0, virtualPositionTop.height | 0, width | 0, height | 0);
     drawingContext.globalAlpha = 1.0;
     drawingContext.stroke();
     drawingContext.closePath();
+
+}
+/**
+ * Function that draws a rectangle on the canvas
+ * @param begin
+ * @param drawingContext
+ * @param floorWidth
+ * @param canvasWidth
+ * @param canvasHeight
+ * @param color
+ */
+// drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
+function drawZoneRectFromDrawing(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color) {
+
+    let width  = begin.xx - begin.x;
+    let height = begin.yy - begin.y;
+
+    drawingContext.beginPath();
+    drawingContext.globalAlpha = 0.2;
+    drawingContext.fillStyle = color;
+    drawingContext.fillRect(begin.x, begin.y, width, height);
+    drawingContext.globalAlpha = 1.0;
+    drawingContext.stroke();
+    drawingContext.closePath();
+}
+
+function findZone(coords, zones, floor, canvasWidth, canvasHeight) {
+    let findedZones = [];
+    let realcoords = scaleSizeFromVirtualToReal(floor, canvasWidth, canvasHeight, coords.x, coords.y);
+    zones.forEach((z) => {
+        console.log(z)
+        console.log(realcoords);
+        if ((realcoords.x > z.x_left && realcoords.x < z.x_right && realcoords.y > z.y_up && realcoords.y < z.y_down)) {
+            findedZones.push(z.id);
+        }
+    });
+
+    return findedZones;
 }

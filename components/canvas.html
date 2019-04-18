@@ -53,14 +53,30 @@
                                class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                ng-click="canvasCtrl.speedDialClicked('delete')">
                         <img src="../SMARTSTUDIO/img/icons/erase_24.png" class="width-100 height-100"
-                             alt="Disegna riga inclinata" title="Disegna riga inclinata">
+                             alt="Cancella riga" title="Cancella riga">
                     </md-button>
                     <div layout="column" class="width-20">
                         <md-button aria-label="Disegna riga inclinata"
                                    class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                    ng-click="canvasCtrl.speedDialClicked('drop_anchor')">
                             <img src="../SMARTSTUDIO/img/icons/tags/anchor_online_24.png" class="width-100 height-100"
-                                 alt="Disegna riga inclinata" title="Disegna riga inclinata">
+                                 alt="Riposiziona ancora" title="Riposiziona ancora">
+                        </md-button>
+                    </div>
+                    <div layout="column" class="width-20">
+                        <md-button aria-label="Disegna riga inclinata"
+                                   class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
+                                   ng-click="canvasCtrl.speedDialClicked('draw_zone')">
+                            <img src="../SMARTSTUDIO/img/icons/draw-zone.png" class="width-100 height-100"
+                                 alt="Disegna zona" title="Disegna zona">
+                        </md-button>
+                    </div>
+                    <div layout="column" class="width-20">
+                        <md-button aria-label="Disegna riga inclinata"
+                                   class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
+                                   ng-click="canvasCtrl.speedDialClicked('delete_zone')">
+                            <img src="../SMARTSTUDIO/img/icons/draw-zone.png" class="width-100 height-100"
+                                 alt="Cancella zona" title="Cancella zona">
                         </md-button>
                     </div>
                 </md-fab-actions>

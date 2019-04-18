@@ -335,7 +335,7 @@ class webSocketServer implements MessageComponentInterface{
             //save the canvas drawing
             case 'save_drawing':{
                 $result['action'] = 'save_drawing';
-                $query = $this->connection->save_drawing($decoded_message['data']['lines'], $decoded_message['data']['floor']);
+                $query = $this->connection->save_drawing($decoded_message['data']['lines'], $decoded_message['data']['floor'], $decoded_message['data']['zones']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -694,6 +694,22 @@ class webSocketServer implements MessageComponentInterface{
 
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
+            }
+            case 'delete_floor_zones': {
+                $result['action'] = 'delete_floor_zones';
+
+                $zones = $decoded_message['data']['zones'];
+                $errors = array();
+
+                for ($i = 0; $i < count($zones); $i++){
+                    $query = $this->connection->delete_floor_zone($zones[$i]);
+                    ($query instanceof db_errors) ? array_push($errors, $query->getErrorName()) : null;
+                }
+
+                $result['result'] = $errors;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+
             }
             //changing the location field
             case 'get_generic_users':{
