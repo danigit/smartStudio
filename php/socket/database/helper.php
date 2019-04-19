@@ -39,3 +39,25 @@ function parse_string($error_string){
 
     return end($split_error);
 }
+
+function sendEmail($email, $code){
+    try {
+        $mail = new PHPMailer;
+        $mail->isSMTP();
+        $mail->Host = 'tls://smtp.gmail.com';
+        $mail->Port = 587; //587; // 465;
+        $mail->SMTPSecure = 'tls';
+        $mail->SMTPAuth = true;
+        $mail->Username = "ds.acconto@gmail.com";
+        $mail->Password = "!ds!acconto88";
+        $mail->setFrom('ds.acconto@gmail.com', 'Smart Studio');
+        $mail->addAddress($email);
+        $mail->Subject = "Recupero password";
+        $mail->msgHTML("Sei stato contattato da Smart Track per la creazione di un nuovo account riguardante Smart Studio<br><br>
+                                  La tua password provisoria e' : <b class='color-ottanio'>" . $code . "</b><br><br>");
+        if (!$mail->send()) //telnet smtp.aruba.it 587
+            return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
+    }catch (Exception $e){
+        return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
+    }
+}

@@ -1562,8 +1562,6 @@
                 let fixedTopLeft = {x: topLeft.x.toFixed(2), y: topLeft.y.toFixed(2)};
                 let bottomRight = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.bottomRight.x, zone.bottomRight.y);
                 let fixedBottomRightt = {x: bottomRight.x.toFixed(2), y: bottomRight.y.toFixed(2)};
-                console.log(fixedTopLeft);
-                console.log(fixedBottomRightt)
                 tempDrawZones.push({topLeft: fixedTopLeft, bottomRight: fixedBottomRightt, floor: zone.floor});
             });
 
@@ -1765,14 +1763,9 @@
 
             if (canvasCtrl.speedDial.clickedButton === 'delete_zone'){
                 let findedZones = findZone(mouseDownCoords, zones, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height);
-                console.log(findedZones);
                 socketService.sendRequest('delete_floor_zones', {zones: findedZones})
                     .then((response) => {
-                        console.log(zones);
-                        //BUG WHEN I ACTIVATE ZONES FILTER
                         zones = zones.filter(z => !findedZones.some(fz => fz === z.id));
-                        console.log(response);
-                        console.log(zones);
                     })
             }
 

@@ -51,6 +51,7 @@ class db_errors
     public static $ERROR_ON_GETTING_USER_SETTINGS = 40;
     public static $ERROR_ON_INSERTING_USER = 41;
     public static $ERROR_ON_GETTING_USERS = 42;
+    public static $ERROR_ON_SENDING_EMAIL = 43;
 
     private $error;
 
@@ -165,6 +166,8 @@ class db_errors
                 return '$ERROR_ON_INSERTING_USER';
             case 42:
                 return '$ERROR_ON_GETTING_USERS';
+            case 43:
+                return '$ERROR_ON_SENDING_EMAIL';
             default:
                 return 'UNKNOWN_ERROR';
         }

@@ -2071,24 +2071,31 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function insert_user($username, $name)
+    function insert_user($username, $name, $email)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
 
-            $hash_code = password_hash('1234', PASSWORD_BCRYPT);
+            $password = generateRandomCode();
 
-            $this->query = "INSERT INTO user (USERNAME, PASSWORD, NAME, ROLE) VALUES (?, ?, ?, 0)";
+            if (!sendEmail($email, $password) instanceof db_errors) {
 
-            $statement = $this->execute_inserting($this->query, 'sss', $username, $hash_code, $name);
+                $hash_code = password_hash($password, PASSWORD_BCRYPT);
 
-            if ($statement instanceof db_errors)
-                return $statement;
-            else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_INSERTING_USER);
 
-            return $this->connection->insert_id;
+                $this->query = "INSERT INTO user (USERNAME, PASSWORD, NAME, ROLE) VALUES (?, ?, ?, 0)";
+
+                $statement = $this->execute_inserting($this->query, 'sss', $username, $hash_code, $name);
+
+                if ($statement instanceof db_errors)
+                    return $statement;
+                else if ($statement == false)
+                    return new db_errors(db_errors::$ERROR_ON_INSERTING_USER);
+
+                return $this->connection->insert_id;
+            }else
+                return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
