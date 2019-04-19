@@ -249,9 +249,9 @@ class Connection
 
             $hash_code = password_hash($new_password, PASSWORD_BCRYPT);
 
-            $this->query = "UPDATE user SET PASSWORD = ? WHERE USERNAME = ?";
+            $this->query = "UPDATE user SET PASSWORD = ?, PASSWORD_CHANGED = ? WHERE USERNAME = ?";
 
-            $statement = $this->execute_selecting($this->query, 'ss', $hash_code, $username);
+            $statement = $this->execute_selecting($this->query, 'sis', $hash_code, 1, $username);
 
             if ($statement instanceof db_errors)
                 return $statement;
@@ -1877,6 +1877,33 @@ class Connection
             if ($fetch)
                 return $res_zoom;
         }
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function get_user($user){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "SELECT ID, USERNAME, ONE_LOCATION, ROLE, PASSWORD_CHANGED FROM user WHERE USERNAME = ?";
+
+            $statement = $this->execute_selecting($this->query, 's', $user);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
+
+            $this->result = $statement->get_result();
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('id' => $row['ID'], 'username' => $row['USERNAME'], 'one_location' => $row['ONE_LOCATION'], 'role' => $row['ROLE'],
+                    'password_changed' => $row['PASSWORD_CHANGED']);
+            }
+
+            return $result_array;
+        }
+
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 

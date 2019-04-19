@@ -56,9 +56,9 @@
      * Function that manges the home page functionalities
      * @type {string[]}
      */
-    homeController.$inject = ['$scope', '$state', '$mdDialog', '$interval', 'NgMap', 'homeData', 'socketService', 'dataService'];
+    homeController.$inject = ['$scope', '$state', '$mdDialog', '$interval', '$timeout', 'NgMap', 'homeData', 'socketService', 'dataService'];
 
-    function homeController($scope, $state, $mdDialog, $interval, NgMap, homeData, socketService, dataService) {
+    function homeController($scope, $state, $mdDialog, $interval, $timeout, NgMap, homeData, socketService, dataService) {
 
         let homeCtrl = this;
         let markers  = homeData.markers;
@@ -81,380 +81,451 @@
             center  : mapCenter
         };
 
-        dataService.loadUserSettings();
-
-        let getLocationAnchors = (location, anchors) => {
-            let locationAnchors = [];
-            anchors.forEach((anchor) => {
-                if (anchor.location_latitude === location.position[0] && anchor.location_longitude === location.position[1])
-                    locationAnchors.push(anchor);
-            });
-            return locationAnchors;
-        };
-
-        let checkIfAnchorsHaveAlarms = (anchors) => {
-            return anchors.some(a => a.battery_status);
-        };
-
-        let alarmLocationsContainLocation = (location) => {
-            return alarmLocations.some(l => angular.equals(l.position, location.position))
-        };
-
-        let getLocationTags = (location, tags) => {
-            let locationTags = [];
-            tags.forEach((tag) => {
-                if (dataService.isTagInLocation(tag, location)){
-                    locationTags.push(tag);
-                }
-            });
-            return locationTags;
-        };
-
-        let getIndoorLocationTags = (location, tags) => {
-            let locationTags = [];
-            tags.forEach((tag) => {
-                if( location.position[0] === tag.location_latitude && location.position[1] === tag.location_longitude ){
-                    locationTags.push(tag);
-                }
-            });
-            return locationTags;
-        };
-
-        let findTagLocation = (allTags, indoorTags, anchors, map) => {
-            bounds = new google.maps.LatLngBounds();
-            markers.forEach((marker) => {
-                let tags = getLocationTags(marker, allTags);
-                let markerObject = new google.maps.Marker({
-                    position : new google.maps.LatLng(marker.position[0], marker.position[1]),
-                });
-                let markerSelected = homeCtrl.dynamicMarkers.filter(m => m.getPosition().lat() === markerObject.getPosition().lat() && m.getPosition().lng() === markerObject.getPosition().lng())[0];
-
-                if (!marker.is_inside){
-                    if (dataService.checkIfTagsHaveAlarms(tags) && imageIndex === 0){
-                        if (!alarmLocationsContainLocation(marker)){
-                            alarmLocations.push(marker);
-                        }
-                        markerSelected.setIcon(markersIconPath +  'alarm_marker_32.png');
-                    } else {
-                        if (alarmLocationsContainLocation(marker)) {
-                            alarmLocations = alarmLocations.filter(l => !angular.equals(l.position === marker.position));
-                        }
-                        markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
-                    }
-
-                }
-                if (marker.is_inside) {
-                    let locationAnchors = getLocationAnchors(marker, anchors);
-                    let locationTags = getIndoorLocationTags(marker, indoorTags);
-
-                    if (dataService.checkIfTagsHaveAlarms(locationTags)){
-                        if (!alarmLocationsContainLocation(marker) && imageIndex === 0){
-                            alarmLocations.push(marker);
-                        }
-                        markerSelected.setIcon(markersIconPath +  'alarm_marker_32.png');
-                    }else if (imageIndex === 0) {
-                        if (alarmLocationsContainLocation(marker)) {
-                            alarmLocations = alarmLocations.filter(l => angular.equals(l.position !== marker.position));
-                        }
-                        markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
-                    }
-
-                    let anchorsHaveAlarms = checkIfAnchorsHaveAlarms(locationAnchors);
-
-                    if (anchorsHaveAlarms && imageIndex === 1){
-                        markerSelected.setIcon(markersIconPath + 'alarm_anchor_marker_32.png');
-                    } else if (imageIndex === 1) {
-                        markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
-                    }
-                }
-
-                if (alarmLocations.length > 0 && alarmLocations.length !== alarmLocationsLength){
-                    console.log(alarmLocations);
-                    alarmLocations.forEach(location => {
-                        // if (angular.equals(marker.position, location.position)){
-                        //     console.log('marker find: ', marker);
-                        //     let pos = new google.maps.LatLng(marker.position[0], marker.position[1]);
-                        //     bounds.extend(pos);
-                        //     map.fitBounds(bounds);
-                        // }
-                        let pos = new google.maps.LatLng(location.position[0], location.position[1]);
-                        bounds.extend(pos)
-                    });
-
-                    map.fitBounds(bounds);
-                    if (allarmZoom !== map.getZoom()){
-                        allarmZoom = map.getZoom();
-                    }
-
-                    console.log(allarmZoom);
-                    alarmLocationsLength = alarmLocations.length;
-                }
-            });
-
-
-            imageIndex++;
-            if (imageIndex === 2)
-                imageIndex = 0;
-
-        };
-
-        //function that updates the alert notifications
-        let constantUpdateNotifications = (map) => {
-            dataService.homeTimer = $interval(() => {
-                let indoorTags = [];
-                socketService.sendConstantAlertRequest('get_all_tags', {})
-                    .then((response) => {
-                        tags                         = response.result;
-                        homeCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(response.result);
-                        homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
-
-                        dataService.playAlarmsAudio(response.result);
-
-                        return socketService.sendConstantAlertRequest('get_tags_by_user', {user: dataService.username});
-                    })
-                    .then((response) => {
-                        indoorTags = response.result;
-                        return socketService.sendConstantAlertRequest('get_anchors_by_user', {user: dataService.username});
-                    })
-                    .then((response) => {
-                        findTagLocation(tags, indoorTags, response.result, map);
-                        anchors                         = null;
-                        homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
-                    })
-                    .catch((error) => {
-                        console.log('constantUpdateNotification error => ', error);
-                    });
-            }, 1000);
-        };
-
-        NgMap.getMap('main-map').then((map) => {
-            constantUpdateNotifications(map);
-            map.set('styles', mapConfiguration);
-
-            markers.forEach((marker) => {
-                console.log(marker);
-                let markerObject = new google.maps.Marker({
-                    position : new google.maps.LatLng(marker.position[0], marker.position[1]),
-                    animation: google.maps.Animation.DROP,
-                    icon     : markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png')
-                });
-
-                let infoWindow = new google.maps.InfoWindow({
-                    content: '<div class="marker-info-container">' +
-                        '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
-                        '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
-                        '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
-                        '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
-                        '</div>'
-                });
-
-                markerObject.addListener('mouseover', function () {
-                    infoWindow.open(map, this);
-                });
-
-                markerObject.addListener('mouseout', function () {
-                    infoWindow.close(map, this);
-                });
-
-                markerObject.addListener('click', () => {
-                    socketService.sendConstantRequest('save_location', {location: marker.name})
-                        .then((response) => {
-                            if (response.result === 'location_saved') {
-                                return socketService.sendConstantRequest('get_location_info', {})
-                            }
-                        })
-                        .then((response) => {
-                            dataService.location          = response.result;
-                            dataService.defaultFloorName  = '';
-                            dataService.locationFromClick = '';
-                            (response.result.is_inside)
-                                ? $state.go('canvas')
-                                : $state.go('outdoor-location');
-                        })
-                        .catch((error) => {
-                            console.log('markerAddListener error => ', error);
-                        });
-                });
-
-                homeCtrl.dynamicMarkers.push(markerObject);
-                bounds.extend(markerObject.getPosition());
-            });
-
-            homeCtrl.markerClusterer = new MarkerClusterer(map, homeCtrl.dynamicMarkers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-
-            //if there are no markers I set the map to italy with default zoom
-            if (homeCtrl.dynamicMarkers.length === 0) {
-                map.setCenter(new google.maps.LatLng(44.44, 8.88));
-                map.setZoom(mapZoom);
-            }//if there is only a marker I set the map on the marker with zoom 11
-            else if (homeCtrl.dynamicMarkers.length === 1) {
-                map.setCenter(bounds.getCenter());
-                map.setZoom(11);
-            }//if the map has more than one marker I let maps to set automatically the zoom
-            else {
-                // map.setCenter(bounds.getCenter());
-                // map.fitBounds(bounds);
-            }
-        });
-
-        //showing the info window with the online/offline tags
-        homeCtrl.showOfflineTagsHome = () => {
-            $interval.cancel(dataService.homeTimer);
-            dataService.showOfflineTags(false, constantUpdateNotifications);
-        };
-
-        //showing the info window with the online/offline anchors
-        homeCtrl.showOfflineAnchorsHome = () => {
-            $interval.cancel(dataService.homeTimer);
-            dataService.showOfflineAnchors(false, constantUpdateNotifications);
-        };
-
-        //showing the info window with all the alarms
-        homeCtrl.showAlarmsHome = () => {
+        console.log(homeData.password_changed);
+        if (!homeData.password_changed){
             $mdDialog.show({
-                templateUrl        : componentsPath + 'indoor-alarms-info.html',
+                templateUrl        : componentsPath + 'change-password.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
-                clickOutsideToClose: true,
-                multiple           : true,
-                controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
-                    let tags      = null;
-                    $scope.alarms = [];
-                    $scope.query  = {
-                        limitOptions: [5, 10, 15],
-                        order       : 'name',
-                        limit       : 5,
-                        page        : 1
+                controller         : ['$scope', function ($scope) {
+                    $scope.title = "CAMBIO PASSWORD";
+                    $scope.changePassword = {
+                        oldPassword  : '',
+                        newPassword  : '',
+                        reNewPassword: '',
+                        resultClass  : '',
+                        showSuccess  : false,
+                        showError    : false,
+                        message      : false
                     };
 
-                    socketService.sendRequest('get_all_tags', {})
-                        .then((response) => {
-                            tags = response.result;
-                            dataService.getAllLocations()
-                                .then((response) => {
-                                    tags.forEach((tag) => {
+                    $scope.sendPassword = (form) => {
+                        form.$submitted = true;
 
-                                        let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, response.result);
-
-                                        tagAlarms.forEach((tagAlarm) => {
-                                            $scope.alarms.push(tagAlarm);
-                                        })
-                                    });
-
-                                });
-                        })
-                        .catch((error) => {
-                            console.log('showAlarmsHome error => ', error);
-                        });
-
-                    //opening the location where the alarm is
-                    $scope.loadLocation = (alarm) => {
-                        console.log('loading location');
-                        let tag = tags.filter(t => t.name === alarm.tag)[0];
-
-                        if (dataService.isOutdoor(tag)) {
-                            socketService.sendRequest('get_all_locations', {})
-                                .then((response) => {
-                                    response.result.forEach((location) => {
-                                        if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
-                                            socketService.sendRequest('save_location', {location: location.name})
-                                                .then((response) => {
-                                                    if (response.result === 'location_saved') {
-                                                        $state.go('outdoor-location');
-                                                    }
-                                                })
-                                                .catch((error) => {
-                                                    console.log('loadLocation error => ', error);
-                                                });
-                                        }
-                                    })
-                                })
-                                .catch((error) => {
-                                    console.log('loadLocation error => ', error);
-                                });
+                        if ($scope.changePassword.newPassword !== $scope.changePassword.reNewPassword) {
+                            $scope.changePassword.resultClass = 'background-red';
+                            $scope.changePassword.showError   = true;
+                            $scope.changePassword.showSuccess = false;
+                            $scope.changePassword.message     = "Le password devono coincidere!";
                         } else {
-                            let indoorTag = [];
-                            socketService.sendRequest('get_tags_by_user', {user: dataService.username})
-                                .then((response) => {
-                                    indoorTag = response.result.filter(t => t.name === tag.name)[0];
-                                    return socketService.sendRequest('save_location', {location: indoorTag.location_name});
+                            if (form.$valid) {
+
+                                socketService.sendRequest('change_password', {
+                                    oldPassword: $scope.changePassword.oldPassword,
+                                    newPassword: $scope.changePassword.newPassword
                                 })
-                                .then((response) => {
-                                    if (response.result === 'location_saved') {
-                                        dataService.defaultFloorName  = indoorTag.floor_name;
-                                        dataService.locationFromClick = indoorTag.location_name;
-                                        $state.go('canvas');
-                                    }
-                                })
-                                .catch((error) => {
-                                    console.log('loadLocation error => ', error);
-                                });
+                                    .then((response) => {
+                                        if (response.result === 'wrong_old') {
+                                            $scope.changePassword.resultClass = 'background-red';
+                                            $scope.changePassword.showError   = true;
+                                            $scope.changePassword.showSuccess = false;
+                                            $scope.changePassword.message     = 'Vecchia password non valida';
+                                        } else if (response.result === 'error_on_changing_password') {
+                                            $scope.changePassword.resultClass = 'background-red';
+                                            $scope.changePassword.showSuccess = false;
+                                            $scope.changePassword.showError   = true;
+                                            $scope.changePassword.message     = "Impossibile cambiare la password!";
+                                            $timeout(function () {
+                                                $mdDialog.hide();
+                                            }, 1000);
+                                        } else {
+                                            $scope.changePassword.resultClass = 'background-green';
+                                            $scope.changePassword.showSuccess = true;
+                                            $scope.changePassword.showError   = false;
+                                            $scope.changePassword.message     = "Password cambiata correnttamente!";
+                                            $timeout(function () {
+                                                $mdDialog.hide();
+                                                window.location.reload();
+                                            }, 1000);
+                                        }
+                                        $scope.$apply();
+                                    });
+                            } else {
+                                $scope.changePassword.resultClass = 'background-red';
+                            }
                         }
-
-                        $mdDialog.hide();
-                    };
-
-                    $scope.loadTagPosition = (alarm) => {
-                        console.log('loading tag position');
-                        $mdDialog.show({
-                            locals             : {tagName: alarm, outerScope: $scope},
-                            templateUrl        : componentsPath + 'search-tag-outside.html',
-                            parent             : angular.element(document.body),
-                            targetEvent        : event,
-                            clickOutsideToClose: true,
-                            controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
-
-                                let tag = null;
-
-                                $scope.isTagOutOfLocation = 'background-red';
-                                $scope.locationName       = tagName.tag + ' FUORI SITO';
-                                $scope.mapConfiguration   = {
-                                    zoom    : 8,
-                                    map_type: mapType,
-                                };
-
-                                socketService.sendRequest('get_all_tags', {})
-                                    .then((response) => {
-                                        tag = response.result.filter(t => t.name === tagName.tag)[0];
-                                        return socketService.sendRequest('get_tag_outside_location_zoom');
-                                    })
-                                    .then((response) => {
-                                        $scope.mapConfiguration.zoom = response.result;
-                                        console.log(response.result);
-                                    })
-                                    .catch((error) => {
-                                        console.error('loadTagPosition error => ', error);
-                                    });
-
-                                NgMap.getMap('search-map').then((map) => {
-                                    map.set('styles', mapConfiguration);
-                                    let latLng = new google.maps.LatLng(tag.gps_north_degree, tag.gps_east_degree);
-
-                                    map.setCenter(latLng);
-
-                                    new google.maps.Marker({
-                                        position: latLng,
-                                        map     : map,
-                                        icon    : tagsIconPath + 'search-tag.png'
-                                    });
-
-                                });
-
-                                $scope.hide = () => {
-                                    outerScope.selectedTag = '';
-                                    $mdDialog.hide();
-                                }
-                            }]
-                        })
                     };
 
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
                 }]
-            })
-        };
+            });
+        }else {
+            dataService.loadUserSettings();
 
+            let getLocationAnchors = (location, anchors) => {
+                let locationAnchors = [];
+                anchors.forEach((anchor) => {
+                    if (anchor.location_latitude === location.position[0] && anchor.location_longitude === location.position[1])
+                        locationAnchors.push(anchor);
+                });
+                return locationAnchors;
+            };
+
+            let checkIfAnchorsHaveAlarms = (anchors) => {
+                return anchors.some(a => a.battery_status);
+            };
+
+            let alarmLocationsContainLocation = (location) => {
+                return alarmLocations.some(l => angular.equals(l.position, location.position))
+            };
+
+            let getLocationTags = (location, tags) => {
+                let locationTags = [];
+                tags.forEach((tag) => {
+                    if (dataService.isTagInLocation(tag, location)) {
+                        locationTags.push(tag);
+                    }
+                });
+                return locationTags;
+            };
+
+            let getIndoorLocationTags = (location, tags) => {
+                let locationTags = [];
+                tags.forEach((tag) => {
+                    if (location.position[0] === tag.location_latitude && location.position[1] === tag.location_longitude) {
+                        locationTags.push(tag);
+                    }
+                });
+                return locationTags;
+            };
+
+            let findTagLocation = (allTags, indoorTags, anchors, map) => {
+                bounds = new google.maps.LatLngBounds();
+                markers.forEach((marker) => {
+                    let tags           = getLocationTags(marker, allTags);
+                    let markerObject   = new google.maps.Marker({
+                        position: new google.maps.LatLng(marker.position[0], marker.position[1]),
+                    });
+                    let markerSelected = homeCtrl.dynamicMarkers.filter(m => m.getPosition().lat() === markerObject.getPosition().lat() && m.getPosition().lng() === markerObject.getPosition().lng())[0];
+
+                    if (!marker.is_inside) {
+                        if (dataService.checkIfTagsHaveAlarms(tags) && imageIndex === 0) {
+                            if (!alarmLocationsContainLocation(marker)) {
+                                alarmLocations.push(marker);
+                            }
+                            markerSelected.setIcon(markersIconPath + 'alarm_marker_32.png');
+                        } else {
+                            if (alarmLocationsContainLocation(marker)) {
+                                alarmLocations = alarmLocations.filter(l => !angular.equals(l.position === marker.position));
+                            }
+                            markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
+                        }
+
+                    }
+                    if (marker.is_inside) {
+                        let locationAnchors = getLocationAnchors(marker, anchors);
+                        let locationTags    = getIndoorLocationTags(marker, indoorTags);
+
+                        if (dataService.checkIfTagsHaveAlarms(locationTags)) {
+                            if (!alarmLocationsContainLocation(marker) && imageIndex === 0) {
+                                alarmLocations.push(marker);
+                            }
+                            markerSelected.setIcon(markersIconPath + 'alarm_marker_32.png');
+                        } else if (imageIndex === 0) {
+                            if (alarmLocationsContainLocation(marker)) {
+                                alarmLocations = alarmLocations.filter(l => angular.equals(l.position !== marker.position));
+                            }
+                            markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
+                        }
+
+                        let anchorsHaveAlarms = checkIfAnchorsHaveAlarms(locationAnchors);
+
+                        if (anchorsHaveAlarms && imageIndex === 1) {
+                            markerSelected.setIcon(markersIconPath + 'alarm_anchor_marker_32.png');
+                        } else if (imageIndex === 1) {
+                            markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
+                        }
+                    }
+
+                    if (alarmLocations.length > 0 && alarmLocations.length !== alarmLocationsLength) {
+                        console.log(alarmLocations);
+                        alarmLocations.forEach(location => {
+                            // if (angular.equals(marker.position, location.position)){
+                            //     console.log('marker find: ', marker);
+                            //     let pos = new google.maps.LatLng(marker.position[0], marker.position[1]);
+                            //     bounds.extend(pos);
+                            //     map.fitBounds(bounds);
+                            // }
+                            let pos = new google.maps.LatLng(location.position[0], location.position[1]);
+                            bounds.extend(pos)
+                        });
+
+                        map.fitBounds(bounds);
+                        if (allarmZoom !== map.getZoom()) {
+                            allarmZoom = map.getZoom();
+                        }
+
+                        console.log(allarmZoom);
+                        alarmLocationsLength = alarmLocations.length;
+                    }
+                });
+
+
+                imageIndex++;
+                if (imageIndex === 2)
+                    imageIndex = 0;
+
+            };
+
+            //function that updates the alert notifications
+            let constantUpdateNotifications = (map) => {
+                dataService.homeTimer = $interval(() => {
+                    let indoorTags = [];
+                    socketService.sendConstantAlertRequest('get_all_tags', {})
+                        .then((response) => {
+                            tags                         = response.result;
+                            homeCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(response.result);
+                            homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
+
+                            dataService.playAlarmsAudio(response.result);
+
+                            return socketService.sendConstantAlertRequest('get_tags_by_user', {user: dataService.username});
+                        })
+                        .then((response) => {
+                            indoorTags = response.result;
+                            return socketService.sendConstantAlertRequest('get_anchors_by_user', {user: dataService.username});
+                        })
+                        .then((response) => {
+                            findTagLocation(tags, indoorTags, response.result, map);
+                            anchors                         = null;
+                            homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
+                        })
+                        .catch((error) => {
+                            console.log('constantUpdateNotification error => ', error);
+                        });
+                }, 1000);
+            };
+
+            NgMap.getMap('main-map').then((map) => {
+                constantUpdateNotifications(map);
+                map.set('styles', mapConfiguration);
+
+                markers.forEach((marker) => {
+                    console.log(marker);
+                    let markerObject = new google.maps.Marker({
+                        position : new google.maps.LatLng(marker.position[0], marker.position[1]),
+                        animation: google.maps.Animation.DROP,
+                        icon     : markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png')
+                    });
+
+                    let infoWindow = new google.maps.InfoWindow({
+                        content: '<div class="marker-info-container">' +
+                            '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+                            '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
+                            '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
+                            '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
+                            '</div>'
+                    });
+
+                    markerObject.addListener('mouseover', function () {
+                        infoWindow.open(map, this);
+                    });
+
+                    markerObject.addListener('mouseout', function () {
+                        infoWindow.close(map, this);
+                    });
+
+                    markerObject.addListener('click', () => {
+                        socketService.sendConstantRequest('save_location', {location: marker.name})
+                            .then((response) => {
+                                if (response.result === 'location_saved') {
+                                    return socketService.sendConstantRequest('get_location_info', {})
+                                }
+                            })
+                            .then((response) => {
+                                dataService.location          = response.result;
+                                dataService.defaultFloorName  = '';
+                                dataService.locationFromClick = '';
+                                (response.result.is_inside)
+                                    ? $state.go('canvas')
+                                    : $state.go('outdoor-location');
+                            })
+                            .catch((error) => {
+                                console.log('markerAddListener error => ', error);
+                            });
+                    });
+
+                    homeCtrl.dynamicMarkers.push(markerObject);
+                    bounds.extend(markerObject.getPosition());
+                });
+
+                homeCtrl.markerClusterer = new MarkerClusterer(map, homeCtrl.dynamicMarkers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+
+                //if there are no markers I set the map to italy with default zoom
+                if (homeCtrl.dynamicMarkers.length === 0) {
+                    map.setCenter(new google.maps.LatLng(44.44, 8.88));
+                    map.setZoom(mapZoom);
+                }//if there is only a marker I set the map on the marker with zoom 11
+                else if (homeCtrl.dynamicMarkers.length === 1) {
+                    map.setCenter(bounds.getCenter());
+                    map.setZoom(11);
+                }//if the map has more than one marker I let maps to set automatically the zoom
+                else {
+                    // map.setCenter(bounds.getCenter());
+                    // map.fitBounds(bounds);
+                }
+            });
+
+            //showing the info window with the online/offline tags
+            homeCtrl.showOfflineTagsHome = () => {
+                $interval.cancel(dataService.homeTimer);
+                dataService.showOfflineTags(false, constantUpdateNotifications);
+            };
+
+            //showing the info window with the online/offline anchors
+            homeCtrl.showOfflineAnchorsHome = () => {
+                $interval.cancel(dataService.homeTimer);
+                dataService.showOfflineAnchors(false, constantUpdateNotifications);
+            };
+
+            //showing the info window with all the alarms
+            homeCtrl.showAlarmsHome = () => {
+                $mdDialog.show({
+                    templateUrl        : componentsPath + 'indoor-alarms-info.html',
+                    parent             : angular.element(document.body),
+                    targetEvent        : event,
+                    clickOutsideToClose: true,
+                    multiple           : true,
+                    controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
+                        let tags      = null;
+                        $scope.alarms = [];
+                        $scope.query  = {
+                            limitOptions: [5, 10, 15],
+                            order       : 'name',
+                            limit       : 5,
+                            page        : 1
+                        };
+
+                        socketService.sendRequest('get_all_tags', {})
+                            .then((response) => {
+                                tags = response.result;
+                                dataService.getAllLocations()
+                                    .then((response) => {
+                                        tags.forEach((tag) => {
+
+                                            let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, response.result);
+
+                                            tagAlarms.forEach((tagAlarm) => {
+                                                $scope.alarms.push(tagAlarm);
+                                            })
+                                        });
+
+                                    });
+                            })
+                            .catch((error) => {
+                                console.log('showAlarmsHome error => ', error);
+                            });
+
+                        //opening the location where the alarm is
+                        $scope.loadLocation = (alarm) => {
+                            console.log('loading location');
+                            let tag = tags.filter(t => t.name === alarm.tag)[0];
+
+                            if (dataService.isOutdoor(tag)) {
+                                socketService.sendRequest('get_all_locations', {})
+                                    .then((response) => {
+                                        response.result.forEach((location) => {
+                                            if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
+                                                socketService.sendRequest('save_location', {location: location.name})
+                                                    .then((response) => {
+                                                        if (response.result === 'location_saved') {
+                                                            $state.go('outdoor-location');
+                                                        }
+                                                    })
+                                                    .catch((error) => {
+                                                        console.log('loadLocation error => ', error);
+                                                    });
+                                            }
+                                        })
+                                    })
+                                    .catch((error) => {
+                                        console.log('loadLocation error => ', error);
+                                    });
+                            } else {
+                                let indoorTag = [];
+                                socketService.sendRequest('get_tags_by_user', {user: dataService.username})
+                                    .then((response) => {
+                                        indoorTag = response.result.filter(t => t.name === tag.name)[0];
+                                        return socketService.sendRequest('save_location', {location: indoorTag.location_name});
+                                    })
+                                    .then((response) => {
+                                        if (response.result === 'location_saved') {
+                                            dataService.defaultFloorName  = indoorTag.floor_name;
+                                            dataService.locationFromClick = indoorTag.location_name;
+                                            $state.go('canvas');
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        console.log('loadLocation error => ', error);
+                                    });
+                            }
+
+                            $mdDialog.hide();
+                        };
+
+                        $scope.loadTagPosition = (alarm) => {
+                            console.log('loading tag position');
+                            $mdDialog.show({
+                                locals             : {tagName: alarm, outerScope: $scope},
+                                templateUrl        : componentsPath + 'search-tag-outside.html',
+                                parent             : angular.element(document.body),
+                                targetEvent        : event,
+                                clickOutsideToClose: true,
+                                controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
+
+                                    let tag = null;
+
+                                    $scope.isTagOutOfLocation = 'background-red';
+                                    $scope.locationName       = tagName.tag + ' FUORI SITO';
+                                    $scope.mapConfiguration   = {
+                                        zoom    : 8,
+                                        map_type: mapType,
+                                    };
+
+                                    socketService.sendRequest('get_all_tags', {})
+                                        .then((response) => {
+                                            tag = response.result.filter(t => t.name === tagName.tag)[0];
+                                            return socketService.sendRequest('get_tag_outside_location_zoom');
+                                        })
+                                        .then((response) => {
+                                            $scope.mapConfiguration.zoom = response.result;
+                                            console.log(response.result);
+                                        })
+                                        .catch((error) => {
+                                            console.error('loadTagPosition error => ', error);
+                                        });
+
+                                    NgMap.getMap('search-map').then((map) => {
+                                        map.set('styles', mapConfiguration);
+                                        let latLng = new google.maps.LatLng(tag.gps_north_degree, tag.gps_east_degree);
+
+                                        map.setCenter(latLng);
+
+                                        new google.maps.Marker({
+                                            position: latLng,
+                                            map     : map,
+                                            icon    : tagsIconPath + 'search-tag.png'
+                                        });
+
+                                    });
+
+                                    $scope.hide = () => {
+                                        outerScope.selectedTag = '';
+                                        $mdDialog.hide();
+                                    }
+                                }]
+                            })
+                        };
+
+                        $scope.hide = () => {
+                            $mdDialog.hide();
+                        }
+                    }]
+                })
+            };
+        }
         //on destroying the pag I release the resources
         $scope.$on('$destroy', function () {
             $mdDialog.hide();
@@ -2521,6 +2592,7 @@
                     $scope.user = {
                         username       : '',
                         name: '',
+                        email: '',
                         showSuccess: false,
                         showError  : false,
                         isIndoor   : false,
@@ -2534,7 +2606,7 @@
 
                         if (form.$valid) {
                             console.log($scope.user);
-                            socketService.sendRequest('insert_user', {username: $scope.user.username, name: $scope.user.name})
+                            socketService.sendRequest('insert_user', {username: $scope.user.username, name: $scope.user.name, email: $scope.user.email})
                                 .then((response) => {
                                     if (response.result !== 'ERROR_ON_EXECUTE' && response.result !== 'ERROR_ON_INSERTING_USER'){
                                         $scope.user.resultClass = 'background-green';
@@ -2820,6 +2892,7 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 controller         : ['$scope', function ($scope) {
+                    $scope.title = 'CHANGE PASSWORD';
                     $scope.changePassword = {
                         oldPassword  : '',
                         newPassword  : '',

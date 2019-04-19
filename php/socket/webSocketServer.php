@@ -124,9 +124,12 @@ class webSocketServer implements MessageComponentInterface{
             case 'get_user':{
                 $result['action'] = 'get_user';
 
-                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username']))
-                    $result['result'] = array('session_name' => $_SESSION['username'], 'id' => $_SESSION['id'], 'is_admin' => $_SESSION['is_admin']);
-                else
+                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'])) {
+                    $query = $this->connection->get_user($_SESSION['username']);
+
+                    ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+//                    $result['result'] = array('session_name' => $_SESSION['username'], 'id' => $_SESSION['id'], 'is_admin' => $_SESSION['is_admin']);
+                }else
                     $result['result'] = 'no_user';
 
                 $this->clients[$from->resourceId]->send(json_encode($result));
@@ -724,7 +727,7 @@ class webSocketServer implements MessageComponentInterface{
             //inserting a location
             case 'insert_user':{
                 $result['action'] = 'insert_user';
-                $query = $this->connection->insert_user($decoded_message['data']['username'], $decoded_message['data']['name']);
+                $query = $this->connection->insert_user($decoded_message['data']['username'], $decoded_message['data']['name'] ,$decoded_message['data']['email']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

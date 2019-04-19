@@ -55,22 +55,28 @@
                         let result  = {};
                         socketService.sendRequest('get_user', {})
                             .then((response) => {
-                                if (response.result.session_name !== undefined) {
-                                    dataService.username = response.result.session_name;
-                                    if (response.result.is_admin === 1) {
-                                        dataService.isAdmin = response.result.is_admin;
-                                        result.isAdmin      = response.result.is_admin;
-                                    }else if (response.result.is_admin === 2){
-                                        dataService.isUserManager = response.result.is_admin;
-                                        result.isUserManager      = response.result.is_admin;
+                                if (response.result.length > 0) {
+                                    dataService.username = response.result[0].username;
+                                    if (response.result[0].role === 1) {
+                                        dataService.isAdmin = response.result[0].role;
+                                        result.isAdmin      = response.result[0].role;
+                                        result.password_changed = response.result[0].password_changed;
+                                        console.log(result.password_changed)
+                                    }else if (response.result[0].role === 2){
+                                        dataService.isUserManager = response.result[0].role;
+                                        result.isUserManager      = response.result[0].role;
+                                        result.password_changed = response.result[0].password_changed;
+                                        console.log(result.password_changed)
                                     }
-                                    return socketService.sendRequest('get_markers', {username: response.result.session_name})
+                                    console.log(response.result[0]);
+                                    return socketService.sendRequest('get_markers', {username: response.result[0].username})
                                 } else {
                                     $state.go('login');
                                 }
                             })
                             .then((response) => {
                                 result.markers = response.result;
+                                console.log(result.markers);
                                 if (response.result.length === 1){
                                     socketService.sendRequest('save_location', {location: response.result[0].name})
                                         .then((response) => {
@@ -127,13 +133,13 @@
                                 return socketService.sendRequest('get_user', {})
                             })
                             .then((response) => {
-                                if (response.result.session_name !== undefined) {
+                                if (response.result[0].username !== undefined) {
 
-                                    dataService.username = response.result.session_name;
+                                    dataService.username = response.result[0].username;
 
-                                    result.username     = response.result.session_name;
-                                    result.isAdmin      = response.result.is_admin;
-                                    dataService.isAdmin = response.result.is_admin;
+                                    result.username     = response.result[0].username;
+                                    result.isAdmin      = response.result[0].role;
+                                    dataService.isAdmin = response.result[0].role;
                                     return socketService.sendRequest('get_tags_by_user', {user: dataService.username})
                                 } else {
                                     $state.go('login');
@@ -173,9 +179,9 @@
 
                         socketService.sendRequest('get_user', {})
                             .then((response) => {
-                                if (response.result.session_name !== undefined) {
-                                    dataService.username = response.result.session_name;
-                                    dataService.isAdmin  = response.result.is_admin;
+                                if (response.result[0].username !== undefined) {
+                                    dataService.username = response.result[0].username;
+                                    dataService.isAdmin  = response.result[0].role;
 
                                     return socketService.sendRequest('get_location_info', {})
                                 } else {

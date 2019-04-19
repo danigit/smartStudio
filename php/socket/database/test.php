@@ -70,11 +70,13 @@ class Test{
                 break;
             case 'insert_floor_zone': var_dump($this->conn->insert_floor_zone("{\"name\":\"fdsafdsa\",\"x_left\":1,\"x_right\":1,\"y_up\":1,\"y_down\":1,\"floor\":1}"));
                 break;
-            case 'insert_user': var_dump($this->conn->insert_user('antani', 'scapelli'));
+            case 'insert_user': var_dump($this->conn->insert_user('antani', 'scapelli', 'ds.acconto@gmail.com'));
                 break;
             case 'insert_super_user': var_dump($this->conn->insert_super_user('antani', 'scapelli', 0));
                 break;
             case 'save_drawing': var_dump($this->conn->save_drawing("", 1, $zones));
+                break;
+            case 'get_user': var_dump($this->conn->get_user("daniel"));
                 break;
             default: var_dump('Funzione non esistente');
         }
@@ -82,4 +84,4 @@ class Test{
 }
 
 $test = new Test();
-$test->test_function('save_drawing');
+$test->test_function('get_user');

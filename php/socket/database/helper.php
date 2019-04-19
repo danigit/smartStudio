@@ -6,11 +6,13 @@
  * Time: 17.52
  */
 
+require_once './mailer/PHPMailerAutoload.php';
+
+
 define('MARKERS_IMAGES_PATH', '../../img/icons/markers/');
 define('FLOOR_IMAGES_PATH', '../../img/floors/');
 
 require_once 'db_errors.php';
-
 /**
  * Functions that parse an error array and return the appropriate error object
  * @param $errors - the array containing the errors
@@ -61,3 +63,24 @@ function sendEmail($email, $code){
         return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
     }
 }
+//
+///**
+// * Function that generates a random code of 6 characters, that has letters an numbers in it
+// * @return string - the generated code
+// */
+//function generateRandomCode() {
+//    $chars = "abcdefghijkmnopqrstuvwxyz0123456789";
+//    srand((double)microtime()*1000000);
+//    $i = 0;
+//    $code = '' ;
+//
+//    while ($i < 6) {
+//        $num = rand() % 33;
+//        $tmp = substr($chars, $num, 1);
+//        $code = $code . $tmp;
+//        $i++;
+//    }
+//
+//    return $code;
+//
+//}
