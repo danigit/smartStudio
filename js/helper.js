@@ -26,6 +26,14 @@ function encodeRequest(action, data) {
     return JSON.stringify({action: action, data: data});
 }
 
+function encodeRequestWithId(id, action, data) {
+    return JSON.stringify({id: id, action: action, data: data});
+}
+
+function parseResponse(response) {
+    return JSON.parse(response.data);
+}
+
 /**
  * Function that draws the grid on the canvas
  * @param canvasWidth
@@ -312,4 +320,10 @@ function drawLine(begin, end, type, drawingContext, showDrawing) {
 function drawRect(begin, drawingContext) {
     drawingContext.fillStyle = 'black';
     drawingContext.fillRect(begin.x - 5, begin.y - 5, 10, 10);
+}
+
+function handleSocketError(socket) {
+    socket.onerror = (error) => {
+        console.error('L\'errore e\' => ', error.message);
+    }
 }

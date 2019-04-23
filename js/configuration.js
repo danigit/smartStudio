@@ -25,6 +25,8 @@ const mapZoom = 10;
 const mapType = 'TERAIN';
 const mapCenter = [41.87194, 12.56738];
 
+let requestId = 0;
+
 let mapConfiguration = [{
     featureType: "poi",
     elementType: "labels",

@@ -67,7 +67,7 @@
                             })
                             .then((response) => {
                                 result.markers = response.result;
-                                if (response.result.length === 1 && response.result[0].one_location){
+                                if (response.result.length === 1 && response.result[0].one_location === 1){
                                     socketService.sendRequest('save_location', {location: response.result[0].name})
                                         .then((response) => {
                                             if (response.result === 'location_saved') {
@@ -113,6 +113,7 @@
                         let result  = {};
                         socketService.sendRequest('get_location_info', {})
                             .then((response) => {
+                                console.log(response.result);
                                 if (response.result !== 'location_not_found') {
                                     if (response.result.is_inside)
                                         $state.go('home')
@@ -130,15 +131,14 @@
                                     result.username     = response.result.session_name;
                                     result.isAdmin      = response.result.is_admin;
                                     dataService.isAdmin = response.result.is_admin;
-                                    return socketService.sendRequest('get_tags_by_user', {user: dataService.username})
+                                    return socketService.sendRequest('get_all_tags')
                                 } else {
                                     $state.go('login');
                                 }
                             })
                             .then((response) => {
 
-                                dataService.tags = response.result;
-                                result.tags      = response.result;
+                                dataService.allTags = response.result;
 
                                 return socketService.sendRequest('get_anchors_by_user', {user: dataService.username})
                             })
