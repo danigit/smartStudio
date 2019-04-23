@@ -3,12 +3,12 @@
 <md-toolbar id="popup-toolbar" ng-class="user.resultClass">
     <div layout="row" layout-align="end center" class="width-100">
         <md-button class="md-icon-button margin-none" ng-click="hide()">
-            <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
+            <img src="img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
         </md-button>
     </div>
 
     <div layout="row" layout-align="center center" class="margin-top--20-px">
-        <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
     </div>
 
     <div layout="column">
@@ -24,47 +24,49 @@
     <div layout="column" layout-align="center center">
 
         <form id="insertUserForm" name="insertUserForm">
-            <md-input-container md-no-float class="margin-bottom-0">
-                <input required type="text" ng-model="user.username" name="userUsername"
-                       placeholder="Username">
-                <div ng-messages="insertUserForm.userUsername.$error || insertUserForm.$submitted"
-                     role="alert">
-                    <div ng-message=" required">Inserire un nome utente</div>
+            <div layout="column">
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input required type="text" ng-model="user.username" name="userUsername"
+                           placeholder="Username">
+                    <div ng-messages="insertUserForm.userUsername.$error || insertUserForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire un nome utente</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input required type="text" ng-model="user.name" name="userName"
+                           placeholder=" Name">
+                    <div ng-messages="insertUserForm.userName.$error || insertUserForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire un nome</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input required type="text" ng-model="user.email" name="userEmail"
+                           placeholder="Email">
+                    <div ng-messages="insertUserForm.userEmail.$error || insertUserForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire email</div>
+                    </div>
+                </md-input-container>
+
+                <div class="background-transparent-white text-center color-green font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                     ng-show="user.showSuccess">
+                    {{user.message}}
                 </div>
-            </md-input-container>
 
-            <md-input-container md-no-float class="margin-bottom-0">
-                <input required type="text" ng-model="user.name" name="userName"
-                       placeholder=" Name">
-                <div ng-messages="insertUserForm.userName.$error || insertUserForm.$submitted"
-                     role="alert">
-                    <div ng-message=" required">Inserire un nome</div>
+                <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                     ng-show="user.showError">
+                    {{user.message}}
                 </div>
-            </md-input-container>
 
-            <md-input-container md-no-float class="margin-bottom-0">
-                <input required type="text" ng-model="user.email" name="userEmail"
-                       placeholder="Email">
-                <div ng-messages="insertUserForm.userEmail.$error || insertUserForm.$submitted"
-                     role="alert">
-                    <div ng-message=" required">Inserire email</div>
+                <div layout="row" layout-align="center center" class="margin-top-15-px">
+                    <md-button ng-click="insertUser(insertUserForm)"
+                               class="md-raised background-darkcyan color-white">INSERISCI UTENTE
+                    </md-button>
                 </div>
-            </md-input-container>
-
-            <div class="background-transparent-white text-center color-green font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
-                 ng-show="user.showSuccess">
-                {{user.message}}
-            </div>
-
-            <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
-                 ng-show="user.showError">
-                {{user.message}}
-            </div>
-
-            <div layout="row" layout-align="center center" class="margin-top-15-px">
-                <md-button ng-click="insertUser(insertUserForm)"
-                           class="md-raised background-darkcyan color-white">INSERISCI UTENTE
-                </md-button>
             </div>
         </form>
     </div>

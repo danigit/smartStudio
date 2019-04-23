@@ -328,9 +328,11 @@ function drawRect(begin, drawingContext) {
  * @param canvasWidth
  * @param canvasHeight
  * @param color
+ * @param drawingOn
+ * @param alpha
  */
 // drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
-function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color) {
+function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, drawingOn, alpha) {
     let realHeight = (floorWidth * canvasHeight) / canvasWidth;
 
     let virtualPositionTop    = scaleIconSize(begin.x, begin.y, floorWidth, realHeight, canvasWidth, canvasHeight);
@@ -340,7 +342,11 @@ function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeig
     let height = virtualPositionBottom.height - virtualPositionTop.height;
 
     drawingContext.beginPath();
-    drawingContext.globalAlpha = 0.2;
+    if (drawingOn) {
+        drawingContext.fillStyle = 'black';
+        drawingContext.fillRect(virtualPositionTop.width - 5, virtualPositionTop.height - 5, 10, 10);
+    }
+    drawingContext.globalAlpha = alpha;
     drawingContext.fillStyle   = color;
     drawingContext.fillRect(virtualPositionTop.width | 0, virtualPositionTop.height | 0, width | 0, height | 0);
     drawingContext.globalAlpha = 1.0;
@@ -348,6 +354,7 @@ function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeig
     drawingContext.closePath();
 
 }
+
 /**
  * Function that draws a rectangle on the canvas
  * @param begin
@@ -356,15 +363,19 @@ function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeig
  * @param canvasWidth
  * @param canvasHeight
  * @param color
+ * @param alpha
  */
 // drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
-function drawZoneRectFromDrawing(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color) {
+function drawZoneRectFromDrawing(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, alpha) {
 
     let width  = begin.xx - begin.x;
     let height = begin.yy - begin.y;
 
     drawingContext.beginPath();
-    drawingContext.globalAlpha = 0.2;
+    drawingContext.fillStyle = 'black';
+    drawingContext.fillRect(begin.x - 5, begin.y - 5, 10, 10);
+    // drawingContext.fillRect(begin.xx - 5, begin.yy - 5, 10, 10);
+    drawingContext.globalAlpha = alpha;
     drawingContext.fillStyle = color;
     drawingContext.fillRect(begin.x, begin.y, width, height);
     drawingContext.globalAlpha = 1.0;

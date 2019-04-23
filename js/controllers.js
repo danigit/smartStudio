@@ -81,14 +81,15 @@
             center  : mapCenter
         };
 
-        console.log(homeData.password_changed);
         if (!homeData.password_changed){
             $mdDialog.show({
+                locals: {password_changed: homeData.password_changed},
                 templateUrl        : componentsPath + 'change-password.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
-                controller         : ['$scope', function ($scope) {
+                controller         : ['$scope', 'password_changed', function ($scope, password_changed) {
                     $scope.title = "CAMBIO PASSWORD";
+                    $scope.password_changed = password_changed;
                     $scope.changePassword = {
                         oldPassword  : '',
                         newPassword  : '',
@@ -147,7 +148,8 @@
                     };
 
                     $scope.hide = () => {
-                        $mdDialog.hide();
+                        if (password_changed === 1)
+                            $mdDialog.hide();
                     }
                 }]
             });
@@ -261,7 +263,6 @@
                         alarmLocationsLength = alarmLocations.length;
                     }
                 });
-
 
                 imageIndex++;
                 if (imageIndex === 2)
@@ -491,7 +492,6 @@
                                         })
                                         .then((response) => {
                                             $scope.mapConfiguration.zoom = response.result;
-                                            console.log(response.result);
                                         })
                                         .catch((error) => {
                                             console.error('loadTagPosition error => ', error);
@@ -1033,9 +1033,9 @@
      * Function that handles the canvas interaction
      * @type {string[]}
      */
-    canvasController.$inject = ['$scope', '$state', '$mdDialog', '$timeout', '$interval', '$mdSidenav', 'socketService', 'dataService'];
+    canvasController.$inject = ['$scope', '$state', '$mdDialog', '$timeout', '$interval', '$mdSidenav', 'socketService', 'canvasData', 'dataService'];
 
-    function canvasController($scope, $state, $mdDialog, $timeout, $interval, $mdSidenav, socketService, dataService) {
+    function canvasController($scope, $state, $mdDialog, $timeout, $interval, $mdSidenav, socketService, canvasData, dataService) {
         let canvasCtrl         = this;
         let canvas             = document.querySelector('#canvas-id');
         let context            = canvas.getContext('2d');
@@ -1055,7 +1055,8 @@
         let newBegin           = [];
         let newEnd             = [];
         let anchorToDrop       = '';
-        let zonesDrawed = false;
+        let zoneToModify = null;
+        let alpha = canvasData.alpha;
 
         canvasCtrl.canvasInterval         = undefined;
         canvasCtrl.floors                 = dataService.floors;
@@ -1100,7 +1101,7 @@
                 canvasCtrl.defaultFloor[0].map_spacing = newValues[4];
 
             if (newValues[3]) {
-                openFullScreen(document.querySelector('#canvas-container'));
+                openFullScreen(document.querySelector('body'));
                 canvasCtrl.switch.showFullscreen = false;
             }
 
@@ -1138,7 +1139,7 @@
 
                             if (zones !== null)
                                 zones.forEach((zone) => {
-                                    drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red');
+                                    drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', true, alpha);
                                 })
                         };
                         dragingImage.src          = imagePath + 'floors/' + canvasCtrl.floorData.floor_image_map;
@@ -1229,9 +1230,11 @@
                 canvasCtrl.drawingImage = 'inclined-line.png';
             } else if (button === 'delete') {
                 canvasCtrl.drawingImage = 'erase_24.png';
-            } else if (button === 'deaw_zone'){
+            } else if (button === 'draw_zone'){
                 canvasCtrl.drawingImage = 'draw-zone.png'
             } else if (button === 'delete_zone'){
+                canvasCtrl.drawingImage = 'delete-zone.png'
+            }else if (button === 'modify_zone'){
                 canvasCtrl.drawingImage = 'delete-zone.png'
             }
 
@@ -1433,7 +1436,7 @@
                             // drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
                             if (response.result.length > 0){
                                 response.result.forEach((zone) => {
-                                    drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, 'red');
+                                    drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, 'red', false, alpha);
                                 });
                             }
                             return socketService.sendConstantRequest('get_anchors_by_floor_and_location', {
@@ -1627,49 +1630,61 @@
 
         //function that save the canvas drawing
         canvasCtrl.saveDrawing = () => {
-            let tempDrawZones = [];
-            drawedZones.forEach((zone) => {
-                let topLeft = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.topLeft.x, zone.topLeft.y);
-                let fixedTopLeft = {x: topLeft.x.toFixed(2), y: topLeft.y.toFixed(2)};
-                let bottomRight = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.bottomRight.x, zone.bottomRight.y);
-                let fixedBottomRightt = {x: bottomRight.x.toFixed(2), y: bottomRight.y.toFixed(2)};
-                tempDrawZones.push({topLeft: fixedTopLeft, bottomRight: fixedBottomRightt, floor: zone.floor});
-            });
-
-            socketService.sendConstantRequest('save_drawing', {
-                lines: JSON.stringify(drawedLines),
-                floor: canvasCtrl.defaultFloor[0].id,
-                zones: tempDrawZones
+            socketService.sendRequest('get_floor_zones', {
+                floor   : canvasCtrl.defaultFloor[0].name,
+                location: dataService.location,
+                user    : dataService.username
             })
-                .then(() => {
-                    if (drawAnchor !== null) {
-                        let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, dropAnchorPosition.width, dropAnchorPosition.height);
-                        socketService.sendConstantRequest('update_anchor_position', {
-                            x : scaledSize.x.toFixed(2),
-                            y : scaledSize.y.toFixed(2),
-                            id: drawAnchor.id
+                .then((response) => {
+                    let tempDrawZones = [];
+                    drawedZones.forEach((zone) => {
+                        let topLeft = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.topLeft.x, zone.topLeft.y);
+                        let fixedTopLeft = {x: topLeft.x.toFixed(2), y: topLeft.y.toFixed(2)};
+                        let bottomRight = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.bottomRight.x, zone.bottomRight.y);
+                        let fixedBottomRightt = {x: bottomRight.x.toFixed(2), y: bottomRight.y.toFixed(2)};
+                        let zonesModified = response.result.some(z => zone.id === z.id);
+                        console.log(response.result);
+                        console.log(zones);
+                        console.log(zonesModified);
+                        if (!zonesModified)
+                            tempDrawZones.push({topLeft: fixedTopLeft, bottomRight: fixedBottomRightt, floor: zone.floor});
+                    });
+
+                    socketService.sendConstantRequest('save_drawing', {
+                        lines: JSON.stringify(drawedLines),
+                        floor: canvasCtrl.defaultFloor[0].id,
+                        zones: tempDrawZones
+                    })
+                        .then(() => {
+                            if (drawAnchor !== null) {
+                                let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, dropAnchorPosition.width, dropAnchorPosition.height);
+                                socketService.sendConstantRequest('update_anchor_position', {
+                                    x : scaledSize.x.toFixed(2),
+                                    y : scaledSize.y.toFixed(2),
+                                    id: drawAnchor.id
+                                })
+                                    .then((response) => {
+                                        if (response.result !== 0) {
+                                            console.log('anchor position updated');
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        console.log('saveDrawing errro => ', error);
+                                    })
+                            }
+
+                            dataService.switch.showAnchors = true;
+                            dataService.switch.showCameras = true;
+                            canvasCtrl.switch.showDrawing  = false;
+
+                            dropAnchorPosition                 = null;
+                            drawAnchorImage                    = null;
+                            canvasCtrl.speedDial.clickedButton = '';
+                            if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
                         })
-                            .then((response) => {
-                                if (response.result !== 0) {
-                                    console.log('anchor position updated');
-                                }
-                            })
-                            .catch((error) => {
-                                console.log('saveDrawing errro => ', error);
-                            })
-                    }
-
-                    dataService.switch.showAnchors = true;
-                    dataService.switch.showCameras = true;
-                    canvasCtrl.switch.showDrawing  = false;
-
-                    dropAnchorPosition                 = null;
-                    drawAnchorImage                    = null;
-                    canvasCtrl.speedDial.clickedButton = '';
-                    if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
-                })
-                .catch((error) => {
-                    console.log('saveDrawing error => ', error);
+                        .catch((error) => {
+                            console.log('saveDrawing error => ', error);
+                        })
                 })
         };
 
@@ -1694,22 +1709,29 @@
                 }
 
                 if (dragingStarted === 1 && canvasCtrl.speedDial.clickedButton === 'draw_zone') {
-                    drawZoneRectFromDrawing({x: prevClick.x, y: prevClick.y, xx: canvas.canvasMouseClickCoords(event).x, yy: canvas.canvasMouseClickCoords(event).y}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red');
+                    drawZoneRectFromDrawing({x: prevClick.x, y: prevClick.y, xx: canvas.canvasMouseClickCoords(event).x, yy: canvas.canvasMouseClickCoords(event).y}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', alpha);
                 }
 
                 if (zones !== null){
                     console.log('drawing zones:', zones);
                     zones.forEach((zone) => {
-                        drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red');
+                        drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', true, alpha);
                     })
                 }
 
                 if (drawedZones !== null){
                     console.log('drawing zones from drawing: ', drawedZones);
                     drawedZones.forEach((zone) => {
-                        drawZoneRectFromDrawing({x: zone.topLeft.x, y: zone.topLeft.y, xx: zone.bottomRight.x, yy: zone.bottomRight.y}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red');
+                        drawZoneRectFromDrawing({x: zone.topLeft.x, y: zone.topLeft.y, xx: zone.bottomRight.x, yy: zone.bottomRight.y}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', alpha);
                     })
                 }
+
+                if (zoneToModify !== null){
+                    drawedZones = drawedZones.filter(z => !angular.equals(zoneToModify, z));
+                    zones = zones.filter(z => z.id !== zoneToModify.id);
+                    drawZoneRectFromDrawing({x: zoneToModify.bottomRight.x, y: zoneToModify.bottomRight.y, xx: canvas.canvasMouseClickCoords(event).x, yy: canvas.canvasMouseClickCoords(event).y}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', alpha);
+                }
+
                 if (drawAnchorImage !== null) {
                     context.drawImage(drawAnchorImage, dropAnchorPosition.width, dropAnchorPosition.height);
                 }
@@ -1725,7 +1747,8 @@
 
             console.log(drawedZones);
             //drawing on canvas
-            if (canvasCtrl.switch.showDrawing && canvasCtrl.speedDial.clickedButton !== 'delete' && canvasCtrl.speedDial.clickedButton !== 'drop_anchor' && canvasCtrl.speedDial.clickedButton !== 'draw_zone') {
+            if (canvasCtrl.switch.showDrawing && canvasCtrl.speedDial.clickedButton !== 'delete' && canvasCtrl.speedDial.clickedButton !== 'drop_anchor'
+                && canvasCtrl.speedDial.clickedButton !== 'draw_zone' && canvasCtrl.speedDial.clickedButton !== 'delete_zone' && canvasCtrl.speedDial.clickedButton !== 'modify_zone') {
                 dragingStarted++;
 
                 if (dragingStarted === 1) {
@@ -1828,6 +1851,126 @@
                     }else {
                         console.log('no case finded');
                     }
+                    dragingStarted = 0;
+                }
+            }
+
+            if (canvasCtrl.speedDial.clickedButton === 'modify_zone'){
+                dragingStarted++;
+                drawedZones.forEach((zone) => {
+                    if (dragingStarted === 1){
+                        prevClick = canvas.canvasMouseClickCoords(event);
+                        console.log('prevClick: ', prevClick);
+                        if (prevClick.x >= zone.topLeft.x - 5 && prevClick.x <= zone.topLeft.x + 10 && prevClick.y >= zone.topLeft.y - 5 && prevClick.y <= zone.topLeft.y + 10){
+                            zoneToModify = zone;
+                            console.log('prevClick: ', prevClick);
+                            console.log('zone finded: ', zone);
+                        }
+                    }
+                });
+                console.log(zones);
+                zones.forEach((zone) => {
+                    if (dragingStarted === 1){
+                        prevClick = canvas.canvasMouseClickCoords(event);
+                        let realHeight = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
+
+                        let virtualPositionTop    = scaleIconSize(zone.x_left, zone.y_up, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
+                        let virtualPositionBottom = scaleIconSize(zone.x_right, zone.y_down, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
+
+                        console.log('prevClick: ', prevClick);
+                        console.log(zone);
+                        console.log(virtualPositionTop);
+                        console.log(virtualPositionTop.height | 0);
+                        if (prevClick.x >= virtualPositionTop.width - 5 | 0 && prevClick.x <= virtualPositionTop.width + 10 | 0 && prevClick.y >= virtualPositionTop.height - 5 | 0 && prevClick.y <= virtualPositionTop.height + 10 | 0){
+                            zoneToModify = {id: zone.id, topLeft: {x: virtualPositionTop.width, y: virtualPositionTop.height}, bottomRight: {x: virtualPositionBottom.width, y: virtualPositionBottom.height}, floor: canvasCtrl.defaultFloor[0].id};
+                            console.log('prevClick: ', prevClick);
+                            console.log('zone finded: ', zone);
+                        }
+                    }
+                });
+                if (dragingStarted === 2){
+                    if (zoneToModify.id !== undefined){
+                        //I HAVE TO UPDATE THE MODIFIED ZONE INTO THE DATABASE
+                        let topLeft = null;
+                        let bottomRight = null;
+                        if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y){
+                            drawedZones.push({
+                                id: zoneToModify.id,
+                                topLeft: mouseDownCoords,
+                                bottomRight: zoneToModify.bottomRight,
+                                floor: canvasCtrl.defaultFloor[0].id
+                            })
+                        } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y){
+                            topLeft = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
+                            bottomRight = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
+                            drawedZones.push({
+                                id: zoneToModify.id,
+                                topLeft: topLeft,
+                                bottomRight: bottomRight,
+                                floor: canvasCtrl.defaultFloor[0].id
+                            })
+                        } else if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y){
+                            topLeft = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
+                            bottomRight = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
+                            drawedZones.push({
+                                id: zoneToModify.id,
+                                topLeft: topLeft,
+                                bottomRight: bottomRight,
+                                floor: canvasCtrl.defaultFloor[0].id
+                            })
+                        } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y){
+                            drawedZones.push({
+                                id: zoneToModify.id,
+                                topLeft: zoneToModify.bottomRight,
+                                bottomRight: mouseDownCoords,
+                                floor: canvasCtrl.defaultFloor[0].id
+                            })
+                        }
+
+                        let modifiedZone = drawedZones.filter(z => z.id === zoneToModify.id)[0];
+
+                        let topLeftScaled = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, modifiedZone.topLeft.x, modifiedZone.topLeft.y);
+                        let bottomDownScalled = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, modifiedZone.bottomRight.x, modifiedZone.bottomRight.y);
+
+                        socketService.sendRequest('update_floor_zone', {zone_id: zoneToModify.id, x_left: topLeftScaled.x, x_right: bottomDownScalled.x, y_up: topLeftScaled.y, y_down: bottomDownScalled.y})
+                            .then((response) => {
+                                console.log(response);
+                            })
+                    }else {
+
+                        let topLeft     = null;
+                        let bottomRight = null;
+                        if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
+                            drawedZones.push({
+                                topLeft    : mouseDownCoords,
+                                bottomRight: zoneToModify.bottomRight,
+                                floor      : canvasCtrl.defaultFloor[0].id
+                            })
+                        } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
+                            topLeft     = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
+                            bottomRight = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
+                            drawedZones.push({
+                                topLeft    : topLeft,
+                                bottomRight: bottomRight,
+                                floor      : canvasCtrl.defaultFloor[0].id
+                            })
+                        } else if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
+                            topLeft     = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
+                            bottomRight = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
+                            drawedZones.push({
+                                topLeft    : topLeft,
+                                bottomRight: bottomRight,
+                                floor      : canvasCtrl.defaultFloor[0].id
+                            })
+                        } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
+                            drawedZones.push({
+                                topLeft    : zoneToModify.bottomRight,
+                                bottomRight: mouseDownCoords,
+                                floor      : canvasCtrl.defaultFloor[0].id
+                            })
+                        }
+                    }
+                    zoneToModify = null;
                     dragingStarted = 0;
                 }
             }
@@ -2605,7 +2748,6 @@
                         form.$submitted = true;
 
                         if (form.$valid) {
-                            console.log($scope.user);
                             socketService.sendRequest('insert_user', {username: $scope.user.username, name: $scope.user.name, email: $scope.user.email})
                                 .then((response) => {
                                     if (response.result !== 'ERROR_ON_EXECUTE' && response.result !== 'ERROR_ON_INSERTING_USER'){
@@ -2768,6 +2910,7 @@
                     $scope.user = {
                         username       : '',
                         name: '',
+                        email: '',
                         showSuccess: false,
                         showError  : false,
                         isIndoor   : false,
@@ -2781,7 +2924,7 @@
 
                         if (form.$valid) {
                             console.log($scope.user);
-                            socketService.sendRequest('insert_super_user', {username: $scope.user.username, name: $scope.user.name, role: ($scope.userRole === 'Utente generico') ? 0 : 2})
+                            socketService.sendRequest('insert_super_user', {username: $scope.user.username, name: $scope.user.name, email: $scope.user.email, role: ($scope.userRole === 'Utente generico') ? 0 : 2})
                                 .then((response) => {
                                     if (response.result !== 'ERROR_ON_EXECUTE' && response.result !== 'ERROR_ON_INSERTING_USER'){
                                         $scope.user.resultClass = 'background-green';
@@ -4105,7 +4248,7 @@
 
         $scope.$watch('switch.mapFullscreen', function (newValue) {
             if (newValue) {
-                openFullScreen(document.querySelector('#map-div'));
+                openFullScreen(document.querySelector('body'));
                 $scope.switch.mapFullscreen = false;
             }
         });

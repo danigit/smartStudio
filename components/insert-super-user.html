@@ -3,12 +3,12 @@
 <md-toolbar id="popup-toolbar" ng-class="user.resultClass">
     <div layout="row" layout-align="end center" class="width-100">
         <md-button class="md-icon-button margin-none" ng-click="hide()">
-            <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
+            <img src="img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
         </md-button>
     </div>
 
     <div layout="row" layout-align="center center" class="margin-top--20-px">
-        <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
     </div>
 
     <div layout="column">
@@ -42,6 +42,16 @@
                         <div ng-message=" required">Inserire un nome</div>
                     </div>
                 </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input required type="text" ng-model="user.email" name="userEmail"
+                           placeholder="Email">
+                    <div ng-messages="insertUserForm.userEmail.$error || insertUserForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire email</div>
+                    </div>
+                </md-input-container>
+
                 <md-input-container>
                     <label>Ruolo</label>
                     <md-select ng-model="userRole">

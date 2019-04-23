@@ -2,16 +2,16 @@
     <div layout="column" class="height-100-vh">
         <div layout="column" class="top-corner background-transparent-white">
             <img ng-show="canvasCtrl.showAlarmsIcon" ng-click="showAlarms()" class="margin-bottom-3"
-                 src="../SMARTSTUDIO/img/icons/alarm-icon.png" alt="Allarmi attivi" title="Allarmi attivi">
+                 src="img/icons/alarm-icon.png" alt="Allarmi attivi" title="Allarmi attivi">
             <img ng-show="canvasCtrl.showOfflineTagsIcon" ng-click="showOfflineTagsIndoor()" class="margin-bottom-5-px"
-                 src="../SMARTSTUDIO/img/icons/offline_tags_alert_64.png" alt="Tags offline" title="Tags offline">
+                 src="img/icons/offline_tags_alert_64.png" alt="Tags offline" title="Tags offline">
             <img ng-show="canvasCtrl.showOfflineAnchorsIcon" ng-click="showOfflineAnchorsIndoor()"
-                 src="../SMARTSTUDIO/img/icons/offline_anchors_alert_64.png" alt="Ancore offline"
+                 src="img/icons/offline_anchors_alert_64.png" alt="Ancore offline"
                  title="Ancore offline">
         </div>
 
         <div class="bottom-corner">
-            <img ng-click="showEmergencyZone()" src="../SMARTSTUDIO/img/icons/evacuation-alarm.png"
+            <img ng-click="showEmergencyZone()" src="img/icons/evacuation-alarm.png"
                  alt="Stato evacuazione" title="Stato evacuazione"><br>
         </div>
 
@@ -22,7 +22,7 @@
                                ng-class="canvasCtrl.speedDial.mode">
                 <md-fab-trigger>
                     <md-button aria-label="menu" class="md-fab background-transparent-white">
-                        <img ng-src="../SMARTSTUDIO/img/icons/{{canvasCtrl.drawingImage}}" class="edit-image"
+                        <img ng-src="img/icons/{{canvasCtrl.drawingImage}}" class="edit-image"
                              alt="Modifica impostazioni pagina" title="Modifica impostazioni pagina">
                     </md-button>
                 </md-fab-trigger>
@@ -31,52 +31,60 @@
                     <md-button aria-label="Disegna riga verticale"
                                class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                ng-click="canvasCtrl.speedDialClicked('vertical')">
-                        <img src="../SMARTSTUDIO/img/icons/vertical-line.png" class="width-100 height-100"
+                        <img src="img/icons/vertical-line.png" class="width-100 height-100"
                              alt="Disegna riga verticale" title="Disegna riga verticale">
                     </md-button>
 
                     <md-button aria-label="Disegna riga orizontale"
                                class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                ng-click="canvasCtrl.speedDialClicked('horizontal')">
-                        <img src="../SMARTSTUDIO/img/icons/horizontal-line.png" class="width-100 height-100"
+                        <img src="img/icons/horizontal-line.png" class="width-100 height-100"
                              alt="Disegna riga orizontale" title="Disegna riga orizontale">
                     </md-button>
 
                     <md-button aria-label="Disegna riga inclinata"
                                class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                ng-click="canvasCtrl.speedDialClicked('inclined')">
-                        <img src="../SMARTSTUDIO/img/icons/inclined-line.png" class="width-100 height-100"
+                        <img src="img/icons/inclined-line.png" class="width-100 height-100"
                              alt="Disegna riga inclinata" title="Disegna riga inclinata">
                     </md-button>
 
-                    <md-button aria-label="Disegna riga inclinata"
+                    <md-button aria-label="Cancella riga"
                                class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                ng-click="canvasCtrl.speedDialClicked('delete')">
-                        <img src="../SMARTSTUDIO/img/icons/erase_24.png" class="width-100 height-100"
+                        <img src="img/icons/erase_24.png" class="width-100 height-100"
                              alt="Cancella riga" title="Cancella riga">
                     </md-button>
                     <div layout="column" class="width-20">
-                        <md-button aria-label="Disegna riga inclinata"
+                        <md-button aria-label="Riposiziona ancora"
                                    class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                    ng-click="canvasCtrl.speedDialClicked('drop_anchor')">
-                            <img src="../SMARTSTUDIO/img/icons/tags/anchor_online_24.png" class="width-100 height-100"
+                            <img src="img/icons/tags/anchor_online_24.png" class="width-100 height-100"
                                  alt="Riposiziona ancora" title="Riposiziona ancora">
                         </md-button>
                     </div>
                     <div layout="column" class="width-20">
-                        <md-button aria-label="Disegna riga inclinata"
+                        <md-button aria-label="Disegna zona"
                                    class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                    ng-click="canvasCtrl.speedDialClicked('draw_zone')">
-                            <img src="../SMARTSTUDIO/img/icons/draw-zone.png" class="width-100 height-100"
+                            <img src="img/icons/draw-zone.png" class="width-100 height-100"
                                  alt="Disegna zona" title="Disegna zona">
                         </md-button>
                     </div>
                     <div layout="column" class="width-20">
-                        <md-button aria-label="Disegna riga inclinata"
+                        <md-button aria-label="Cancella zona"
                                    class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                    ng-click="canvasCtrl.speedDialClicked('delete_zone')">
-                            <img src="../SMARTSTUDIO/img/icons/draw-zone.png" class="width-100 height-100"
+                            <img src="img/icons/draw-zone.png" class="width-100 height-100"
                                  alt="Cancella zona" title="Cancella zona">
+                        </md-button>
+                    </div>
+                    <div layout="column" class="width-20">
+                        <md-button aria-label="Modifica zona"
+                                   class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
+                                   ng-click="canvasCtrl.speedDialClicked('modify_zone')">
+                            <img src="img/icons/draw-zone.png" class="width-100 height-100"
+                                 alt="Modifica zona" title="Modifica zona">
                         </md-button>
                     </div>
                 </md-fab-actions>
@@ -88,7 +96,7 @@
 
         <!--header text-->
         <div layout="row" layout-align="center center" class="background-ottanio width-100" style="padding-left: 3%;">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="canvas-header-image" alt="Smart Track"
+            <img src="img/icons/login-icon.png" class="canvas-header-image" alt="Smart Track"
                  title="Smart Track">
             <div class="margin-bottom-30-px width-30">
                 <p class="canvas-location color-darkcyan text-center">{{canvasCtrl.floorData.location | uppercase}}</p>
@@ -107,12 +115,12 @@
         <div ng-controller="menuController">
             <div ng-show="!canvasCtrl.switch.showDrawing" id="open-menu-button" ng-click="toggleLeft()"
                  class="margin-left--8-px cursor-pointer outline-none">
-                <img id="open-menu-icon" src="../SMARTSTUDIO/img/icons/menu-arrow.png" alt="Menu" title="Menu">
+                <img id="open-menu-icon" src="img/icons/menu-arrow.png" alt="Menu" title="Menu">
             </div>
 
             <div ng-show="!canvasCtrl.switch.showDrawing" id="home-button" ng-click="canvasCtrl.goHome()"
                  class="margin-left--8-px cursor-pointer outline-none">
-                <img id="home-button-icon" src="../SMARTSTUDIO/img/icons/home_16.png" alt="Menu" title="Menu">
+                <img id="home-button-icon" src="img/icons/home_16.png" alt="Menu" title="Menu">
             </div>
 
             <section layout="row">
@@ -123,14 +131,14 @@
                     <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
                         <h1 class="md-toolbar-tools color-black">Menu</h1>
                         <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
-                            <img src="../SMARTSTUDIO/img/icons/menu/close-menu.png" alt="Chiudi menu"
+                            <img src="img/icons/menu/close-menu.png" alt="Chiudi menu"
                                  title="Chiudi menu">
                         </div>
                     </md-toolbar>
 
                     <md-content layout-margin class="margin-top-10">
                         <div layout="column" layout-align="center center">
-                            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track"
+                            <img src="img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track"
                                  title="Smart Track">
                             <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
                         </div>
@@ -138,28 +146,28 @@
                         <div layout="column" id="menu-container">
                             <md-list ng-controller="menuController">
                                 <md-list-item ng-click="registry()"><p>Gestione WeTag</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
+                                        src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="showAnchorsTable()"><p>Gestione Ancore</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/anchor-online-icon.png"
+                                        src="img/icons/menu/anchor-online-icon.png"
                                         class="menu-list-icon" alt=""></md-list-item>
                                 <md-list-item ng-click="floorUpdate()"><p>Gestione piani</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/floor-icon.png" class="menu-list-icon"
+                                        src="img/icons/menu/floor-icon.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="zone()"><p>Gestione zone</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/floor-icon.png" class="menu-list-icon"
+                                        src="img/icons/menu/floor-icon.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="viewHistory()"><p>Storico</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/history_icon_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="quickActions()"><p>Comandi rapidi</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/quick_action_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/quick_action_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="changePassword()"><p>Cambia password</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/password_icon_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/password_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="logout()"><p class="color-red">Logout</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/logout_icon_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/logout_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                             </md-list>
 

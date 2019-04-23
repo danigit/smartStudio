@@ -688,6 +688,17 @@ class webSocketServer implements MessageComponentInterface{
                 break;
             }
             //changing the location field
+            case 'update_floor_zone':{
+                $result['action'] = 'update_zone_floor';
+                $query = $this->connection->update_floor_zone($decoded_message['data']['zone_id'], $decoded_message['data']['x_left'],
+                    $decoded_message['data']['x_right'], $decoded_message['data']['y_up'], $decoded_message['data']['y_down']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
             case 'change_zone_field':{
                 $result['action'] = 'change_zone_field';
                 $query = $this->connection->change_zone_field($decoded_message['data']['zone_id'], $decoded_message['data']['zone_field'],
@@ -727,7 +738,7 @@ class webSocketServer implements MessageComponentInterface{
             //inserting a location
             case 'insert_user':{
                 $result['action'] = 'insert_user';
-                $query = $this->connection->insert_user($decoded_message['data']['username'], $decoded_message['data']['name'] ,$decoded_message['data']['email']);
+                $query = $this->connection->insert_user($decoded_message['data']['username'], $decoded_message['data']['name'], $decoded_message['data']['email']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -769,7 +780,7 @@ class webSocketServer implements MessageComponentInterface{
             case 'insert_super_user':{
                 $result['action'] = 'insert_super_user';
                 $query = $this->connection->insert_super_user($decoded_message['data']['username'], $decoded_message['data']['name'],
-                    $decoded_message['data']['role']);
+                    $decoded_message['data']['email'], $decoded_message['data']['role']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -791,6 +802,16 @@ class webSocketServer implements MessageComponentInterface{
                 $result['action'] = 'change_super_user_field';
                 $query = $this->connection->change_user_field($decoded_message['data']['super_user_id'], $decoded_message['data']['super_user_field'],
                     $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
+            case 'get_alpha':{
+                $result['action'] = 'get_alpha';
+                $query = $this->connection->get_alpha();
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

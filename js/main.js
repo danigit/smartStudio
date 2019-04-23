@@ -215,6 +215,10 @@
                             })
                             .then((response) => {
                                 dataService.allTags = response.result;
+                                return socketService.sendRequest('get_alpha');
+                            })
+                            .then((response) => {
+                                result.alpha = response.result.alpha;
                                 promise.resolve(result);
                             })
                             .catch((error) => {

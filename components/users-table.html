@@ -3,12 +3,12 @@
     <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
@@ -53,7 +53,7 @@
                         ng-class="{'md-placeholder': !user.role}">{{user.role || 'Inserire ruolo'}}
                     </td>
                     <td md-cell ng-show="isAdmin || isUserManager" class="no-wrap" ng-click="deleteRow(user)"><img
-                            src="../SMARTSTUDIO/img/icons/delete_trash_24.png" alt="Cancella utente" title="Cancella utente"></td>
+                            src="img/icons/delete_trash_24.png" alt="Cancella utente" title="Cancella utente"></td>
                 </tr>
                 <tr md-row ng-show="tableEmpty">
                     <td md-cell colspan="8" class="text-center color-red">Nessun risultato trovato</td>
@@ -64,7 +64,7 @@
 
         <md-input-container ng-show="isAdmin || isUserManager" md-no-float class="md-block width-100 margin-bottom-0">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
-                <img src="../SMARTSTUDIO/img/icons/add_row_32.png" class="outline-none cursor-pointer"
+                <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="Aggiungi sito" title="Aggiungi sito">
             </div>
         </md-input-container>

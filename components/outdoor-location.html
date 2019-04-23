@@ -5,12 +5,12 @@
     <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
         <div layout="column" class="top-corner">
             <img ng-show="outdoorCtrl.showAlarmsIcon" ng-click="outdoorCtrl.showAlarms()" class="margin-bottom-3"
-                 src="../SMARTSTUDIO/img/icons/alarm-icon.png" alt="Alarmi attivi" title="Alarmi attivi">
+                 src="img/icons/alarm-icon.png" alt="Alarmi attivi" title="Alarmi attivi">
             <img ng-show="outdoorCtrl.showOfflineTagsIcon" ng-click="outdoorCtrl.showOfflineTags()"
-                 class="margin-bottom-5-px" src="../SMARTSTUDIO/img/icons/offline_tags_alert_64.png"
+                 class="margin-bottom-5-px" src="img/icons/offline_tags_alert_64.png"
                  alt="Tags offline" title="Tags offline">
             <img ng-show="outdoorCtrl.showOfflineAnchorsIcon" ng-click="outdoorCtrl.showOfflineAnchors()"
-                 src="../SMARTSTUDIO/img/icons/offline_anchors_alert_64.png" alt="Ancore offline"
+                 src="img/icons/offline_anchors_alert_64.png" alt="Ancore offline"
                  title="Ancore offline">
         </div>
         <!--map container-->
@@ -24,7 +24,7 @@
                                id="custom-marker-{{$index}}"
                                position="{{marker.position}}">
                     <div>
-                        <img ng-src="../SMARTSTUDIO/img/markers-images/{{marker.icon}}" alt="{{marker.name}}"
+                        <img ng-src="img/markers-images/{{marker.icon}}" alt="{{marker.name}}"
                              title="{{marker.name}}">
                     </div>
                 </custom-marker>
@@ -36,12 +36,12 @@
         <div flex="100" ng-controller="menuController">
 
             <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
-                <img id="open-menu-icon" src="../SMARTSTUDIO/img/icons/menu-arrow.png" alt="">
+                <img id="open-menu-icon" src="img/icons/menu-arrow.png" alt="">
             </div>
 
             <div ng-show="!canvasCtrl.switch.showDrawing" id="home-button" ng-click="outdoorCtrl.goHome()"
                  class="margin-left--8-px cursor-pointer outline-none">
-                <img id="home-button-icon" src="../SMARTSTUDIO/img/icons/home_16.png" alt="Menu" title="Menu">
+                <img id="home-button-icon" src="img/icons/home_16.png" alt="Menu" title="Menu">
             </div>
 
             <section layout="row" flex>
@@ -51,14 +51,14 @@
                     <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
                         <h1 class="md-toolbar-tools color-black">Menu</h1>
                         <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
-                            <img src="../SMARTSTUDIO/img/icons/menu/close-menu.png" alt="Close" title="Close">
+                            <img src="img/icons/menu/close-menu.png" alt="Close" title="Close">
                         </div>
                     </md-toolbar>
 
                     <md-content layout-margin class="margin-top-10">
 
                         <div layout="column" layout-align="center center">
-                            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track"
+                            <img src="img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track"
                                  title="Smart Track">
                             <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
                         </div>
@@ -66,16 +66,16 @@
                         <div layout="column" id="menu-container">
                             <md-list ng-controller="menuController">
                                 <md-list-item ng-click="registry()"><p>Tabella WeTag</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
+                                        src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="viewHistory()"><p>Storico</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/history_icon_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="changePassword()"><p>Cambia password</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/password_icon_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/password_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="logout()"><p class="color-red">Logout</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/logout_icon_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/logout_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                             </md-list>
 

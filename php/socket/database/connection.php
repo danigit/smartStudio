@@ -2051,6 +2051,34 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that change the value of a tag field
+     * @param $zone_id
+     * @param $x_left
+     * @param $y_up
+     * @return db_errors|int|mysqli_stmt
+     */
+    function update_floor_zone($zone_id, $x_left, $x_right, $y_up, $y_down)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE zone SET X_LEFT = ?, X_RIGHT = ?, Y_UP = ?, Y_DOWN = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'iiiii', $x_left, $x_right, $y_up, $y_down, $zone_id);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+
+            $this->result = $this->connection->affected_rows;
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
     /** Funzione che recupera tutti i tipi di un tag
      * @param $zone_id
      * @return array|db_errors
@@ -2190,24 +2218,55 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function insert_super_user($username, $name, $role)
+    function insert_super_user($username, $name, $email, $role)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
 
-            $hash_code = password_hash('1234', PASSWORD_BCRYPT);
+            $password = generateRandomCode();
 
-            $this->query = "INSERT INTO user (USERNAME, PASSWORD, NAME, ROLE) VALUES (?, ?, ?, ?)";
+            if (!sendEmail($email, $password) instanceof db_errors) {
 
-            $statement = $this->execute_inserting($this->query, 'sssi', $username, $hash_code, $name, $role);
+                $hash_code = password_hash($password, PASSWORD_BCRYPT);
 
-            if ($statement instanceof db_errors)
-                return $statement;
-            else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_INSERTING_USER);
+                $this->query = "INSERT INTO user (USERNAME, PASSWORD, NAME, ROLE) VALUES (?, ?, ?, ?)";
 
-            return $this->connection->insert_id;
+                $statement = $this->execute_inserting($this->query, 'sssi', $username, $hash_code, $name, $role);
+
+                if ($statement instanceof db_errors)
+                    return $statement;
+                else if ($statement == false)
+                    return new db_errors(db_errors::$ERROR_ON_INSERTING_USER);
+
+                return $this->connection->insert_id;
+            }else{
+                return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
+            }
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function get_alpha()
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'SELECT ZONE_ALPHA FROM rtls';
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_MAC_TYPES);
+
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array = array('alpha' => $row['ZONE_ALPHA']);
+            }
+
+            return $result_array;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
