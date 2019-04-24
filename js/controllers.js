@@ -16,55 +16,63 @@
      * Function that manage the user login functionalities
      * @type {string[]}
      */
-    loginController.$inject = ['$scope', 'socketService', '$state'];
+    loginController.$inject = ['$scope', 'socketService', '$state', '$timeout'];
 
-    function loginController($scope, socketService, $state) {
+    function loginController($scope, socketService, $state, $timeout) {
         $scope.user           = {username: '', password: ''};
         $scope.errorHandeling = {noConnection: false, wrongData: false, socketClosed: socketService.socketClosed};
+        let socket = socketService.getSocket();
 
         // function that makes the log in of the user
         $scope.login = (form) => {
             form.$submitted = 'true';
             if ($scope.user.username !== '' && $scope.user.password !== '') {
 
-                socketService.sendRequest('login', {username: $scope.user.username, password: $scope.user.password})
-                    .then((response) => {
-                            if (response.result.id !== undefined) {
-                                document.cookie = "username=" + $scope.user.username;
-                                $state.go('home');
-                            } else {
-                                $scope.errorHandeling.noConnection = false;
-                                $scope.errorHandeling.wrongData    = true;
-                            }
-                            $scope.$apply();
+                let id = ++requestId;
+                socket.send(encodeRequestWithId(id, 'login', {username: $scope.user.username, password: $scope.user.password}));
+                socket.onmessage = (response) => {
+                    let parsedResponse = parseResponse(response);
+                    if (parsedResponse.id === id){
+                        if (parsedResponse.result.id !== undefined) {
+                            // document.cookie = "username=" + $scope.user.username;
+                            $state.go('home');
+                        } else {
+                            $scope.errorHandeling.noConnection = false;
+                            $scope.errorHandeling.wrongData    = true;
                         }
-                    ).catch(() => {
-                        $scope.errorHandeling.wrongData    = false;
-                        $scope.errorHandeling.noConnection = true;
+                        $scope.$apply();
                     }
-                )
+                };
+                socket.onerror = (error) => {
+                    console.error('login error => ', error.message);
+                    $scope.errorHandeling.wrongData    = false;
+                    $scope.errorHandeling.noConnection = true;
+                }
             }
         };
 
         //change the page to the recover password page
         $scope.recoverPassword = () => {
             $state.go('recover-password');
-        }
+        };
+
+        handleSocketError(socket);
     }
 
     /**
      * Function that manges the home page functionalities
      * @type {string[]}
      */
-    homeController.$inject = ['$scope', '$state', '$mdDialog', '$interval', 'NgMap', 'homeData', 'socketService', 'dataService'];
+    homeController.$inject = ['$scope', '$state', '$mdDialog', '$interval', '$timeout', 'NgMap', 'homeData', 'socketService', 'dataService'];
 
-    function homeController($scope, $state, $mdDialog, $interval, NgMap, homeData, socketService, dataService) {
+    function homeController($scope, $state, $mdDialog, $interval, $timeout, NgMap, homeData, socketService, dataService) {
 
         let homeCtrl = this;
         let markers  = homeData.markers;
         let bounds   = new google.maps.LatLngBounds();
         let tags     = null;
         let anchors  = null;
+        let socket = socketService.getSocket();
 
         //visualizing the data according if the user is admin or not
         homeCtrl.isAdmin = homeData.isAdmin;
@@ -79,23 +87,25 @@
         //function that updates the alert notifications
         let constantUpdateNotifications = () => {
             dataService.homeTimer = $interval(() => {
-                socketService.sendConstantAlertRequest('get_all_tags', {})
-                    .then((response) => {
-                        tags                         = response.result;
-                        homeCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(response.result);
-                        homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
+                let id1 = ++requestId;
+                let id2 = -1;
+                socket.send(encodeRequestWithId(id1, 'get_all_tags'));
+                socket.onmessage = (response) => {
+                    let parsedResponse = parseResponse(response);
+                    if (parsedResponse.id === id1){
+                        tags                         = parsedResponse.result;
+                        homeCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(parsedResponse.result);
+                        homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(parsedResponse.result);
 
-                        dataService.playAlarmsAudio(response.result);
-
-                        return socketService.sendConstantAlertRequest('get_anchors_by_user', {user: dataService.username});
-                    })
-                    .then((response) => {
+                        dataService.playAlarmsAudio(parsedResponse.result);
+                        id2 = ++requestId;
+                        socket.send(encodeRequestWithId(id2, 'get_anchors_by_user', {user: dataService.username}));
+                    }else if(parsedResponse.id === id2){
                         anchors                         = null;
-                        homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
-                    })
-                    .catch((error) => {
-                        console.log('constantUpdateNotification error => ', error);
-                    });
+                        homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
+                    }
+
+                }
             }, 1000);
         };
 
@@ -108,7 +118,7 @@
                 let markerObject = new google.maps.Marker({
                     position : new google.maps.LatLng(marker.position[0], marker.position[1]),
                     animation: google.maps.Animation.DROP,
-                    icon     : markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png')
+                    icon     : markersIconPath + ((marker.icon) ? marker.icon : (marker.is_inside) ? 'location-marker.png' : 'mountain.png')
                 });
 
                 let infoWindow = new google.maps.InfoWindow({
@@ -129,23 +139,30 @@
                 });
 
                 markerObject.addListener('click', () => {
-                    socketService.sendConstantRequest('save_location', {location: marker.name})
-                        .then((response) => {
-                            if (response.result === 'location_saved') {
-                                return socketService.sendConstantRequest('get_location_info', {})
+                    // console.log('adding the marker click listenre: ', markerObject);
+                    let id1 = ++requestId;
+                    let id2 = -1;
+
+                    socket.send(encodeRequestWithId(id1, 'save_location', {location: marker.name}));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        // console.log('receivinte the save location response: ', parsedResponse);
+                        if (parsedResponse.id === id1){
+                            if (parsedResponse.result === 'location_saved') {
+                                // console.log('save location response: ', parsedResponse.result);
+                                id2 = ++requestId;
+                                socket.send(encodeRequestWithId(id2, 'get_location_info'));
                             }
-                        })
-                        .then((response) => {
-                            dataService.location          = response.result;
+                        } else if( parsedResponse.id === id2){
+                            // console.log('get_location_info response: ', parsedResponse.result);
+                            dataService.location          = parsedResponse.result;
                             dataService.defaultFloorName  = '';
                             dataService.locationFromClick = '';
-                            (response.result.is_inside)
+                            (parsedResponse.result.is_inside)
                                 ? $state.go('canvas')
                                 : $state.go('outdoor-location');
-                        })
-                        .catch((error) => {
-                            console.log('markerAddListener error => ', error);
-                        });
+                        }
+                    }
                 });
 
                 homeCtrl.dynamicMarkers.push(markerObject);
@@ -183,6 +200,7 @@
 
         //showing the info window with all the alarms
         homeCtrl.showAlarmsHome = () => {
+
             $mdDialog.show({
                 templateUrl        : componentsPath + 'indoor-alarms-info.html',
                 parent             : angular.element(document.body),
@@ -190,64 +208,87 @@
                 clickOutsideToClose: true,
                 controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
                     let tags      = null;
+                    let id1 = ++requestId;
+
                     $scope.alarms = [];
 
-                    socketService.sendRequest('get_all_tags', {})
-                        .then((response) => {
-                            tags = response.result;
-                            response.result.forEach((tag) => {
+                    socket.send(encodeRequestWithId(id1, 'get_all_tags'));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        if (parsedResponse.id === id1){
+                            tags = parsedResponse.result;
+                            parsedResponse.result.forEach((tag) => {
                                 let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag);
 
                                 tagAlarms.forEach((tagAlarm) => {
                                     $scope.alarms.push(tagAlarm);
                                 })
                             });
-                        })
-                        .catch((error) => {
-                            console.log('showAlarmsHome error => ', error);
-                        });
+                        }
+                    };
 
                     //opening the location where the alarm is
                     $scope.loadLocation = (alarm) => {
                         let tag = tags.filter(t => t.name === alarm.tag)[0];
+                        let id2 = ++requestId;
+                        let id3, id4, id5 = -1;
 
                         if (dataService.isOutdoor(tag)) {
-                            socketService.sendRequest('get_all_locations', {})
-                                .then((response) => {
-                                    response.result.forEach((location) => {
+                            socket.send(encodeRequestWithId(id2, 'get_all_locations'));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id2){
+                                    parsedResponse.result.forEach((location) => {
                                         if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
-                                            socketService.sendRequest('save_location', {location: location.name})
-                                                .then((response) => {
-                                                    if (response.result === 'location_saved') {
-                                                        $state.go('outdoor-location');
-                                                    }
-                                                })
-                                                .catch((error) => {
-                                                    console.log('loadLocation error => ', error);
-                                                });
+                                            id3 = ++requestId;
+                                            socket.send(encodeRequestWithId(id3, 'save_location', {location: location.name}));
                                         }
                                     })
-                                })
-                                .catch((error) => {
-                                    console.log('loadLocation error => ', error);
-                                });
+                                } else if (parsedResponse.id === id3){
+                                    if (parsedResponse.result === 'location_saved') {
+                                        console.log('location saved', parsedResponse.result);
+                                        $state.go('outdoor-location');
+                                    }
+                                }
+                            };
                         } else {
                             let indoorTag = [];
-                            socketService.sendRequest('get_tags_by_user', {user: dataService.username})
-                                .then((response) => {
-                                    indoorTag = response.result.filter(t => t.name === tag.name)[0];
-                                    return socketService.sendRequest('save_location', {location: indoorTag.location_name});
-                                })
-                                .then((response) => {
-                                    if (response.result === 'location_saved') {
+                            id4 = ++requestId;
+                            socket.send(encodeRequestWithId(id4, 'get_tags_by_user', {user: dataService.username}));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id4){
+                                    indoorTag = parsedResponse.result.filter(t => t.name === tag.name)[0];
+                                    if (indoorTag === undefined){
+                                        $mdDialog.hide();
+                                        $timeout(function () {
+                                            $mdDialog.show({
+                                                templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                                                parent             : angular.element(document.body),
+                                                targetEvent        : event,
+                                                clickOutsideToClose: true,
+                                                controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
+
+                                                    $scope.title = "TAG NON TROVATO";
+                                                    $scope.message = "Il tag non appartiene all'user logato!";
+                                                    $scope.hide = () => {
+                                                        $mdDialog.hide();
+                                                    }
+                                                }]
+                                            })
+                                        }, 1000);
+                                    } else {
+                                        id5 = ++requestId;
+                                        socket.send(encodeRequestWithId(id5, 'save_location', {location: indoorTag.location_name}));
+                                    }
+                                } else if (parsedResponse.id === id5){
+                                    if (parsedResponse.result === 'location_saved') {
                                         dataService.defaultFloorName  = indoorTag.floor_name;
                                         dataService.locationFromClick = indoorTag.location_name;
                                         $state.go('canvas');
                                     }
-                                })
-                                .catch((error) => {
-                                    console.log('loadLocation error => ', error);
-                                });
+                                }
+                            };
                         }
 
                         $mdDialog.hide();
@@ -265,7 +306,9 @@
             $mdDialog.hide();
             $interval.cancel(dataService.homeTimer);
             $interval.cancel(dataService.mapInterval);
-        })
+        });
+
+        handleSocketError(socket);
     }
 
     /**
@@ -276,9 +319,11 @@
 
     function outdoorController($scope, $state, $interval, $mdDialog, NgMap, socketService, dataService, outdoorData) {
         let outdoorCtrl  = this;
-        let tags         = null;
         let bounds       = new google.maps.LatLngBounds();
         let locationInfo = [];
+        let socket = socketService.getSocket();
+
+        outdoorCtrl.tags         = null;
 
         dataService.updateMapTimer = null;
         dataService.dynamicTags    = [];
@@ -286,7 +331,7 @@
         outdoorCtrl.isAdmin = outdoorData.isAdmin;
 
         outdoorCtrl.mapConfiguration = {
-            zoom    : 7,
+            zoom    : 11,
             map_type: mapType,
             center  : mapCenter
         };
@@ -310,75 +355,66 @@
                 clickOutsideToClose: true,
                 controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
                     let tags      = null;
+                    let id1 = ++requestId;
+
                     $scope.alarms = [];
 
 
-                    socketService.sendRequest('get_all_tags', {user: dataService.username})
-                        .then((response) => {
-                            tags = response.result;
+                    socket.send(encodeRequestWithId(id1, 'get_all_tags'));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        if (parsedResponse.id === id1){
+                            tags = parsedResponse.result;
 
-                            response.result.forEach((tag) => {
+                            parsedResponse.result.forEach((tag) => {
                                 let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag);
                                 tagAlarms.forEach((tagAlarm) => {
                                     $scope.alarms.push(tagAlarm);
                                 })
                             });
-                        })
-                        .catch((error) => {
-                            console.log('showAlarmsOutdoor error => ', error);
-                        });
+                        }
+                    };
 
                     //function that load a location when an alarm is clicked
                     $scope.loadLocation = (alarm) => {
                         let tag = tags.filter(t => t.name === alarm.tag)[0];
+                        let id2 = ++requestId;
+                        let id3, id4, id5, id6 = -1;
+                        let indoorTag = null;
 
-                        socketService.sendRequest('save_location', {location: tag.location_name})
-                            .then(() => {
+                        socket.send(encodeRequestWithId(id2, 'save_location', {location: tag.location_name}));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            if (parsedResponse.id === id2){
                                 if (tag.gps_north_degree === 0 && tag.gps_east_degree === 0) {
-                                    socketService.sendRequest('get_tags_by_user', {user: dataService.username})
-                                        .then((response) => {
-                                            let indoorTag = response.result.filter(t => t.name === tag.name)[0];
-
-                                            socketService.sendRequest('save_location', {location: indoorTag.location_name})
-                                                .then((response) => {
-                                                    if (response.result === 'location_saved') {
-                                                        dataService.defaultFloorName  = indoorTag.floor_name;
-                                                        dataService.locationFromClick = indoorTag.location_name;
-                                                        $state.go('canvas');
-                                                    }
-                                                })
-                                                .catch((error) => {
-                                                    console.log('loadLocationOutdoor error => ', error);
-                                                });
-                                        })
-                                        .catch((error) => {
-                                            console.log('loadLocationOutdoor error => ', error);
-                                        });
-                                } else {
-                                    socketService.sendRequest('get_all_locations', {})
-                                        .then((response) => {
-                                            response.result.forEach((location) => {
-                                                if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
-                                                    socketService.sendRequest('save_location', {location: location.name})
-                                                        .then((response) => {
-                                                            if (response.result === 'location_saved') {
-                                                            }
-                                                        })
-                                                        .catch((error) => {
-                                                            console.log('loadLocationOutdoor error => ', error);
-                                                        });
-                                                }
-                                            });
-                                        })
-                                        .catch((error) => {
-                                            console.log('loadLocationOutdoor error => ', error);
-                                        });
+                                    id3 = ++requestId;
+                                    socket.send(encodeRequestWithId(id3, 'get_tags_by_user', {user: dataService.username}));
+                                }else{
+                                    id5 = ++requestId;
+                                    socket.send(encodeRequestWithId(id5, 'get_all_locations'));
                                 }
                                 $mdDialog.hide();
-                            })
-                            .catch((error) => {
-                                console.log('loadLocationOutdoor error => ', error);
-                            });
+                            } else if (parsedResponse.id === id3){
+                                indoorTag = parsedResponse.result.filter(t => t.name === tag.name)[0];
+                                id4 = ++requestId;
+                                socket.send(encodeRequestWithId(id4, 'save_location', {location: indoorTag.location_name}));
+                            } else if (parsedResponse.id === id4) {
+                                if (parsedResponse.result === 'location_saved') {
+                                    dataService.defaultFloorName  = indoorTag.floor_name;
+                                    dataService.locationFromClick = indoorTag.location_name;
+                                    $state.go('canvas');
+                                }
+                            } else if (parsedResponse.id === id5){
+                                parsedResponse.result.forEach((location) => {
+                                    if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
+                                        id6 = ++requestId;
+                                        socket.send(encodeRequestWithId(id6, 'save_location', {location: location.name}));
+                                    }
+                                });
+                            } else if (parsedResponse.id === id6){
+                                //TODO handle if the location is not saved
+                            }
+                        };
                     };
 
                     $scope.hide = () => {
@@ -431,10 +467,14 @@
             let alarmsCounts    = new Array(100).fill(0);
             let prevAlarmCounts = new Array(100).fill(0);
             let localTags       = [];
-
-            socketService.sendRequest('get_location_info', {})
-                .then((response) => {
-                    locationInfo = response.result;
+            let id = ++requestId;
+            let id1 = -1;
+            socket.send(encodeRequestWithId(id, 'get_location_info'));
+            socket.onmessage = (response) => {
+                let parsedResponse = parseResponse(response);
+                // console.log(parsedResponse)
+                if (parsedResponse.id === id){
+                    locationInfo = parsedResponse.result;
 
                     new google.maps.Circle({
                         strokeColor  : '#0093c4',
@@ -448,16 +488,20 @@
                     });
 
                     dataService.updateMapTimer = $interval(() => {
-                        socketService.sendConstantRequest('get_all_tags', {})
-                            .then((response) => {
-                                tags = response.result;
+                        id1 = ++requestId;
+                        let id2 = -1;
+                        socket.send(encodeRequestWithId(id1, 'get_all_tags'));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            if (parsedResponse.id === id1){
+                                outdoorCtrl.tags = parsedResponse.result;
 
-                                outdoorCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(response.result);
-                                outdoorCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
+                                outdoorCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(parsedResponse.result);
+                                outdoorCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(parsedResponse.result);
 
-                                dataService.playAlarmsAudio(response.result);
+                                dataService.playAlarmsAudio(parsedResponse.result);
 
-                                if (compareLocalTagsWithRemote(tags, localTags).length > 0) {
+                                if (compareLocalTagsWithRemote(outdoorCtrl.tags, localTags).length > 0) {
                                     localTags.forEach((localTag) => {
                                         let marker = new google.maps.Marker({
                                             position: new google.maps.LatLng(localTag.gps_north_degree, localTag.gps_east_degree)
@@ -474,7 +518,7 @@
                                     localTags = [];
                                 }
 
-                                tags.forEach((tag, index) => {
+                                outdoorCtrl.tags.forEach((tag, index) => {
                                     if (dataService.isOutdoor(tag)) {
                                         if ((getTagDistanceFromLocationOrigin(tag, [locationInfo.latitude, locationInfo.longitude])) <= locationInfo.radius) {
                                             tagAlarms = dataService.getTagAlarms(tag);
@@ -627,26 +671,25 @@
 
                                 if (dataService.dynamicTags.length === 1) {
                                     map.setCenter(bounds.getCenter());
-                                    map.setZoom(mapZoom)
+                                    // map.setZoom(mapZoom)
                                 } else if (dataService.dynamicTags.length > 1) {
                                     map.setCenter(bounds.getCenter());
-                                    map.fitBounds(bounds);
+                                    // map.fitBounds(bounds);
                                 } else {
                                     let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
                                     map.setCenter(latLng);
-                                    map.setZoom(mapZoom)
+                                    // map.setZoom(mapZoom)
                                 }
 
-                                return socketService.sendRequest('get_anchors_by_user', {user: dataService.username})
-                            })
-                            .then((response) => {
-                                outdoorCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
-                            })
-                            .catch((error) => {
-                                console.log('constantUpdateMapTags error => ', error)
-                            });
-                    }, 1000)
-                })
+                                id2 = ++requestId;
+                                socket.send(encodeRequestWithId(id2, 'get_anchors_by_user', {user: dataService.username}));
+                            }else if (parsedResponse.id === id2) {
+                                outdoorCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
+                            }
+                        }
+                    }, 1000);
+                }
+            };
         };
 
         //function that sets an icon image to the marker passed as parameter
@@ -693,7 +736,9 @@
             $mdDialog.hide();
             $interval.cancel(dataService.updateMapTimer);
             bounds = new google.maps.LatLngBounds(null);
-        })
+        });
+
+        handleSocketError(socket);
     }
 
     /**
@@ -720,6 +765,7 @@
         let newBegin           = [];
         let newEnd             = [];
         let anchorToDrop       = '';
+        let socket = socketService.getSocket();
 
         canvasCtrl.canvasInterval         = undefined;
         canvasCtrl.floors                 = dataService.floors;
@@ -772,23 +818,27 @@
                 canvasCtrl.showAlarmsIcon         = false;
                 canvasCtrl.showOfflineTagsIcon    = false;
                 canvasCtrl.showOfflineAnchorsIcon = false;
+                canvasCtrl.speedDial.clickedButton = 'horizontal';
 
                 $mdSidenav('left').close();
 
                 $interval.cancel(canvasCtrl.canvasInterval);
                 canvasCtrl.canvasInterval = undefined;
                 dragingImage.src          = imagePath + 'floors/' + canvasCtrl.floorData.floor_image_map;
-
-                socketService.sendRequest('get_drawing', {floor: canvasCtrl.defaultFloor[0].id})
-                    .then((response) => {
+                let id = ++requestId;
+                socket.send(encodeRequestWithId(id, 'get_drawing', {floor: canvasCtrl.defaultFloor[0].id}));
+                socket.onmessage = (response) => {
+                    let parsedResponse = parseResponse(response);
+                    if (parsedResponse.id === id){
                         dragingImage.onload = () => {
-                            let parsedResponse = JSON.parse(response.result);
-                            drawedLines        = (parsedResponse === null) ? [] : parsedResponse;
+                            let parsedResult = JSON.parse(parsedResponse.result);
+                            drawedLines        = (parsedResult === null) ? [] : parsedResult;
 
                             if (drawedLines !== null)
                                 updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
                         }
-                    })
+                    }
+                };
             } else if (newValues[4] === false) {
                 if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
             }
@@ -797,7 +847,7 @@
         //watching the fullscreen switch button
         $scope.$watch('canvasCtrl.switch.fullscreen', (newValue) => {
             if (newValue) {
-                openFullScreen(document.querySelector('#canvas-container'));
+                openFullScreen(document.querySelector('body'));
                 canvasCtrl.switch.fullscreen = false;
             }
         });
@@ -814,6 +864,8 @@
             canvasCtrl.floorData.gridSpacing      = canvasCtrl.defaultFloor[0].map_spacing;
             canvasCtrl.floorData.floor_image_map  = canvasCtrl.defaultFloor[0].image_map;
             context.clearRect(0, 0, canvas.width, canvas.height);
+            $interval.cancel(canvasCtrl.canvasInterval);
+            constantUpdateCanvas();
         });
 
         //function that handles the click on the drawing mode
@@ -827,13 +879,14 @@
                     controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
                         $scope.selectedAnchor = '';
                         $scope.anchors        = [];
-                        socketService.sendRequest('get_anchors_by_location', {location: dataService.location})
-                            .then((response) => {
-                                $scope.anchors = response.result;
-                            })
-                            .catch((error) => {
-                                console.log('speedDialClicked error => ', error);
-                            });
+                        let id1 = ++requestId;
+                        socket.send(encodeRequestWithId(id1, 'get_anchors_by_location', {location: dataService.location}));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            if (parsedResponse.id === id1){
+                                $scope.anchors = parsedResponse.result;
+                            }
+                        };
 
                         $scope.$watch('selectedAnchor', (newValue) => {
                             let currentValue = "" + newValue;
@@ -1019,12 +1072,13 @@
         //constantly updating the canvas with the objects position from the server
         let constantUpdateCanvas = () => {
             let alarmsCounts          = new Array(100).fill(0);
-            canvasCtrl.canvasInterval = $interval(function () {
-                canvasImage.src = floorPath + canvasCtrl.floorData.floor_image_map;
+            canvasImage.onload = function () {
+                canvas.width = this.naturalWidth;
+                canvas.height = this.naturalHeight;
+                bufferCanvas.width  = this.naturalWidth;
+                bufferCanvas.height = this.naturalHeight;
 
-                canvasImage.onload = function () {
-                    bufferCanvas.width  = this.naturalWidth;
-                    bufferCanvas.height = this.naturalHeight;
+                canvasCtrl.canvasInterval = $interval(function () {
 
                     //updating the canvas and drawing border
                     updateCanvas(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasImage);
@@ -1036,57 +1090,64 @@
                         drawDashedLine(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, 'horizontal');
                     }
 
-                    socketService.sendConstantRequest('get_floors_by_location', {location: dataService.location})
-                        .then((response) => {
-                            if (!angular.equals(canvasCtrl.floors, response.result)) {
-                                let newFloor      = response.result.filter(f => !canvasCtrl.floors.some(cf => f.id === cf.id))[0];
-                                canvasCtrl.floors = response.result;
-                                dataService.userFloors.push(newFloor);
+                    let id = ++requestId;
+                    let id1, id2, id3, id4, id5, id6 = -1;
+
+                    socket.send(encodeRequestWithId(id, 'get_floors_by_location', {location: dataService.location}));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        if (parsedResponse.id === id) {
+                            if (!angular.equals(canvasCtrl.floors, parsedResponse.result)) {
+                                let newFloor = null;
+                                if (parsedResponse.result.length > canvasCtrl.floors.length) {
+                                    newFloor = parsedResponse.result.filter(f => !canvasCtrl.floors.some(cf => f.id === cf.id))[0];
+                                    dataService.userFloors.push(newFloor);
+                                }else{
+                                    newFloor = canvasCtrl.floors.filter( f => !parsedResponse.result.some(pf => f.id === pf.id))[0];
+                                    dataService.userFloors = dataService.userFloors.filter(f => f.id !== newFloor.id);
+                                }
+                                canvasCtrl.floors = parsedResponse.result;
                             }
-                            return socketService.sendConstantRequest('get_drawing', {floor: canvasCtrl.defaultFloor[0].id})
-                        })
-                        //managing drawing visualizzation
-                        .then((response) => {
-                            let parsedDraw = JSON.parse(response.result);
+                            id1 = ++requestId;
+                            socket.send(encodeRequestWithId(id1, 'get_drawing', {floor: canvasCtrl.defaultFloor[0].id}));
+                        } else if (parsedResponse.id === id1){
+                            let parsedDraw = JSON.parse(parsedResponse.result);
                             if (parsedDraw !== null) {
                                 parsedDraw.forEach((line) => {
                                     drawLine(line.begin, line.end, line.type, bufferContext, canvasCtrl.switch.showDrawing);
                                 });
                             }
-                            return socketService.sendConstantRequest('get_anchors_by_floor_and_location', {
+                            id2 = ++requestId;
+                            socket.send(encodeRequestWithId(id2, 'get_anchors_by_floor_and_location', {
                                 floor   : canvasCtrl.floorData.defaultFloorName,
                                 location: canvasCtrl.floorData.location
-                            })
-                        })
-                        //managing the anchors visualization
-                        .then((response) => {
-                            dataService.anchors = response.result;
-                            if (response.result.length > 0) {
-                                loadAndDrawImagesOnCanvas(response.result, 'anchor', canvasCtrl.switch.showAnchors);
-                                canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
+                            }));
+                        } else if (parsedResponse.id === id2){
+                            dataService.anchors = parsedResponse.result;
+                            if (parsedResponse.result.length > 0) {
+                                loadAndDrawImagesOnCanvas(parsedResponse.result, 'anchor', canvasCtrl.switch.showAnchors);
+                                canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
                             }
 
-                            return socketService.sendConstantRequest('get_cameras_by_floor_and_location', {
+                            id3 = ++requestId;
+                            socket.send(encodeRequestWithId(id3, 'get_cameras_by_floor_and_location', {
                                 floor   : canvasCtrl.floorData.defaultFloorName,
                                 location: canvasCtrl.floorData.location
-                            })
-                        })
-                        //managing the cameras visualizzation
-                        .then((response) => {
-                            if (response.result.length > 0)
-                                loadAndDrawImagesOnCanvas(response.result, 'camera', canvasCtrl.switch.showCameras);
+                            }));
+                        } else if (parsedResponse.id === id3){
+                            if (parsedResponse.result.length > 0)
+                                loadAndDrawImagesOnCanvas(parsedResponse.result, 'camera', canvasCtrl.switch.showCameras);
 
-                            dataService.cameras = response.result;
+                            dataService.cameras = parsedResponse.result;
 
-                            return socketService.sendConstantRequest('get_tags_by_floor_and_location', {
+                            id4 = ++requestId;
+                            socket.send(encodeRequestWithId(id4, 'get_tags_by_floor_and_location', {
                                 floor   : canvasCtrl.defaultFloor[0].id,
                                 location: canvasCtrl.floorData.location
-                            });
-                        })
-                        //managing the tags visualizzation
-                        .then((response) => {
-                            dataService.playAlarmsAudio(response.result);
-                            dataService.floorTags = response.result;
+                            }));
+                        } else if (parsedResponse.id === id4){
+                            dataService.playAlarmsAudio(parsedResponse.result);
+                            dataService.floorTags = parsedResponse.result;
 
                             let tagClouds            = [];
                             let isolatedTags         = [];
@@ -1094,12 +1155,12 @@
                             let step                 = 0;
 
                             let temporaryTagsArray = {
-                                singleTags: angular.copy(response.result),
+                                singleTags: angular.copy(parsedResponse.result),
                             };
 
-                            for (let i = 0; i < response.result.length; i = step) {
+                            for (let i = 0; i < parsedResponse.result.length; i = step) {
                                 //getting the near tags of the tag passed as second parameter
-                                temporaryTagsArray = groupNearTags(temporaryTagsArray.singleTags, response.result[i]);
+                                temporaryTagsArray = groupNearTags(temporaryTagsArray.singleTags, parsedResponse.result[i]);
 
                                 if (temporaryTagsArray.groupTags.length > 0) {
                                     singleAndGroupedTags.push(temporaryTagsArray.groupTags);
@@ -1163,19 +1224,18 @@
                                     context.drawImage(bufferCanvas, 0, 0);
                                 });
 
-                            return socketService.sendConstantRequest('get_all_tags', {user: dataService.username})
-                        })
-                        .then((response) =>  {
-                            canvasCtrl.showAlarmsIcon = checkTagsStateAlarmNoAlarmOffline(response.result).withAlarm;
+                            id5 = ++requestId;
+                            socket.send(encodeRequestWithId(id5, 'get_all_tags', {user: dataService.username}));
+                        } else if (parsedResponse.id === id5){
+                            canvasCtrl.showAlarmsIcon      = checkTagsStateAlarmNoAlarmOffline(parsedResponse.result).withAlarm;
                             //showing the offline anchors and alarm button
-                            canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
-                        })
-                        .catch((error) => {
-                            console.log('constantUpdateCanvas error => ', error);
-                        })
+                            canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(parsedResponse.result);
+                        }
+                    };
+                }, 1000);
+            };
 
-                }
-            }, 1000);
+            canvasImage.src = floorPath + canvasCtrl.floorData.floor_image_map;
         };
 
         canvasCtrl.loadFloor();
@@ -1242,40 +1302,31 @@
 
         //function that save the canvas drawing
         canvasCtrl.saveDrawing = () => {
-            socketService.sendConstantRequest('save_drawing', {
-                lines: JSON.stringify(drawedLines),
-                floor: canvasCtrl.defaultFloor[0].id
-            })
-            .then(() => {
-                if (drawAnchor !== null) {
-                    let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, dropAnchorPosition.width, dropAnchorPosition.height);
-                    socketService.sendConstantRequest('update_anchor_position', {
-                        x : scaledSize.x,
-                        y : scaledSize.y,
-                        id: drawAnchor.id
-                    })
-                    .then((response) => {
-                        if (response.result !== 0) {
-                            console.log('anchor position updated');
-                        }
-                    })
-                    .catch((error) => {
-                        console.log('saveDrawing errro => ', error);
-                    })
+            let id = ++requestId;
+            let id1 = -1;
+
+            socket.send(encodeRequestWithId(id, 'save_drawing', {lines: JSON.stringify(drawedLines), floor: canvasCtrl.defaultFloor[0].id}));
+            socket.onmessage = (response) => {
+                let parsedResponse = parseResponse(response);
+                if (parsedResponse.id === id){
+                    if (drawAnchor !== null) {
+                        let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, dropAnchorPosition.width, dropAnchorPosition.height);
+                        id1 = ++requestId;
+                        socket.send(encodeRequestWithId(id1, 'update_anchor_position', {x : scaledSize.x.toFixed(2), y : scaledSize.y.toFixed(2), id: drawAnchor.id, floor: canvasCtrl.floorData.defaultFloorName}));
+                    }
+
+                    canvasCtrl.switch.showAnchors = true;
+                    canvasCtrl.switch.showCameras = true;
+                    canvasCtrl.switch.showDrawing = false;
+
+                    dropAnchorPosition                 = null;
+                    drawAnchorImage                    = null;
+                    canvasCtrl.speedDial.clickedButton = '';
+                    if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
+                } else if (parsedResponse.id === id1){
+                    //TODO handle if the anchor is not saved
                 }
-
-                canvasCtrl.switch.showAnchors = true;
-                canvasCtrl.switch.showCameras = true;
-                canvasCtrl.switch.showDrawing = false;
-
-                dropAnchorPosition                 = null;
-                drawAnchorImage                    = null;
-                canvasCtrl.speedDial.clickedButton = '';
-                if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
-            })
-            .catch((error) => {
-                console.log('saveDrawing error => ', error);
-            })
+            };
         };
 
         //handeling the canvas click
@@ -1404,7 +1455,7 @@
                             }
                             dialogShown = true;
                         } else {
-                            if (tag.tag_type_id === 1 || tag.tag_type_id === 5) {
+                            if (tag.tag_type_id === 1 || tag.tag_type_id === 14) {
                                 if (!(tag.is_exit && tag.radio_switched_off)) {
                                     $mdDialog.show({
                                         locals             : {tag: tag},
@@ -1516,60 +1567,59 @@
                 clickOutsideToClose: true,
                 controller         : ['$scope', 'socketService', 'dataService', function ($scope, socketService, dataService) {
                     let tags      = null;
+                    let id =  ++requestId;
+                    let id1, id2, id3 = -1;
+
                     $scope.alarms = [];
 
-
-                    socketService.sendRequest('get_all_tags', {user: dataService.username})
-                        .then((response) => {
-                            tags = response.result;
-                            response.result.forEach(function (tag) {
+                    socket.send(encodeRequestWithId(id, 'get_all_tags'));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        if (parsedResponse.id === id){
+                            tags = parsedResponse.result;
+                            parsedResponse.result.forEach(function (tag) {
                                 let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag);
                                 tagAlarms.forEach(function (tagAlarm) {
                                     $scope.alarms.push(tagAlarm);
                                 })
                             });
-                        })
-                        .catch((error) => {
-                            console.log('showAlarms error => ', error);
-                        });
+                        }
+                    };
 
                     //handeling the click of an alarm and opening the associate location
                     $scope.loadLocation = (alarm) => {
                         let outdoorTag = tags.filter(t => t.name === alarm.tag)[0];
 
                         if (dataService.isOutdoor(outdoorTag)) {
-                            socketService.sendRequest('get_all_locations', {})
-                                .then((response) => {
-                                    response.result.forEach((location) => {
+                            id1 = ++requestId;
+                            socket.send(encodeRequestWithId(id1, 'get_all_locations'));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id1){
+                                    parsedResponse.result.forEach((location) => {
                                         if ((dataService.getTagDistanceFromLocationOrigin(outdoorTag, [location.latitude, location.longitude])) <= location.radius) {
-                                            socketService.sendRequest('save_location', {location: location.name})
-                                                .then((response) => {
-                                                    if (response.result === 'location_saved') {
-
-                                                        $state.go('outdoor-location');
-                                                    }
-                                                })
-                                                .catch((error) => {
-                                                    console.log('loadLocation error => ', error);
-                                                })
+                                            id2 = ++requestId;
+                                            socket.send(encodeRequestWithId(id2, 'save_location', {location: location.name}));
                                         }
                                     });
-                                })
-                                .catch((error) => {
-                                    console.log('loadLocation error => ', error);
-                                });
-
+                                } else if (parsedResponse.id === id2){
+                                    if (parsedResponse.result === 'location_saved') {
+                                        $state.go('outdoor-location');
+                                    }
+                                }
+                            };
                             //TODO - have to see all the locations and see on wich location the tag is in range
                         } else {
-                            socketService.sendRequest('get_tags_by_user', {user: dataService.username})
-                                .then((response) => {
-                                    let tag                               = response.result.filter(t => t.name === alarm.tag)[0];
+                            id3 = ++requestId;
+                            socket.send(encodeRequestWithId(id3, 'get_tags_by_user', {user: dataService.username}));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id3) {
+                                    let tag                               = parsedResponse.result.filter(t => t.name === alarm.tag)[0];
                                     canvasCtrl.floorData.defaultFloorName = tag.floor_name;
                                     canvasCtrl.floorData.location         = tag.location_name;
-                                })
-                                .catch((error) => {
-                                    console.log('loadLocation error => ', error);
-                                })
+                                }
+                            };
                         }
 
                         $mdDialog.hide();
@@ -1610,6 +1660,7 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 controller         : ['$scope', 'floor', 'tags', function ($scope, floor, tags) {
+                    let id = ++requestId;
                     $scope.safeTags   = null;
                     $scope.unsafeTags = [];
                     $scope.data       = [];
@@ -1622,19 +1673,19 @@
                     $scope.colors = ["#4BAE5A", "#E13044"];
                     $scope.labels = ["Persone in zona di evacuazione", "Persone disperse"];
 
-                    socketService.sendRequest('get_emergency_info', {location: dataService.location, floor: floor})
-                        .then((response) => {
-                            $scope.safeTags   = response.result;
-                            $scope.unsafeTags = tags.filter(t => !response.result.some(i => i.tag_name === t.name));
+                    socket.send(encodeRequestWithId(id, 'get_emergency_info', {location: dataService.location, floor: floor}));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        if (parsedResponse.id === id) {
+                            $scope.safeTags   = parsedResponse.result;
+                            $scope.unsafeTags = tags.filter(t => !parsedResponse.result.some(i => i.tag_name === t.name));
 
-                            $scope.men.safe   = response.result.length;
-                            $scope.men.unsafe = tags.length - response.result.length;
+                            $scope.men.safe   = parsedResponse.result.length;
+                            $scope.men.unsafe = tags.length - parsedResponse.result.length;
 
                             $scope.data = [$scope.men.safe, $scope.men.unsafe];
-                        })
-                        .catch((error) => {
-                            console.log('showEmergencyZone error => ', error);
-                        });
+                        }
+                    };
 
                     $scope.hide = () => {
                         $mdDialog.hide();
@@ -1653,6 +1704,8 @@
             $mdDialog.hide();
             $interval.cancel(canvasCtrl.canvasInterval);
         });
+
+        handleSocketError(socket);
     }
 
     /**
@@ -1663,6 +1716,7 @@
 
     function menuController($scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, $interval, $element, NgMap, dataService, socketService) {
 
+        let socket = socketService.getSocket();
         $scope.menuTags    = dataService.allTags;
         $scope.isAdmin     = dataService.isAdmin;
         $scope.selectedTag = '';
@@ -1689,6 +1743,8 @@
                 clickOutsideToClose: true,
                 multiple           : true,
                 controller         : ['$scope', 'admin', function ($scope, admin) {
+                    let id = ++requestId;
+                    let id1 = -1;
                     $scope.selected       = [];
                     $scope.locationsTable = [];
                     $scope.tableEmpty     = false;
@@ -1698,18 +1754,23 @@
                         page        : 1
                     };
 
-                    socketService.sendConstantRequest('get_locations_by_user', {user: dataService.username})
-                        .then((response) => {
-                            $scope.locationsTable = response.result;
+                    socket.send(encodeRequestWithId(id, 'get_locations_by_user', {user: dataService.username}));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        if (parsedResponse.id === id) {
+                            $scope.locationsTable = parsedResponse.result;
                             $scope.tableEmpty     = $scope.locationsTable.length === 0;
 
                             dataService.mapInterval = $interval(function () {
-                                socketService.sendConstantRequest('get_locations_by_user', {user: dataService.username})
-                                    .then((response) => {
+                                id1 = ++requestId;
+                                socket.send(encodeRequestWithId(id1, 'get_locations_by_user', {user: dataService.username}));
+                                socket.onmessage = (response) => {
+                                    let parsedResponse = parseResponse(response);
+                                    if (parsedResponse.id === id1){
                                         $scope.tableEmpty = $scope.locationsTable.length === 0;
-                                        if (!angular.equals($scope.locationsTable, response.result)) {
+                                        if (!angular.equals($scope.locationsTable, parsedResponse.result)) {
                                             locationsHasChanged   = true;
-                                            $scope.locationsTable = response.result;
+                                            $scope.locationsTable = parsedResponse.result;
                                         }
 
                                         if (angular.element(document).find('md-dialog').length === 0) {
@@ -1720,36 +1781,31 @@
                                             }
                                             $interval.cancel(dataService.mapInterval);
                                         }
-                                    })
-                                    .catch((error) => {
-                                        console.log('locationDialog error => ', error);
-                                    });
+                                    }
+                                };
                             }, 1000);
-                        })
-                        .catch((error) => {
-                            console.log('locationDialog error => ', error);
-                        });
-
+                        }
+                    };
 
                     $scope.editCell = (event, location, locationName) => {
 
                         event.stopPropagation();
 
                         if (admin) {
+                            let id2 = ++requestId;
                             let editCell = {
                                 modelValue : location[locationName],
                                 save       : function (input) {
                                     input.$invalid         = true;
                                     location[locationName] = input.$modelValue;
-                                    socketService.sendRequest('change_location_field', {
+                                    socket.send(encodeRequestWithId(id2, 'change_location_field', {
                                         location_id   : location.id,
                                         location_field: locationName,
                                         field_value   : input.$modelValue
-                                    })
-                                        .then(function (response) {
-                                            if (response.result !== 1)
-                                                console.log(response.result);
-                                        })
+                                    }));
+                                    socket.onmessage = (response) => {
+                                        //TODO handle if the field is not saved
+                                    };
                                 },
                                 targetEvent: event,
                                 title      : 'Inserisci un valore',
@@ -1764,6 +1820,7 @@
 
                     //deleting a location
                     $scope.deleteRow = (location) => {
+                        let id3 = ++requestId;
                         let confirm = $mdDialog.confirm()
                             .title('CANCELLAZIONE SITO')
                             .textContent('Sei sicuro di voler cancellare il sito?')
@@ -1773,16 +1830,16 @@
                             .cancel('ANNULLA');
 
                         $mdDialog.show(confirm).then(() => {
-                            socketService.sendRequest('delete_location', {location_id: location.id})
-                                .then((response) => {
-                                    if (response.result.length === 0) {
+                            socket.send(encodeRequestWithId(id3, 'delete_location', {location_id: location.id}));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id3){
+                                    if (parsedResponse.result.length === 0) {
                                         locationsHasBeenDeleted = true;
                                         $scope.locationsTable   = $scope.locationsTable.filter(t => t.id !== location.id);
                                     }
-                                })
-                                .catch((error) => {
-                                    console.log('deleteRow error => ', error);
-                                });
+                                }
+                            };
                         }, function () {
                             console.log('CANCELLATO!!!!');
                         });
@@ -1833,17 +1890,21 @@
                         if (form.$valid) {
                             let file     = null;
                             let fileName = null;
+                            let id4 = ++requestId;
+                            let id5, id6 = -1;
 
                             if (fileInput != null && fileInput.files.length !== 0) {
                                 file     = fileInput.files[0];
                                 fileName = file.name;
                             }
 
-                            socketService.sendRequest('get_user', {})
-                                .then((response) => {
-
-                                    return socketService.sendRequest('insert_location', {
-                                        user       : response.result.id,
+                            socket.send(encodeRequestWithId(id4, 'get_user'));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id4){
+                                    id5 = ++requestId;
+                                    socket.send(encodeRequestWithId(id5, 'insert_location', {
+                                        user       : parsedResponse.result.id,
                                         name       : $scope.location.name,
                                         description: $scope.location.description,
                                         latitude   : $scope.location.latitude,
@@ -1851,12 +1912,31 @@
                                         imageName  : (fileName === null) ? '' : fileName,
                                         radius     : ($scope.location.isIndoor) ? '' : $scope.location.radius,
                                         is_indoor  : $scope.location.isIndoor
-                                    })
-                                })
-                                .then((response) => {
-                                    if (response.result.length === 0) {
+                                    }));
+                                } else if (parsedResponse.id === id5){
+                                    if (parsedResponse.result.length === 0) {
                                         if (file != null) {
-                                            return convertImageToBase64(file);
+                                            convertImageToBase64(file)
+                                                .then((response) => {
+                                                    if (response !== null) {
+                                                        id6 = ++requestId;
+                                                        socket.send(encodeRequestWithId(id6, 'save_marker_image', {
+                                                            imageName: fileName,
+                                                            image    : response
+                                                        }));
+                                                    }
+                                                })
+                                        }else {
+                                            $scope.location.showSuccess = true;
+                                            $scope.location.showError   = false;
+                                            $scope.location.message     = "Posizione inserita senza salvare l'immagine";
+                                            $scope.resultClass          = 'background-orange';
+
+                                            $scope.$apply();
+                                            $timeout(function () {
+                                                $mdDialog.hide();
+                                                // window.location.reload();
+                                            }, 1000);
                                         }
                                     } else {
                                         $scope.location.showSuccess = false;
@@ -1866,17 +1946,8 @@
                                         $scope.$apply();
                                         return null
                                     }
-                                })
-                                .then((response) => {
-                                    if (response !== null) {
-                                        return socketService.sendRequest('save_marker_image', {
-                                            imageName: fileName,
-                                            image    : response
-                                        })
-                                    }
-                                })
-                                .then((response) => {
-                                    if (response.result === false) {
+                                } else if (parsedResponse.id === id6){
+                                    if (parsedResponse.result === false) {
                                         $scope.location.showSuccess = false;
                                         $scope.location.showError   = true;
                                         $scope.location.message     = "Posizione inserita senza salvare l'immagine";
@@ -1901,12 +1972,8 @@
                                             // window.location.reload();
                                         }, 1000);
                                     }
-                                }).catch(function () {
-                                    $scope.location.showSuccess = false;
-                                    $scope.location.showError   = true;
-                                    $scope.location.message     = 'Impossibile inserire la posizione';
-                                    $scope.location.resultClass = 'background-red';
-                                })
+                                }
+                            };
                         } else {
                             $scope.location.resultClass = 'background-red';
                         }
@@ -1958,31 +2025,48 @@
                     $scope.$watchGroup(['history.fromDate', 'history.toDate', 'history.selectedTag', 'history.selectedEvent'], function (newValues) {
                         let fromDate = $filter('date')(newValues[0], 'yyyy-MM-dd');
                         let toDate   = $filter('date')(newValues[1], 'yyyy-MM-dd');
+                        let id = ++requestId;
+                        let id1, id2 = -1;
 
-                        socketService.sendRequest('get_events', {})
-                            .then((response) => {
-                                $scope.history.events = response.result;
-                                return socketService.sendRequest('get_all_tags', {});
-                            })
-                            .then((response) => {
-                                $scope.history.tags = response.result;
-                                // $scope.$apply();
-                                return socketService.sendRequest('get_history', {
-                                    fromDate: fromDate,
-                                    toDate  : toDate,
-                                    tag     : newValues[2],
-                                    event   : newValues[3]
-                                })
-                            })
-                            .then((response) => {
-                                $scope.historyRows = response.result;
-                                $scope.tableEmpty  = $scope.historyRows.length === 0;
-                                $scope.$apply();
-                            })
-                            .catch((error) => {
-                                console.log('history error => ', error);
-                            });
+                        socket.send(encodeRequestWithId(id, 'get_events'));
+                        socket.onmessage = (response) => {
+                          let parsedResponse = parseResponse(response);
+                          if (parsedResponse.id === id) {
+                              $scope.history.events = parsedResponse.result;
+                              id1 = ++requestId;
+                              socket.send(encodeRequestWithId(id1, 'get_all_tags'));
+                          } else if (parsedResponse.id === id1){
+                              $scope.history.tags = parsedResponse.result;
+                              id2 = ++requestId;
+                              socket.send(encodeRequestWithId(id2, 'get_history', {
+                                  fromDate: fromDate,
+                                  toDate  : toDate,
+                                  tag     : newValues[2],
+                                  event   : newValues[3]
+                              }))
+                          } else if (parsedResponse.id === id2){
+                              $scope.historyRows = parsedResponse.result;
+                              $scope.tableEmpty  = $scope.historyRows.length === 0;
+                              $scope.$apply();
+                          }
+                        };
                     });
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    }
+                }]
+
+            });
+        };
+
+        $scope.viewVersions = () => {
+            $mdDialog.show({
+                templateUrl        : componentsPath + 'versions.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
+                clickOutsideToClose: true,
+                controller         : ['$scope', function ($scope) {
 
                     $scope.hide = () => {
                         $mdDialog.hide();
@@ -2011,6 +2095,7 @@
                     };
 
                     $scope.sendPassword = (form) => {
+                        let id = ++requestId;
                         form.$submitted = true;
 
                         if ($scope.changePassword.newPassword !== $scope.changePassword.reNewPassword) {
@@ -2021,35 +2106,38 @@
                         } else {
                             if (form.$valid) {
 
-                                socketService.sendRequest('change_password', {
+                                socket.send(encodeRequestWithId(id, 'change_password', {
                                     oldPassword: $scope.changePassword.oldPassword,
                                     newPassword: $scope.changePassword.newPassword
-                                })
-                                .then((response) => {
-                                    if (response.result === 'wrong_old') {
-                                        $scope.changePassword.resultClass = 'background-red';
-                                        $scope.changePassword.showError   = true;
-                                        $scope.changePassword.showSuccess = false;
-                                        $scope.changePassword.message     = 'Vecchia password non valida';
-                                    } else if (response.result === 'error_on_changing_password') {
-                                        $scope.changePassword.resultClass = 'background-red';
-                                        $scope.changePassword.showSuccess = false;
-                                        $scope.changePassword.showError   = true;
-                                        $scope.changePassword.message     = "Impossibile cambiare la password!";
-                                        $timeout(function () {
-                                            $mdDialog.hide();
-                                        }, 1000);
-                                    } else {
-                                        $scope.changePassword.resultClass = 'background-green';
-                                        $scope.changePassword.showSuccess = true;
-                                        $scope.changePassword.showError   = false;
-                                        $scope.changePassword.message     = "Password cambiata correnttamente!";
-                                        $timeout(function () {
-                                            $mdDialog.hide();
-                                        }, 1000);
+                                }));
+                                socket.onmessage = (response) => {
+                                    let parsedResponse = parseResponse(response);
+                                    if (parsedResponse.id === id){
+                                        if (parsedResponse.result === 'wrong_old') {
+                                            $scope.changePassword.resultClass = 'background-red';
+                                            $scope.changePassword.showError   = true;
+                                            $scope.changePassword.showSuccess = false;
+                                            $scope.changePassword.message     = 'Vecchia password non valida';
+                                        } else if (parsedResponse.result === 'error_on_changing_password') {
+                                            $scope.changePassword.resultClass = 'background-red';
+                                            $scope.changePassword.showSuccess = false;
+                                            $scope.changePassword.showError   = true;
+                                            $scope.changePassword.message     = "Impossibile cambiare la password!";
+                                            $timeout(function () {
+                                                $mdDialog.hide();
+                                            }, 1000);
+                                        } else {
+                                            $scope.changePassword.resultClass = 'background-green';
+                                            $scope.changePassword.showSuccess = true;
+                                            $scope.changePassword.showError   = false;
+                                            $scope.changePassword.message     = "Password cambiata correnttamente!";
+                                            $timeout(function () {
+                                                $mdDialog.hide();
+                                            }, 1000);
+                                        }
+                                        $scope.$apply();
                                     }
-                                    $scope.$apply();
-                                });
+                                };
                             } else {
                                 $scope.changePassword.resultClass = 'background-red';
                             }
@@ -2084,39 +2172,41 @@
                     };
 
                     let macs = [];
+                    let id = ++requestId;
 
-                    socketService.sendRequest('get_all_types', {})
-                        .then((response) => {
-                            $scope.tagTypes = response.result;
-                        })
-                        .catch((error) => {
-                            console.log('registry error => ', error);
-                        });
+                    socket.send(encodeRequestWithId(id, "get_all_types"));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        if (parsedResponse.id === id){
+                            $scope.tagTypes = parsedResponse.result;
+                        }
+                    };
 
                     //insert a tag
                     $scope.addTag = function (form) {
                         form.$submitted = true;
 
                         if (form.$valid) {
-                            socketService.sendRequest('insert_tag', {
+                            let id1 = ++requestId;
+                            socket.send(encodeRequestWithId(id1, 'insert_tag', {
                                 name: $scope.insertTag.name,
                                 type: $scope.selectedType,
                                 macs: macs
-                            })
-                            .then((response) => {
-                                if (response.result.length === 0) {
-                                    $scope.insertTag.resultClass = 'background-green';
-                                    $timeout(function () {
-                                        $mdDialog.hide();
-                                        $mdDialog.hide(registryDialog);
-                                        $mdDialog.show(registryDialog);
-                                    }, 1000);
-                                    $scope.$apply();
+                            }));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id1) {
+                                    if (parsedResponse.result.length === 0) {
+                                        $scope.insertTag.resultClass = 'background-green';
+                                        $timeout(function () {
+                                            $mdDialog.hide();
+                                            $mdDialog.hide(registryDialog);
+                                            $mdDialog.show(registryDialog);
+                                        }, 1000);
+                                        $scope.$apply();
+                                    }
                                 }
-                            })
-                            .catch((error) => {
-                                console.log('addTag error => ', error);
-                            })
+                            };
                         } else {
                             $scope.insertTag.resultClass = 'background-red';
                         }
@@ -2136,8 +2226,11 @@
                 clickOutsideToClose: true,
                 multiple           : true,
                 controller         : ['$scope', 'admin', function ($scope, admin) {
+                    let id3 = ++requestId;
                     $scope.selected = [];
                     $scope.tags     = [];
+                    $scope.tableEmpty     = false;
+                    $scope.tagsOnline = [];
                     $scope.query    = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
@@ -2145,33 +2238,71 @@
                         page        : 1
                     };
 
-                    socketService.sendRequest('get_all_tags', {user: dataService.username})
-                        .then((response) => {
-                            $scope.tags = response.result;
-                        });
+                    socket.send(encodeRequestWithId(id3, 'get_all_tags'));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        if (parsedResponse.id === id3){
+                            $scope.tags = parsedResponse.result;
+                            ($scope.tags.length === 0)
+                                ? $scope.tableEmpty = true
+                                : $scope.tableEmpty = false;
+
+                            let offgridTagsIndoor  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
+                            let offgridTagsOutdoor = parsedResponse.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+
+                            let offTags = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id === 1 || t.type_id === 14) && ((t.is_exit && t.radio_switched_off)));
+                            let offTags1 = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id === 1 || t.type_id === 14) && ((t.is_exit && !t.radio_switched_off)));
+
+                            let tempOffgrid = [];
+                            offgridTagsIndoor.forEach(elem => {
+                                tempOffgrid.push(elem);
+                            });
+
+                            offgridTagsOutdoor.forEach(elem => {
+                                tempOffgrid.push(elem);
+                            });
+
+                            offTags.forEach(elem => {
+                                tempOffgrid.push(elem);
+                            });
+
+                            offTags1.forEach(elem => {
+                                tempOffgrid.push(elem);
+                            });
+
+                            $scope.tagsOnline = $scope.tags.filter(t => !tempOffgrid.some( to => to.id === t.id));
+                        }
+                    };
+
+                    $scope.tagsContainTag = (tags, tag) => {
+                        return tags.some(t => t.id === tag.id);
+                    };
 
                     $scope.editCell = (event, tag, tagName) => {
 
                         event.stopPropagation();
 
                         if (admin) {
+                            let id4 = ++requestId;
                             let editCell = {
                                 modelValue : tag[tagName],
                                 save       : function (input) {
                                     input.$invalid = true;
                                     tag[tagName]   = input.$modelValue;
-                                    socketService.sendRequest('change_tag_field', {
+                                    socket.send(encodeRequestWithId(id4, 'change_tag_field', {
                                         tag_id     : tag.id,
                                         tag_field  : tagName,
                                         field_value: input.$modelValue
-                                    })
-                                    .then((response) => {
-                                        if (response.result !== 1)
-                                            console.log(response.result);
-                                    })
-                                    .catch((error) => {
-                                        console.log('editCell error => ', error);
-                                    })
+                                    }));
+                                    socket.onmessage = (response) => {
+                                        let parsedResponse = parseResponse(response);
+                                        if (parsedResponse.id === id4){
+                                            if (parsedResponse.result !== 1) {
+                                                console.log(parsedResponse.result);
+                                                //TODO handle if the field is not saved
+                                            }
+                                        }
+                                    };
                                 },
                                 targetEvent: event,
                                 title      : 'Inserisci un valore',
@@ -2195,15 +2326,16 @@
                             .cancel('ANNULLA');
 
                         $mdDialog.show(confirm).then(() => {
-                            socketService.sendRequest('delete_tag', {tag_id: tag.id})
-                                .then((response) => {
-                                    if (response.result.length === 0) {
+                            let id5 = ++requestId;
+                            socket.send(encodeRequestWithId(id5, 'delete_tag', {tag_id: tag.id}));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id5){
+                                    if (parsedResponse.result.length === 0) {
                                         $scope.tags = $scope.tags.filter(t => t.id !== tag.id);
                                     }
-                                })
-                                .catch((error) => {
-                                    console.log('deleteRow error => ', error);
-                                });
+                                }
+                            };
                         }, function () {
                             console.log('CANCELLATO!!!!');
                         });
@@ -2225,6 +2357,7 @@
                             clickOutsideToClose: true,
                             controller         : ['$scope', 'tag', function ($scope, tag) {
 
+                                let id6 = ++requestId;
                                 $scope.macs = [];
                                 $scope.tag  = tag;
 
@@ -2235,13 +2368,13 @@
                                     page        : 1
                                 };
 
-                                socketService.sendRequest('get_tag_macs', {tag: tag.id})
-                                    .then((response) => {
-                                        $scope.macs = response.result;
-                                    })
-                                    .catch((error) => {
-                                        console.log('tagMacs error => ', error);
-                                    });
+                                socket.send(encodeRequestWithId(id6, 'get_tag_macs', {tag: tag.id}));
+                                socket.onmessage = (response) => {
+                                    let parsedResponse = parseResponse(response);
+                                    if (parsedResponse.id === id6){
+                                        $scope.macs = parsedResponse.result;
+                                    }
+                                };
 
                                 //deleting a mac
                                 $scope.deleteMac = (event, mac) => {
@@ -2254,15 +2387,16 @@
                                         .cancel('ANNULLA');
 
                                     $mdDialog.show(confirm).then(function () {
-                                        socketService.sendRequest('delete_mac', {mac_id: mac.id})
-                                            .then((response) => {
-                                                if (response.result !== 0) {
+                                        let id7 = ++requestId;
+                                        socket.send(encodeRequestWithId(id7, 'delete_mac', {mac_id: mac.id}));
+                                        socket.onmessage = (response) => {
+                                            let parsedResponse = parseResponse(response);
+                                            if (parsedResponse.id === id7){
+                                                if (parsedResponse.result !== 0) {
                                                     $scope.macs = $scope.macs.filter(m => m.id !== mac.id);
                                                 }
-                                            })
-                                            .catch((error) => {
-                                                console.log('deleteMac error => ', error);
-                                            });
+                                            }
+                                        }
                                     }, function () {
                                         console.log('CANCELLATO!!!!');
                                     });
@@ -2290,26 +2424,27 @@
                                                 form.$submitted = true;
 
                                                 if (form.$valid) {
-                                                    socketService.sendRequest('insert_mac', {
+                                                    let id8 = ++requestId;
+                                                    socket.send(encodeRequestWithId(id8, 'insert_mac', {
                                                         name  : $scope.insertMac.name,
                                                         type  : $scope.insertMac.type,
                                                         tag_id: tag.id
-                                                    })
-                                                    .then((response) => {
-                                                        if (response.result !== 0) {
-                                                            $scope.insertMac.resultClass = 'background-green';
-                                                            $timeout(function () {
-                                                                $mdDialog.hide();
-                                                                $mdDialog.show(tagMacsDialog);
-                                                            }, 1000);
-                                                            $scope.$apply();
-                                                        } else {
-                                                            $scope.insertTag.resultClass = 'background-red';
+                                                    }));
+                                                    socket.onmessage = (response) => {
+                                                        let parsedResponse = parseResponse(response);
+                                                        if (parsedResponse.id === id8){
+                                                            if (parsedResponse.result !== 0) {
+                                                                $scope.insertMac.resultClass = 'background-green';
+                                                                $timeout(function () {
+                                                                    $mdDialog.hide();
+                                                                    $mdDialog.show(tagMacsDialog);
+                                                                }, 1000);
+                                                                $scope.$apply();
+                                                            } else {
+                                                                $scope.insertTag.resultClass = 'background-red';
+                                                            }
                                                         }
-                                                    })
-                                                    .catch((error) => {
-                                                        console.log('addMac error => ', error);
-                                                    })
+                                                    };
                                                 } else {
                                                     $scope.insertTag.resultClass = 'background-red';
                                                 }
@@ -2327,23 +2462,26 @@
                                     event.stopPropagation();
 
                                     if (admin) {
+                                        let id9 = ++requestId;
                                         let editCell = {
                                             modelValue : mac[macName],
                                             save       : function (input) {
                                                 input.$invalid = true;
                                                 mac[macName]   = input.$modelValue;
-                                                socketService.sendRequest('change_mac_field', {
+                                                socket.send(encodeRequestWithId(id9, 'change_mac_field', {
                                                     mac_id     : mac.id,
                                                     mac_field  : macName,
                                                     field_value: input.$modelValue
-                                                })
-                                                .then(function (response) {
-                                                    if (response.result !== 1)
-                                                        console.log(response.result);
-                                                })
-                                                .catch((error) => {
-                                                    console.log('editCell error => ', error);
-                                                })
+                                                }));
+                                                socket.onmessage = (response) => {
+                                                  let parsedResponse = parseResponse(response);
+                                                  if (parsedResponse.id === id9){
+                                                      if (parsedResponse.result !== 1) {
+                                                          console.log(parsedResponse.result);
+                                                          //TODO handle the case in witch the field is not changed
+                                                      }
+                                                  }
+                                                };
                                             },
                                             targetEvent: event,
                                             title      : 'Inserisci un valore',
@@ -2386,6 +2524,8 @@
                 multiple           : true,
                 controller         : ['$scope', function ($scope) {
 
+                    let id = ++requestId;
+                    let id1, id2 = -1;
                     $scope.insertAnchor = {
                         name        : '',
                         mac         : '',
@@ -2395,29 +2535,31 @@
                         proximity   : '',
                     };
 
+                    $scope.tableEmpty     = false;
                     $scope.searchString       = '';
                     $scope.anchorTypes        = [];
                     $scope.selectedPermitteds = [];
                     $scope.selectedNeighbors  = [];
 
-                    socketService.sendRequest('get_anchors_by_floor_and_location', {
+                    socket.send(encodeRequestWithId(id, 'get_anchors_by_floor_and_location', {
                         floor   : floor.name,
                         location: dataService.location
-                    })
-                        .then((response) => {
-                            $scope.neighbors = response.result;
-                            return socketService.sendRequest('get_all_tags', {})
-                        })
-                        .then((response) => {
-                            $scope.permitteds = response.result;
-                            return socketService.sendRequest('get_anchor_types', {})
-                        })
-                        .then((response) => {
-                            $scope.anchorTypes = response.result;
-                        })
-                        .catch((error) => {
-                            console.log('addRowDialog error => ', error);
-                        });
+                    }));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        if (parsedResponse.id === id){
+                            $scope.neighbors = parsedResponse.result;
+                            id1 = ++requestId;
+                            socket.send(encodeRequestWithId(id1, 'get_all_tags'));
+                        } else if (parsedResponse.id === id1){
+                            $scope.permitteds = parsedResponse.result;
+                            id2 = ++requestId;
+                            socket.send(encodeRequestWithId(id2, 'get_anchor_types'));
+                        } else if (parsedResponse.id === id2){
+                            $scope.anchorTypes = parsedResponse.result;
+
+                        }
+                    };
 
                     $scope.updateSearch = (event) => {
                         event.stopPropagation();
@@ -2430,17 +2572,20 @@
                         if (form.$valid) {
                             let neighborsString = '';
                             let permittedIds    = [];
+                            let id3 = ++requestId;
                             $scope.neighbors.filter(a => $scope.selectedNeighbors.some(sa => sa === a.name))
                                 .forEach((anchor) => {
                                     neighborsString += anchor.mac + ',';
                                 });
+
+                            neighborsString = neighborsString.replace(/,\s*$/, "");
 
                             $scope.permitteds = $scope.permitteds.filter(t => $scope.selectedPermitteds.some(st => st === t.name))
                                 .forEach((t) => {
                                     permittedIds.push(t.id);
                                 });
 
-                            socketService.sendRequest('insert_anchor', {
+                            socket.send(encodeRequestWithId(id3, 'insert_anchor', {
                                 name      : $scope.insertAnchor.name,
                                 mac       : $scope.insertAnchor.mac,
                                 type      : $scope.insertAnchor.selectedType,
@@ -2450,21 +2595,21 @@
                                 permitteds: permittedIds,
                                 neighbors : neighborsString,
                                 floor     : floor.id
-                            })
-                            .then((response) => {
-                                if (response.result.length === 0) {
-                                    $scope.insertAnchor.resultClass = 'background-green';
-                                    $timeout(function () {
-                                        $mdDialog.hide();
-                                        $mdDialog.hide(anchorsDialog);
-                                        $mdDialog.show(anchorsDialog)
-                                    }, 1000);
-                                    $scope.$apply();
+                            }));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id3){
+                                    if (parsedResponse.result.length === 0) {
+                                        $scope.insertAnchor.resultClass = 'background-green';
+                                        $timeout(function () {
+                                            $mdDialog.hide();
+                                            $mdDialog.hide(anchorsDialog);
+                                            $mdDialog.show(anchorsDialog)
+                                        }, 1000);
+                                        $scope.$apply();
+                                    }
                                 }
-                            })
-                            .catch((error) => {
-                                console.log('addAnchor error => ', error);
-                            })
+                            };
                         } else {
                             $scope.insertAnchor.resultClass = 'background-red';
                         }
@@ -2488,6 +2633,7 @@
                 clickOutsideToClose: true,
                 multiple           : true,
                 controller         : ['$scope', 'admin', function ($scope, admin) {
+                    let id4 = ++requestId;
                     $scope.selected = [];
 
                     $scope.query = {
@@ -2497,39 +2643,43 @@
                         page        : 1
                     };
 
-                    socketService.sendRequest('get_anchors_by_floor_and_location', {
-                        floor   : floor.name,
+                    socket.send(encodeRequestWithId(id4, 'get_anchors_by_floor_and_location', {
+                        floor   : (floor.name !== undefined) ? floor.name : '',
                         location: dataService.location
-                    })
-                    .then((response) => {
-                        $scope.anchors = response.result;
-                    })
-                    .catch((error) => {
-                        console.log('anchorDialog error => ', error);
-                    });
+                    }));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        if (parsedResponse.id === id4){
+                            if (parsedResponse.result.length === 0){
+                                $scope.tableEmpty     = true;
+                            }
+                            $scope.anchors = parsedResponse.result;
+                        }
+                    };
 
                     $scope.editCell = (event, anchor, anchorName) => {
 
                         event.stopPropagation();
 
                         if (admin) {
+                            let id5 = ++requestId;
                             let editCell = {
                                 modelValue : anchor[anchorName],
                                 save       : function (input) {
                                     input.$invalid     = true;
                                     anchor[anchorName] = input.$modelValue;
-                                    socketService.sendRequest('change_anchor_field', {
+                                    socket.send(encodeRequestWithId(id5, 'change_anchor_field', {
                                         anchor_id   : anchor.id,
                                         anchor_field: anchorName,
                                         field_value : input.$modelValue
-                                    })
-                                    .then((response) =>  {
-                                        if (response.result !== 1)
-                                            console.log(response.result);
-                                    })
-                                    .catch((error) => {
-                                        console.log('editCell error => ', error);
-                                    })
+                                    }));
+                                    socket.onmessage = (response) => {
+                                        let parsedResponse = parseResponse(response);
+                                        if (parsedResponse.id === id5) {
+                                            if (parsedResponse.result !== 1)
+                                                console.log(parsedResponse.result);
+                                        }
+                                    };
                                 },
                                 targetEvent: event,
                                 title      : 'Inserisci un valore',
@@ -2558,15 +2708,16 @@
                             .cancel('ANNULLA');
 
                         $mdDialog.show(confirm).then(function () {
-                            socketService.sendRequest('delete_anchor', {anchor_id: anchor.id})
-                                .then((response) => {
-                                    if (response.result > 0) {
+                            let id6 = ++requestId;
+                            socket.send(encodeRequestWithId(id6, 'delete_anchor', {anchor_id: anchor.id}));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id6){
+                                    if (parsedResponse.result > 0) {
                                         $scope.anchors = $scope.anchors.filter(a => a.id !== anchor.id);
                                     }
-                                })
-                                .catch((error) => {
-                                    console.log('deleteAnchor error => ', error);
-                                });
+                                }
+                            };
                         }, function () {
                             console.log('CANCELLATO!!!!');
                         });
@@ -2604,6 +2755,8 @@
 
                     //inserting a new floor
                     $scope.insertFloor = (form) => {
+                        let id = ++requestId;
+                        let id1, id2 = -1;
                         form.$submitted = true;
 
                         if (form.$valid) {
@@ -2615,82 +2768,73 @@
                                 fileName = file.name;
                             }
 
-                            socketService.sendRequest('get_all_locations', {})
-                                .then((response) => {
-                                    currentLocation = response.result.filter(l => l.name === dataService.location)[0];
+                            socket.send(encodeRequestWithId(id, 'get_all_locations'));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id){
+                                    currentLocation = parsedResponse.result.filter(l => l.name === dataService.location)[0];
 
                                     if (file !== null) {
-                                        socketService.sendRequest('insert_floor', {
+                                        id1 = ++requestId;
+                                        socket.send(encodeRequestWithId(id1, 'insert_floor', {
                                             name     : $scope.insertFloor.floorName,
                                             map_image: (fileName === null) ? '' : fileName,
                                             map_width: $scope.insertFloor.mapWidth,
                                             spacing  : $scope.insertFloor.spacing,
                                             location : currentLocation.id
-                                        })
-                                        .then((response) => {
-                                            if (response.result !== undefined && response.result !== 0) {
-                                                convertImageToBase64(file)
-                                                    .then((response) => {
-                                                        socketService.sendRequest('save_floor_image', {
-                                                            imageName: fileName,
-                                                            image    : response
-                                                        })
-                                                        .then(function (response) {
-                                                            if (response.result === false) {
-                                                                $scope.insertFloor.showSuccess = false;
-                                                                $scope.insertFloor.showError   = true;
-                                                                $scope.insertFloor.message     = "Piano inserito senza salvare l'immagine";
-                                                                $scope.insertFloor.resultClass = 'background-orange';
-
-                                                                $scope.$apply();
-
-                                                                $timeout(function () {
-                                                                    $mdDialog.hide();
-                                                                    $mdDialog.hide(floorDialog);
-                                                                    $mdDialog.show(floorDialog);
-                                                                }, 1000);
-                                                            } else {
-                                                                $scope.insertFloor.resultClass = 'background-green';
-                                                                $scope.insertFloor.showSuccess = true;
-                                                                $scope.insertFloor.showError   = false;
-                                                                $scope.insertFloor.message     = 'Piano inserito con successo';
-
-                                                                $scope.$apply();
-
-                                                                $timeout(function () {
-                                                                    $mdDialog.hide();
-                                                                    $mdDialog.hide(floorDialog);
-                                                                    $mdDialog.show(floorDialog);
-                                                                }, 1000);
-                                                            }
-                                                        })
-                                                        .catch((error) => {
-                                                            console.log('insertFloor error => ', error);
-                                                        })
-                                                });
-                                            } else {
-                                                $scope.insertFloor.showSuccess = false;
-                                                $scope.insertFloor.showError   = true;
-                                                $scope.insertFloor.message     = 'Impossibile inserire il piano.';
-                                                $scope.insertFloor.resultClass = 'background-red';
-                                            }
-                                        })
-                                        .catch((error) => {
-                                            console.log('insertFloor error => ', error);
-                                        })
+                                        }));
                                     } else {
                                         $scope.insertFloor.showSuccess = false;
                                         $scope.insertFloor.showError   = true;
                                         $scope.insertFloor.message     = 'Selezionare un file per il piano.';
                                         $scope.insertFloor.resultClass = 'background-red';
                                     }
-                                })
-                                .catch(function () {
-                                    $scope.insertFloor.showSuccess = false;
-                                    $scope.insertFloor.showError   = true;
-                                    $scope.insertFloor.message     = 'Impossibile inserire il piano';
-                                    $scope.insertFloor.resultClass = 'background-red';
-                                });
+                                } else if (parsedResponse.id === id1){
+                                    if (parsedResponse.result !== undefined && parsedResponse.result !== 0) {
+                                        convertImageToBase64(file)
+                                            .then((response) => {
+                                                id2 = ++requestId;
+                                                socket.send(encodeRequestWithId(id2, 'save_floor_image', {
+                                                    imageName: fileName,
+                                                    image    : response
+                                                }));
+                                            });
+                                    } else {
+                                        $scope.insertFloor.showSuccess = false;
+                                        $scope.insertFloor.showError   = true;
+                                        $scope.insertFloor.message     = 'Impossibile inserire il piano.';
+                                        $scope.insertFloor.resultClass = 'background-red';
+                                    }
+                                } else if (parsedResponse.id === id2){
+                                    if (parsedResponse.result === false) {
+                                        $scope.insertFloor.showSuccess = false;
+                                        $scope.insertFloor.showError   = true;
+                                        $scope.insertFloor.message     = "Piano inserito senza salvare l'immagine";
+                                        $scope.insertFloor.resultClass = 'background-orange';
+
+                                        $scope.$apply();
+
+                                        $timeout(function () {
+                                            $mdDialog.hide();
+                                            $mdDialog.hide(floorDialog);
+                                            $mdDialog.show(floorDialog);
+                                        }, 1000);
+                                    } else {
+                                        $scope.insertFloor.resultClass = 'background-green';
+                                        $scope.insertFloor.showSuccess = true;
+                                        $scope.insertFloor.showError   = false;
+                                        $scope.insertFloor.message     = 'Piano inserito con successo';
+
+                                        $scope.$apply();
+
+                                        $timeout(function () {
+                                            $mdDialog.hide();
+                                            $mdDialog.hide(floorDialog);
+                                            $mdDialog.show(floorDialog);
+                                        }, 1000);
+                                    }
+                                }
+                            };
                         } else {
                             $scope.location.resultClass = 'background-red';
                         }
@@ -2714,6 +2858,7 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 controller         : ['$scope', 'admin', function ($scope, admin) {
+                    let id = ++requestId;
                     $scope.selected = [];
 
                     $scope.query = {
@@ -2723,33 +2868,39 @@
                         page        : 1
                     };
 
-                    socketService.sendRequest('get_floors_by_location', {location: dataService.location})
-                        .then((response) => {
-                            $scope.floors = response.result;
-                        });
+                    socket.send(encodeRequestWithId(id, 'get_floors_by_location', {location: dataService.location}));
+                    socket.onmessage = (response) => {
+                        let parsedResponse = parseResponse(response);
+                        if (parsedResponse.id === id){
+                            $scope.floors = parsedResponse.result;
+                        }
+                    };
 
                     $scope.editCell = (event, floor, floorName) => {
 
                         event.stopPropagation();
 
                         if (admin) {
+                            let id1 = ++requestId;
                             let editCell = {
                                 modelValue : floor[floorName],
                                 save       : function (input) {
                                     input.$invalid   = true;
                                     floor[floorName] = input.$modelValue;
-                                    socketService.sendRequest('change_floor_field', {
+                                    socket.send(encodeRequestWithId(id1, 'change_floor_field', {
                                         floor_id   : floor.id,
                                         floor_field: floorName,
                                         field_value: input.$modelValue
-                                    })
-                                    .then((response) => {
-                                        if (response.result !== 1)
-                                            console.log(response.result);
-                                    })
-                                    .catch((error) => {
-                                        console.log('editCell error => ', error);
-                                    })
+                                    }));
+                                    socket.onmessage = (response) => {
+                                       let parseResponse = parseResponse(response);
+                                       if (parseResponse.id === id1){
+                                           if (parseResponse.result !== 1) {
+                                               console.log(parseResponse.result);
+                                               //TODO handre when not saving field
+                                           }
+                                       }
+                                    };
                                 },
                                 targetEvent: event,
                                 title      : 'Inserisci un valore',
@@ -2778,16 +2929,17 @@
                             .cancel('ANNULLA');
 
                         $mdDialog.show(confirm).then(function () {
+                            let id = ++requestId;
                             if ($scope.floors.length > 1) {
-                                socketService.sendRequest('delete_floor', {floor_id: floor.id})
-                                    .then((response) => {
-                                        if (response.result > 0) {
+                                socket.send(encodeRequestWithId(id, 'delete_floor', {floor_id: floor.id}));
+                                socket.onmessage = (response) => {
+                                    let parsedResponse = parseResponse(response);
+                                    if (parsedResponse.id === id){
+                                        if (parsedResponse.result > 0) {
                                             $scope.floors = $scope.floors.filter(a => a.id !== floor.id);
                                         }
-                                    })
-                                    .catch((error) => {
-                                        console.log('deleteRow error => ', error);
-                                    });
+                                    }
+                                };
                             }
                         }, function () {
                             console.log('CANCELLATO!!!!');
@@ -2815,18 +2967,19 @@
                         if (file != null) {
                             convertImageToBase64(file)
                                 .then((result) => {
-                                    return socketService.sendRequest('save_floor_image', {
+                                    let id = ++requestId;
+                                    socket.send(encodeRequestWithId(id, 'save_floor_image', {
                                         id   : $scope.floorId,
                                         image: result,
                                         name : fileName
-                                    })
-                                })
-                                .then((response) => {
-                                    console.log(response);
-                                })
-                                .catch((error) => {
-                                    console.log('fileNameChanged error => ', error);
-                                })
+                                    }));
+                                    socket.onmessage = (response) => {
+                                        let parsedResponse = parseResponse(response);
+                                        if (parsedResponse.id === id){
+                                            //TODO handle if the image is not saved
+                                        }
+                                    }
+                                });
                         }
                     };
 
@@ -2841,79 +2994,109 @@
 
         //function that makes the logout of the user
         $scope.logout = () => {
-            socketService.sendRequest('logout', {})
-                .then((response) => {
-                    if (response.result === 'logged_out')
+            let id = ++requestId;
+            socket.send(encodeRequestWithId(id, 'logout'));
+            socket.onmessage = (response) => {
+                let parsedRespone = parseResponse(response);
+                if (parsedRespone.id === id){
+                    if (parsedRespone.result === 'logged_out')
                         $state.go('login');
-                })
-                .catch((error) => {
-                    console.log('logout error => ', error);
-                })
+                }
+            };
         };
 
         //handeling search tags functionality
         $scope.$watch('selectedTag', function (newValue) {
             let newStringValue = "" + newValue;
             if (newStringValue !== '') {
-                socketService.sendRequest('get_all_tags', {})
-                    .then((response) => {
-                        let newTag = $filter('filter')(response.result, newValue)[0];
+                let id = ++requestId;
+
+                socket.send(encodeRequestWithId(id, 'get_all_tags'));
+                socket.onmessage = (response) => {
+                    let parsedResponse = parseResponse(response);
+                    if (parsedResponse.id === id){
+                        let newTag = $filter('filter')(parsedResponse.result, newValue)[0];
                         if (newTag.gps_north_degree === 0 && newTag.gps_east_degree === 0) {
-                            //TODO mostrare tag su canvas
-                            $mdDialog.show({
-                                locals             : {tags: response.result, outerScope: $scope},
-                                templateUrl        : componentsPath + 'search-tag-inside.html',
-                                parent             : angular.element(document.body),
-                                targetEvent        : event,
-                                clickOutsideToClose: true,
-                                controller         : ['$scope', 'tags', 'outerScope', 'socketService', function ($scope, tags, outerScope, socketService) {
-                                    let canvas  = null;
-                                    let context = null;
+                            let id1 = ++requestId;
+                            socket.send(encodeRequestWithId(id1, 'get_tag_floor', {tag: newTag.id}));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id1){
+                                    if (parsedResponse.result.location_name === undefined || parsedResponse.result.name === undefined) {
+                                        $mdDialog.show({
+                                            templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                                            parent             : angular.element(document.body),
+                                            targetEvent        : event,
+                                            clickOutsideToClose: true,
+                                            controller         : ['$scope', ($scope) => {
 
-                                    $scope.floorData = {
-                                        location : '',
-                                        floorName: ''
-                                    };
+                                                $scope.title = "TAG NON TROVATO";
+                                                $scope.message = "Il tag e' stato censito ma non e' mai stato localizzato!"
 
-                                    $timeout(function () {
-                                        canvas  = document.querySelector('#search-canvas-id');
-                                        context = canvas.getContext('2d');
-                                    }, 0);
 
-                                    socketService.sendRequest('get_tag_floor', {tag: newTag.id})
-                                        .then((response) => {
-                                            $scope.floorData.location  = response.result.location_name;
-                                            $scope.floorData.floorName = response.result.name;
-
-                                            let img = new Image();
-                                            img.src = imagePath + 'floors/' + response.result.image_map;
-
-                                            img.onload = function () {
-                                                canvas.width  = this.naturalWidth;
-                                                canvas.height = this.naturalHeight;
-
-                                                //updating the canvas and drawing border
-                                                updateCanvas(canvas.width, canvas.height, context, img);
-
-                                                let tagImg = new Image();
-                                                tagImg.src = imagePath + 'icons/tags/online_tag_24.png';
-
-                                                tagImg.onload = function () {
-                                                    drawIcon(newTag, context, tagImg, response.result.width, canvas.width, canvas.height, true);
+                                                $scope.hide = () => {
+                                                    $mdDialog.hide();
                                                 }
-                                            };
+                                            }],
+
+                                            onRemoving: function(){
+                                                $scope.selectedTag = '';
+                                            },
                                         })
-                                        .catch((error) => {
-                                            console.log('watchSelectedTag error => ', error);
-                                        });
+                                    } else {
+                                        $mdDialog.show({
+                                            locals             : {tags: parsedResponse.result, outerScope: $scope},
+                                            templateUrl        : componentsPath + 'search-tag-inside.html',
+                                            parent             : angular.element(document.body),
+                                            targetEvent        : event,
+                                            clickOutsideToClose: true,
+                                            controller         : ['$scope', 'tags', 'outerScope', 'socketService', function ($scope, tags, outerScope, socketService) {
+                                                let canvas  = null;
+                                                let context = null;
 
-                                    $scope.hide = () => {
-                                        outerScope.selectedTag = '';
-                                        $mdDialog.hide();
+                                                $scope.floorData = {
+                                                    location : '',
+                                                    floorName: ''
+                                                };
+
+                                                $timeout(function () {
+                                                    canvas  = document.querySelector('#search-canvas-id');
+                                                    context = canvas.getContext('2d');
+
+                                                    $scope.floorData.location  = parsedResponse.result.location_name;
+                                                    $scope.floorData.floorName = parsedResponse.result.name;
+
+                                                    let img = new Image();
+                                                    img.src = imagePath + 'floors/' + parsedResponse.result.image_map;
+
+                                                    img.onload = function () {
+                                                        canvas.width  = this.naturalWidth;
+                                                        canvas.height = this.naturalHeight;
+
+                                                        //updating the canvas and drawing border
+                                                        updateCanvas(canvas.width, canvas.height, context, img);
+
+                                                        let tagImg = new Image();
+                                                        tagImg.src = imagePath + 'icons/tags/online_tag_24.png';
+
+                                                        tagImg.onload = function () {
+                                                            drawIcon(newTag, context, tagImg, parsedResponse.result.width, canvas.width, canvas.height, true);
+                                                        }
+                                                    };
+                                                }, 0);
+
+                                                $scope.hide = () => {
+                                                    outerScope.selectedTag = '';
+                                                    $mdDialog.hide();
+                                                }
+                                            }],
+                                            onRemoving: () => {
+                                                $scope.selectedTag = '';
+                                            }
+                                        })
                                     }
-                                }]
-                            })
-
+                                }
+                            };
                         } else {
                             $mdDialog.show({
                                 locals             : {tagName: newValue, outerScope: $scope},
@@ -2924,6 +3107,8 @@
                                 controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
 
                                     let tag             = null;
+                                    let id2 = ++requestId;
+                                    let id3 = null;
                                     $scope.locationName = '';
 
                                     $scope.mapConfiguration = {
@@ -2931,14 +3116,15 @@
                                         map_type: mapType,
                                     };
 
-                                    socketService.sendRequest('get_all_tags', {})
-                                        .then((response) => {
-                                            tag = response.result.filter(t => t.name === tagName)[0];
-
-                                            return socketService.sendRequest('get_all_locations', {});
-                                        })
-                                        .then((response) => {
-                                            let locations = response.result;
+                                    socket.send(encodeRequestWithId(id2, 'get_all_tags'));
+                                    socket.onmessage = (response) => {
+                                        let parsedResponse = parseResponse(response);
+                                        if (parsedResponse.id === id2){
+                                            tag = parsedResponse.result.filter(t => t.name === tagName)[0];
+                                            id3 = ++requestId;
+                                            socket.send(encodeRequestWithId(id3, 'get_all_locations'));
+                                        } else if (parsedResponse.id === id3){
+                                            let locations = parsedResponse.result;
 
 
                                             locations.forEach((location) => {
@@ -2946,10 +3132,8 @@
                                                     $scope.locationName = location.name;
                                                 }
                                             });
-                                        })
-                                        .catch((error) => {
-                                            console.log('watchSelectedTag error => ', error);
-                                        });
+                                        }
+                                    };
 
                                     NgMap.getMap('search-map').then((map) => {
                                         map.set('styles', mapConfiguration);
@@ -2968,19 +3152,20 @@
                                         outerScope.selectedTag = '';
                                         $mdDialog.hide();
                                     }
-                                }]
+                                }],
+                                onRemoving: () => {
+                                    $scope.selectedTag = '';
+                                }
                             })
                         }
-                    })
-                    .catch((error) => {
-                        console.log('watchSelectedTag error => ', error);
-                    })
+                    }
+                };
             }
         });
 
         $scope.$watch('switch.mapFullscreen', function (newValue) {
             if (newValue) {
-                openFullScreen(document.querySelector('#map-div'));
+                openFullScreen(document.querySelector('body'));
                 $scope.switch.mapFullscreen = false;
             }
         });

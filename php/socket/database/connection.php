@@ -49,7 +49,7 @@ class Connection
 
             $this->query = 'INSERT INTO user (USERNAME, PASSWORD, EMAIL,  NAME, ROLE) VALUES (?, ?, ?, ?, ?)';
 
-            $this->result = $this->execute_inserting($this->query, 'ssssi', $username, $hash_code, 'dani@gmail.com', 'dani', 1);
+            $this->result = $this->execute_inserting($this->query, 'ssssi', $username, $hash_code, 'max@gmail.com', 'max', 1);
 
             if ($this->result instanceof db_errors)
                 return $this->result;
@@ -274,7 +274,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT location.NAME, LATITUDE, LONGITUDE, ICON FROM location 
+            $this->query = 'SELECT location.NAME, LATITUDE, LONGITUDE, ICON, IS_INSIDE, ONE_LOCATION FROM location 
                   JOIN user_has_location uhl ON location.ID = uhl.LOCATION_ID 
                   JOIN user u on uhl.USER_ID = u.ID WHERE USERNAME = ?';
 
@@ -293,7 +293,8 @@ class Connection
                 $position[] = $row['LATITUDE'];
                 $position[] = $row['LONGITUDE'];
 
-                $result_array[] = array('name' => $row['NAME'], 'position' => $position, "icon" => $row['ICON']);
+                $result_array[] = array('name' => $row['NAME'], 'position' => $position, "icon" => $row['ICON'],
+                    'is_inside' => $row['IS_INSIDE'], 'one_location' => $row['ONE_LOCATION']);
             }
 
             return $result_array;
@@ -824,9 +825,11 @@ class Connection
                 while ($row = mysqli_fetch_assoc($this->result)) {
                     $permittedString .= $row['MAC'] . ',';
                 }
-
                 $statement->close();
             }
+
+            if (substr($permittedString, -1, 1) == ',')
+                $permittedString = substr($permittedString, 0, -1);
 
             $this->query = 'SELECT ID FROM anchor_types WHERE DESCRIPTION = ?';
             $statement = $this->execute_selecting($this->query, 's', $type);
@@ -842,8 +845,6 @@ class Connection
             $statement->close();
 
             if ($fetch) {
-                var_dump($neighbors);
-                var_dump($permittedString);
                 $this->query = 'INSERT INTO anchor (MAC, NAME, TYPE, NEIGHBORS, PROXIMITY, IP, PERMITTED_ASSET, RSSI_THRESHOLD, FLOOR_ID) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?)';
 
                 $statement = $this->execute_inserting($this->query, 'ssisissii', $mac, $name, $res_id, $neighbors, $proximity, $ip, $permittedString, $rssi, $floor);
@@ -874,23 +875,49 @@ class Connection
      * @param $x
      * @param $y
      * @param $id
-     * @return db_errors|int|mysqli_stmt
+     * @param $floor
+     * @return db_errors | array
      */
-    function update_anchor_position($x, $y, $id)
+    function update_anchor_position($x, $y, $id, $floor)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "UPDATE anchor SET X_POS = ?, Y_POS = ? WHERE ID = ?";
+            $this->connection->autocommit(false);
+            $errors = array();
 
-            $statement = $this->execute_selecting($this->query, 'sss', $x, $y, $id);
+            $this->query = 'SELECT ID FROM floor WHERE NAME = ?';
+
+            $statement = $this->execute_selecting($this->query, 's', $floor);
 
             if ($statement instanceof db_errors)
-                return $statement;
+                array_push($errors, 'select_anchor_db_error');
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_UPDATING_ANCHOR_POSITION);
+                array_push($errors, 'select_anchor_false_error');
 
-            return $this->connection->affected_rows;
+            $statement->bind_result($res_id);
+            $fetch = $statement->fetch();
+
+            if ($fetch) {
+                $statement->close();
+
+                $this->query = "UPDATE anchor SET X_POS = ?, Y_POS = ?, FLOOR_ID = ?  WHERE ID = ?";
+
+                $statement = $this->execute_selecting($this->query, 'sssi', $x, $y, $res_id, $id);
+
+                if ($statement instanceof db_errors)
+                    array_push($errors, 'update_anchor_db_error');
+                else if ($statement == false)
+                    array_push($errors, 'update_anchor_false_error');
+
+            }
+
+            if (!empty($errors)){
+                $this->connection->rollback();
+            }
+            $this->connection->commit();
+
+            return $errors;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -1041,7 +1068,7 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'description' => $row['DESCRIPTION'], 'latitude' => (double)$row['LATITUDE'],
-                    'longitude' => (double)$row['LONGITUDE'], 'radius' => (int)$row['RADIUS']);
+                    'longitude' => (double)$row['LONGITUDE'], 'radius' => $row['RADIUS']);
             }
 
             return $result_array;
@@ -1838,7 +1865,7 @@ class Connection
     {
         $statement = $this->connection->prepare($query);
         $bind_names[] = $bind_string;
-
+        $result = null;
         if ($statement !== false) {
 
             for ($i = 0; $i < count($params); $i++) {

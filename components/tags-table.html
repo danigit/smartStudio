@@ -42,7 +42,7 @@
                 <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
                     ng-repeat="tag in tags | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell><img
-                            ng-src="{{tag.is_exit ? '../SMARTSTUDIO/img/icons/tags/offline_tag_24.png' : '../SMARTSTUDIO/img/icons/tags/online_tag_24.png'}}"
+                            ng-src="{{!tagsContainTag(tagsOnline, tag) ? '../SMARTSTUDIO/img/icons/tags/offline_tag_24.png' : '../SMARTSTUDIO/img/icons/tags/online_tag_24.png'}}"
                             alt="Stato tag" title="Stato tag"></td>
                     <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">
                         {{tag.name || 'Inserire nome'}}
@@ -54,6 +54,9 @@
                         <md-button ng-click="tagMacs(tag)" class="md-raised background-darkcyan color-white">GESTIONE
                             MACS
                     <td md-cell ng-click="deleteRow(tag)"><img src="../SMARTSTUDIO/img/icons/delete_trash_24.png" alt="Cancella tag" title="Cancella tag"></td>
+                </tr>
+                <tr md-row ng-show="tableEmpty">
+                    <td md-cell colspan="8" class="text-center color-red">Nessun risultato trovato</td>
                 </tr>
                 </tbody>
             </table>

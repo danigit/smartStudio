@@ -1,6 +1,6 @@
-<div aria-label="">
+<div>
     <!--popup header-->
-    <md-toolbar id="popup-toolbar">
+    <md-toolbar id="popup-toolbar" class="background-red">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
                 <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
@@ -13,19 +13,17 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">{{locationName}}</h1>
+                <h1 class=" font-iceberg font-x-large">{{title}}</h1>
             </div>
         </div>
     </md-toolbar>
-</div>
     <!--end popup header-->
 
-    <md-content>
-        <!--canvas container-->
-        <div id="search-canvas-container" layout="row" layout-align="center start">
-            <ng-map id="search-map" center="{{mapConfiguration.center}}"
-                    zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="search-tag-map">
-            </ng-map>
+    <!--popup content-->
+    <md-content class="popup-padding">
+        <div layout="column" layout-align="center center">
+            <p class="color-red">{{message}}</p>
         </div>
-        <!--end canvas container-->
     </md-content>
+    <!--end popup content-->
+</div>
