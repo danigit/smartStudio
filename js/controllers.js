@@ -11,6 +11,7 @@
     main.controller('canvasController', canvasController);
     main.controller('outdoorController', outdoorController);
     main.controller('menuController', menuController);
+    main.controller('languageController', languageController);
 
     /**
      * Function that manage the user login functionalities
