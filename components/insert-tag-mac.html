@@ -1,14 +1,14 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
@@ -23,7 +23,7 @@
 
 <md-content class="popup-padding">
 
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <md-table-container>
 
@@ -32,8 +32,8 @@
 
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column><span class="color-darkcyan">NOME</span></th>
-                    <th md-column><span class="color-darkcyan">TIPO</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.type | uppercase}}</span></th>
                 </tr>
                 </thead>
 
@@ -42,17 +42,17 @@
                     ng-repeat="mac in macs | limitTo: query.limit: (query.page -1 ) * query.limit">
 
                     <td md-cell ng-click="editCell($event, mac, 'mac')" ng-class="{'md-placeholder': !mac.mac}">
-                        {{mac.mac || 'Inserire nome'}}
+                        {{mac.mac || lang.insertName}}
                     </td>
                     <td md-cell ng-click="editCell($event, mac, 'type')"
                         ng-class="{'md-placeholder': mac.type === null}">
-                        {{'' + mac.type || 'Inserire tipo'}}
+                        {{'' + mac.type || lang.insertType}}
                     </td>
                     <td md-cell ng-click="deleteMac($event, mac)"><img
-                            src="../SMARTSTUDIO/img/icons/delete_trash_24.png" alt="Cancella mac" title="Aggiungi mac"></td>
+                            src="img/icons/delete_trash_24.png" alt="Cancella mac" title="Aggiungi mac"></td>
                 </tr>
                 <tr md-row ng-show="macs.length === 0">
-                    <td md-cell colspan="8" class="text-center color-red">Nessun risultato trovato</td>
+                    <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -60,8 +60,8 @@
 
         <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
-                <img src="../SMARTSTUDIO/img/icons/add_row_32.png" class="outline-none cursor-pointer"
-                     ng-click="addNewMac()" alt="Aggiungi mac" title="Aggiungi mac">
+                <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
+                     ng-click="addNewMac()" alt="{{lang.addMac}}" title="{{lang.addMac}}">
             </div>
         </md-input-container>
 

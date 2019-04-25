@@ -1,20 +1,20 @@
 <!--<div>-->
 <!--popup header-->
-<div>
+<div ng-controller="languageController">
     <md-toolbar id="popup-toolbar" ng-class="">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">STORICO EVENTI</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.history | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -23,28 +23,28 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
         <div class="border-1-gray history-filter">
             <div layout="column" layout-align="center start">
-                <md-subheader class="color-darkcyan">FILTRO:</md-subheader>
+                <md-subheader class="color-darkcyan">{{lang.filter}}:</md-subheader>
             </div>
 
             <div layout="row">
                 <md-subheader>Dal:</md-subheader>
-                <md-datepicker ng-model="history.fromDate" md-placeholder="Selezionare data"
+                <md-datepicker ng-model="history.fromDate" md-placeholder="{{lang.selectDate}}"
                                md-open-on-focus></md-datepicker>
                 <md-subheader>al:</md-subheader>
-                <md-datepicker ng-model="history.toDate" md-placeholder="Selezionare data"
+                <md-datepicker ng-model="history.toDate" md-placeholder="{{lang.selectDate}}"
                                md-open-on-focus></md-datepicker>
             </div>
             <div layout="row" class="width-100">
                 <div layout="column" layout-align="center start" class="width-50 padding-left-10-px">
                     <md-input-container class="margin-bottom-0 margin-top-10">
 
-                        <label>Nome WeTag</label>
+                        <label>{{lang.name}}</label>
 
                         <md-select ng-model="history.selectedTag">
-                            <md-option ng-value="QUALSIASI">QUALSIASI</md-option>
+                            <md-option ng-value="QUALSIASI">{{lang.anything | uppercase}}</md-option>
                             <md-option ng-repeat="tag in history.tags" ng-value="tag.name">
                                 {{tag.name}}
                             </md-option>
@@ -57,7 +57,7 @@
                         <label>Tipologia evento</label>
 
                         <md-select ng-model="history.selectedEvent">
-                            <md-option ng-value="QUALSIASI">QUALSIASI</md-option>
+                            <md-option ng-value="QUALSIASI">{{lang.anything | uppercase}}</md-option>
                             <md-option ng-repeat="event in history.events" ng-value="event.description">
                                 {{event.description}}
                             </md-option>
@@ -73,14 +73,14 @@
 
                     <thead md-head md-order="query.order">
                     <tr md-row>
-                        <th md-column><span class="color-darkcyan">DATA</span></th>
-                        <th md-column><span class="color-darkcyan">EVENTO</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">TAG</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">ANCORA</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">SITO</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">PIANO</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">COORDINATA X</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">COORDINATA Y</span></th>
+                        <th md-column><span class="color-darkcyan">{{lang.date | uppercase}}</span></th>
+                        <th md-column><span class="color-darkcyan">{{lang.event | uppercase}}</span></th>
+                        <th md-column md-numeric><span class="color-darkcyan">{{lang.tag | uppercase}}</span></th>
+                        <th md-column md-numeric><span class="color-darkcyan">{{lang.anchor | uppercase}}</span></th>
+                        <th md-column md-numeric><span class="color-darkcyan">{{lang.site | uppercase}}</span></th>
+                        <th md-column md-numeric><span class="color-darkcyan">{{lang.floor | uppercase}}</span></th>
+                        <th md-column md-numeric><span class="color-darkcyan">{{lang.xPos | uppercase}}</span></th>
+                        <th md-column md-numeric><span class="color-darkcyan">{{lang.yPos | uppercase}}</span></th>
 
                     </tr>
                     </thead>
@@ -89,25 +89,25 @@
                     <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
                         ng-repeat="row in historyRows | limitTo: query.limit: (query.page -1 ) * query.limit track by $index">
                         <td md-cell class="no-wrap">{{row.time}}</td>
-                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.event}">{{row.event || 'Dato non disponibile'}}
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.event}">{{row.event || lang.noData}}
                         </td>
-                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag}">{{row.tag || 'Dato non disponibile'}}
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag}">{{row.tag || lang.noData}}
                         </td>
-                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.anchor}">{{row.anchor || 'Dato non disponibile'}}
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.anchor}">{{row.anchor || lang.noData}}
                         </td>
-                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.location}">{{row.location || 'Dato non disponibile'}}
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.location}">{{row.location || lang.noData}}
                         </td>
-                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.floor}">{{row.floor || 'Dato non disponibile'}}
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.floor}">{{row.floor || lang.noData}}
                         </td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag_x_pos.toString()}">
-                            {{row.tag_x_pos.toString() || 'Dato non disponibile'}}
+                            {{row.tag_x_pos.toString() || lang.noData}}
                         </td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag_y_pos.toString()}">
-                            {{row.tag_y_pos.toString() || 'Dato non disponibile'}}
+                            {{row.tag_y_pos.toString() || lang.noData}}
                         </td>
                     </tr>
                     <tr md-row ng-show="tableEmpty">
-                        <td md-cell colspan="8" class="text-center color-red">Nessun risultato trovato</td>
+                        <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
                     </tr>
                     </tbody>
                 </table>

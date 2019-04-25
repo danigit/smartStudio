@@ -1,19 +1,19 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">PIANI</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.floors | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -22,7 +22,7 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <md-table-container>
 
@@ -31,10 +31,9 @@
 
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <!--<th md-column ><span>id</span></th>-->
-                    <th md-column><span class="color-darkcyan">NOME</span></th>
-                    <th md-column><span class="color-darkcyan">LUNGHEZZA</span></th>
-                    <th md-column><span class="color-darkcyan">SPAZIATURA</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.lengthValue | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.spacing | uppercase}}</span></th>
                 </tr>
                 </thead>
 
@@ -42,21 +41,21 @@
                 <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true"
                     ng-repeat="floor in floors | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell ng-click="editCell($event, floor, 'name')"
-                        ng-class="{'md-placeholder': !floor.name}">{{floor.name || 'Inserire nome'}}
+                        ng-class="{'md-placeholder': !floor.name}">{{floor.name || lang.insertName}}
                     </td>
                     <td md-cell ng-click="editCell($event, floor, 'map_width')"
-                        ng-class="{'md-placeholder': !floor.width}">{{floor.width || 'Inserire lunghezza'}}
+                        ng-class="{'md-placeholder': !floor.width}">{{floor.width || lang.insertLength}}
                     </td>
                     <td md-cell ng-click="editCell($event, floor, 'map_spacing')"
-                        ng-class="{'md-placeholder': !floor.map_spacing}">{{floor.map_spacing || 'Inserire spaziatura tacche'}}
+                        ng-class="{'md-placeholder': !floor.map_spacing}">{{floor.map_spacing || lang.insertSpacing}}
                     </td>
-                    <td md-cell ng-show="isAdmin" ng-click="uploadFloorImage(floor.id)">
-                        <md-button class="color-orange"><label><input
-                                onchange="angular.element(this).scope().fileNameChanged()" type="file"
-                                class="ng-hide" id="floor-image-{{floor.id}}"></label>SELEZIONA IMMAGINE
-                        </md-button>
-                    </td>
-                    <td md-cell ng-click="deleteRow(floor)"><img src="../SMARTSTUDIO/img/icons/delete_trash_24.png" alt="Cancella piano" title="Cancella piano">
+<!--                    <td md-cell ng-show="isAdmin" ng-click="uploadFloorImage(floor.id)">-->
+<!--                        <md-button class="color-orange"><label><input-->
+<!--                                onchange="angular.element(this).scope().fileNameChanged()" type="file"-->
+<!--                                class="ng-hide" id="floor-image-{{floor.id}}"></label>{{lang.selectImage | uppercase}}-->
+<!--                        </md-button>-->
+<!--                    </td>-->
+                    <td md-cell ng-click="deleteRow(floor)"><img src="img/icons/delete_trash_24.png" alt="Cancella piano" title="Cancella piano">
                     </td>
                 </tr>
                 </tbody>
@@ -65,8 +64,8 @@
 
         <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
-                <img src="../SMARTSTUDIO/img/icons/add_row_32.png" class="outline-none cursor-pointer"
-                     ng-click="addNewRow()" alt="Aggiungi piano" title="Aggiungi piano">
+                <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
+                     ng-click="addNewRow()" alt="{{lang.addFloor}}" title="{{lang.addFloor}}">
             </div>
         </md-input-container>
 

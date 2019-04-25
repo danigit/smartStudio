@@ -1,19 +1,19 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" ng-class="insertMac.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">INSERIMENTO MAC</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.insertingMac | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -22,30 +22,30 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <form id="insertTagRowForm" name="insertMacRowForm">
             <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
                 <input required type="text" ng-model="insertMac.name" name="insertMacName"
-                       placeholder="Nome">
+                       placeholder="{{lang.name}}">
                 <div ng-messages="insertMacRowForm.insertMacName.$error || insertMacRowForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire un nome</div>
+                    <div ng-message=" required">{{lang.insertName}}</div>
                 </div>
             </md-input-container>
 
             <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
                 <input required type="text" ng-model="insertMac.type" name="insertMacType"
-                       placeholder="Tipo">
+                       placeholder="{{lang.type}}">
                 <div ng-messages="insertMacRowForm.insertMacType.$error || insertMacRowForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire un tipo</div>
+                    <div ng-message=" required">{{lang.insertType}}</div>
                 </div>
             </md-input-container>
 
             <div layout="row" layout-align="center end" class="width-100">
                 <md-button ng-click="addMac(insertMacRowForm)" class="md-raised background-darkcyan color-white">
-                    INSERISCI MAC
+                    {{lang.insertMac}}
                 </md-button>
             </div>
         </form>

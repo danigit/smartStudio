@@ -3,17 +3,17 @@
     <md-toolbar id="popup-toolbar" ng-class="insertTag.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">SELEZIONA ANCORA</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.selectAnchor | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -23,9 +23,9 @@
     <md-content class="popup-padding">
         <div layout="column" layout-align="center center">
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                <label>Seleziona ancora</label>
+                <label>{{lang.selectAnchor}}</label>
                 <md-select ng-model="selectedAnchor">
-                    <md-option><em>Nessuno</em></md-option>
+                    <md-option><em>{{lang.nothing}}</em></md-option>
                     <md-option ng-repeat="anchor in anchors track by $index" ng-value="anchor.name">
                         {{anchor.name}}
                     </md-option>
