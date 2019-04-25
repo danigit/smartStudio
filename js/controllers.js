@@ -64,10 +64,11 @@
      * Function that manges the home page functionalities
      * @type {string[]}
      */
-    homeController.$inject = ['$scope', '$state', '$mdDialog', '$interval', '$timeout', 'NgMap', 'homeData', 'socketService', 'dataService'];
+    homeController.$inject = ['$scope', '$controller', '$state', '$mdDialog', '$interval', '$timeout', 'NgMap', 'homeData', 'socketService', 'dataService'];
 
-    function homeController($scope, $state, $mdDialog, $interval, $timeout, NgMap, homeData, socketService, dataService) {
+    function homeController($scope, $controller, $state, $mdDialog, $interval, $timeout, NgMap, homeData, socketService, dataService) {
 
+        $controller('languageController', {$scope: $scope});
         let homeCtrl = this;
         let markers  = homeData.markers;
         let bounds   = new google.maps.LatLngBounds();
@@ -268,10 +269,10 @@
                                                 parent             : angular.element(document.body),
                                                 targetEvent        : event,
                                                 clickOutsideToClose: true,
-                                                controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
-
-                                                    $scope.title = "TAG NON TROVATO";
-                                                    $scope.message = "Il tag non appartiene all'user logato!";
+                                                controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                                    $controller('languageController', {$scope: $scope});
+                                                    $scope.title = $scope.lang.tagNotFound.toUpperCase();
+                                                    $scope.message = $scope.lang.tagNotLoggedUser;
                                                     $scope.hide = () => {
                                                         $mdDialog.hide();
                                                     }
@@ -1660,7 +1661,8 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', 'floor', 'tags', function ($scope, floor, tags) {
+                controller         : ['$scope', '$controller', 'floor', 'tags', function ($scope, $controller, floor, tags) {
+                    $controller('languageController', {$scope: $scope});
                     let id = ++requestId;
                     $scope.safeTags   = null;
                     $scope.unsafeTags = [];
@@ -1672,7 +1674,7 @@
                     };
 
                     $scope.colors = ["#4BAE5A", "#E13044"];
-                    $scope.labels = ["Persone in zona di evacuazione", "Persone disperse"];
+                    $scope.labels = [$scope.lang.evacuationZonePersons, $scope.lang.disapearedPersons];
 
                     socket.send(encodeRequestWithId(id, 'get_emergency_info', {location: dataService.location, floor: floor}));
                     socket.onmessage = (response) => {
@@ -1743,7 +1745,8 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', 'admin', function ($scope, admin) {
+                controller         : ['$scope', '$controller', 'admin', function ($scope, $controller, admin) {
+                    $controller('languageController', {$scope: $scope});
                     let id = ++requestId;
                     let id1 = -1;
                     $scope.selected       = [];
@@ -1809,7 +1812,7 @@
                                     };
                                 },
                                 targetEvent: event,
-                                title      : 'Inserisci un valore',
+                                title      : $scope.lang.insertValue,
                                 validators : {
                                     'md-maxlength': 30
                                 }
@@ -1823,12 +1826,12 @@
                     $scope.deleteRow = (location) => {
                         let id3 = ++requestId;
                         let confirm = $mdDialog.confirm()
-                            .title('CANCELLAZIONE SITO')
-                            .textContent('Sei sicuro di voler cancellare il sito?')
+                            .title($scope.lang.deleteSite.toUpperCase())
+                            .textContent($scope.lang.okDelteSite)
                             .targetEvent(event)
                             .multiple(true)
-                            .ok('CANCELLA SITO')
-                            .cancel('ANNULLA');
+                            .ok($scope.lang.deleteSite.toUpperCase())
+                            .cancel($scope.lang.cancel.toUpperCase());
 
                         $mdDialog.show(confirm).then(() => {
                             socket.send(encodeRequestWithId(id3, 'delete_location', {location_id: location.id}));
@@ -1868,7 +1871,8 @@
                 parent             : angular.element(document.body),
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', function ($scope) {
+                controller         : ['$scope', '$controller', function ($scope, $controller) {
+                    $controller('languageController', {$scope: $scope});
                     let fileInput = null;
 
                     $scope.location = {
@@ -1930,7 +1934,7 @@
                                         }else {
                                             $scope.location.showSuccess = true;
                                             $scope.location.showError   = false;
-                                            $scope.location.message     = "Posizione inserita senza salvare l'immagine";
+                                            $scope.location.message     = $scope.lang.positionInsertedWithoutImage;
                                             $scope.resultClass          = 'background-orange';
 
                                             $scope.$apply();
@@ -1942,7 +1946,7 @@
                                     } else {
                                         $scope.location.showSuccess = false;
                                         $scope.location.showError   = true;
-                                        $scope.location.message     = 'Impossibile inserire la posizione.';
+                                        $scope.location.message     = $scope.lang.impossibleToInsertPosition;
                                         $scope.location.resultClass = 'background-red';
                                         $scope.$apply();
                                         return null
@@ -1951,7 +1955,7 @@
                                     if (parsedResponse.result === false) {
                                         $scope.location.showSuccess = false;
                                         $scope.location.showError   = true;
-                                        $scope.location.message     = "Posizione inserita senza salvare l'immagine";
+                                        $scope.location.message     = $scope.lang.positionInsertedWithoutImage;
                                         $scope.resultClass          = 'background-orange';
 
                                         $scope.$apply();
@@ -1964,7 +1968,7 @@
                                         $scope.location.resultClass = 'background-green';
                                         $scope.location.showSuccess = true;
                                         $scope.location.showError   = false;
-                                        $scope.location.message     = 'Posizione inserita con successo';
+                                        $scope.location.message     = $scope.positionInserted;
 
                                         $scope.$apply();
 
@@ -2084,7 +2088,8 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', function ($scope) {
+                controller         : ['$scope', '$controller', function ($scope, $controller) {
+                    $controller('languageController', {$scope: $scope});
                     $scope.changePassword = {
                         oldPassword  : '',
                         newPassword  : '',
@@ -2103,7 +2108,7 @@
                             $scope.changePassword.resultClass = 'background-red';
                             $scope.changePassword.showError   = true;
                             $scope.changePassword.showSuccess = false;
-                            $scope.changePassword.message     = "Le password devono coincidere!";
+                            $scope.changePassword.message     = $scope.lang.paswordDontMatch;
                         } else {
                             if (form.$valid) {
 
@@ -2118,12 +2123,12 @@
                                             $scope.changePassword.resultClass = 'background-red';
                                             $scope.changePassword.showError   = true;
                                             $scope.changePassword.showSuccess = false;
-                                            $scope.changePassword.message     = 'Vecchia password non valida';
+                                            $scope.changePassword.message     = $scope.lang.invalidOld;
                                         } else if (parsedResponse.result === 'error_on_changing_password') {
                                             $scope.changePassword.resultClass = 'background-red';
                                             $scope.changePassword.showSuccess = false;
                                             $scope.changePassword.showError   = true;
-                                            $scope.changePassword.message     = "Impossibile cambiare la password!";
+                                            $scope.changePassword.message     = $scope.lang.impossibleChangePassword
                                             $timeout(function () {
                                                 $mdDialog.hide();
                                             }, 1000);
@@ -2131,7 +2136,7 @@
                                             $scope.changePassword.resultClass = 'background-green';
                                             $scope.changePassword.showSuccess = true;
                                             $scope.changePassword.showError   = false;
-                                            $scope.changePassword.message     = "Password cambiata correnttamente!";
+                                            $scope.changePassword.message     = $scope.lang.passwordChanged;
                                             $timeout(function () {
                                                 $mdDialog.hide();
                                             }, 1000);
@@ -2226,7 +2231,8 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', 'admin', function ($scope, admin) {
+                controller         : ['$scope', '$controller', 'admin', function ($scope, $controller, admin) {
+                    $controller('languageController', {$scope: $scope});
                     let id3 = ++requestId;
                     $scope.selected = [];
                     $scope.tags     = [];
@@ -2306,7 +2312,7 @@
                                     };
                                 },
                                 targetEvent: event,
-                                title      : 'Inserisci un valore',
+                                title      : $scope.lang.insertValue,
                                 validators : {
                                     'md-maxlength': 30
                                 }
@@ -2319,12 +2325,12 @@
                     //deleting tag
                     $scope.deleteRow = (tag) => {
                         let confirm = $mdDialog.confirm()
-                            .title('CANCELLAZIONE WETAG')
-                            .textContent('Sei sicuro di voler cancellare l\'wetag?')
+                            .title($scope.lang.deleteTag.toUpperCase())
+                            .textContent($scope.lang.okDeleteTag)
                             .targetEvent(event)
                             .multiple(true)
-                            .ok('CANCELLA WETAG')
-                            .cancel('ANNULLA');
+                            .ok($scope.lang.deleteTag.toUpperCase())
+                            .cancel($scope.lang.cancel.toUpperCase());
 
                         $mdDialog.show(confirm).then(() => {
                             let id5 = ++requestId;
@@ -2380,12 +2386,12 @@
                                 //deleting a mac
                                 $scope.deleteMac = (event, mac) => {
                                     let confirm = $mdDialog.confirm()
-                                        .title('CANCELLAZIONE MAC')
-                                        .textContent('Sei sicuro di voler cancellare il mac?.')
+                                        .title($scope.lang.deleteMac.toUpperCase())
+                                        .textContent($scope.lang.okDeleteMac)
                                         .targetEvent(event)
                                         .multiple(true)
-                                        .ok('CANCELLA MAC')
-                                        .cancel('ANNULLA');
+                                        .ok($scope.lang.deleteMac.toUpperCase())
+                                        .cancel($scope.lang.cancel.toUpperCase());
 
                                     $mdDialog.show(confirm).then(function () {
                                         let id7 = ++requestId;
@@ -2485,7 +2491,7 @@
                                                 };
                                             },
                                             targetEvent: event,
-                                            title      : 'Inserisci un valore',
+                                            title      : $scope.lang.insertValue,
                                             validators : {
                                                 'md-maxlength': 30
                                             }
@@ -2633,7 +2639,8 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', 'admin', function ($scope, admin) {
+                controller         : ['$scope', '$controller', 'admin', function ($scope, $controller, admin) {
+                    $controller('languageController', {$scope: $scope});
                     let id4 = ++requestId;
                     $scope.selected = [];
 
@@ -2683,7 +2690,7 @@
                                     };
                                 },
                                 targetEvent: event,
-                                title      : 'Inserisci un valore',
+                                title      : $scope.lang.insertValue,
                                 validators : {
                                     'md-maxlength': 30
                                 }
@@ -2701,12 +2708,12 @@
                     //deleting an anchor
                     $scope.deleteRow = (anchor) => {
                         let confirm = $mdDialog.confirm()
-                            .title('CANCELLAZIONE ANCORA')
-                            .textContent('Sei sicuro di voler cancellare l\'ancora?.')
+                            .title($scope.lang.deletingAnchor.toUpperCase())
+                            .textContent($scope.lang.okDeleteAnchor)
                             .targetEvent(event)
                             .multiple(true)
-                            .ok('CANCELLA ANCORA')
-                            .cancel('ANNULLA');
+                            .ok($scope.lang.deleteAnchor.toUpperCase())
+                            .cancel($scope.lang.cancel);
 
                         $mdDialog.show(confirm).then(function () {
                             let id6 = ++requestId;
@@ -2740,7 +2747,8 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', function ($scope) {
+                controller         : ['$scope', '$controller', function ($scope, $controller) {
+                    $controller('languageController', {$scope: $scope});
                     let fileInput       = null;
                     let currentLocation = null;
 
@@ -2787,7 +2795,7 @@
                                     } else {
                                         $scope.insertFloor.showSuccess = false;
                                         $scope.insertFloor.showError   = true;
-                                        $scope.insertFloor.message     = 'Selezionare un file per il piano.';
+                                        $scope.insertFloor.message     = $scope.lang.selectFloorFile
                                         $scope.insertFloor.resultClass = 'background-red';
                                     }
                                 } else if (parsedResponse.id === id1){
@@ -2803,14 +2811,14 @@
                                     } else {
                                         $scope.insertFloor.showSuccess = false;
                                         $scope.insertFloor.showError   = true;
-                                        $scope.insertFloor.message     = 'Impossibile inserire il piano.';
+                                        $scope.insertFloor.message     = $scope.lang.impossibleInsertFloor;
                                         $scope.insertFloor.resultClass = 'background-red';
                                     }
                                 } else if (parsedResponse.id === id2){
                                     if (parsedResponse.result === false) {
                                         $scope.insertFloor.showSuccess = false;
                                         $scope.insertFloor.showError   = true;
-                                        $scope.insertFloor.message     = "Piano inserito senza salvare l'immagine";
+                                        $scope.insertFloor.message     = $scope.lang.floorInsertedWithoutImage;
                                         $scope.insertFloor.resultClass = 'background-orange';
 
                                         $scope.$apply();
@@ -2824,7 +2832,7 @@
                                         $scope.insertFloor.resultClass = 'background-green';
                                         $scope.insertFloor.showSuccess = true;
                                         $scope.insertFloor.showError   = false;
-                                        $scope.insertFloor.message     = 'Piano inserito con successo';
+                                        $scope.insertFloor.message     = $scope.lang.floorInserted;
 
                                         $scope.$apply();
 
@@ -2858,7 +2866,8 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', 'admin', function ($scope, admin) {
+                controller         : ['$scope', '$controller', 'admin', function ($scope, $controller, admin) {
+                    $controller('languageController', {$scope: $scope});
                     let id = ++requestId;
                     $scope.selected = [];
 
@@ -2904,7 +2913,7 @@
                                     };
                                 },
                                 targetEvent: event,
-                                title      : 'Inserisci un valore',
+                                title      : $scope.lang.insertValue,
                                 validators : {
                                     'md-maxlength': 30
                                 }
@@ -2922,12 +2931,12 @@
                     //deleting a floor
                     $scope.deleteRow = (floor) => {
                         let confirm = $mdDialog.confirm()
-                            .title('CANCELLAZIONE PIANO')
-                            .textContent('Sei sicuro di voler cancellare il piano?.')
+                            .title($scope.lang.deleteFloor.toUpperCase())
+                            .textContent($scope.lang.okDeleteFloor)
                             .targetEvent(event)
                             .multiple(true)
-                            .ok('CANCELLA PIANO')
-                            .cancel('ANNULLA');
+                            .ok($scope.lang.deleteFloor.toUpperCase())
+                            .cancel($scope.lang.cancel.toUpperCase());
 
                         $mdDialog.show(confirm).then(function () {
                             let id = ++requestId;
@@ -3029,10 +3038,10 @@
                                             parent             : angular.element(document.body),
                                             targetEvent        : event,
                                             clickOutsideToClose: true,
-                                            controller         : ['$scope', ($scope) => {
-
-                                                $scope.title = "TAG NON TROVATO";
-                                                $scope.message = "Il tag e' stato censito ma non e' mai stato localizzato!"
+                                            controller         : ['$scope', '$controller', ($scope, $controller) => {
+                                                $controller('languageController', {$scope: $scope});
+                                                $scope.title = $scope.lang.tagNotFound.toUpperCase();
+                                                $scope.message = $scope.lang.tagNotInitialized;
 
 
                                                 $scope.hide = () => {
