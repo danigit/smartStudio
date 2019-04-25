@@ -826,7 +826,6 @@
 
                 $interval.cancel(canvasCtrl.canvasInterval);
                 canvasCtrl.canvasInterval = undefined;
-                dragingImage.src          = imagePath + 'floors/' + canvasCtrl.floorData.floor_image_map;
                 let id = ++requestId;
                 socket.send(encodeRequestWithId(id, 'get_drawing', {floor: canvasCtrl.defaultFloor[0].id}));
                 socket.onmessage = (response) => {
@@ -838,7 +837,8 @@
 
                             if (drawedLines !== null)
                                 updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
-                        }
+                        };
+                        dragingImage.src          = imagePath + 'floors/' + canvasCtrl.floorData.floor_image_map;
                     }
                 };
             } else if (newValues[4] === false) {

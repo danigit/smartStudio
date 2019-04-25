@@ -20,7 +20,7 @@
                     <md-input-container class="margin-bottom-0">
                         <label for="usernameInput" class="font-smal">{{lang.username}}</label>
                         <input required type="text" id="usernameInput" name="usernameInput" ng-model="user.username"
-                               title="">
+                               title="" ng-keyup="$event.keyCode == 13 && login(loginForm)">
                         <div ng-messages="loginForm.usernameInput.$error || loginForm.$submitted" role="alert">
                             <div ng-message=" required">{{lang.insertUsername}}</div>
                         </div>
@@ -31,7 +31,7 @@
                     <md-input-container class="margin-top-0 margin-bottom-0">
                         <label for="passwordInput" class="font-smal">{{lang.password}}</label>
                         <input required type="password" id="passwordInput" name="passwordInput" ng-model="user.password"
-                               title="">
+                               title="" ng-keyup="$event.keyCode == 13 && login(loginForm)">
                         <div ng-messages="loginForm.passwordInput.$error || loginForm.$submitted">
                             <div ng-message="required">{{lang.insertPassword}}</div>
                         </div>
