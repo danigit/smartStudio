@@ -164,6 +164,10 @@ function languageController($scope) {
         enabledTags                     : 'Wetags attivati',
         disabledAnchors                 : 'Ancore disabilitate',
         enabledAnchors                  : 'Ancore attive',
+        from                            : 'Dal',
+        to                              : 'al',
+        eventType                       : 'Tipo evento',
+        version                         : 'Versione',
     }
 };
 

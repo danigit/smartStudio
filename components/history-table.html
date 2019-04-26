@@ -30,10 +30,10 @@
             </div>
 
             <div layout="row">
-                <md-subheader>Dal:</md-subheader>
+                <md-subheader>{{lang.from}}:</md-subheader>
                 <md-datepicker ng-model="history.fromDate" md-placeholder="{{lang.selectDate}}"
                                md-open-on-focus></md-datepicker>
-                <md-subheader>al:</md-subheader>
+                <md-subheader>{{lang.to}}:</md-subheader>
                 <md-datepicker ng-model="history.toDate" md-placeholder="{{lang.selectDate}}"
                                md-open-on-focus></md-datepicker>
             </div>
@@ -54,7 +54,7 @@
                 <div layout="column" layout-align="center end" class="width-50">
                     <md-input-container class="margin-bottom-0 margin-top-10">
 
-                        <label>Tipologia evento</label>
+                        <label>{{lang.eventType}}</label>
 
                         <md-select ng-model="history.selectedEvent">
                             <md-option ng-value="QUALSIASI">{{lang.anything | uppercase}}</md-option>
