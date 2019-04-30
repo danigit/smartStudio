@@ -2526,9 +2526,9 @@
 
                             socketService.sendRequest('get_user', {})
                                 .then((response) => {
-
+                                    console.log(response);
                                     return socketService.sendRequest('insert_location', {
-                                        user       : response.result.id,
+                                        user       : response.result[0].id,
                                         name       : $scope.location.name,
                                         description: $scope.location.description,
                                         latitude   : $scope.location.latitude,

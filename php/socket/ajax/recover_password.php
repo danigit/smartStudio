@@ -6,7 +6,7 @@
  * Time: 23.47
  */
 
-require_once "../mailer/PHPMailerAutoload.php";
+require_once "../database/mailer/PHPMailerAutoload.php";
 require_once 'communication.php';
 require_once 'helper.php';
 

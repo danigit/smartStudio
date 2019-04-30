@@ -1996,7 +1996,6 @@ class Connection
 
     /**
      * Funzione che recupera tutti i tipi di un tag
-     * @param $floor
      * @param $data
      * @return array|db_errors
      */
@@ -2025,8 +2024,8 @@ class Connection
 
     /**
      * Function that change the value of a tag field
-     * @param $tag_id
-     * @param $tag_field
+     * @param $zone_id
+     * @param $zone_field
      * @param $field_value
      * @return db_errors|int|mysqli_stmt
      */
@@ -2055,7 +2054,9 @@ class Connection
      * Function that change the value of a tag field
      * @param $zone_id
      * @param $x_left
+     * @param $x_right
      * @param $y_up
+     * @param $y_down
      * @return db_errors|int|mysqli_stmt
      */
     function update_floor_zone($zone_id, $x_left, $x_right, $y_up, $y_down)
@@ -2282,6 +2283,7 @@ class Connection
     {
         $statement = $this->connection->prepare($query);
         $bind_names[] = $bind_string;
+        $result = null;
 
         if ($statement !== false) {
 
@@ -2303,6 +2305,7 @@ class Connection
 
             $statement->close();
         }
+
         return $result;
     }
 
@@ -2338,5 +2341,5 @@ class Connection
     }
 }
 
-//$conn = new Connection();
-//$conn->register('dani', 'dani');
+$conn = new Connection();
+//var_dump($conn->get_user('daniel'));

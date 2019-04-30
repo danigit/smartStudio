@@ -5,14 +5,14 @@
  * Date: 27/12/18
  * Time: 17.52
  */
+require_once 'mailer/PHPMailerAutoload.php';
 
-require_once './mailer/PHPMailerAutoload.php';
+require_once 'db_errors.php';
 
 
 define('MARKERS_IMAGES_PATH', '../../img/icons/markers/');
 define('FLOOR_IMAGES_PATH', '../../img/floors/');
 
-require_once 'db_errors.php';
 /**
  * Functions that parse an error array and return the appropriate error object
  * @param $errors - the array containing the errors
@@ -63,6 +63,7 @@ function sendEmail($email, $code){
         return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
     }
 }
+
 //
 ///**
 // * Function that generates a random code of 6 characters, that has letters an numbers in it
