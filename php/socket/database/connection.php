@@ -878,7 +878,7 @@ class Connection
      * @param $floor
      * @return db_errors | array
      */
-    function update_anchor_position($x, $y, $id, $floor)
+    function update_anchor_position($position, $id, $floor)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
@@ -900,18 +900,21 @@ class Connection
 
             if ($fetch) {
                 $statement->close();
+                for ($i = 0; $i < count($id); $i++) {
 
-                $this->query = "UPDATE anchor SET X_POS = ?, Y_POS = ?, FLOOR_ID = ?  WHERE ID = ?";
+                    $this->query = "UPDATE anchor SET X_POS = ?, Y_POS = ?, FLOOR_ID = ?  WHERE ID = ?";
 
-                $statement = $this->execute_selecting($this->query, 'sssi', $x, $y, $res_id, $id);
+                    $statement = $this->execute_selecting($this->query, 'sssi', $position[$i]['width'], $position[$i]['height'], $res_id, $id[$i]);
 
-                if ($statement instanceof db_errors)
-                    array_push($errors, 'update_anchor_db_error');
-                else if ($statement == false)
-                    array_push($errors, 'update_anchor_false_error');
+                    if ($statement instanceof db_errors)
+                        array_push($errors, 'update_anchor_db_error');
+                    else if ($statement == false)
+                        array_push($errors, 'update_anchor_false_error');
 
+                    $statement->close();
+
+                }
             }
-
             if (!empty($errors)){
                 $this->connection->rollback();
             }

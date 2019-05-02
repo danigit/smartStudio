@@ -757,9 +757,9 @@
         let dragingImage       = new Image();
         let mouseDownCoords    = null;
         let prevClick          = null;
-        let drawAnchor         = null;
+        let drawAnchor         = [];
         let drawAnchorImage    = null;
-        let dropAnchorPosition = null;
+        let dropAnchorPosition = [];
         let dragingStarted     = 0;
         let drawedLines        = [];
         let newBegin           = [];
@@ -835,7 +835,7 @@
                             drawedLines        = (parsedResult === null) ? [] : parsedResult;
 
                             if (drawedLines !== null)
-                                updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
+                                updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
                         }
                     }
                 };
@@ -871,46 +871,51 @@
         //function that handles the click on the drawing mode
         canvasCtrl.speedDialClicked = (button) => {
             if (button === 'drop_anchor') {
-                $mdDialog.show({
-                    templateUrl        : componentsPath + 'select_drop_anchor.html',
-                    parent             : angular.element(document.body),
-                    targetEvent        : event,
-                    clickOutsideToClose: true,
-                    controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
-                        $scope.selectedAnchor = '';
-                        $scope.anchors        = [];
-                        let id1 = ++requestId;
-                        socket.send(encodeRequestWithId(id1, 'get_anchors_by_location', {location: dataService.location}));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id1){
-                                $scope.anchors = parsedResponse.result;
-                            }
-                        };
-
-                        $scope.$watch('selectedAnchor', (newValue) => {
-                            let currentValue = "" + newValue;
-                            if (currentValue !== '') {
-                                anchorToDrop = currentValue;
-                                $mdDialog.hide();
-                                drawAnchorImage     = new Image();
-                                drawAnchor          = $scope.anchors.filter(a => a.name === newValue)[0];
-                                drawAnchorImage.src = tagsIconPath + 'anchor_online_24.png';
-
-                                drawAnchorImage.onload = () => {
-                                    let realHeight     = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
-                                    dropAnchorPosition = scaleIconSize(drawAnchor.x_pos, drawAnchor.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
-
-                                    context.drawImage(drawAnchorImage, dropAnchorPosition.width, dropAnchorPosition.height);
-                                }
-                            }
-                        });
-
-                        $scope.hide = () => {
-                            $mdDialog.hide();
-                        }
-                    }]
-                })
+                console.log('drop anchor pressed');
+                if (dataService.anchors.length > 0){
+                    console.log('drawing anchors');
+                    loadAndDrawImagesOnCanvas(dataService.anchors, 'anchor', canvas, context, true);
+                }
+                // $mdDialog.show({
+                //     templateUrl        : componentsPath + 'select_drop_anchor.html',
+                //     parent             : angular.element(document.body),
+                //     targetEvent        : event,
+                //     clickOutsideToClose: true,
+                //     controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
+                //         $scope.selectedAnchor = '';
+                //         $scope.anchors        = [];
+                //         let id1 = ++requestId;
+                //         socket.send(encodeRequestWithId(id1, 'get_anchors_by_location', {location: dataService.location}));
+                //         socket.onmessage = (response) => {
+                //             let parsedResponse = parseResponse(response);
+                //             if (parsedResponse.id === id1){
+                //                 $scope.anchors = parsedResponse.result;
+                //             }
+                //         };
+                //
+                //         $scope.$watch('selectedAnchor', (newValue) => {
+                //             let currentValue = "" + newValue;
+                //             if (currentValue !== '') {
+                //                 anchorToDrop = currentValue;
+                //                 $mdDialog.hide();
+                //                 drawAnchorImage     = new Image();
+                //                 drawAnchor          = $scope.anchors.filter(a => a.name === newValue)[0];
+                //                 drawAnchorImage.src = tagsIconPath + 'anchor_online_24.png';
+                //
+                //                 drawAnchorImage.onload = () => {
+                //                     let realHeight     = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
+                //                     dropAnchorPosition = scaleIconSize(drawAnchor.x_pos, drawAnchor.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
+                //
+                //                     context.drawImage(drawAnchorImage, dropAnchorPosition.width, dropAnchorPosition.height);
+                //                 }
+                //             }
+                //         });
+                //
+                //         $scope.hide = () => {
+                //             $mdDialog.hide();
+                //         }
+                //     }]
+                // })
             } else if (button === 'vertical') {
                 canvasCtrl.drawingImage = 'vertical-line.png';
             } else if (button === 'horizontal') {
@@ -941,95 +946,6 @@
             constantUpdateCanvas();
         };
 
-        //controlling the alarms and setting the alarm icon
-        let assigningTagImage = (tag, image) => {
-            if (tag.sos) {
-                image.src = tagsIconPath + 'sos_24.png';
-            } else if (tag.man_down) {
-                image.src = tagsIconPath + 'man_down_24.png';
-            } else if (tag.battery_status) {
-                image.src = tagsIconPath + 'battery_low_24.png';
-            } else if (tag.helmet_dpi) {
-                image.src = tagsIconPath + 'helmet_dpi_24.png';
-            } else if (tag.belt_dpi) {
-                image.src = tagsIconPath + 'belt_dpi_24.png';
-            } else if (tag.glove_dpi) {
-                image.src = tagsIconPath + 'glove_dpi_24.png';
-            } else if (tag.shoe_dpi) {
-                image.src = tagsIconPath + 'shoe_dpi_24.png';
-            } else if (tag.man_down_disabled) {
-                image.src = tagsIconPath + 'man-down-disabled.png';
-            } else if (tag.man_down_tacitated) {
-                image.src = tagsIconPath + 'man-down-tacitated.png';
-            } else if (tag.man_in_quote) {
-                image.src = tagsIconPath + 'man_in_quote_24.png';
-            } else if (tag.call_me_alarm) {
-                image.src = tagsIconPath + 'call_me_alarm_24.png';
-            } else {
-                image.src = tagsIconPath + 'online_tag_24.png';
-            }
-        };
-
-        //loading all the images to be shown on the canvas asynchronously
-        let loadImagesAsynchronouslyWithPromise = (data, image) => {
-            //if no data is passed resolving the promise with a null value
-
-            if (data.length === 0) {
-                return Promise.resolve(null);
-            } else {
-                //loading all the images asynchronously
-                return Promise.all(
-                    data.map(function (value) {
-                        return new Promise(function (resolve) {
-                            let img = new Image();
-
-                            if (image === 'anchor' && value.is_online)
-                                img.src = tagsIconPath + image + '_online_16.png';
-                            else if (image === 'anchor' && !value.is_online)
-                                img.src = tagsIconPath + image + '_offline_16.png';
-                            else if (image === 'camera')
-                                img.src = tagsIconPath + image + '_online_24.png';
-                            else if (image === 'tag') {
-
-                                //controling if is a cloud or a isolatedTags tag
-                                if (value.length > 1) {
-                                    let tagState = checkTagsStateAlarmNoAlarmOffline(value);
-
-                                    if (tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_all_32.png'
-                                    } else if (tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_half_alert_32.png';
-                                    } else if (tagState.withAlarm && !tagState.withoutAlarm && !tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_all_alert_32.png'
-                                    } else if (tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_offline_alert_32.png'
-                                    } else if (!tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_offline_online_32.png'
-                                    } else if (!tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_32.png'
-                                    }
-                                } else {
-                                    if (dataService.checkIfTagHasAlarm(value[0])) {
-                                        assigningTagImage(value[0], img);
-                                    } else if (value[0].is_exit && !value[0].radio_switched_off) {
-                                        img.src = tagsIconPath + 'offline_tag_24.png';
-                                    } else if (!(value[0].is_exit && value[0].radio_switched_off)) {
-                                        assigningTagImage(value[0], img);
-                                    } else {
-                                        img.src = tagsIconPath + 'online_tag_24.png';
-                                    }
-                                }
-                            }
-
-                            img.onload = function () {
-                                resolve(img);
-                            }
-                        })
-                    })
-                )
-            }
-        };
-
         //function that loads all the images passed as parameter
         let loadAlarmsImagesWithPromise = (images) => {
             return Promise.all(
@@ -1044,29 +960,6 @@
                     })
                 })
             )
-        };
-
-        //check if there is at least a tag with an alarm
-        let checkTagsStateAlarmNoAlarmOffline = function (tags) {
-            let tagState = {
-                withAlarm   : false,
-                withoutAlarm: false,
-                offline     : false
-            };
-
-            tags.forEach(function (tag) {
-                if (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                    || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
-                    || tag.call_me_alarm || tag.diagnostic_request) {
-                    tagState.withAlarm = true;
-                } else if (tag.is_exit && !tag.radio_switched_off) {
-                    tagState.offline = true;
-                } else {
-                    tagState.withoutAlarm = true;
-                }
-            });
-
-            return tagState;
         };
 
         //constantly updating the canvas with the objects position from the server
@@ -1125,7 +1018,7 @@
                         } else if (parsedResponse.id === id2){
                             dataService.anchors = parsedResponse.result;
                             if (parsedResponse.result.length > 0) {
-                                loadAndDrawImagesOnCanvas(parsedResponse.result, 'anchor', canvasCtrl.switch.showAnchors);
+                                loadAndDrawImagesOnCanvas(parsedResponse.result, 'anchor', bufferCanvas, bufferContext, canvasCtrl.switch.showAnchors);
                                 canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
                             }
 
@@ -1136,7 +1029,7 @@
                             }));
                         } else if (parsedResponse.id === id3){
                             if (parsedResponse.result.length > 0)
-                                loadAndDrawImagesOnCanvas(parsedResponse.result, 'camera', canvasCtrl.switch.showCameras);
+                                loadAndDrawImagesOnCanvas(parsedResponse.result, 'camera', bufferCanvas, bufferContext, canvasCtrl.switch.showCameras);
 
                             dataService.cameras = parsedResponse.result;
 
@@ -1175,7 +1068,7 @@
                             //getting the remaining isolated tags
                             isolatedTags = singleAndGroupedTags.filter(x => x.length === 1);
 
-                            loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
+                            dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
                                 .then((images) => {
                                     //control if there are clouds to bhe shown
                                     if (images !== null) {
@@ -1185,7 +1078,7 @@
                                         });
                                     }
 
-                                    return loadImagesAsynchronouslyWithPromise(isolatedTags, 'tag');
+                                    return dataService.loadImagesAsynchronouslyWithPromise(isolatedTags, 'tag');
                                 })
                                 .then((images) => {
                                     if (images !== null) {
@@ -1227,7 +1120,7 @@
                             id5 = ++requestId;
                             socket.send(encodeRequestWithId(id5, 'get_all_tags', {user: dataService.username}));
                         } else if (parsedResponse.id === id5){
-                            canvasCtrl.showAlarmsIcon      = checkTagsStateAlarmNoAlarmOffline(parsedResponse.result).withAlarm;
+                            canvasCtrl.showAlarmsIcon      = dataService.checkTagsStateAlarmNoAlarmOffline(parsedResponse.result).withAlarm;
                             //showing the offline anchors and alarm button
                             canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(parsedResponse.result);
                         }
@@ -1241,12 +1134,12 @@
         canvasCtrl.loadFloor();
 
         //loading images and drawing them on canvas
-        let loadAndDrawImagesOnCanvas = (objects, objectType, hasToBeDrawn) => {
+        let loadAndDrawImagesOnCanvas = (objects, objectType, canvas, context, hasToBeDrawn) => {
             if (hasToBeDrawn) {
-                loadImagesAsynchronouslyWithPromise(objects, objectType).then(
+                dataService.loadImagesAsynchronouslyWithPromise(objects, objectType).then(
                     function (allImages) {
                         allImages.forEach(function (image, index) {
-                            drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
+                            drawIcon(objects[index], context, image, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, false);
                         })
                     }
                 )
@@ -1309,11 +1202,19 @@
             socket.onmessage = (response) => {
                 let parsedResponse = parseResponse(response);
                 if (parsedResponse.id === id){
-                    if (drawAnchor !== null) {
-                        let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, dropAnchorPosition.width, dropAnchorPosition.height);
-                        id1 = ++requestId;
-                        socket.send(encodeRequestWithId(id1, 'update_anchor_position', {x : scaledSize.x.toFixed(2), y : scaledSize.y.toFixed(2), id: drawAnchor.id, floor: canvasCtrl.floorData.defaultFloorName}));
-                    }
+                    let scaledAnchorPosition = [];
+                    let drawAnchor = [];
+                    dataService.anchors.forEach((anchor) => {
+                        console.log(anchor);
+                        let scaledSize = {width: anchor.x_pos, height: anchor.y_pos};
+                        scaledAnchorPosition.push(scaledSize);
+                        drawAnchor.push(anchor.id);
+                    });
+
+                    id1 = ++requestId;
+                    console.log(scaledAnchorPosition);
+                    console.log(drawAnchor);
+                    socket.send(encodeRequestWithId(id1, 'update_anchor_position', {position: scaledAnchorPosition, id: drawAnchor, floor: canvasCtrl.floorData.defaultFloorName}));
 
                     canvasCtrl.switch.showAnchors = true;
                     canvasCtrl.switch.showCameras = true;
@@ -1329,11 +1230,22 @@
             };
         };
 
+        canvasCtrl.cancelDrawing = () => {
+            canvasCtrl.switch.showAnchors = true;
+            canvasCtrl.switch.showCameras = true;
+            canvasCtrl.switch.showDrawing = false;
+
+            dropAnchorPosition                 = null;
+            drawAnchorImage                    = null;
+            canvasCtrl.speedDial.clickedButton = '';
+            if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
+        };
         //handeling the canvas click
         canvas.addEventListener('mousemove', (event) => {
             if (canvasCtrl.switch.showDrawing) {
-                if (drawedLines !== null) {
-                    updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
+                if (drawedLines !== null && canvasCtrl.speedDial.clickedButton !== 'drop_anchor') {
+                    console.log(dataService);
+                    updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
 
                     if (dragingStarted === 1) {
                         if (drawedLines.some(l => ((l.begin.x - 5 <= prevClick.x && prevClick.x <= l.begin.x + 5) && (l.begin.y - 5 <= prevClick.y && prevClick.y <= l.begin.y + 5)))) {
@@ -1348,9 +1260,10 @@
                     }
 
                 }
-                if (drawAnchorImage !== null) {
-                    context.drawImage(drawAnchorImage, dropAnchorPosition.width, dropAnchorPosition.height);
-                }
+
+                // if (drawAnchorImage !== null) {
+                //     context.drawImage(drawAnchorImage, dropAnchorPosition.width, dropAnchorPosition.height);
+                // }
             }
         });
 
@@ -1400,8 +1313,55 @@
 
             //changing anchor position
             if (canvasCtrl.speedDial.clickedButton === 'drop_anchor') {
-                dropAnchorPosition = {width: mouseDownCoords.x, height: mouseDownCoords.y};
-                context.drawImage(drawAnchorImage, dropAnchorPosition.width, dropAnchorPosition.height);
+                console.log(mouseDownCoords);
+                $mdDialog.show({
+                    templateUrl        : componentsPath + 'select_drop_anchor.html',
+                    parent             : angular.element(document.body),
+                    targetEvent        : event,
+                    clickOutsideToClose: true,
+                    controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
+                        $scope.selectedAnchor = '';
+                        $scope.anchors        = [];
+
+                        let id1 = ++requestId;
+                        socket.send(encodeRequestWithId(id1, 'get_anchors_by_location', {location: dataService.location}));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            if (parsedResponse.id === id1){
+                                $scope.anchors = parsedResponse.result;
+                            }
+                        };
+
+                        console.log(dataService.anchors);
+                        $scope.$watch('selectedAnchor', (newValue) => {
+                            console.log(dataService.anchors);
+                            let currentValue = "" + newValue;
+                            if (currentValue !== '') {
+                                anchorToDrop = currentValue;
+                                $mdDialog.hide();
+                                // drawAnchorImage     = new Image();
+                                let tempDrawAnchor          = $scope.anchors.filter(a => a.name === newValue)[0];
+                                console.log(newValue);
+                                for (let index in dataService.anchors){
+                                    console.log(dataService.anchors[index]);
+                                    if (dataService.anchors[index].name === newValue){
+                                        let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, mouseDownCoords.x, mouseDownCoords.y );
+                                        console.log(scaledSize);
+                                        dataService.anchors[index].x_pos = scaledSize.x;
+                                        dataService.anchors[index].y_pos = scaledSize.y;
+                                    }
+                                }
+                                console.log(dataService.anchors);
+                                updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
+                            }
+                        });
+
+                        $scope.hide = () => {
+                            $mdDialog.hide();
+                        }
+                    }]
+                });
+
             }
 
             //deleting drawings
@@ -1414,7 +1374,7 @@
                     drawedLines = drawedLines.filter(l => !toBeRemoved.some(r => r.begin.x === l.begin.x && r.begin.y === l.begin.y
                         && r.end.x === l.end.x && r.end.y === l.end.y));
 
-                    updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
+                    updateDrawingCanvas([], drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
                 }
             }
 

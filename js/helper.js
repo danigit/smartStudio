@@ -107,11 +107,13 @@ function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) 
         // (value.id < 10) ? id = '0' + value.id : id = value.id;
         context.fillText(value.name, virtualTag.width - 5, virtualTag.height - 3);
     } else {
+        console.log(value);
         context.fillStyle = '#0093c4';
-        context.fillRect(virtualTag.width, virtualTag.height - 17, 17, 16);
+        context.fillRect(virtualTag.width - 13, virtualTag.height - 17, 46, 16);
         context.fillStyle = 'white';
-        (value.id < 10) ? id = '0' + value.id : id = value.id;
-        context.fillText(id, virtualTag.width + 2, virtualTag.height - 5);
+        // (value.id < 10) ? id = '0' + value.id : id = value.id;
+        id = value.name;
+        context.fillText(id, virtualTag.width - 12, virtualTag.height - 5);
     }
 
     context.drawImage(img, virtualTag.width, virtualTag.height);
@@ -240,18 +242,19 @@ function convertImageToBase64(img) {
  * @param canvasHeight
  * @param elemWidth
  * @param elemHeight
- * @returns {{x: number, y: number}}
+ * @returns {{x: string, y: string}}
  */
 function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemWidth, elemHeight) {
     let realHeight       = (floorWidth * canvasHeight) / canvasWidth;
     let reversePositionX = ((elemWidth * floorWidth * 100) / canvasWidth) / 100;
     let reversePositionY = ((elemHeight * realHeight * 100) / canvasHeight) / 100;
 
-    return {x: reversePositionX, y: reversePositionY};
+    return {x: reversePositionX.toFixed(2), y: reversePositionY.toFixed(2)};
 }
 
 /**
  * Function that clears the canvas and drawing the background and the grid system
+ * @param dataService
  * @param lines
  * @param canvasWidth
  * @param canvasHeight
@@ -261,7 +264,7 @@ function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemW
  * @param floorWidth
  * @param showDrawing
  */
-function updateDrawingCanvas(lines, canvasWidth, canvasHeight, canvasContext, image, map_spacing, floorWidth, showDrawing) {
+function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canvasContext, image, map_spacing, floorWidth, showDrawing, anchorPositioning) {
     // console.log('showdrawing: ', showDrawing);
     updateCanvas(canvasWidth, canvasHeight, canvasContext, image);
 
@@ -272,6 +275,17 @@ function updateDrawingCanvas(lines, canvasWidth, canvasHeight, canvasContext, im
     lines.forEach((line) => {
         drawLine(line.begin, line.end, line.type, canvasContext, showDrawing);
     });
+
+    if (showDrawing && anchorPositioning) {
+        dataService.loadImagesAsynchronouslyWithPromise(dataService.anchors, 'anchor').then(
+            function (allImages) {
+                allImages.forEach(function (image, index) {
+                    drawIcon(dataService.anchors[index], canvasContext, image, floorWidth, canvasWidth, canvasHeight, false);
+                })
+            }
+        )
+    }
+
 }
 
 /**

@@ -412,7 +412,120 @@
 
         service.goHome = () => {
             $state.go('home');
-        }
+        };
+
+        //check if there is at least a tag with an alarm
+        service.checkTagsStateAlarmNoAlarmOffline = function (tags) {
+            let tagState = {
+                withAlarm   : false,
+                withoutAlarm: false,
+                offline     : false
+            };
+
+            tags.forEach(function (tag) {
+                if (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
+                    || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
+                    || tag.call_me_alarm || tag.diagnostic_request) {
+                    tagState.withAlarm = true;
+                } else if (tag.is_exit && !tag.radio_switched_off) {
+                    tagState.offline = true;
+                } else {
+                    tagState.withoutAlarm = true;
+                }
+            });
+
+            return tagState;
+        };
+
+        //controlling the alarms and setting the alarm icon
+        service.assigningTagImage = (tag, image) => {
+            if (tag.sos) {
+                image.src = tagsIconPath + 'sos_24.png';
+            } else if (tag.man_down) {
+                image.src = tagsIconPath + 'man_down_24.png';
+            } else if (tag.battery_status) {
+                image.src = tagsIconPath + 'battery_low_24.png';
+            } else if (tag.helmet_dpi) {
+                image.src = tagsIconPath + 'helmet_dpi_24.png';
+            } else if (tag.belt_dpi) {
+                image.src = tagsIconPath + 'belt_dpi_24.png';
+            } else if (tag.glove_dpi) {
+                image.src = tagsIconPath + 'glove_dpi_24.png';
+            } else if (tag.shoe_dpi) {
+                image.src = tagsIconPath + 'shoe_dpi_24.png';
+            } else if (tag.man_down_disabled) {
+                image.src = tagsIconPath + 'man-down-disabled.png';
+            } else if (tag.man_down_tacitated) {
+                image.src = tagsIconPath + 'man-down-tacitated.png';
+            } else if (tag.man_in_quote) {
+                image.src = tagsIconPath + 'man_in_quote_24.png';
+            } else if (tag.call_me_alarm) {
+                image.src = tagsIconPath + 'call_me_alarm_24.png';
+            } else {
+                image.src = tagsIconPath + 'online_tag_24.png';
+            }
+        };
+
+        //loading all the images to be shown on the canvas asynchronously
+        service.loadImagesAsynchronouslyWithPromise = (data, image) => {
+            //if no data is passed resolving the promise with a null value
+
+            if (data.length === 0) {
+                return Promise.resolve(null);
+            } else {
+                //loading all the images asynchronously
+                return Promise.all(
+                    data.map(function (value) {
+                        console.log(value);
+                        return new Promise(function (resolve) {
+                            let img = new Image();
+
+                            if (image === 'anchor' && value.is_online)
+                                img.src = tagsIconPath + image + '_online_16.png';
+                            else if (image === 'anchor' && !value.is_online)
+                                img.src = tagsIconPath + image + '_offline_16.png';
+                            else if (image === 'camera')
+                                img.src = tagsIconPath + image + '_online_24.png';
+                            else if (image === 'tag') {
+
+                                //controling if is a cloud or a isolatedTags tag
+                                if (value.length > 1) {
+                                    let tagState = service.checkTagsStateAlarmNoAlarmOffline(value);
+
+                                    if (tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
+                                        img.src = tagsIconPath + 'cumulative_tags_all_32.png'
+                                    } else if (tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
+                                        img.src = tagsIconPath + 'cumulative_tags_half_alert_32.png';
+                                    } else if (tagState.withAlarm && !tagState.withoutAlarm && !tagState.offline) {
+                                        img.src = tagsIconPath + 'cumulative_tags_all_alert_32.png'
+                                    } else if (tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
+                                        img.src = tagsIconPath + 'cumulative_tags_offline_alert_32.png'
+                                    } else if (!tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
+                                        img.src = tagsIconPath + 'cumulative_tags_offline_online_32.png'
+                                    } else if (!tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
+                                        img.src = tagsIconPath + 'cumulative_tags_32.png'
+                                    }
+                                } else {
+                                    if (service.checkIfTagHasAlarm(value[0])) {
+                                        service.assigningTagImage(value[0], img);
+                                    } else if (value[0].is_exit && !value[0].radio_switched_off) {
+                                        img.src = tagsIconPath + 'offline_tag_24.png';
+                                    } else if (!(value[0].is_exit && value[0].radio_switched_off)) {
+                                        service.assigningTagImage(value[0], img);
+                                    } else {
+                                        img.src = tagsIconPath + 'online_tag_24.png';
+                                    }
+                                }
+                            }
+
+                            img.onload = function () {
+                                resolve(img);
+                            }
+                        })
+                    })
+                )
+            }
+        };
     }
 
     /**
