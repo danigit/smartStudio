@@ -46,7 +46,8 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', 'socketService', 'dataService', function ($scope, socketService, dataService) {
+                controller         : ['$scope', '$controller', 'socketService', 'dataService', function ($scope, $controller, socketService, dataService) {
+                    $controller('languageController', {$scope: $scope});
                     $scope.offlineTagsIndoor = [];
                     $scope.offgridTags       = [];
                     $scope.offTags       = [];
@@ -60,7 +61,7 @@
                     };
 
                     $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315", "#F76E41"];
-                    $scope.labels = ["Tags disativati", "Tag attivi", "Tag spenti", "Tag dispersi"];
+                    $scope.labels = [$scope.lang.disabledTags, $scope.lang.enabledTags, $scope.lang.shutdownTags, $scope.lang.lostTags];
 
                     let socket = socketService.getSocket();
                     service.offlineTagsInterval = $interval(function () {
@@ -147,7 +148,8 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', 'dataService', 'socketService', function ($scope, dataService, socketService) {
+                controller         : ['$scope', '$controller', 'dataService', 'socketService', function ($scope, $controller, dataService, socketService) {
+                    $controller('languageController', {$scope: $scope});
                     $scope.offlineAnchors = [];
                     $scope.data           = [];
 
@@ -157,7 +159,7 @@
                     };
 
                     $scope.colors = ["#D3D3D3", "#4BAE5A"];
-                    $scope.labels = ["Ancore disativate", "Ancore attive"];
+                    $scope.labels = [$scope.lang.disabledAnchors, $scope.lang.enabledAnchors];
 
                     let socket = socketService.getSocket();
                     $interval.cancel(service.offlineTagsInterval);
@@ -214,41 +216,42 @@
             let alarms = [];
 
             if (tag.sos) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'SOS', 'Richiesta di aiuto.', tagsIconPath + 'sos_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.sos, lang.helpRequest, tagsIconPath + 'sos_24.png'));
             }
             if (tag.man_down) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Uomo a terra', 'Uomo a terra.', tagsIconPath + 'man_down_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDown, lang.manDown, tagsIconPath + 'man_down_24.png'));
             }
             if (tag.battery_status) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Batteria scarica', 'La batteria e\' scarica.', tagsIconPath + 'battery_low_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.batteryEmpty, lang.batteryEmpty, tagsIconPath + 'battery_low_24.png'));
             }
             if (tag.helmet_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Helmet dpi', 'Helmet dpi', tagsIconPath + 'helmet_dpi_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.helmetDpi, lang.helmetDpi, tagsIconPath + 'helmet_dpi_24.png'));
             }
             if (tag.belt_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Belt dpi', 'Belt dpi', tagsIconPath + 'belt_dpi_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.beltDpi, lang.beltDpi, tagsIconPath + 'belt_dpi_24.png'));
             }
             if (tag.glove_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Glove dpi', 'Glove dpi', tagsIconPath + 'glove_dpi_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.gloveDpi, lang.gloveDpi, tagsIconPath + 'glove_dpi_24.png'));
             }
             if (tag.shoe_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Shoe dpi', 'Shoe dpi', tagsIconPath + 'shoe_dpi_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.shoeDpi, lang.shoeDpi, tagsIconPath + 'shoe_dpi_24.png'));
             }
             if (tag.man_down_disabled) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Man down disabled', 'Man down disabled', tagsIconPath + 'man_down_disbled_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDownDisabled, lang.manDownDisabled, tagsIconPath + 'man_down_disbled_24.png'));
             }
             if (tag.man_down_tacitated) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'man down tacitated', 'Man down tacitated', tagsIconPath + 'man_down_tacitated_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDownTacitated, lang.manDownTacitated, tagsIconPath + 'man_down_tacitated_24.png'));
             }
             if (tag.man_in_quote) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Man in quote', 'Man in quote', tagsIconPath + 'man_in_quote_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manInQuote, lang.manInQuote, tagsIconPath + 'man_in_quote_24.png'));
             }
             if (tag.call_me_alarm) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Call me alarm', 'Call me alarm', tagsIconPath + 'call_me_alarm_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.callMeAllarm, lang.callMeAllarm, tagsIconPath + 'call_me_alarm_24.png'));
             }
 
             return alarms;
         };
+
 
         //function that controls if the passed alarm is in the array passed as well as parameter
         let controlIfAlarmIsInArray = (alarms, tag, alarmType) => {

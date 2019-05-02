@@ -1,19 +1,19 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">SMART STUDIO - VERSIONI</h1>
+                <h1 class=" font-iceberg font-x-large">SMART STUDIO - {{lang.versions | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -22,7 +22,7 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <md-table-container>
 
@@ -31,9 +31,9 @@
 
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column><span class="color-darkcyan">VERSIONE</span></th>
-                    <th md-column><span class="color-darkcyan">DESCRIZIONE</span></th>
-                    <th md-column><span class="color-darkcyan">DATA</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.version | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.description | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.date | uppercase}}</span></th>
                 </tr>
                 </thead>
 
@@ -84,6 +84,14 @@
                         BUG FIX: Risolto il problema del click sui marker di maps che a volte non lo prendeva<br>
                     </td>
                     <td md-cell>11/04/2019</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="color-orange">1.3.0</td>
+                    <td md-cell>
+                        UPDATES: Inserimeto della possibilita' di traddurre il sito in diverse lingue<br>
+                        UPDATES: Aggiunta la possibilita' di premere enter per fare il login qundo si e' sul campo username o password<br>
+                    </td>
+                    <td md-cell>25/04/2019</td>
                 </tr>
                 </tbody>
             </table>

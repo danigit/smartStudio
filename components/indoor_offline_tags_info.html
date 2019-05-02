@@ -1,19 +1,19 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" class="background-red">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">STATO WETAGS</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.wetagState | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -22,7 +22,7 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="row" layout-align="center center">
+    <div layout="row" layout-align="center center" ng-controller="languageController">
         <div layout="column">
             <md-progress-circular ng-show="data.length === 0" md-diameter="100" md-mode="indeterminate"
                                   class="margin-left-right-50-px"></md-progress-circular>
@@ -33,43 +33,43 @@
         <div layout="column">
             <md-list>
                 <md-list-item class="md-2-line">
-                    <img src="../SMARTSTUDIO/img/icons/tags/online_tag_24.png" class="md-avatar" alt="Tag online"
-                         title="Tag online">
+                    <img src="img/icons/tags/online_tag_24.png" class="md-avatar" alt="{{lang.onlineTags}}"
+                         title="{{lang.onlineTags}}">
                     <div class="md-list-item-text" layout="column">
-                        <h3>Tags online: <b class="color-green">{{tagsStateIndoor.online}}</b></h3>
-                        <h4>{{ tagsStateIndoor.online }} tag/s e'/sono online e trasmette/ono dati</h4>
+                        <h3>{{lang.onlineTags}}: <b class="color-green">{{tagsStateIndoor.online}}</b></h3>
+                        <h4>{{ tagsStateIndoor.online }} {{lang.areOnlineTags | lowercase}}</h4>
                     </div>
                 </md-list-item>
                 <md-list-item class="md-3-line">
-                    <img src="../SMARTSTUDIO/img/icons/tags/offline_tag_24.png" class="md-avatar" alt="Tag offline"
-                         title="Tag offline">
+                    <img src="img/icons/tags/offline_tag_24.png" class="md-avatar" alt="{{lang.offlineTags}}"
+                         title="{{lang.offlineTags}}">
                     <div class="md-list-item-text" layout="column">
-                        <h3>Tags offline: <b class="color-darkgray">{{ offlineTagsIndoor.length }}</b></h3>
-                        <h4>{{ offlineTagsIndoor.length }} tag/s e'/sono offline e non trasmette/ono dati</h4>
-                        <md-select ng-if="offlineTagsIndoor.length > 0" ng-model="antani" placeholder="WeTags Offline">
+                        <h3>{{lang.offlineTags}}: <b class="color-darkgray">{{ offlineTagsIndoor.length }}</b></h3>
+                        <h4>{{ offlineTagsIndoor.length }} {{lang.areOfflineTags | lowercase}}</h4>
+                        <md-select ng-if="offlineTagsIndoor.length > 0" ng-model="antani" placeholder="{{lang.offlineTags}}">
                             <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offlineTagsIndoor">{{tag.name}}</md-option>
                         </md-select>
                     </div>
                 </md-list-item>
                 <md-list-item class="md-2-line">
-                    <img src="../SMARTSTUDIO/img/icons/tags/offline_tag_24.png" class="md-avatar" alt="Tag dispersi"
-                         title="Tag dispersi">
+                    <img src="img/icons/tags/offline_tag_24.png" class="md-avatar" alt="{{lang.lostTags}}"
+                         title="{{lang.lostTags}}">
                     <div class="md-list-item-text" layout="column">
-                        <h3>Tags dispersi: <b class="color-orange">{{tagsStateIndoor.offgrid}}</b></h3>
-                        <h4>{{ tagsStateIndoor.offgrid }} tag/s e'/sono dispersi</h4>
-                        <md-select ng-if="offgridTags.length > 0" ng-model="antani" placeholder="WeTags Dispersi">
+                        <h3>{{lang.lostTags}}: <b class="color-orange">{{tagsStateIndoor.offgrid}}</b></h3>
+                        <h4>{{ tagsStateIndoor.offgrid }} {{lang.areLostTags | lowercase}}</h4>
+                        <md-select ng-if="offgridTags.length > 0" ng-model="antani" placeholder="{{lang.lostTags}}">
                             <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offgridTags">{{tag.name}}</md-option>
                         </md-select>
                     </div>
                 </md-list-item>
                 <md-list-item class="md-2-line">
-                    <img src="../SMARTSTUDIO/img/icons/tags/offline_tag_24.png" class="md-avatar" alt="Tag dispersi"
-                         title="Tag dispersi">
+                    <img src="img/icons/tags/offline_tag_24.png" class="md-avatar" alt="{{lang.shutdownTags}}"
+                         title="{{lang.shutdownTags}}">
                     <div class="md-list-item-text" layout="column">
-                        <h3>Tags spenti: <b class="color-red">{{tagsStateIndoor.offTags}}</b></h3>
-                        <h4>{{ tagsStateIndoor.offTags }} tag/s e'/sono spenti</h4>
+                        <h3>{{lang.shutdownTags}}: <b class="color-red">{{tagsStateIndoor.offTags}}</b></h3>
+                        <h4>{{ tagsStateIndoor.offTags }} {{lang.areShutdownTags | lowercase}}</h4>
 
-                        <md-select ng-if="offTags.length > 0" ng-model="antani" placeholder="WeTags Spenti">
+                        <md-select ng-if="offTags.length > 0" ng-model="antani" placeholder="{{lang.shutdownTags}}">
                             <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offTags">{{tag.name}}</md-option>
                         </md-select>
                     </div>

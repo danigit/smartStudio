@@ -1,19 +1,19 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" ng-class="insertTag.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">INSERIMENTO WETAG</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.insertingTag | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -22,22 +22,22 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <form id="insertTagRowForm" name="insertTagRowForm">
             <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
                 <input required type="text" ng-model="insertTag.name" name="insertTagName"
-                       placeholder="Nome">
+                       placeholder="{{lang.name}}">
                 <div ng-messages="insertTagRowForm.insertTagName.$error || insertTagRowForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire un nome</div>
+                    <div ng-message=" required">{{lang.insertName}}</div>
                 </div>
             </md-input-container>
 
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                <label>Tipologia</label>
+                <label>{{lang.type}}</label>
                 <md-select ng-model="selectedType">
-                    <md-option><em>Nessuno</em></md-option>
+                    <md-option><em>{{lang.nothing}}</em></md-option>
                     <md-option ng-repeat="tagType in tagTypes track by $index" ng-value="tagType.description">
                         {{tagType.description}}
                     </md-option>
@@ -46,7 +46,7 @@
 
             <div layout="row" layout-align="center end" class="width-100 margin-top-15-px">
                 <md-button ng-click="addTag(insertTagRowForm)" class="md-raised background-darkcyan color-white">
-                    INSERISCI TAG
+                    {{lang.insertTag | uppercase}}
                 </md-button>
             </div>
         </form>

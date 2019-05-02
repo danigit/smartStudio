@@ -1,19 +1,19 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" class="background-red">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">STATO ANCORE</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.anchorState | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -22,7 +22,7 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="row" layout-align="center center">
+    <div layout="row" layout-align="center center" ng-controller="languageController">
         <div layout="column" layout-align="center center">
             <md-progress-circular ng-show="data.length === 0" md-diameter="100" md-mode="indeterminate"
                                   class="margin-left-right-50-px"></md-progress-circular>
@@ -33,18 +33,18 @@
         <div layout="column">
             <md-list>
                 <md-list-item class="md-2-line">
-                    <img src="../SMARTSTUDIO/img/icons/tags/anchor_online_24.png" class="md-avatar" alt="Ancora online" title="Ancora offline">
+                    <img src="img/icons/tags/anchor_online_24.png" class="md-avatar" alt="{{lang.onlineAnchors}}" title="{{lang.onlineAnchors}}">
                     <div class="md-list-item-text" layout="column">
-                        <h3>Anchore online: <b class="color-green">{{anchorsState.online}}</b></h3>
-                        <h4>{{ anchorsState.online }} ancora/e e'/sono online e trasmette/ono dati</h4>
+                        <h3>{{lang.onlineAnchors}}: <b class="color-green">{{anchorsState.online}}</b></h3>
+                        <h4>{{ anchorsState.online }} {{lang.areOnlineAnchors | lowercase}}</h4>
                     </div>
                 </md-list-item>
                 <md-list-item class="md-3-line">
-                    <img src="../SMARTSTUDIO/img/icons/tags/anchor_offline_24.png" class="md-avatar" alt="Ancora offline" title="Ancora offline">
+                    <img src="img/icons/tags/anchor_offline_24.png" class="md-avatar" alt="{{lang.offlineAnchors}}" title="{{lang.offlineAnchors}}">
                     <div class="md-list-item-text" layout="column">
-                        <h3>Anchore offline: <b class="color-darkgray">{{ offlineAnchors.length }}</b></h3>
-                        <h4>{{ offlineAnchors.length }} anchora/e e'/sono offline e non trasmette/ono dati</h4>
-                        <md-select ng-if="offlineAnchors.length > 0" ng-model="antani" placeholder="Ancore offline">
+                        <h3>{{lang.offlineAnchors}}: <b class="color-darkgray">{{ offlineAnchors.length }}</b></h3>
+                        <h4>{{ offlineAnchors.length }} {{lang.areOfflineAnchors}}</h4>
+                        <md-select ng-if="offlineAnchors.length > 0" ng-model="antani" placeholder="{{lang.offlineAnchors}}">
                             <md-option ng-value="anchor" ng-disabled="$index + 1" ng-repeat="anchor in offlineAnchors">{{anchor.name}}</md-option>
                         </md-select>
                     </div>

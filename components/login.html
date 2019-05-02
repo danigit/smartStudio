@@ -1,4 +1,4 @@
-<div>
+<div ng-controller="languageController">
     <div layout="row" layout-sm="row" layout-xs="row" layout-align="center center" layout-wrap
          class="height-100-vh zindex-100">
 
@@ -7,7 +7,7 @@
             <form id="loginForm" name="loginForm">
 
                 <div layout="row" layout-align="center center">
-                    <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="avatar-image border-radius-50"
+                    <img src="img/icons/login-icon.png" class="avatar-image border-radius-50"
                          alt="Smart Track" title="Smart Track">
                 </div>
 
@@ -18,38 +18,38 @@
                     </div>
 
                     <md-input-container class="margin-bottom-0">
-                        <label for="usernameInput" class="font-smal">Username</label>
+                        <label for="usernameInput" class="font-smal">{{lang.username}}</label>
                         <input required type="text" id="usernameInput" name="usernameInput" ng-model="user.username"
-                               title="">
+                               title="" ng-keyup="$event.keyCode == 13 && login(loginForm)">
                         <div ng-messages="loginForm.usernameInput.$error || loginForm.$submitted" role="alert">
-                            <div ng-message=" required">Inserire un username</div>
+                            <div ng-message=" required">{{lang.insertUsername}}</div>
                         </div>
                     </md-input-container>
 
                     <br>
 
                     <md-input-container class="margin-top-0 margin-bottom-0">
-                        <label for="passwordInput" class="font-smal">Password</label>
+                        <label for="passwordInput" class="font-smal">{{lang.password}}</label>
                         <input required type="password" id="passwordInput" name="passwordInput" ng-model="user.password"
-                               title="">
+                               title="" ng-keyup="$event.keyCode == 13 && login(loginForm)">
                         <div ng-messages="loginForm.passwordInput.$error || loginForm.$submitted">
-                            <div ng-message="required">Inserire una password</div>
+                            <div ng-message="required">{{lang.insertPassword}}</div>
                         </div>
                     </md-input-container>
 
                     <div class="background-transparent-white text-center color-red font-smal
-                        margint-top-5-px margin-bottom-10-px padding-10-px" ng-show="errorHandeling.wrongData">Utente
-                        non registrato o password errata
+                        margint-top-5-px margin-bottom-10-px padding-10-px" ng-show="errorHandeling.wrongData">
+                        {{lang.userNotRegisteredOrWrongPassword}}
                     </div>
 
                     <div class="background-transparent-white text-center color-red font-smal
                         margint-top-5-px margin-bottom-10-px padding-10-px"
-                         ng-show="errorHandeling.noConnection">Impossibile communicare con il server
+                         ng-show="errorHandeling.noConnection">{{lang.noServerCommunication}}
                     </div>
 
                     <div class="background-transparent-white text-center color-red font-smal
                         margint-top-5-px margin-bottom-10-px padding-10-px"
-                         ng-show="errorHandeling.socketClosed">Il socket e' stato chiuso
+                         ng-show="errorHandeling.socketClosed">{{lang.closedSocket}}
                     </div>
                     <md-button id="loginButton" ng-click="login(loginForm)" class="md-raised">Login</md-button>
                 </div>
@@ -57,7 +57,7 @@
 
             <div ng-click="recoverPassword()"
                  class="float-right  font-smal cursor-pointer background-transparent-white padding-10-px">
-                <p class="text-underlined margin-none">Recupera password</p>
+                <p class="text-underlined margin-none">{{lang.recoverPassword}}</p>
             </div>
         </div>
     </div>

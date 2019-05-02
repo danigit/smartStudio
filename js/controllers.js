@@ -11,6 +11,7 @@
     main.controller('canvasController', canvasController);
     main.controller('outdoorController', outdoorController);
     main.controller('menuController', menuController);
+    main.controller('languageController', languageController);
 
     /**
      * Function that manage the user login functionalities
@@ -63,10 +64,11 @@
      * Function that manges the home page functionalities
      * @type {string[]}
      */
-    homeController.$inject = ['$scope', '$state', '$mdDialog', '$interval', '$timeout', 'NgMap', 'homeData', 'socketService', 'dataService'];
+    homeController.$inject = ['$scope', '$controller', '$state', '$mdDialog', '$interval', '$timeout', 'NgMap', 'homeData', 'socketService', 'dataService'];
 
-    function homeController($scope, $state, $mdDialog, $interval, $timeout, NgMap, homeData, socketService, dataService) {
+    function homeController($scope, $controller, $state, $mdDialog, $interval, $timeout, NgMap, homeData, socketService, dataService) {
 
+        $controller('languageController', {$scope: $scope});
         let homeCtrl = this;
         let markers  = homeData.markers;
         let bounds   = new google.maps.LatLngBounds();
@@ -83,6 +85,20 @@
             map_type: mapType,
             center  : mapCenter
         };
+
+        homeCtrl.switch = {
+            showFullscreen: false
+        };
+
+        //watching the fullscreen switch button
+        $scope.$watch('homeCtrl.switch.showFullscreen', (newValue) => {
+            if (newValue) {
+                openFullScreen(document.querySelector('body'));
+            }else if(document.fullscreenElement|| document.webkitFullscreenElement || document.mozFullScreenElement ||
+                document.msFullscreenElement){
+                document.exitFullscreen();
+            }
+        });
 
         //function that updates the alert notifications
         let constantUpdateNotifications = () => {
@@ -267,10 +283,12 @@
                                                 parent             : angular.element(document.body),
                                                 targetEvent        : event,
                                                 clickOutsideToClose: true,
-                                                controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
+                                                controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                                    $controller('languageController', {$scope: $scope});
 
-                                                    $scope.title = "TAG NON TROVATO";
-                                                    $scope.message = "Il tag non appartiene all'user logato!";
+                                                    $scope.title = $scope.lang.tagNotFound.toUpperCase();
+                                                    $scope.message = $scope.lang.tagNotLoggedUser;
+
                                                     $scope.hide = () => {
                                                         $mdDialog.hide();
                                                     }
@@ -745,9 +763,9 @@
      * Function that handles the canvas interaction
      * @type {string[]}
      */
-    canvasController.$inject = ['$scope', '$state', '$mdDialog', '$timeout', '$interval', '$mdSidenav', 'socketService', 'canvasData', 'dataService'];
+    canvasController.$inject = ['$rootScope', '$scope', '$state', '$mdDialog', '$timeout', '$interval', '$mdSidenav', 'socketService', 'canvasData', 'dataService'];
 
-    function canvasController($scope, $state, $mdDialog, $timeout, $interval, $mdSidenav, socketService, canvasData, dataService) {
+    function canvasController($rootScope, $scope, $state, $mdDialog, $timeout, $interval, $mdSidenav, socketService, canvasData, dataService) {
         let canvasCtrl         = this;
         let canvas             = document.querySelector('#canvas-id');
         let context            = canvas.getContext('2d');
@@ -767,7 +785,6 @@
         let anchorToDrop       = '';
         let socket = socketService.getSocket();
 
-        canvasCtrl.canvasInterval         = undefined;
         canvasCtrl.floors                 = dataService.floors;
         canvasCtrl.showAlarmsIcon         = false;
         canvasCtrl.showOfflineTagsIcon    = false;
@@ -822,8 +839,8 @@
 
                 $mdSidenav('left').close();
 
-                $interval.cancel(canvasCtrl.canvasInterval);
-                canvasCtrl.canvasInterval = undefined;
+                $interval.cancel(dataService.canvasInterval);
+                dataService.canvasInterval = undefined;
                 dragingImage.src          = imagePath + 'floors/' + canvasCtrl.floorData.floor_image_map;
                 let id = ++requestId;
                 socket.send(encodeRequestWithId(id, 'get_drawing', {floor: canvasCtrl.defaultFloor[0].id}));
@@ -840,15 +857,17 @@
                     }
                 };
             } else if (newValues[4] === false) {
-                if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
+                if (dataService.canvasInterval === undefined) constantUpdateCanvas();
             }
         });
 
         //watching the fullscreen switch button
-        $scope.$watch('canvasCtrl.switch.fullscreen', (newValue) => {
+        $scope.$watch('canvasCtrl.switch.showFullscreen', (newValue) => {
             if (newValue) {
                 openFullScreen(document.querySelector('body'));
-                canvasCtrl.switch.fullscreen = false;
+            }else if(document.fullscreenElement|| document.webkitFullscreenElement || document.mozFullScreenElement ||
+            document.msFullscreenElement){
+                document.exitFullscreen();
             }
         });
 
@@ -864,7 +883,7 @@
             canvasCtrl.floorData.gridSpacing      = canvasCtrl.defaultFloor[0].map_spacing;
             canvasCtrl.floorData.floor_image_map  = canvasCtrl.defaultFloor[0].image_map;
             context.clearRect(0, 0, canvas.width, canvas.height);
-            $interval.cancel(canvasCtrl.canvasInterval);
+            $interval.cancel(dataService.canvasInterval);
             constantUpdateCanvas();
         });
 
@@ -971,7 +990,7 @@
                 bufferCanvas.width  = this.naturalWidth;
                 bufferCanvas.height = this.naturalHeight;
 
-                canvasCtrl.canvasInterval = $interval(function () {
+                dataService.canvasInterval = $interval(function () {
 
                     //updating the canvas and drawing border
                     updateCanvas(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasImage);
@@ -1131,6 +1150,10 @@
             canvasImage.src = floorPath + canvasCtrl.floorData.floor_image_map;
         };
 
+        $rootScope.$on('constantUpdateCanvas', function() {
+            constantUpdateCanvas();
+        });
+
         canvasCtrl.loadFloor();
 
         //loading images and drawing them on canvas
@@ -1223,7 +1246,7 @@
                     dropAnchorPosition                 = null;
                     drawAnchorImage                    = null;
                     canvasCtrl.speedDial.clickedButton = '';
-                    if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
+                    if (dataService.canvasInterval === undefined) constantUpdateCanvas();
                 } else if (parsedResponse.id === id1){
                     //TODO handle if the anchor is not saved
                 }
@@ -1238,7 +1261,7 @@
             dropAnchorPosition                 = null;
             drawAnchorImage                    = null;
             canvasCtrl.speedDial.clickedButton = '';
-            if (canvasCtrl.canvasInterval === undefined) constantUpdateCanvas();
+            if (dataService.canvasInterval === undefined) constantUpdateCanvas();
         };
         //handeling the canvas click
         canvas.addEventListener('mousemove', (event) => {
@@ -1619,7 +1642,8 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', 'floor', 'tags', function ($scope, floor, tags) {
+                controller         : ['$scope', '$controller', 'floor', 'tags', function ($scope, $controller, floor, tags) {
+                    $controller('languageController', {$scope: $scope});
                     let id = ++requestId;
                     $scope.safeTags   = null;
                     $scope.unsafeTags = [];
@@ -1631,7 +1655,7 @@
                     };
 
                     $scope.colors = ["#4BAE5A", "#E13044"];
-                    $scope.labels = ["Persone in zona di evacuazione", "Persone disperse"];
+                    $scope.labels = [$scope.lang.evacuationZonePersons, $scope.lang.disapearedPersons];
 
                     socket.send(encodeRequestWithId(id, 'get_emergency_info', {location: dataService.location, floor: floor}));
                     socket.onmessage = (response) => {
@@ -1662,7 +1686,7 @@
         //freeing the resources on page destroy
         $scope.$on("$destroy", function () {
             $mdDialog.hide();
-            $interval.cancel(canvasCtrl.canvasInterval);
+            $interval.cancel(dataService.canvasInterval);
         });
 
         handleSocketError(socket);
@@ -1702,7 +1726,8 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', 'admin', function ($scope, admin) {
+                controller         : ['$scope', '$controller', 'admin', function ($scope, $controller, admin) {
+                    $controller('languageController', {$scope: $scope});
                     let id = ++requestId;
                     let id1 = -1;
                     $scope.selected       = [];
@@ -1768,7 +1793,7 @@
                                     };
                                 },
                                 targetEvent: event,
-                                title      : 'Inserisci un valore',
+                                title      : $scope.lang.insertValue,
                                 validators : {
                                     'md-maxlength': 30
                                 }
@@ -1782,12 +1807,13 @@
                     $scope.deleteRow = (location) => {
                         let id3 = ++requestId;
                         let confirm = $mdDialog.confirm()
-                            .title('CANCELLAZIONE SITO')
-                            .textContent('Sei sicuro di voler cancellare il sito?')
+                            .title($scope.lang.deleteSite.toUpperCase())
+                            .textContent($scope.lang.okDelteSite)
                             .targetEvent(event)
                             .multiple(true)
-                            .ok('CANCELLA SITO')
-                            .cancel('ANNULLA');
+                            .ok($scope.lang.deleteSite.toUpperCase())
+                            .cancel($scope.lang.cancel.toUpperCase());
+
 
                         $mdDialog.show(confirm).then(() => {
                             socket.send(encodeRequestWithId(id3, 'delete_location', {location_id: location.id}));
@@ -1827,7 +1853,8 @@
                 parent             : angular.element(document.body),
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', function ($scope) {
+                controller         : ['$scope', '$controller', function ($scope, $controller) {
+                    $controller('languageController', {$scope: $scope});
                     let fileInput = null;
 
                     $scope.location = {
@@ -1889,7 +1916,7 @@
                                         }else {
                                             $scope.location.showSuccess = true;
                                             $scope.location.showError   = false;
-                                            $scope.location.message     = "Posizione inserita senza salvare l'immagine";
+                                            $scope.location.message     = $scope.lang.positionInsertedWithoutImage;
                                             $scope.resultClass          = 'background-orange';
 
                                             $scope.$apply();
@@ -1901,7 +1928,7 @@
                                     } else {
                                         $scope.location.showSuccess = false;
                                         $scope.location.showError   = true;
-                                        $scope.location.message     = 'Impossibile inserire la posizione.';
+                                        $scope.location.message     = $scope.lang.impossibleToInsertPosition;
                                         $scope.location.resultClass = 'background-red';
                                         $scope.$apply();
                                         return null
@@ -1910,7 +1937,7 @@
                                     if (parsedResponse.result === false) {
                                         $scope.location.showSuccess = false;
                                         $scope.location.showError   = true;
-                                        $scope.location.message     = "Posizione inserita senza salvare l'immagine";
+                                        $scope.location.message     = $scope.lang.positionInsertedWithoutImage;
                                         $scope.resultClass          = 'background-orange';
 
                                         $scope.$apply();
@@ -1923,7 +1950,7 @@
                                         $scope.location.resultClass = 'background-green';
                                         $scope.location.showSuccess = true;
                                         $scope.location.showError   = false;
-                                        $scope.location.message     = 'Posizione inserita con successo';
+                                        $scope.location.message     = $scope.positionInserted;
 
                                         $scope.$apply();
 
@@ -2043,7 +2070,8 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', function ($scope) {
+                controller         : ['$scope', '$controller', function ($scope, $controller) {
+                    $controller('languageController', {$scope: $scope});
                     $scope.changePassword = {
                         oldPassword  : '',
                         newPassword  : '',
@@ -2062,7 +2090,7 @@
                             $scope.changePassword.resultClass = 'background-red';
                             $scope.changePassword.showError   = true;
                             $scope.changePassword.showSuccess = false;
-                            $scope.changePassword.message     = "Le password devono coincidere!";
+                            $scope.changePassword.message     = $scope.lang.paswordDontMatch;
                         } else {
                             if (form.$valid) {
 
@@ -2077,12 +2105,12 @@
                                             $scope.changePassword.resultClass = 'background-red';
                                             $scope.changePassword.showError   = true;
                                             $scope.changePassword.showSuccess = false;
-                                            $scope.changePassword.message     = 'Vecchia password non valida';
+                                            $scope.changePassword.message     = $scope.lang.invalidOld;
                                         } else if (parsedResponse.result === 'error_on_changing_password') {
                                             $scope.changePassword.resultClass = 'background-red';
                                             $scope.changePassword.showSuccess = false;
                                             $scope.changePassword.showError   = true;
-                                            $scope.changePassword.message     = "Impossibile cambiare la password!";
+                                            $scope.changePassword.message     = $scope.lang.impossibleChangePassword
                                             $timeout(function () {
                                                 $mdDialog.hide();
                                             }, 1000);
@@ -2090,7 +2118,7 @@
                                             $scope.changePassword.resultClass = 'background-green';
                                             $scope.changePassword.showSuccess = true;
                                             $scope.changePassword.showError   = false;
-                                            $scope.changePassword.message     = "Password cambiata correnttamente!";
+                                            $scope.changePassword.message     = $scope.lang.passwordChanged;
                                             $timeout(function () {
                                                 $mdDialog.hide();
                                             }, 1000);
@@ -2185,7 +2213,8 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', 'admin', function ($scope, admin) {
+                controller         : ['$scope', '$controller', 'admin', function ($scope, $controller, admin) {
+                    $controller('languageController', {$scope: $scope});
                     let id3 = ++requestId;
                     $scope.selected = [];
                     $scope.tags     = [];
@@ -2265,7 +2294,7 @@
                                     };
                                 },
                                 targetEvent: event,
-                                title      : 'Inserisci un valore',
+                                title      : $scope.lang.insertValue,
                                 validators : {
                                     'md-maxlength': 30
                                 }
@@ -2278,12 +2307,12 @@
                     //deleting tag
                     $scope.deleteRow = (tag) => {
                         let confirm = $mdDialog.confirm()
-                            .title('CANCELLAZIONE WETAG')
-                            .textContent('Sei sicuro di voler cancellare l\'wetag?')
+                            .title($scope.lang.deleteTag.toUpperCase())
+                            .textContent($scope.lang.okDeleteTag)
                             .targetEvent(event)
                             .multiple(true)
-                            .ok('CANCELLA WETAG')
-                            .cancel('ANNULLA');
+                            .ok($scope.lang.deleteTag.toUpperCase())
+                            .cancel($scope.lang.cancel.toUpperCase());
 
                         $mdDialog.show(confirm).then(() => {
                             let id5 = ++requestId;
@@ -2339,12 +2368,12 @@
                                 //deleting a mac
                                 $scope.deleteMac = (event, mac) => {
                                     let confirm = $mdDialog.confirm()
-                                        .title('CANCELLAZIONE MAC')
-                                        .textContent('Sei sicuro di voler cancellare il mac?.')
+                                        .title($scope.lang.deleteMac.toUpperCase())
+                                        .textContent($scope.lang.okDeleteMac)
                                         .targetEvent(event)
                                         .multiple(true)
-                                        .ok('CANCELLA MAC')
-                                        .cancel('ANNULLA');
+                                        .ok($scope.lang.deleteMac.toUpperCase())
+                                        .cancel($scope.lang.cancel.toUpperCase());
 
                                     $mdDialog.show(confirm).then(function () {
                                         let id7 = ++requestId;
@@ -2444,7 +2473,7 @@
                                                 };
                                             },
                                             targetEvent: event,
-                                            title      : 'Inserisci un valore',
+                                            title      : $scope.lang.insertValue,
                                             validators : {
                                                 'md-maxlength': 30
                                             }
@@ -2592,7 +2621,8 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', 'admin', function ($scope, admin) {
+                controller         : ['$scope', '$controller', 'admin', function ($scope, $controller, admin) {
+                    $controller('languageController', {$scope: $scope});
                     let id4 = ++requestId;
                     $scope.selected = [];
 
@@ -2642,7 +2672,7 @@
                                     };
                                 },
                                 targetEvent: event,
-                                title      : 'Inserisci un valore',
+                                title      : $scope.lang.insertValue,
                                 validators : {
                                     'md-maxlength': 30
                                 }
@@ -2660,12 +2690,12 @@
                     //deleting an anchor
                     $scope.deleteRow = (anchor) => {
                         let confirm = $mdDialog.confirm()
-                            .title('CANCELLAZIONE ANCORA')
-                            .textContent('Sei sicuro di voler cancellare l\'ancora?.')
+                            .title($scope.lang.deletingAnchor.toUpperCase())
+                            .textContent($scope.lang.okDeleteAnchor)
                             .targetEvent(event)
                             .multiple(true)
-                            .ok('CANCELLA ANCORA')
-                            .cancel('ANNULLA');
+                            .ok($scope.lang.deleteAnchor.toUpperCase())
+                            .cancel($scope.lang.cancel);
 
                         $mdDialog.show(confirm).then(function () {
                             let id6 = ++requestId;
@@ -2693,13 +2723,17 @@
 
         //showing floors table
         $scope.floorUpdate = () => {
+            $interval.cancel(dataService.canvasInterval);
+            dataService.canvasInterval = undefined;
+
             let addRowDialog = {
                 templateUrl        : componentsPath + 'insert-floor-row.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', function ($scope) {
+                controller         : ['$scope', '$controller', function ($scope, $controller) {
+                    $controller('languageController', {$scope: $scope});
                     let fileInput       = null;
                     let currentLocation = null;
 
@@ -2746,7 +2780,7 @@
                                     } else {
                                         $scope.insertFloor.showSuccess = false;
                                         $scope.insertFloor.showError   = true;
-                                        $scope.insertFloor.message     = 'Selezionare un file per il piano.';
+                                        $scope.insertFloor.message     = $scope.lang.selectFloorFile;
                                         $scope.insertFloor.resultClass = 'background-red';
                                     }
                                 } else if (parsedResponse.id === id1){
@@ -2762,14 +2796,14 @@
                                     } else {
                                         $scope.insertFloor.showSuccess = false;
                                         $scope.insertFloor.showError   = true;
-                                        $scope.insertFloor.message     = 'Impossibile inserire il piano.';
+                                        $scope.insertFloor.message     = $scope.lang.impossibleInsertFloor;
                                         $scope.insertFloor.resultClass = 'background-red';
                                     }
                                 } else if (parsedResponse.id === id2){
                                     if (parsedResponse.result === false) {
                                         $scope.insertFloor.showSuccess = false;
                                         $scope.insertFloor.showError   = true;
-                                        $scope.insertFloor.message     = "Piano inserito senza salvare l'immagine";
+                                        $scope.insertFloor.message     = $scope.lang.floorInsertedWithoutImage;
                                         $scope.insertFloor.resultClass = 'background-orange';
 
                                         $scope.$apply();
@@ -2783,14 +2817,14 @@
                                         $scope.insertFloor.resultClass = 'background-green';
                                         $scope.insertFloor.showSuccess = true;
                                         $scope.insertFloor.showError   = false;
-                                        $scope.insertFloor.message     = 'Piano inserito con successo';
+                                        $scope.insertFloor.message     = $scope.lang.floorInserted;
 
                                         $scope.$apply();
 
                                         $timeout(function () {
                                             $mdDialog.hide();
-                                            $mdDialog.hide(floorDialog);
-                                            $mdDialog.show(floorDialog);
+                                            // $mdDialog.hide(floorDialog);
+                                            // $mdDialog.show(floorDialog);
                                         }, 1000);
                                     }
                                 }
@@ -2817,7 +2851,8 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', 'admin', function ($scope, admin) {
+                controller         : ['$scope', '$controller', 'admin', '$rootScope', function ($scope, $controller, admin, $rootScope) {
+                    $controller('languageController', {$scope: $scope});
                     let id = ++requestId;
                     $scope.selected = [];
 
@@ -2828,13 +2863,16 @@
                         page        : 1
                     };
 
-                    socket.send(encodeRequestWithId(id, 'get_floors_by_location', {location: dataService.location}));
-                    socket.onmessage = (response) => {
-                        let parsedResponse = parseResponse(response);
-                        if (parsedResponse.id === id){
-                            $scope.floors = parsedResponse.result;
-                        }
-                    };
+                    let floorInterval = $interval(function () {
+                        console.log('floor interval');
+                        socket.send(encodeRequestWithId(id, 'get_floors_by_location', {location: dataService.location}));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            if (parsedResponse.id === id){
+                                $scope.floors = parsedResponse.result;
+                            }
+                        };
+                    }, 1000);
 
                     $scope.editCell = (event, floor, floorName) => {
 
@@ -2863,7 +2901,7 @@
                                     };
                                 },
                                 targetEvent: event,
-                                title      : 'Inserisci un valore',
+                                title      : $scope.lang.insertValue,
                                 validators : {
                                     'md-maxlength': 30
                                 }
@@ -2881,12 +2919,12 @@
                     //deleting a floor
                     $scope.deleteRow = (floor) => {
                         let confirm = $mdDialog.confirm()
-                            .title('CANCELLAZIONE PIANO')
-                            .textContent('Sei sicuro di voler cancellare il piano?.')
+                            .title($scope.lang.deleteFloor.toUpperCase())
+                            .textContent($scope.lang.okDeleteFloor)
                             .targetEvent(event)
                             .multiple(true)
-                            .ok('CANCELLA PIANO')
-                            .cancel('ANNULLA');
+                            .ok($scope.lang.deleteFloor.toUpperCase())
+                            .cancel($scope.lang.cancel.toUpperCase());
 
                         $mdDialog.show(confirm).then(function () {
                             let id = ++requestId;
@@ -2897,6 +2935,7 @@
                                     if (parsedResponse.id === id){
                                         if (parsedResponse.result > 0) {
                                             $scope.floors = $scope.floors.filter(a => a.id !== floor.id);
+                                            console.log($scope.floors);
                                         }
                                     }
                                 };
@@ -2943,6 +2982,14 @@
                         }
                     };
 
+                    //freeing the resources on page destroy
+                    $scope.$on('$destroy', function () {
+                        console.log('destroing dialog', dataService.canvasInterval);
+                        $interval.cancel(floorInterval);
+                        if (dataService.canvasInterval === undefined)
+                            $rootScope.$emit('constantUpdateCanvas', {});
+                    });
+
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
@@ -2988,16 +3035,18 @@
                                             parent             : angular.element(document.body),
                                             targetEvent        : event,
                                             clickOutsideToClose: true,
-                                            controller         : ['$scope', ($scope) => {
+                                            controller         : ['$scope', '$controller', ($scope, $controller) => {
+                                                $controller('languageController', {$scope: $scope});
 
-                                                $scope.title = "TAG NON TROVATO";
-                                                $scope.message = "Il tag e' stato censito ma non e' mai stato localizzato!"
+                                                $scope.title = $scope.lang.tagNotFound.toUpperCase();
+                                                $scope.message = $scope.lang.tagNotInitialized;
 
 
                                                 $scope.hide = () => {
                                                     $mdDialog.hide();
                                                 }
                                             }],
+
 
                                             onRemoving: function(){
                                                 $scope.selectedTag = '';

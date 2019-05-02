@@ -1,14 +1,14 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" ng-class="isTagInAlarm">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
@@ -24,19 +24,19 @@
         <div layout="column" layout-align="center center">
             <md-list>
                 <md-list-item class="width-300-px">
-                    <p class="float-left">WeTAG:</p>
+                    <p class="float-left">{{lang.tag}}:</p>
                     <p class="float-right text-right">{{tag.id}}</p>
                 </md-list-item>
                 <md-list-item class="width-300-px">
-                    <p class="float-left">Piano:</p>
+                    <p class="float-left">{{lang.floor}}:</p>
                     <p class="float-right text-right">{{tag.floor_name}}</p>
                 </md-list-item>
                 <md-list-item class="width-300-px">
-                    <p class="float-left">Ancora:</p>
+                    <p class="float-left">{{lang.anchor}}:</p>
                     <p class="float-right text-right">{{tag.anchor_name}}</p>
                 </md-list-item>
                 <md-list-item class="width-300-px">
-                    <p class="float-left">Livello batteria:</p>
+                    <p class="float-left">{{lang.batteryLevel}}:</p>
                     <p class="float-right text-right">{{tag.battery_status === 0 ? '100' : '0'}}</p>
                 </md-list-item>
             </md-list>

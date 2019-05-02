@@ -1,18 +1,18 @@
-<div>
+<div ng-controller="languageController">
     <div layout="column" class="height-100-vh">
         <div layout="column" class="top-corner background-transparent-white">
             <img ng-show="canvasCtrl.showAlarmsIcon" ng-click="showAlarms()" class="margin-bottom-3"
-                 src="../SMARTSTUDIO/img/icons/alarm-icon.png" alt="Allarmi attivi" title="Allarmi attivi">
+                 src="img/icons/alarm-icon.png" alt="{{lang.activeAllarms}}" title="{{lang.activeAllarms}}">
             <img ng-show="canvasCtrl.showOfflineTagsIcon" ng-click="showOfflineTagsIndoor()" class="margin-bottom-5-px"
-                 src="../SMARTSTUDIO/img/icons/offline_tags_alert_64.png" alt="Tags offline" title="Tags offline">
+                 src="img/icons/offline_tags_alert_64.png" alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}">
             <img ng-show="canvasCtrl.showOfflineAnchorsIcon" ng-click="showOfflineAnchorsIndoor()"
-                 src="../SMARTSTUDIO/img/icons/offline_anchors_alert_64.png" alt="Ancore offline"
-                 title="Ancore offline">
+                 src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
+                 title="{{lang.offlineAnchors}}">
         </div>
 
         <div class="bottom-corner">
-            <img ng-click="showEmergencyZone()" src="../SMARTSTUDIO/img/icons/evacuation-alarm.png"
-                 alt="Stato evacuazione" title="Stato evacuazione"><br>
+            <img ng-click="showEmergencyZone()" src="img/icons/evacuation-alarm.png"
+                 alt="lang.evacuationState" title="{{lang.evacuationState}}"><br>
         </div>
 
         <!--draw button-->
@@ -22,8 +22,8 @@
                                ng-class="canvasCtrl.speedDial.mode">
                 <md-fab-trigger>
                     <md-button aria-label="menu" class="md-fab background-transparent-white">
-                        <img ng-src="../SMARTSTUDIO/img/icons/{{canvasCtrl.drawingImage}}" class="edit-image"
-                             alt="Modifica impostazioni pagina" title="Modifica impostazioni pagina">
+                        <img ng-src="img/icons/{{canvasCtrl.drawingImage}}" class="edit-image"
+                             alt="{{lang.modifyPageSettings}}" title="{{lang.modifyPageSettings}}">
                     </md-button>
                 </md-fab-trigger>
 
@@ -31,48 +31,48 @@
                     <md-button aria-label="Disegna riga verticale"
                                class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                ng-click="canvasCtrl.speedDialClicked('vertical')">
-                        <img src="../SMARTSTUDIO/img/icons/vertical-line.png" class="width-100 height-100"
-                             alt="Disegna riga verticale" title="Disegna riga verticale">
+                        <img src="img/icons/vertical-line.png" class="width-100 height-100"
+                             alt="{{lang.drawVerticalLine}}" title="{{lang.drawVerticalLine}}">
                     </md-button>
 
                     <md-button aria-label="Disegna riga orizontale"
                                class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                ng-click="canvasCtrl.speedDialClicked('horizontal')">
-                        <img src="../SMARTSTUDIO/img/icons/horizontal-line.png" class="width-100 height-100"
-                             alt="Disegna riga orizontale" title="Disegna riga orizontale">
+                        <img src="img/icons/horizontal-line.png" class="width-100 height-100"
+                             alt="{{lang.drawHorizontalLine}}" title="{{lang.drawHorizontalLine}}">
                     </md-button>
 
                     <md-button aria-label="Disegna riga inclinata"
                                class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                ng-click="canvasCtrl.speedDialClicked('inclined')">
-                        <img src="../SMARTSTUDIO/img/icons/inclined-line.png" class="width-100 height-100"
-                             alt="Disegna riga inclinata" title="Disegna riga inclinata">
+                        <img src="img/icons/inclined-line.png" class="width-100 height-100"
+                             alt="{{lang.drawInclinedLine}}" title="{{lang.drawInclinedLine}}">
                     </md-button>
 
                     <md-button aria-label="Cancella linea"
                                class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                ng-click="canvasCtrl.speedDialClicked('delete')">
-                        <img src="../SMARTSTUDIO/img/icons/erase_24.png" class="width-100 height-100"
-                             alt="Cancella linea" title="Cancella linea">
+                        <img src="img/icons/erase_24.png" class="width-100 height-100"
+                             alt="{{lang.deleteLine}}" title="{{lang.deleteLine}}">
                     </md-button>
                     <div layout="column" class="width-20">
-                        <md-button aria-label="Riposiziona ancora"
+                        <md-button aria-label="{{lang.changeAnchorPosition}}"
                                    class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
                                    ng-click="canvasCtrl.speedDialClicked('drop_anchor')">
-                            <img src="../SMARTSTUDIO/img/icons/tags/anchor_online_24.png" class="width-100 height-100"
-                                 alt="Riposiziona ancora" title="Riposiziona ancora">
+                            <img src="img/icons/tags/anchor_online_24.png" class="width-100 height-100"
+                                 alt="{{lang.changeAnchorPosition}}" title="{{lang.changeAnchorPosition}}">
                         </md-button>
                     </div>
                 </md-fab-actions>
             </md-fab-speed-dial>
-            <md-button ng-click="canvasCtrl.cancelDrawing()" class="md-warn md-raised float-right">ANULLA</md-button>
+            <md-button ng-click="canvasCtrl.saveDrawing()" class="md-warn md-raised float-right">{{lang.save}}</md-button>
             <md-button ng-click="canvasCtrl.saveDrawing()" class="md-warn md-raised float-right">SALVA</md-button>
         </div>
         <!--end draw buttoon-->
 
         <!--header text-->
         <div layout="row" layout-align="center center" class="background-ottanio width-100" style="padding-left: 3%;">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="canvas-header-image" alt="Smart Track"
+            <img src="img/icons/login-icon.png" class="canvas-header-image" alt="Smart Track"
                  title="Smart Track">
             <div class="margin-bottom-30-px width-30">
                 <p class="canvas-location color-darkcyan text-center">{{canvasCtrl.floorData.location | uppercase}}</p>
@@ -91,12 +91,12 @@
         <div ng-controller="menuController">
             <div ng-show="!canvasCtrl.switch.showDrawing" id="open-menu-button" ng-click="toggleLeft()"
                  class="margin-left--8-px cursor-pointer outline-none">
-                <img id="open-menu-icon" src="../SMARTSTUDIO/img/icons/menu-arrow.png" alt="Menu" title="Menu">
+                <img id="open-menu-icon" src="img/icons/menu-arrow.png" alt="{{lang.menu}}" title="{{lang.menu}}">
             </div>
 
             <div ng-show="!canvasCtrl.switch.showDrawing" id="home-button" ng-click="canvasCtrl.goHome()"
                  class="margin-left--8-px cursor-pointer outline-none">
-                <img id="home-button-icon" src="../SMARTSTUDIO/img/icons/home_16.png" alt="Menu" title="Menu">
+                <img id="home-button-icon" src="img/icons/home_16.png" alt="{{lang.home}}" title="{{lang.home}}">
             </div>
 
             <section layout="row">
@@ -107,37 +107,37 @@
                     <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
                         <h1 class="md-toolbar-tools color-black">Menu</h1>
                         <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
-                            <img src="../SMARTSTUDIO/img/icons/menu/close-menu.png" alt="Chiudi menu"
-                                 title="Chiudi menu">
+                            <img src="img/icons/menu/close-menu.png" alt="{{lang.closeButton}}"
+                                 title="{{lang.closeButton}}">
                         </div>
                     </md-toolbar>
 
                     <md-content layout-margin class="margin-top-10">
                         <div layout="column" layout-align="center center">
-                            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track"
+                            <img src="img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track"
                                  title="Smart Track">
                             <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
                         </div>
 
                         <div layout="column" id="menu-container">
                             <md-list ng-controller="menuController">
-                                <md-list-item ng-click="registry()"><p>Gestione WeTag</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
+                                <md-list-item ng-click="registry()"><p>{{lang.weTagTable}}</p><img
+                                        src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="showAnchorsTable()"><p>Gestione Ancore</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/anchor-online-icon.png"
+                                <md-list-item ng-click="showAnchorsTable()"><p>{{lang.anchorsTable}}</p><img
+                                        src="img/icons/menu/anchor-online-icon.png"
                                         class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="floorUpdate()"><p>Gestione piani</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/floor-icon.png" class="menu-list-icon"
+                                <md-list-item ng-click="floorUpdate()"><p>{{lang.floorTable}}</p><img
+                                        src="img/icons/menu/floor-icon.png" class="menu-list-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="viewHistory()"><p>Storico</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/history_icon_16.png" class="menu-list-icon"
+                                <md-list-item ng-click="viewHistory()"><p>{{lang.history}}</p><img
+                                        src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="changePassword()"><p>Cambia password</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/password_icon_16.png" class="menu-list-icon"
+                                <md-list-item ng-click="changePassword()"><p>{{lang.changePassword}}</p><img
+                                        src="img/icons/menu/password_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="logout()"><p class="color-red">Logout</p><img
-                                        src="../SMARTSTUDIO/img/icons/menu/logout_icon_16.png" class="menu-list-icon"
+                                <md-list-item ng-click="logout()"><p class="color-red">{{lang.logout}}</p><img
+                                        src="img/icons/menu/logout_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                             </md-list>
 
@@ -146,7 +146,7 @@
 
                                 <md-input-container class="margin-bottom-0 margin-top-10 width-100">
 
-                                    <label>Cerca WeTag</label>
+                                    <label>{{lang.searchWetag}}</label>
 
                                     <md-select ng-model="selectedTag">
                                         <md-option ng-repeat="tag in menuTags" ng-value="tag.name">
@@ -161,7 +161,7 @@
 
                                 <md-input-container class="margin-bottom-0 margin-top-10">
 
-                                    <label>Selezione piano</label>
+                                    <label>{{lang.selectFloor}}</label>
 
                                     <md-select ng-model="canvasCtrl.floorData.defaultFloorName">
                                         <md-option ng-repeat="floor in canvasCtrl.floors" ng-value="floor.name">
@@ -174,7 +174,7 @@
                             <div id="change-grid-container" layout="column" class="padding-10-px">
 
                                 <div flex="100" layout layout-align="center center">
-                                    <md-subheader class="padding-0 width-100 zindex-0">Spaziatura griglia: <b>{{canvasCtrl.floorData.gridSpacing}}</b>
+                                    <md-subheader class="padding-0 width-100 zindex-0">{{lang.gridSpacing}}: <b>{{canvasCtrl.floorData.gridSpacing}}</b>
                                         <md-subheader>
                                 </div>
 
@@ -191,9 +191,9 @@
                                      layout-align="center center">
 
                                     <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showGrid">Griglia: <b
+                                        <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showGrid">{{lang.grid}}: <b
                                                 class="color-green">ON</b></md-subheader>
-                                        <md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showGrid">Griglia:
+                                        <md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showGrid">{{lang.grid}}:
                                             <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
@@ -207,13 +207,16 @@
                                      layout-align="center center">
 
                                     <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0">Fullscreen: <b class="color-red">OFF</b>
-                                        </md-subheader>
+                                            <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showFullscreen">Fullscreen:
+                                                <b class="color-green">ON</b></md-subheader>
+                                            <md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showFullscreen">Fullscreen:
+                                                <b class="color-red">OFF</b>
+                                            </md-subheader>
                                     </div>
 
                                     <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
-                                               md-no-ink aria-label="Passsa in modalita' fullscreen"
-                                               ng-model="canvasCtrl.switch.fullscreen">
+                                                   md-no-ink aria-label="Passsa in modalita' fullscreen"
+                                                   ng-model="canvasCtrl.switch.showFullscreen">
                                     </md-switch>
                                 </div>
                             </div>
@@ -223,10 +226,10 @@
                                      layout-align="center center">
 
                                     <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showAnchors">Anchors:
+                                        <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showAnchors">{{lang.anchors}}:
                                             <b class="color-green">ON</b></md-subheader>
                                         <md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showAnchors">
-                                            Anchors: <b class="color-red">OFF</b></md-subheader>
+                                            {{lang.anchors}}: <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
                                     <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
@@ -239,10 +242,10 @@
                                      layout-align="center center">
 
                                     <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showCameras">Cameras:
+                                        <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showCameras">{{lang.cameras}}:
                                             <b class="color-green">ON</b></md-subheader>
                                         <md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showCameras">
-                                            Cameras: <b class="color-red">OFF</b></md-subheader>
+                                            {{lang.cameras}}: <b class="color-red">OFF</b></md-subheader>
                                     </div>
 
                                     <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
@@ -258,9 +261,9 @@
                                      layout-align="center center">
                                     <div flex="100" layout layout-align="center center">
                                         <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showDrawing">
-                                            Modalita' disegna: <b class="color-green">ON</b></md-subheader>
+                                            {{lang.drawingMode}}: <b class="color-green">ON</b></md-subheader>
                                         <md-subheader class="padding-0" ng-show="!canvasCtrl.switch.showDrawing">
-                                            Modalita' disegna: <b class="color-red">OFF</b></md-subheader>
+                                            {{lang.drawingMode}}: <b class="color-red">OFF</b></md-subheader>
                                     </div>
                                     <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
                                                md-no-ink aria-label="Mostra/nascondi strumenti disegno"

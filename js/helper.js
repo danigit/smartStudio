@@ -214,8 +214,7 @@ function convertImageToBase64(img) {
     if (img == null)
         return Promise.resolve(null);
 
-    let image = new Image();
-    image.src = URL.createObjectURL(img);
+    const image = new Image();
 
     let canvas  = document.createElement('canvas');
     let context = canvas.getContext('2d');
@@ -231,7 +230,9 @@ function convertImageToBase64(img) {
             data = canvas.toDataURL('image/png');
 
             resolve(data);
-        }
+        };
+
+        image.src = URL.createObjectURL(img);
     })
 }
 

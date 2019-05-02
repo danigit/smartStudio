@@ -1,14 +1,14 @@
-<div aria-label="">
+<div aria-label="" ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="../SMARTSTUDIO/img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
         <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="../SMARTSTUDIO/img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
@@ -18,14 +18,14 @@
         </div>
     </md-toolbar>
 </div>
-    <!--end popup header-->
+<!--end popup header-->
 
-    <md-content>
-        <!--canvas container-->
-        <div id="search-canvas-container" layout="row" layout-align="center start">
-            <ng-map id="search-map" center="{{mapConfiguration.center}}"
-                    zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="search-tag-map">
-            </ng-map>
-        </div>
-        <!--end canvas container-->
-    </md-content>
+<md-content>
+    <!--canvas container-->
+    <div id="search-canvas-container" layout="row" layout-align="center start">
+        <ng-map id="search-map" center="{{mapConfiguration.center}}"
+                zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="search-tag-map">
+        </ng-map>
+    </div>
+    <!--end canvas container-->
+</md-content>

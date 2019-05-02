@@ -40,6 +40,14 @@
     padding: 0!important;
 }
 
+#fullscreen-on-off-container md-switch.md-checked.md-primary .md-bar{
+    background-color: #4fc3f7;
+}
+
+#fullscreen-on-off-container md-switch.md-checked.md-primary .md-thumb{
+    background-color: #0093c4;
+}
+
 #anchors-on-off-container .md-subheader-inner{
     padding: 0!important;
 }
