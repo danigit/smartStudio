@@ -237,7 +237,7 @@
                 alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.shoeDpi, lang.shoeDpi, tagsIconPath + 'shoe_dpi_24.png'));
             }
             if (tag.man_down_disabled) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDownDisabled, lang.manDownDisabled, tagsIconPath + 'man_down_disbled_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDownDisabled, lang.manDownDisabled, tagsIconPath + 'man_down_disabled_24.png'));
             }
             if (tag.man_down_tacitated) {
                 alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDownTacitated, lang.manDownTacitated, tagsIconPath + 'man_down_tacitated_24.png'));
@@ -384,10 +384,10 @@
                 tagAlarmsImages.push(tagsIconPath + 'shoe_dpi_24.png');
             }
             if (tag.man_down_disabled) {
-                tagAlarmsImages.push(tagsIconPath + 'man-down-disabled.png');
+                tagAlarmsImages.push(tagsIconPath + 'man_down_disabled_24.png');
             }
             if (tag.man_down_tacitated) {
-                tagAlarmsImages.push(tagsIconPath + 'man-down-tacitated.png');
+                tagAlarmsImages.push(tagsIconPath + 'man_down_tacitated_24.png');
             }
             if (tag.man_in_quote) {
                 tagAlarmsImages.push(tagsIconPath + 'man_in_quote_24.png');
@@ -457,9 +457,9 @@
             } else if (tag.shoe_dpi) {
                 image.src = tagsIconPath + 'shoe_dpi_24.png';
             } else if (tag.man_down_disabled) {
-                image.src = tagsIconPath + 'man-down-disabled.png';
+                image.src = tagsIconPath + 'man_down_disabled_24.png';
             } else if (tag.man_down_tacitated) {
-                image.src = tagsIconPath + 'man-down-tacitated.png';
+                image.src = tagsIconPath + 'man_down_tacitated_24.png';
             } else if (tag.man_in_quote) {
                 image.src = tagsIconPath + 'man_in_quote_24.png';
             } else if (tag.call_me_alarm) {
@@ -479,7 +479,6 @@
                 //loading all the images asynchronously
                 return Promise.all(
                     data.map(function (value) {
-                        console.log(value);
                         return new Promise(function (resolve) {
                             let img = new Image();
 

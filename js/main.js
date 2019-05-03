@@ -58,7 +58,6 @@
                                 if (response.result.session_name !== undefined) {
                                     dataService.username = response.result.session_name;
                                     dataService.isAdmin  = response.result.is_admin;
-                                    result.isAdmin       = response.result.is_admin;
 
                                     return socketService.sendRequest('get_markers', {username: response.result.session_name})
                                 } else {
@@ -113,7 +112,6 @@
                         let result  = {};
                         socketService.sendRequest('get_location_info', {})
                             .then((response) => {
-                                console.log(response.result);
                                 if (response.result !== 'location_not_found') {
                                     if (response.result.is_inside)
                                         $state.go('home')
@@ -127,10 +125,8 @@
                                 if (response.result.session_name !== undefined) {
 
                                     dataService.username = response.result.session_name;
-
-                                    result.username     = response.result.session_name;
-                                    result.isAdmin      = response.result.is_admin;
                                     dataService.isAdmin = response.result.is_admin;
+
                                     return socketService.sendRequest('get_all_tags')
                                 } else {
                                     $state.go('login');
@@ -139,13 +135,8 @@
                             .then((response) => {
 
                                 dataService.allTags = response.result;
-
-                                return socketService.sendRequest('get_anchors_by_user', {user: dataService.username})
-                            })
-                            .then((response) => {
-                                result.anchors = response.result;
-
                                 dataService.alarmsSounds = [];
+
                                 promise.resolve(result);
                             })
                             .catch((error) => {

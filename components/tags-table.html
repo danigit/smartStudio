@@ -31,33 +31,34 @@
                    md-progress="promise">
 
                 <thead md-head md-order="query.order">
-                <tr md-row>
-                    <th md-column></th>
-                    <th md-column><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.type | uppercase}}</span></th>
-                </tr>
+                    <tr md-row>
+                        <th md-column></th>
+                        <th md-column><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                        <th md-column><span class="color-darkcyan">{{lang.type | uppercase}}</span></th>
+                        <th md-column></th>
+                    </tr>
                 </thead>
 
                 <tbody md-body>
-                <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
-                    ng-repeat="tag in tags | limitTo: query.limit: (query.page -1 ) * query.limit">
-                    <td md-cell><img
-                            ng-src="{{!tagsContainTag(tagsOnline, tag) ? 'img/icons/tags/offline_tag_24.png' : 'img/icons/tags/online_tag_24.png'}}"
-                            alt="{{lang.tagState}}" title="{{lang.tagState}}"></td>
-                    <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">
-                        {{tag.name || 'Inserire nome'}}
-                    </td>
-                    <td md-cell
-                        ng-class="{'md-placeholder': !tag.type_name}">{{tag.type_name || lang.insertType}}}
-                    </td>
-                    <td md-cell>
-                        <md-button ng-click="tagMacs(tag)" class="md-raised background-darkcyan color-white">
-                            {{lang.macsManaging | uppercase}}
-                    <td md-cell ng-click="deleteRow(tag)"><img src="img/icons/delete_trash_24.png" alt="{{lang.deleteTag}}" title="{{lang.deleteTag}}"></td>
-                </tr>
-                <tr md-row ng-show="tableEmpty">
-                    <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
-                </tr>
+                    <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
+                        ng-repeat="tag in tags | limitTo: query.limit: (query.page -1 ) * query.limit">
+                        <td md-cell><img
+                                ng-src="{{!tagsContainTag(tagsOnline, tag) ? 'img/icons/tags/offline_tag_24.png' : 'img/icons/tags/online_tag_24.png'}}"
+                                alt="{{lang.tagState}}" title="{{lang.tagState}}"></td>
+                        <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">
+                            {{tag.name || lang.insertName}}
+                        </td>
+                        <td md-cell
+                            ng-class="{'md-placeholder': !tag.type_name}">{{tag.type_name || lang.insertType}}
+                        </td>
+                        <td md-cell>
+                            <md-button ng-click="tagMacs(tag)" class="md-raised background-darkcyan color-white">
+                                {{lang.macsManaging | uppercase}}
+                        <td md-cell ng-click="deleteRow(tag)"><img src="img/icons/delete_trash_24.png" alt="{{lang.deleteTag}}" title="{{lang.deleteTag}}"></td>
+                    </tr>
+                    <tr md-row ng-show="tableEmpty">
+                        <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
+                    </tr>
                 </tbody>
             </table>
         </md-table-container>

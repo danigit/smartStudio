@@ -616,7 +616,10 @@ class Connection
 
             $statement->close();
 
+            var_dump($type);
+
             if ($fetch) {
+                var_dump($res_id);
 
                 $this->query = "INSERT INTO tag (NAME, TYPE, TIME, GPS_TIME, ALARM_TIME) VALUES (?, ?, NOW(), NOW(), NOW())";
 
@@ -722,6 +725,7 @@ class Connection
                 var_dump('roling back');
                 var_dump($errors);
             }
+
             $this->connection->commit();
 
             return $errors;

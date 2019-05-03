@@ -107,7 +107,6 @@ function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) 
         // (value.id < 10) ? id = '0' + value.id : id = value.id;
         context.fillText(value.name, virtualTag.width - 5, virtualTag.height - 3);
     } else {
-        console.log(value);
         context.fillStyle = '#0093c4';
         context.fillRect(virtualTag.width - 13, virtualTag.height - 17, 46, 16);
         context.fillStyle = 'white';
@@ -266,7 +265,6 @@ function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemW
  * @param showDrawing
  */
 function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canvasContext, image, map_spacing, floorWidth, showDrawing, anchorPositioning) {
-    // console.log('showdrawing: ', showDrawing);
     updateCanvas(canvasWidth, canvasHeight, canvasContext, image);
 
     drawDashedLine(canvasWidth, canvasHeight, canvasContext, map_spacing, floorWidth, 'vertical');
@@ -298,7 +296,6 @@ function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canv
  * @param showDrawing
  */
 function drawLine(begin, end, type, drawingContext, showDrawing) {
-    // console.log(showDrawing);
     drawingContext.setLineDash([]);
     drawingContext.lineWidth   = 2;
     drawingContext.strokeStyle = 'black';

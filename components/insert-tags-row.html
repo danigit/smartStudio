@@ -36,7 +36,7 @@
 
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
                 <label>{{lang.type}}</label>
-                <md-select ng-model="selectedType">
+                <md-select ng-model="insertTag.type">
                     <md-option><em>{{lang.nothing}}</em></md-option>
                     <md-option ng-repeat="tagType in tagTypes track by $index" ng-value="tagType.description">
                         {{tagType.description}}

@@ -30,34 +30,35 @@
                    md-progress="promise">
 
                 <thead md-head md-order="query.order">
-                <tr md-row>
-                    <th md-column><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.lengthValue | uppercase}}</span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.spacing | uppercase}}</span></th>
-                </tr>
+                    <tr md-row>
+                        <th md-column><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                        <th md-column><span class="color-darkcyan">{{lang.lengthValue | uppercase}}</span></th>
+                        <th md-column><span class="color-darkcyan">{{lang.spacing | uppercase}}</span></th>
+                        <th md-column></th>
+                    </tr>
                 </thead>
 
                 <tbody md-body>
-                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true"
-                    ng-repeat="floor in floors | limitTo: query.limit: (query.page -1 ) * query.limit">
-                    <td md-cell ng-click="editCell($event, floor, 'name')"
-                        ng-class="{'md-placeholder': !floor.name}">{{floor.name || lang.insertName}}
-                    </td>
-                    <td md-cell ng-click="editCell($event, floor, 'map_width')"
-                        ng-class="{'md-placeholder': !floor.width}">{{floor.width || lang.insertLength}}
-                    </td>
-                    <td md-cell ng-click="editCell($event, floor, 'map_spacing')"
-                        ng-class="{'md-placeholder': !floor.map_spacing}">{{floor.map_spacing || lang.insertSpacing}}
-                    </td>
-                    <!--                    <td md-cell ng-show="isAdmin" ng-click="uploadFloorImage(floor.id)">-->
-                    <!--                        <md-button class="color-orange"><label><input-->
-                    <!--                                onchange="angular.element(this).scope().fileNameChanged()" type="file"-->
-                    <!--                                class="ng-hide" id="floor-image-{{floor.id}}"></label>{{lang.selectImage | uppercase}}-->
-                    <!--                        </md-button>-->
-                    <!--                    </td>-->
-                    <td md-cell ng-click="deleteRow(floor)"><img src="img/icons/delete_trash_24.png" alt="Cancella piano" title="Cancella piano">
-                    </td>
-                </tr>
+                    <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true"
+                        ng-repeat="floor in floors | limitTo: query.limit: (query.page -1 ) * query.limit">
+                        <td md-cell ng-click="editCell($event, floor, 'name')"
+                            ng-class="{'md-placeholder': !floor.name}">{{floor.name || lang.insertName}}
+                        </td>
+                        <td md-cell ng-click="editCell($event, floor, 'map_width')"
+                            ng-class="{'md-placeholder': !floor.width}">{{floor.width || lang.insertLength}}
+                        </td>
+                        <td md-cell ng-click="editCell($event, floor, 'map_spacing')"
+                            ng-class="{'md-placeholder': !floor.map_spacing}">{{floor.map_spacing || lang.insertSpacing}}
+                        </td>
+                        <!--                    <td md-cell ng-show="isAdmin" ng-click="uploadFloorImage(floor.id)">-->
+                        <!--                        <md-button class="color-orange"><label><input-->
+                        <!--                                onchange="angular.element(this).scope().fileNameChanged()" type="file"-->
+                        <!--                                class="ng-hide" id="floor-image-{{floor.id}}"></label>{{lang.selectImage | uppercase}}-->
+                        <!--                        </md-button>-->
+                        <!--                    </td>-->
+                        <td md-cell ng-click="deleteRow(floor)"><img src="img/icons/delete_trash_24.png" alt="Cancella piano" title="Cancella piano">
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </md-table-container>

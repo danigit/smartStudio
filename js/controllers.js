@@ -73,11 +73,10 @@
         let markers  = homeData.markers;
         let bounds   = new google.maps.LatLngBounds();
         let tags     = null;
-        let anchors  = null;
         let socket = socketService.getSocket();
 
         //visualizing the data according if the user is admin or not
-        homeCtrl.isAdmin = homeData.isAdmin;
+        homeCtrl.isAdmin = dataService.isAdmin;
 
         homeCtrl.dynamicMarkers   = [];
         homeCtrl.mapConfiguration = {
@@ -114,10 +113,10 @@
                         homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(parsedResponse.result);
 
                         dataService.playAlarmsAudio(parsedResponse.result);
+
                         id2 = ++requestId;
                         socket.send(encodeRequestWithId(id2, 'get_anchors_by_user', {user: dataService.username}));
                     }else if(parsedResponse.id === id2){
-                        anchors                         = null;
                         homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
                     }
 
@@ -155,22 +154,19 @@
                 });
 
                 markerObject.addListener('click', () => {
-                    // console.log('adding the marker click listenre: ', markerObject);
                     let id1 = ++requestId;
                     let id2 = -1;
 
+                    //saving the location data on which I clicked, and then opening the location
                     socket.send(encodeRequestWithId(id1, 'save_location', {location: marker.name}));
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
-                        // console.log('receivinte the save location response: ', parsedResponse);
                         if (parsedResponse.id === id1){
                             if (parsedResponse.result === 'location_saved') {
-                                // console.log('save location response: ', parsedResponse.result);
                                 id2 = ++requestId;
                                 socket.send(encodeRequestWithId(id2, 'get_location_info'));
                             }
                         } else if( parsedResponse.id === id2){
-                            // console.log('get_location_info response: ', parsedResponse.result);
                             dataService.location          = parsedResponse.result;
                             dataService.defaultFloorName  = '';
                             dataService.locationFromClick = '';
@@ -185,6 +181,7 @@
                 bounds.extend(markerObject.getPosition());
             });
 
+            //TODO here I have to put an image in local for the sites without internet
             homeCtrl.markerClusterer = new MarkerClusterer(map, homeCtrl.dynamicMarkers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
 
             //if there are no markers I set the map to italy with default zoom
@@ -194,7 +191,7 @@
             }//if there is only a marker I set the map on the marker with zoom 11
             else if (homeCtrl.dynamicMarkers.length === 1) {
                 map.setCenter(bounds.getCenter());
-                map.setZoom(11);
+                map.setZoom(mapZoom);
             }//if the map has more than one marker I let maps to set automatically the zoom
             else {
                 map.setCenter(bounds.getCenter());
@@ -262,7 +259,6 @@
                                     })
                                 } else if (parsedResponse.id === id3){
                                     if (parsedResponse.result === 'location_saved') {
-                                        console.log('location saved', parsedResponse.result);
                                         $state.go('outdoor-location');
                                     }
                                 }
@@ -319,9 +315,8 @@
             })
         };
 
-        //on destroying the pag I release the resources
+        //on destroying the page I release the resources
         $scope.$on('$destroy', function () {
-            $mdDialog.hide();
             $interval.cancel(dataService.homeTimer);
             $interval.cancel(dataService.mapInterval);
         });
@@ -346,7 +341,7 @@
         dataService.updateMapTimer = null;
         dataService.dynamicTags    = [];
 
-        outdoorCtrl.isAdmin = outdoorData.isAdmin;
+        outdoorCtrl.isAdmin = dataService.isAdmin;
 
         outdoorCtrl.mapConfiguration = {
             zoom    : 11,
@@ -490,7 +485,6 @@
             socket.send(encodeRequestWithId(id, 'get_location_info'));
             socket.onmessage = (response) => {
                 let parsedResponse = parseResponse(response);
-                // console.log(parsedResponse)
                 if (parsedResponse.id === id){
                     locationInfo = parsedResponse.result;
 
@@ -689,14 +683,11 @@
 
                                 if (dataService.dynamicTags.length === 1) {
                                     map.setCenter(bounds.getCenter());
-                                    // map.setZoom(mapZoom)
                                 } else if (dataService.dynamicTags.length > 1) {
                                     map.setCenter(bounds.getCenter());
-                                    // map.fitBounds(bounds);
                                 } else {
-                                    let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
+                                    let latLng = new google.maps.LatLng(locationInfo.latitude, locationInfo.longitude);
                                     map.setCenter(latLng);
-                                    // map.setZoom(mapZoom)
                                 }
 
                                 id2 = ++requestId;
@@ -727,9 +718,9 @@
             } else if (tag.shoe_dpi) {
                 marker.setIcon(tagsIconPath + 'shoe_dpi_24.png');
             } else if (tag.man_down_disabled) {
-                marker.setIcon(tagsIconPath + 'man-down-disabled.png');
+                marker.setIcon(tagsIconPath + 'man_down_disabled_24.png');
             } else if (tag.man_down_tacitated) {
-                marker.setIcon(tagsIconPath + 'man-down-tacitated.png');
+                marker.setIcon(tagsIconPath + 'man_down_tacitated_24.png');
             } else if (tag.man_in_quote) {
                 marker.setIcon(tagsIconPath + 'man_in_quote_24.png');
             } else if (tag.call_me_alarm) {
@@ -890,9 +881,7 @@
         //function that handles the click on the drawing mode
         canvasCtrl.speedDialClicked = (button) => {
             if (button === 'drop_anchor') {
-                console.log('drop anchor pressed');
                 if (dataService.anchors.length > 0){
-                    console.log('drawing anchors');
                     loadAndDrawImagesOnCanvas(dataService.anchors, 'anchor', canvas, context, true);
                 }
                 // $mdDialog.show({
@@ -1016,7 +1005,8 @@
                                     dataService.userFloors.push(newFloor);
                                 }else{
                                     newFloor = canvasCtrl.floors.filter( f => !parsedResponse.result.some(pf => f.id === pf.id))[0];
-                                    dataService.userFloors = dataService.userFloors.filter(f => f.id !== newFloor.id);
+                                    if (newFloor !== undefined)
+                                        dataService.userFloors = dataService.userFloors.filter(f => f.id !== newFloor.id);
                                 }
                                 canvasCtrl.floors = parsedResponse.result;
                             }
@@ -1228,15 +1218,12 @@
                     let scaledAnchorPosition = [];
                     let drawAnchor = [];
                     dataService.anchors.forEach((anchor) => {
-                        console.log(anchor);
                         let scaledSize = {width: anchor.x_pos, height: anchor.y_pos};
                         scaledAnchorPosition.push(scaledSize);
                         drawAnchor.push(anchor.id);
                     });
 
                     id1 = ++requestId;
-                    console.log(scaledAnchorPosition);
-                    console.log(drawAnchor);
                     socket.send(encodeRequestWithId(id1, 'update_anchor_position', {position: scaledAnchorPosition, id: drawAnchor, floor: canvasCtrl.floorData.defaultFloorName}));
 
                     canvasCtrl.switch.showAnchors = true;
@@ -1267,7 +1254,6 @@
         canvas.addEventListener('mousemove', (event) => {
             if (canvasCtrl.switch.showDrawing) {
                 if (drawedLines !== null && canvasCtrl.speedDial.clickedButton !== 'drop_anchor') {
-                    console.log(dataService);
                     updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
 
                     if (dragingStarted === 1) {
@@ -1336,14 +1322,15 @@
 
             //changing anchor position
             if (canvasCtrl.speedDial.clickedButton === 'drop_anchor') {
-                console.log(mouseDownCoords);
                 $mdDialog.show({
                     templateUrl        : componentsPath + 'select_drop_anchor.html',
                     parent             : angular.element(document.body),
                     targetEvent        : event,
                     clickOutsideToClose: true,
                     controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
-                        $scope.selectedAnchor = '';
+                        $scope.dropAnchor = {
+                            selectedAnchor: ''
+                        };
                         $scope.anchors        = [];
 
                         let id1 = ++requestId;
@@ -1355,26 +1342,21 @@
                             }
                         };
 
-                        console.log(dataService.anchors);
-                        $scope.$watch('selectedAnchor', (newValue) => {
-                            console.log(dataService.anchors);
+                        $scope.$watch('dropAnchor.selectedAnchor', (newValue) => {
+                            console.log('anchor changed', newValue);
                             let currentValue = "" + newValue;
                             if (currentValue !== '') {
                                 anchorToDrop = currentValue;
                                 $mdDialog.hide();
                                 // drawAnchorImage     = new Image();
                                 let tempDrawAnchor          = $scope.anchors.filter(a => a.name === newValue)[0];
-                                console.log(newValue);
                                 for (let index in dataService.anchors){
-                                    console.log(dataService.anchors[index]);
                                     if (dataService.anchors[index].name === newValue){
                                         let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, mouseDownCoords.x, mouseDownCoords.y );
-                                        console.log(scaledSize);
                                         dataService.anchors[index].x_pos = scaledSize.x;
                                         dataService.anchors[index].y_pos = scaledSize.y;
                                     }
                                 }
-                                console.log(dataService.anchors);
                                 updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
                             }
                         });
@@ -1696,9 +1678,9 @@
      * Function that handle the menu interaction
      * @type {string[]}
      */
-    menuController.$inject = ['$scope', '$mdDialog', '$mdEditDialog', '$location', '$state', '$filter', '$timeout', '$mdSidenav', '$interval', '$element', 'NgMap', 'dataService', 'socketService'];
+    menuController.$inject = ['$rootScope', '$scope', '$mdDialog', '$mdEditDialog', '$location', '$state', '$filter', '$timeout', '$mdSidenav', '$interval', '$element', 'NgMap', 'dataService', 'socketService'];
 
-    function menuController($scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, $interval, $element, NgMap, dataService, socketService) {
+    function menuController($rootScope, $scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, $interval, $element, NgMap, dataService, socketService) {
 
         let socket = socketService.getSocket();
         $scope.menuTags    = dataService.allTags;
@@ -2151,7 +2133,6 @@
                 controller         : ['$scope', function ($scope) {
 
                     $scope.tagTypes     = [];
-                    $scope.selectedType = '';
                     $scope.insertTag    = {
                         name       : '',
                         type       : '',
@@ -2178,7 +2159,7 @@
                             let id1 = ++requestId;
                             socket.send(encodeRequestWithId(id1, 'insert_tag', {
                                 name: $scope.insertTag.name,
-                                type: $scope.selectedType,
+                                type: $scope.insertTag.type,
                                 macs: macs
                             }));
                             socket.onmessage = (response) => {
@@ -2344,7 +2325,8 @@
                             parent             : angular.element(document.body),
                             targetEvent        : event,
                             clickOutsideToClose: true,
-                            controller         : ['$scope', 'tag', function ($scope, tag) {
+                            controller         : ['$scope', '$controller', 'tag', function ($scope, $controller, tag) {
+                                $controller('languageController', {$scope: $scope});
 
                                 let id6 = ++requestId;
                                 $scope.macs = [];
@@ -2503,6 +2485,9 @@
 
         //showing the anchors table
         $scope.showAnchorsTable = function () {
+            $interval.cancel(dataService.canvasInterval);
+            dataService.canvasInterval = undefined;
+
             let floor = dataService.userFloors.filter(f => f.name === dataService.defaultFloorName)[0];
 
             let addRowDialog = {
@@ -2522,13 +2507,13 @@
                         ip          : '',
                         rssi        : '',
                         proximity   : '',
+                        selectedNeighbors: [],
+                        selectedPermitteds: [],
                     };
 
                     $scope.tableEmpty     = false;
                     $scope.searchString       = '';
                     $scope.anchorTypes        = [];
-                    $scope.selectedPermitteds = [];
-                    $scope.selectedNeighbors  = [];
 
                     socket.send(encodeRequestWithId(id, 'get_anchors_by_floor_and_location', {
                         floor   : floor.name,
@@ -2562,14 +2547,14 @@
                             let neighborsString = '';
                             let permittedIds    = [];
                             let id3 = ++requestId;
-                            $scope.neighbors.filter(a => $scope.selectedNeighbors.some(sa => sa === a.name))
+                            $scope.neighbors.filter(a => $scope.insertAnchor.selectedNeighbors.some(sa => sa === a.name))
                                 .forEach((anchor) => {
                                     neighborsString += anchor.mac + ',';
                                 });
 
                             neighborsString = neighborsString.replace(/,\s*$/, "");
 
-                            $scope.permitteds = $scope.permitteds.filter(t => $scope.selectedPermitteds.some(st => st === t.name))
+                            $scope.permitteds = $scope.permitteds.filter(t => $scope.insertAnchor.selectedPermitteds.some(st => st === t.name))
                                 .forEach((t) => {
                                     permittedIds.push(t.id);
                                 });
@@ -2637,6 +2622,7 @@
                         floor   : (floor.name !== undefined) ? floor.name : '',
                         location: dataService.location
                     }));
+
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id4){
@@ -2652,7 +2638,7 @@
                         event.stopPropagation();
 
                         if (admin) {
-                            let id5 = ++requestId;
+                            let id5      = ++requestId;
                             let editCell = {
                                 modelValue : anchor[anchorName],
                                 save       : function (input) {
@@ -2716,7 +2702,12 @@
                     $scope.hideAnchors = () => {
                         $mdDialog.hide();
                     };
-                }]
+                }],
+
+                onRemoving: function(event, removePromise){
+                    if (dataService.canvasInterval === undefined)
+                        $rootScope.$emit('constantUpdateCanvas', {});
+                }
             };
             $mdDialog.show(anchorsDialog);
         };
@@ -2725,6 +2716,8 @@
         $scope.floorUpdate = () => {
             $interval.cancel(dataService.canvasInterval);
             dataService.canvasInterval = undefined;
+
+            let floorInterval = undefined;
 
             let addRowDialog = {
                 templateUrl        : componentsPath + 'insert-floor-row.html',
@@ -2851,7 +2844,7 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', '$controller', 'admin', '$rootScope', function ($scope, $controller, admin, $rootScope) {
+                controller         : ['$scope', '$controller', 'admin', function ($scope, $controller, admin) {
                     $controller('languageController', {$scope: $scope});
                     let id = ++requestId;
                     $scope.selected = [];
@@ -2863,8 +2856,7 @@
                         page        : 1
                     };
 
-                    let floorInterval = $interval(function () {
-                        console.log('floor interval');
+                    floorInterval = $interval(function () {
                         socket.send(encodeRequestWithId(id, 'get_floors_by_location', {location: dataService.location}));
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
@@ -2891,10 +2883,10 @@
                                         field_value: input.$modelValue
                                     }));
                                     socket.onmessage = (response) => {
-                                       let parseResponse = parseResponse(response);
-                                       if (parseResponse.id === id1){
-                                           if (parseResponse.result !== 1) {
-                                               console.log(parseResponse.result);
+                                       let parsedResponse = parseResponse(response);
+                                       if (parsedResponse.id === id1){
+                                           if (parsedResponse.result !== 1) {
+                                               console.log(parsedResponse.result);
                                                //TODO handre when not saving field
                                            }
                                        }
@@ -2935,7 +2927,6 @@
                                     if (parsedResponse.id === id){
                                         if (parsedResponse.result > 0) {
                                             $scope.floors = $scope.floors.filter(a => a.id !== floor.id);
-                                            console.log($scope.floors);
                                         }
                                     }
                                 };
@@ -2981,19 +2972,16 @@
                                 });
                         }
                     };
-
-                    //freeing the resources on page destroy
-                    $scope.$on('$destroy', function () {
-                        console.log('destroing dialog', dataService.canvasInterval);
-                        $interval.cancel(floorInterval);
-                        if (dataService.canvasInterval === undefined)
-                            $rootScope.$emit('constantUpdateCanvas', {});
-                    });
-
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
-                }]
+                }],
+
+                onRemoving: function(event, removePromise){
+                    $interval.cancel(floorInterval);
+                    if (dataService.canvasInterval === undefined)
+                        $rootScope.$emit('constantUpdateCanvas', {});
+                }
             };
 
             $mdDialog.show(floorDialog);

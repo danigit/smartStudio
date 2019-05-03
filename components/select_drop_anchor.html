@@ -1,4 +1,4 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" ng-class="insertTag.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
@@ -24,7 +24,7 @@
         <div layout="column" layout-align="center center">
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
                 <label>{{lang.selectAnchor}}</label>
-                <md-select ng-model="selectedAnchor">
+                <md-select ng-model="dropAnchor.selectedAnchor">
                     <md-option><em>{{lang.nothing}}</em></md-option>
                     <md-option ng-repeat="anchor in anchors track by $index" ng-value="anchor.name">
                         {{anchor.name}}

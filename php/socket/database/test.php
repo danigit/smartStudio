@@ -52,7 +52,7 @@ class Test{
                 break;
             case 'delete_anchor': var_dump($this->conn->delete_anchor(24));
                 break;
-            case 'insert_tag': var_dump($this->conn->insert_tag('newTag', 'BLUETOOTH_WiFi', ['SRPDNL88B24Z129W']));
+            case 'insert_tag': var_dump($this->conn->insert_tag('newTag', 'SAFETY WiFi REST', []));
                 break;
             case 'insert_floor': var_dump($this->conn->insert_floor('newFloor', 'newFloorImage.png', 100, 10, 1));
                 break;
@@ -68,4 +68,4 @@ class Test{
 }
 
 $test = new Test();
-$test->test_function('update_anchor_position');
+$test->test_function('insert_tag');
