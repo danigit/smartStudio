@@ -1343,7 +1343,7 @@
                         };
 
                         $scope.$watch('dropAnchor.selectedAnchor', (newValue) => {
-                            console.log('anchor changed', newValue);
+                            console.log('anchor changed', newValue);hi
                             let currentValue = "" + newValue;
                             if (currentValue !== '') {
                                 anchorToDrop = currentValue;
