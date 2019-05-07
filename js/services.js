@@ -38,6 +38,7 @@
         service.isSearchingTag       = false;
         service.offlineTagsIsOpen    = false;
         service.offlineAnchorsIsOpen = false;
+        // service.gridSpacing = 0;
 
         service.loadUserSettings = () => {
             socketService.sendRequest('get_user_settings', {username: service.username})
@@ -47,6 +48,8 @@
                             showGrid   : (response.result[0].grid_on === 1),
                             showAnchors: (response.result[0].anchors_on === 1),
                             showCameras: (response.result[0].cameras_on === 1),
+                            showOutrangeTags: (response.result[0].outag_on === 1),
+                            showZones: (response.result[0].zones_on === 1),
                             playAudio  : (response.result[0].sound_on === 1),
                             showRadius : true,
                         };
@@ -55,7 +58,7 @@
         };
 
         service.updateUserSettings = () => {
-            let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, sound_on: service.switch.playAudio};
+            let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};
             let stringifyData = JSON.stringify(data);
             socketService.sendRequest('update_user_settings', {username: service.username, data: stringifyData})
                 .then((response) => {

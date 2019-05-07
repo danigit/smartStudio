@@ -35,6 +35,7 @@
                     <th md-column md-order-by="name"><span class="color-darkcyan">USERNAME</span></th>
                     <th md-column md-order-by="latitude"><span class="color-darkcyan">NOME</span></th>
                     <th md-column md-order-by="longitude" ng-show="isAdmin"><span class="color-darkcyan">RUOLO</span></th>
+                    <th md-column md-order-by="longitude" ng-show="isAdmin || isUserManager"><span class="color-darkcyan">GESTIONE LOCATION</span></th>
                     <th md-column ng-show="isAdmin || isUserManager"></th>
                 </tr>
                 </thead>
@@ -51,6 +52,11 @@
                     </td>
                     <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'role')"
                         ng-class="{'md-placeholder': !user.role}">{{user.role || 'Inserire ruolo'}}
+                    </td>
+                    <td md-cell>
+                        <md-button ng-click="manageLocations(user)" class="md-raised background-darkcyan color-white">
+                            GESTIONE LOCATIONS
+                        </md-button>
                     </td>
                     <td md-cell ng-show="isAdmin || isUserManager" class="no-wrap" ng-click="deleteRow(user)"><img
                             src="img/icons/delete_trash_24.png" alt="Cancella utente" title="Cancella utente"></td>

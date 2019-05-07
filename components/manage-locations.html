@@ -13,14 +13,14 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">WETAG</h1>
+                <h1 class=" font-iceberg font-x-large">{{user.name}} LOCATIONS</h1>
             </div>
         </div>
     </md-toolbar>
+    <!--end popup header-->
 </div>
-<!--end popup header-->
-
 <!--popup content-->
+
 <md-content class="popup-padding">
 
     <div layout="column" layout-align="center center">
@@ -32,30 +32,23 @@
 
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column></th>
-                    <th md-column md-order-by="name"><span class="color-darkcyan">NOME</span></th>
-                    <th md-column md-order-by="type_name"><span class="color-darkcyan">TIPO TAG</span></th>
-                    <th md-column></th>
+                    <th md-column><span class="color-darkcyan">NOME</span></th>
                 </tr>
                 </thead>
 
                 <tbody md-body>
-                <tr md-row md-select="tag" md-on-select="logItem" md-auto-select="true"
-                    ng-repeat="tag in tags | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
-                    <td md-cell><img
-                            ng-src="{{tag.is_exit ? 'img/icons/tags/offline_tag_24.png' : 'img/icons/tags/online_tag_24.png'}}"
-                            alt="Stato tag" title="Stato tag"></td>
-                    <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">
-                        {{tag.name || 'Inserire nome'}}
+                <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
+                    ng-repeat="location in locations | limitTo: query.limit: (query.page -1 ) * query.limit">
+
+                    <td md-cell ng-class="{'md-placeholder': !location.name}">
+                        {{location.name || 'Inserire nome'}}
                     </td>
-                    <td md-cell
-                        ng-class="{'md-placeholder': !tag.type_name}">{{tag.type_name || 'Inserire tipo'}}
-                    </td>
-                    <td md-cell>
-                        <md-button ng-click="tagMacs(tag)" class="md-raised background-darkcyan color-white">GESTIONE
-                            MACS</md-button>
-                    </td>
-                    <td md-cell ng-click="deleteRow(tag)"><img src="img/icons/delete_trash_24.png" alt="Cancella tag" title="Cancella tag"></td>
+
+                    <td md-cell ng-click="deleteManagedLocation($event, location)"><img
+                            src="img/icons/delete_trash_24.png" alt="Cancella mac" title="Aggiungi mac"></td>
+                </tr>
+                <tr md-row ng-show="locations.length === 0">
+                    <td md-cell colspan="8" class="text-center color-red">Nessun risultato trovato</td>
                 </tr>
                 </tbody>
             </table>
@@ -64,13 +57,13 @@
         <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
-                     ng-click="addNewRow()" alt="Aggiungi tag" title="Aggiungi tag">
+                     ng-click="manageNewLocation()" alt="Aggiungi mac" title="Aggiungi mac">
             </div>
         </md-input-container>
 
         <md-table-pagination class="color-red" md-limit="query.limit" md-limit-options="query.limitOptions"
                              md-page="query.page"
-                             md-total="{{tags.length}}" md-on-paginate="">
+                             md-total="{{locations.length}}" md-on-paginate="">
         </md-table-pagination>
     </div>
 </md-content>

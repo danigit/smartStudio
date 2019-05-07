@@ -1911,7 +1911,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT grid_on, anchors_on, cameras_on, sound_on FROM user JOIN user_settings ON USER_SETTINGS = user_settings.id WHERE NAME = ?";
+            $this->query = "SELECT grid_on, anchors_on, cameras_on, outag_on, zones_on, sound_on FROM user JOIN user_settings ON USER_SETTINGS = user_settings.id WHERE NAME = ?";
 
             $statement = $this->execute_selecting($this->query, 's', $user);
 
@@ -1925,7 +1925,7 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('grid_on' => $row['grid_on'], 'anchors_on' => $row['anchors_on'], 'cameras_on' => $row['cameras_on'],
-                    'sound_on' => $row['sound_on']);
+                    'outag_on' => $row['outag_on'], 'zones_on' => $row['zones_on'], 'sound_on' => $row['sound_on']);
             }
 
             return $result_array;
@@ -1940,10 +1940,10 @@ class Connection
         if ($this->connection) {
             $decoded = json_decode($data, true);
             $this->query = "UPDATE user_settings us JOIN user ON us.id = user.USER_SETTINGS 
-                            SET us.grid_on = ?, us.anchors_on = ?, us.cameras_on = ?, us.sound_on = ? WHERE user.NAME = ?";
+                            SET us.grid_on = ?, us.anchors_on = ?, us.cameras_on = ?, us.outag_on = ?, us.zones_on = ?, us.sound_on = ? WHERE user.NAME = ?";
 
-            $statement = $this->execute_selecting($this->query, 'iiiis', $decoded['grid_on'], $decoded['anchors_on'],
-                $decoded['cameras_on'], $decoded['sound_on'], $user);
+            $statement = $this->execute_selecting($this->query, 'iiiiiis', $decoded['grid_on'], $decoded['anchors_on'],
+                $decoded['cameras_on'], $decoded['outag_on'], $decoded['zones_on'], $decoded['sound_on'], $user);
 
             if ($statement instanceof db_errors)
                 return $statement;
@@ -2132,6 +2132,9 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
+            $this->connection->autocommit(false);
+
+            $errors = array();
 
             $password = generateRandomCode();
 
@@ -2145,11 +2148,25 @@ class Connection
                 $statement = $this->execute_inserting($this->query, 'sss', $username, $hash_code, $name);
 
                 if ($statement instanceof db_errors)
-                    return $statement;
+                    array_push($errors, 'insert_user_db_error');
                 else if ($statement == false)
-                    return new db_errors(db_errors::$ERROR_ON_INSERTING_USER);
+                    array_push($errors, 'insert_user_false');
 
-                return $this->connection->insert_id;
+                $this->query = 'INSERT INTO user_settings () VALUES ()';
+
+                $statement = $this->connection->query($this->query);
+
+                if (!$statement)
+                    array_push($errors, 'user_settings_error');
+
+                if (!empty($errors)) {
+                    $this->connection->rollback();
+                    return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+                }
+
+                $this->connection->commit();
+
+                return $errors;
             }else
                 return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
         }
@@ -2224,6 +2241,9 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
+            $this->connection->autocommit(false);
+
+            $errors = array();
 
             $password = generateRandomCode();
 
@@ -2236,14 +2256,54 @@ class Connection
                 $statement = $this->execute_inserting($this->query, 'sssi', $username, $hash_code, $name, $role);
 
                 if ($statement instanceof db_errors)
-                    return $statement;
+                    array_push($errors, 'insert_user_db_error');
                 else if ($statement == false)
-                    return new db_errors(db_errors::$ERROR_ON_INSERTING_USER);
+                    array_push($errors, 'insert_user_false');
 
-                return $this->connection->insert_id;
+                $this->query = 'INSERT INTO user_settings () VALUES ()';
+
+                $statement = $this->connection->query($this->query);
+
+                if (!$statement)
+                    array_push($errors, 'user_settings_error');
+
+                if (!empty($errors)) {
+                    $this->connection->rollback();
+                    return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+                }
+
+                $this->connection->commit();
+
+                return $errors;
             }else{
                 return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
             }
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function get_user_locations($user){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "SELECT ID, NAME FROM location JOIN user_has_location ON location.ID = user_has_location.LOCATION_ID WHERE user_has_location.USER_ID  = ?";
+
+            $statement = $this->execute_selecting($this->query, 'i', $user);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_USERS);
+
+            $this->result = $statement->get_result();
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME']);
+            }
+
+            return $result_array;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);

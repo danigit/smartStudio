@@ -39,7 +39,7 @@
                 </thead>
 
                 <tbody md-body>
-                <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
+                <tr ng-hide="alarm.name === 'Tag fuori sito' && !outlocationTags" md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
                     ng-repeat="alarm in alarms | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell><img ng-src="{{alarm.image}}" class="md-avatar" alt="{{alarm.name}}" title="alarm.name" />
                     </td>

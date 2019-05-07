@@ -51,6 +51,28 @@
 #anchors-on-off-container md-switch.md-checked.md-primary .md-thumb{
     background-color: #0093c4;
 }
+#outags-on-off-container .md-subheader-inner{
+    padding: 0!important;
+}
+
+#outags-on-off-container md-switch.md-checked.md-primary .md-bar{
+    background-color: #4fc3f7;
+}
+
+#outags-on-off-container md-switch.md-checked.md-primary .md-thumb{
+    background-color: #0093c4;
+}
+#zones-on-off-container .md-subheader-inner{
+    padding: 0!important;
+}
+
+#zones-on-off-container md-switch.md-checked.md-primary .md-bar{
+    background-color: #4fc3f7;
+}
+
+#zones-on-off-container md-switch.md-checked.md-primary .md-thumb{
+    background-color: #0093c4;
+}
 
 #cameras-on-off-container md-switch.md-checked.md-primary .md-bar{
     background-color: #4fc3f7;

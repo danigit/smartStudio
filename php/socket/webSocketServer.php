@@ -809,6 +809,16 @@ class webSocketServer implements MessageComponentInterface{
                 break;
             }
             //changing the location field
+            case 'get_user_locations':{
+                $result['action'] = 'get_user_locations';
+                $query = $this->connection->get_user_locations($decoded_message['data']['user']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
             case 'get_alpha':{
                 $result['action'] = 'get_alpha';
                 $query = $this->connection->get_alpha();

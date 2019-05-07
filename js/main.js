@@ -55,7 +55,7 @@
                         let result  = {};
                         socketService.sendRequest('get_user', {})
                             .then((response) => {
-                                if (response.result.length > 0) {
+                                if (response.result !== 'no_user') {
                                     dataService.username = response.result[0].username;
                                     if (response.result[0].role === 1) {
                                         dataService.isAdmin = response.result[0].role;
@@ -156,7 +156,13 @@
                                 result.anchors = response.result;
 
                                 dataService.alarmsSounds = [];
-                                promise.resolve(result);
+                                return socketService.sendRequest('get_all_tags', {});
+                            })
+                            .then((response) => {
+                                if (response !== null && response !== undefined) {
+                                    dataService.allTags = response.result;
+                                    promise.resolve(result);
+                                }
                             })
                             .catch((error) => {
                                 console.log('outdoorLocationState => ', error);

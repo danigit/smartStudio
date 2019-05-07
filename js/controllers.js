@@ -69,6 +69,7 @@
         let imageIndex = 0;
         let alarmLocationsLength = 0;
         let allarmZoom = undefined;
+        let zoomSetted = false;
 
         //visualizing the data according if the user is admin or not
         homeCtrl.isAdmin = homeData.isAdmin;
@@ -194,12 +195,13 @@
             };
 
             let findTagLocation = (allTags, indoorTags, anchors, map) => {
-                bounds = new google.maps.LatLngBounds();
+                let alarmBounds = new google.maps.LatLngBounds();
                 markers.forEach((marker) => {
                     let tags           = getLocationTags(marker, allTags);
                     let markerObject   = new google.maps.Marker({
                         position: new google.maps.LatLng(marker.position[0], marker.position[1]),
                     });
+
                     let markerSelected = homeCtrl.dynamicMarkers.filter(m => m.getPosition().lat() === markerObject.getPosition().lat() && m.getPosition().lng() === markerObject.getPosition().lng())[0];
 
                     if (!marker.is_inside) {
@@ -240,34 +242,33 @@
                             markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                         }
                     }
-
-                    if (alarmLocations.length > 0 && alarmLocations.length !== alarmLocationsLength) {
-                        console.log(alarmLocations);
-                        alarmLocations.forEach(location => {
-                            // if (angular.equals(marker.position, location.position)){
-                            //     console.log('marker find: ', marker);
-                            //     let pos = new google.maps.LatLng(marker.position[0], marker.position[1]);
-                            //     bounds.extend(pos);
-                            //     map.fitBounds(bounds);
-                            // }
-                            let pos = new google.maps.LatLng(location.position[0], location.position[1]);
-                            bounds.extend(pos)
-                        });
-
-                        map.fitBounds(bounds);
-                        if (allarmZoom !== map.getZoom()) {
-                            allarmZoom = map.getZoom();
-                        }
-
-                        console.log(allarmZoom);
-                        alarmLocationsLength = alarmLocations.length;
-                    }
                 });
+
+                if (alarmLocations.length > 0 && alarmLocations.length !== alarmLocationsLength) {
+                    alarmLocations.forEach(location => {
+                        // if (angular.equals(marker.position, location.position)){
+                        //     console.log('marker find: ', marker);
+                        //     let pos = new google.maps.LatLng(marker.position[0], marker.position[1]);
+                        //     bounds.extend(pos);
+                        //     map.fitBounds(bounds);
+                        // }
+                        let pos = new google.maps.LatLng(location.position[0], location.position[1]);
+                        alarmBounds.extend(pos)
+                    });
+
+                    map.fitBounds(alarmBounds);
+
+                    if (allarmZoom !== map.getZoom()) {
+                        allarmZoom = map.getZoom();
+                    }
+
+                    console.log(allarmZoom);
+                    alarmLocationsLength = alarmLocations.length;
+                }
 
                 imageIndex++;
                 if (imageIndex === 2)
                     imageIndex = 0;
-
             };
 
             //function that updates the alert notifications
@@ -290,6 +291,15 @@
                         })
                         .then((response) => {
                             findTagLocation(tags, indoorTags, response.result, map);
+                            // console.log(alarmLocations);
+
+                            if (alarmLocations.length === 0){
+                                console.log('inside allarm location empty');
+                                alarmLocationsLength = 0;
+                                map.setCenter(new google.maps.LatLng(44.44, 8.88));
+                                map.fitBounds(bounds);
+                            }
+
                             anchors                         = null;
                             homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
                         })
@@ -297,6 +307,11 @@
                             console.log('constantUpdateNotification error => ', error);
                         });
                 }, 1000);
+
+                if (alarmLocations.length > 0){
+                    console.log('inside allarm location empty');
+                    map.setCenter(new google.maps.LatLng(44.44, 8.88));
+                }
             };
 
             NgMap.getMap('main-map').then((map) => {
@@ -392,6 +407,8 @@
                     controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
                         let tags      = null;
                         $scope.alarms = [];
+                        $scope.outlocationTags = dataService.switch.showOutrangeTags;
+
                         $scope.query  = {
                             limitOptions: [5, 10, 15],
                             order       : 'name',
@@ -580,6 +597,8 @@
                 controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
                     let tags      = null;
                     $scope.alarms = [];
+                    $scope.outlocationTags = dataService.switch.showOutrangeTags;
+
                     $scope.query  = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
@@ -1079,6 +1098,8 @@
             location        : (dataService.locationFromClick === '') ? dataService.location : dataService.locationFromClick,
             floor_image_map : canvasCtrl.defaultFloor[0].image_map
         };
+
+        // dataService.gridSpacing = canvasCtrl.defaultFloor[0].map_spacing;
 
         //drawing button
         canvasCtrl.speedDial = {
@@ -2133,6 +2154,8 @@
                 controller         : ['$scope', 'socketService', 'dataService', function ($scope, socketService, dataService) {
                     let tags      = null;
                     $scope.alarms = [];
+                    $scope.outlocationTags = dataService.switch.showOutrangeTags;
+
                     $scope.query  = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
@@ -2650,6 +2673,33 @@
                             console.log('usersDialog error => ', error);
                         });
 
+                    $scope.manageLocations = (user) => {
+                        console.log('manage location pressed: ', user);
+                        let manageLocationDialog = {
+                            locals             : {user: user},
+                            templateUrl        : componentsPath + 'manage-locations.html',
+                            parent             : angular.element(document.body),
+                            targetEvent        : event,
+                            clickOutsideToClose: true,
+                            controller         : ['$scope', 'user', function ($scope, user) {
+
+                                $scope.locations = [];
+                                console.log(user);
+                                socketService.sendRequest('get_user_locations', {user: user.id})
+                                    .then((response) => {
+                                        console.log(response);
+                                        $scope.locations = response.result;
+                                    });
+
+                                $scope.hide = () => {
+                                    $mdDialog.hide();
+                                    $mdDialog.show(registryDialog);
+                                }
+                            }]
+                        };
+
+                        mdDialog.show(manageLocationDialog);
+                    };
 
                     $scope.editCell = (event, user, userName) => {
 
@@ -2747,10 +2797,12 @@
                     $scope.insertUser = (form) => {
                         form.$submitted = true;
 
+                        console.log('inserting user');
                         if (form.$valid) {
+                            console.log('sending request');
                             socketService.sendRequest('insert_user', {username: $scope.user.username, name: $scope.user.name, email: $scope.user.email})
                                 .then((response) => {
-                                    if (response.result !== 'ERROR_ON_EXECUTE' && response.result !== 'ERROR_ON_INSERTING_USER'){
+                                    if (response.result.length === 0){
                                         $scope.user.resultClass = 'background-green';
                                         $scope.user.showSuccess = true;
                                         $scope.user.showError   = false;
@@ -2824,6 +2876,39 @@
                             console.log('superUserDialog error => ', error);
                         });
 
+                    $scope.manageLocations = (user) => {
+                        console.log('manage location pressed: ', user);
+                        let manageLocationDialog = {
+                            locals             : {user: user},
+                            templateUrl        : componentsPath + 'manage-locations.html',
+                            parent             : angular.element(document.body),
+                            targetEvent        : event,
+                            clickOutsideToClose: true,
+                            controller         : ['$scope', 'user', function ($scope, user) {
+
+                                $scope.locations = [];
+
+                                $scope.tableEmpty     = false;
+                                $scope.query          = {
+                                    limitOptions: [5, 10, 15],
+                                    limit       : 5,
+                                    page        : 1
+                                };
+                                console.log(user);
+                                socketService.sendRequest('get_user_locations', {user: user.id})
+                                    .then((response) => {
+                                        console.log(response);
+                                        $scope.locations = response.result;
+                                    });
+
+                                $scope.hide = () => {
+                                    $mdDialog.hide();
+                                }
+                            }]
+                        };
+
+                        $mdDialog.show(manageLocationDialog);
+                    };
 
                     $scope.editCell = (event, superUser, superUserName) => {
 
@@ -2923,10 +3008,12 @@
                         form.$submitted = true;
 
                         if (form.$valid) {
-                            console.log($scope.user);
+                            console.log('inserting user');
                             socketService.sendRequest('insert_super_user', {username: $scope.user.username, name: $scope.user.name, email: $scope.user.email, role: ($scope.userRole === 'Utente generico') ? 0 : 2})
                                 .then((response) => {
-                                    if (response.result !== 'ERROR_ON_EXECUTE' && response.result !== 'ERROR_ON_INSERTING_USER'){
+                                    console.log('the response is');
+                                    console.log(response);
+                                    if (response.result.length === 0){
                                         $scope.user.resultClass = 'background-green';
                                         $scope.user.showSuccess = true;
                                         $scope.user.showError   = false;
@@ -4072,13 +4159,14 @@
                 templateUrl        : componentsPath + 'quick-actions-dialog.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
-                clickOutsideToClose: true,
                 controller         : ['$scope', '$interval', 'dataService', function ($scope, $interval, dataService) {
 
                     $scope.switch = {
                         showGrid   : true,
                         showAnchors: true,
                         showCameras: true,
+                        showZones: true,
+                        showOutrangeTags: true,
                         playAudio  : true
                     };
 
@@ -4088,6 +4176,8 @@
                             $scope.switch.showAnchors = (response.result[0].anchors_on === 1);
                             $scope.switch.showCameras = (response.result[0].cameras_on === 1);
                             $scope.switch.playAudio   = (response.result[0].sound_on === 1);
+                            $scope.switch.showZones   = (response.result[0].zones_on === 1);
+                            $scope.switch.showOutrangeTags   = (response.result[0].outag_on === 1);
                         });
                     // dataService.loadUserSettings();
 
@@ -4096,12 +4186,14 @@
                         $mdDialog.hide();
                     };
 
-                    $scope.$watchGroup(['switch.showGrid', "switch.showAnchors", 'switch.showCameras', 'switch.playAudio'], function (newValues) {
+                    $scope.$watchGroup(['switch.showGrid', "switch.showAnchors", 'switch.showCameras', 'switch.playAudio', 'switch.showOutrangeTags', 'switch.showZones'], function (newValues) {
                         console.log('watching');
                         dataService.switch.showGrid    = (newValues[0]);
                         dataService.switch.showAnchors = (newValues[1]);
                         dataService.switch.showCameras = (newValues[2]);
                         dataService.switch.playAudio   = (newValues[3]);
+                        dataService.switch.showOutrangeTags = (newValues[4]);
+                        dataService.switch.showZones = (newValues[5]);
                     })
                 }]
             });
@@ -4208,7 +4300,6 @@
                                         .then((response) => {
                                             let locations = response.result;
 
-
                                             locations.forEach((location) => {
                                                 if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
                                                     $scope.locationName = location.name;
@@ -4225,13 +4316,31 @@
 
                                         map.setCenter(latLng);
 
-                                        new google.maps.Marker({
+                                        let marker = new google.maps.Marker({
                                             position: latLng,
                                             map     : map,
                                             icon    : tagsIconPath + 'search-tag.png'
                                         });
 
+                                        console.log(tagName);
+                                        let infoWindow = new google.maps.InfoWindow({
+                                            content: '<div class="marker-info-container">' +
+                                                '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+                                                '<p class="text-center font-large font-bold color-darkcyan">' + tagName.toUpperCase() + '</p>' +
+                                                '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + tag.gps_north_degree + '</b></p></div>' +
+                                                '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + tag.gps_east_degree + '</b></p></div>' +
+                                                '</div>'
+                                        });
+
+                                        marker.addListener('mouseover', function () {
+                                            infoWindow.open(map, this);
+                                        });
+
+                                        marker.addListener('mouseout', function () {
+                                            infoWindow.close(map, this);
+                                        });
                                     });
+
                                     $scope.hide = () => {
                                         outerScope.selectedTag = '';
                                         $mdDialog.hide();

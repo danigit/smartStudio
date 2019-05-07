@@ -45,10 +45,11 @@
 
                 <md-input-container md-no-float class="margin-bottom-0">
                     <input required type="text" ng-model="user.email" name="userEmail"
-                           placeholder="Email">
+                           placeholder="Email" ng-pattern="/^.+@.+\..+$/">
                     <div ng-messages="insertUserForm.userEmail.$error || insertUserForm.$submitted"
                          role="alert">
                         <div ng-message=" required">Inserire email</div>
+                        <div ng-message="pattern">Inserire una email valida</div>
                     </div>
                 </md-input-container>
 

@@ -1,13 +1,13 @@
 <div>
     <!--popup header-->
     <md-toolbar id="popup-toolbar">
-        <div layout="row" layout-align="end center" class="width-100">
-            <md-button class="md-icon-button margin-none" ng-click="canvasCtrl.hide()">
-                <img src="img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
-            </md-button>
-        </div>
+        <!--<div layout="row" layout-align="end center" class="width-100">-->
+            <!--<md-button class="md-icon-button margin-none" ng-click="canvasCtrl.hide()">-->
+                <!--<img src="img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>-->
+            <!--</md-button>-->
+        <!--</div>-->
 
-        <div layout="row" layout-align="center center" class="margin-top--20-px">
+        <div layout="row" layout-align="center center" class="margin-top-20-px">
             <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
@@ -90,6 +90,54 @@
                     </md-switch>
                 </div>
             </div>
+            <div layout="row" layout-align="center center" class="width-300-px">
+
+                <div id="zones-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showZones">Zones:
+                            <b class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showZones">
+                            Zones: <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Mostra/nascondi le telecamere"
+                               ng-model="switch.showZones">
+                    </md-switch>
+                </div>
+
+                <div id="outags-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showOutrangeTags">Out tags:
+                            <b class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showOutrangeTags">
+                            Out tags: <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Mostra/nascondi le telecamere"
+                               ng-model="switch.showOutrangeTags">
+                    </md-switch>
+                </div>
+            </div>
+
+            <!--<div id="change-grid-container" layout="column" class="padding-10-px">-->
+
+                <!--<div flex="100" layout layout-align="center center">-->
+                    <!--<md-subheader class="padding-0 width-100 zindex-0">Spaziatura griglia: <b>{{canvasCtrl.floorData.gridSpacing}}</b>-->
+                        <!--<md-subheader>-->
+                <!--</div>-->
+
+                <!--<md-slider-container flex="100">-->
+                    <!--<md-slider md-discrete ng-model="canvasCtrl.floorData.gridSpacing" min="1" max="50"-->
+                               <!--step="1" aria-label="Selezionare la densita' della griglia"-->
+                               <!--class="md-primary"></md-slider>-->
+                <!--</md-slider-container>-->
+            <!--</div>-->
 
             <md-button class="md-primary md-raised background-darkcyan" ng-click="updateUserSettings()">SALVA CONFIGURAZIONE</md-button>
         </div>

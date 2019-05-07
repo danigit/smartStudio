@@ -71,6 +71,9 @@
                                 <md-list-item ng-click="viewHistory()"><p>Storico</p><img
                                         src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
+                                <md-list-item ng-click="quickActions()"><p>Comandi rapidi</p><img
+                                        src="img/icons/menu/quick_action_16.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
                                 <md-list-item ng-click="changePassword()"><p>Cambia password</p><img
                                         src="img/icons/menu/password_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
@@ -86,7 +89,7 @@
                                     <label>Cerca WeTag</label>
                                     <md-select ng-model="selectedTag">
 
-                                        <md-option ng-repeat="tag in tags" ng-value="tag.name">
+                                        <md-option ng-repeat="tag in menuTags" ng-value="tag.name">
                                             {{tag.name}}
                                         </md-option>
                                     </md-select>
