@@ -275,7 +275,7 @@
             let constantUpdateNotifications = (map) => {
                 dataService.homeTimer = $interval(() => {
                     let indoorTags = [];
-                    socketService.sendConstantAlertRequest('get_all_tags', {})
+                    socketService.sendRequest('get_all_tags', {})
                         .then((response) => {
                             tags                         = response.result;
                             homeCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(response.result);
@@ -283,11 +283,11 @@
 
                             dataService.playAlarmsAudio(response.result);
 
-                            return socketService.sendConstantAlertRequest('get_tags_by_user', {user: dataService.username});
+                            return socketService.sendRequest('get_tags_by_user', {user: dataService.username});
                         })
                         .then((response) => {
                             indoorTags = response.result;
-                            return socketService.sendConstantAlertRequest('get_anchors_by_user', {user: dataService.username});
+                            return socketService.sendRequest('get_anchors_by_user', {user: dataService.username});
                         })
                         .then((response) => {
                             findTagLocation(tags, indoorTags, response.result, map);
@@ -344,10 +344,10 @@
                     });
 
                     markerObject.addListener('click', () => {
-                        socketService.sendConstantRequest('save_location', {location: marker.name})
+                        socketService.sendRequest('save_location', {location: marker.name})
                             .then((response) => {
                                 if (response.result === 'location_saved') {
-                                    return socketService.sendConstantRequest('get_location_info', {})
+                                    return socketService.sendRequest('get_location_info', {})
                                 }
                             })
                             .then((response) => {
@@ -396,6 +396,35 @@
                 dataService.showOfflineAnchors(false, constantUpdateNotifications);
             };
 
+            const getTagsLocation = async (tags, locations) => {
+                let alarms = [];
+                let tagAlarms = [];
+
+                for (let i = 0; i < tags.length; i++) {
+
+                    if (!dataService.isOutdoor(tags[i])) {
+                        await socketService.sendRequest('get_indoor_tag_location', {tag: tags[i].id})
+                            .then((response) => {
+                                if (response.result[0] !== undefined)
+                                    tagAlarms = dataService.loadTagAlarmsForInfoWindow(tags[i], locations, response.result[0]);
+                                else
+                                    tagAlarms = dataService.loadTagAlarmsForInfoWindow(tags[i], locations, 'Nessuna location');
+                            })
+                    }else{
+                        let someResult = locations.filter(l => dataService.getTagDistanceFromLocationOrigin(tags[i], [l.latitude, l.longitude]) <= l.radius);
+                        if (someResult.length !== 0){
+                            tagAlarms = dataService.loadTagAlarmsForInfoWindow(tags[i], locations, someResult[0].name);
+                        } else {
+                            tagAlarms = dataService.loadTagAlarmsForInfoWindow(tags[i], locations, 'Nessuna location');
+                        }
+                    }
+
+                    alarms.push(tagAlarms);
+                }
+
+                return alarms;
+            };
+
             //showing the info window with all the alarms
             homeCtrl.showAlarmsHome = () => {
                 $mdDialog.show({
@@ -421,15 +450,18 @@
                                 tags = response.result;
                                 dataService.getAllLocations()
                                     .then((response) => {
-                                        tags.forEach((tag) => {
 
-                                            let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, response.result);
-
-                                            tagAlarms.forEach((tagAlarm) => {
-                                                $scope.alarms.push(tagAlarm);
+                                        getTagsLocation(tags, response.result)
+                                            .then((response) => {
+                                                response.forEach((tagAlarms) => {
+                                                    if (tagAlarms.length !== 0){
+                                                        tagAlarms.forEach((alarm) => {
+                                                            $scope.alarms.push(alarm);
+                                                            console.log($scope.alarms);
+                                                        })
+                                                    }
+                                                });
                                             })
-                                        });
-
                                     });
                             })
                             .catch((error) => {
@@ -800,7 +832,7 @@
                     });
 
                     dataService.updateMapTimer = $interval(() => {
-                        socketService.sendConstantRequest('get_all_tags', {})
+                        socketService.sendRequest('get_all_tags', {})
                             .then((response) => {
                                 tags = response.result;
 
@@ -1430,14 +1462,14 @@
                         drawDashedLine(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, 'horizontal');
                     }
 
-                    socketService.sendConstantRequest('get_floors_by_location', {location: dataService.location})
+                    socketService.sendRequest('get_floors_by_location', {location: dataService.location})
                         .then((response) => {
                             if (!angular.equals(canvasCtrl.floors, response.result)) {
                                 let newFloor      = response.result.filter(f => !canvasCtrl.floors.some(cf => f.id === cf.id))[0];
                                 canvasCtrl.floors = response.result;
                                 dataService.userFloors.push(newFloor);
                             }
-                            return socketService.sendConstantRequest('get_drawing', {floor: canvasCtrl.defaultFloor[0].id})
+                            return socketService.sendRequest('get_drawing', {floor: canvasCtrl.defaultFloor[0].id})
                         })
                         //managing drawing visualizzation
                         .then((response) => {
@@ -1447,7 +1479,7 @@
                                     drawLine(line.begin, line.end, line.type, bufferContext, canvasCtrl.switch.showDrawing);
                                 });
                             }
-                            return socketService.sendConstantRequest('get_floor_zones', {
+                            return socketService.sendRequest('get_floor_zones', {
                                 floor   : canvasCtrl.floorData.defaultFloorName,
                                 location: canvasCtrl.floorData.location,
                                 user: dataService.username
@@ -1455,12 +1487,12 @@
                         })
                         .then((response) => {
                             // drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
-                            if (response.result.length > 0){
+                            if (response.result.length > 0 && dataService.switch.showZones){
                                 response.result.forEach((zone) => {
-                                    drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, 'red', false, alpha);
+                                    drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, zone.color, false, alpha);
                                 });
                             }
-                            return socketService.sendConstantRequest('get_anchors_by_floor_and_location', {
+                            return socketService.sendRequest('get_anchors_by_floor_and_location', {
                                 floor   : canvasCtrl.floorData.defaultFloorName,
                                 location: canvasCtrl.floorData.location
                             })
@@ -1473,7 +1505,7 @@
                                 canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
                             }
 
-                            return socketService.sendConstantRequest('get_cameras_by_floor_and_location', {
+                            return socketService.sendRequest('get_cameras_by_floor_and_location', {
                                 floor   : canvasCtrl.floorData.defaultFloorName,
                                 location: canvasCtrl.floorData.location
                             })
@@ -1485,7 +1517,7 @@
 
                             dataService.cameras = response.result;
 
-                            return socketService.sendConstantRequest('get_tags_by_floor_and_location', {
+                            return socketService.sendRequest('get_tags_by_floor_and_location', {
                                 floor   : canvasCtrl.defaultFloor[0].id,
                                 location: canvasCtrl.floorData.location
                             });
@@ -1570,7 +1602,7 @@
                                     context.drawImage(bufferCanvas, 0, 0);
                                 });
 
-                            return socketService.sendConstantRequest('get_all_tags', {user: dataService.username})
+                            return socketService.sendRequest('get_all_tags', {user: dataService.username})
                         })
                         .then((response) => {
                             canvasCtrl.showAlarmsIcon      = checkTagsStateAlarmNoAlarmOffline(response.result).withAlarm;
@@ -1671,7 +1703,7 @@
                             tempDrawZones.push({topLeft: fixedTopLeft, bottomRight: fixedBottomRightt, floor: zone.floor});
                     });
 
-                    socketService.sendConstantRequest('save_drawing', {
+                    socketService.sendRequest('save_drawing', {
                         lines: JSON.stringify(drawedLines),
                         floor: canvasCtrl.defaultFloor[0].id,
                         zones: tempDrawZones
@@ -1679,7 +1711,7 @@
                         .then(() => {
                             if (drawAnchor !== null) {
                                 let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, dropAnchorPosition.width, dropAnchorPosition.height);
-                                socketService.sendConstantRequest('update_anchor_position', {
+                                socketService.sendRequest('update_anchor_position', {
                                     x : scaledSize.x.toFixed(2),
                                     y : scaledSize.y.toFixed(2),
                                     id: drawAnchor.id
@@ -2406,13 +2438,13 @@
                         page        : 1
                     };
 
-                    socketService.sendConstantRequest('get_locations_by_user', {user: dataService.username})
+                    socketService.sendRequest('get_locations_by_user', {user: dataService.username})
                         .then((response) => {
                             $scope.locationsTable = response.result;
                             $scope.tableEmpty     = $scope.locationsTable.length === 0;
 
                             dataService.mapInterval = $interval(function () {
-                                socketService.sendConstantRequest('get_locations_by_user', {user: dataService.username})
+                                socketService.sendRequest('get_locations_by_user', {user: dataService.username})
                                     .then((response) => {
                                         $scope.tableEmpty = $scope.locationsTable.length === 0;
                                         if (!angular.equals($scope.locationsTable, response.result)) {
@@ -2653,13 +2685,13 @@
                         page        : 1
                     };
 
-                    socketService.sendConstantRequest('get_generic_users')
+                    socketService.sendRequest('get_generic_users')
                         .then((response) => {
                             $scope.usersTable = response.result;
                             $scope.tableEmpty     = $scope.usersTable.length === 0;
 
                             dataService.usersInterval = $interval(function () {
-                                socketService.sendConstantRequest('get_generic_users')
+                                socketService.sendRequest('get_generic_users')
                                     .then((response) => {
                                         $scope.tableEmpty = $scope.usersTable.length === 0;
                                         $scope.usersTable = response.result;
@@ -2836,6 +2868,7 @@
         };
 
         $scope.openSuperuserManager = function() {
+            let userId = null;
             let superUsersDialog = {
                 locals             : {admin: $scope.isAdmin, userManager: $scope.isUserManager},
                 templateUrl        : componentsPath + 'users-table.html',
@@ -2856,13 +2889,13 @@
                         page        : 1
                     };
 
-                    socketService.sendConstantRequest('get_all_users')
+                    socketService.sendRequest('get_all_users')
                         .then((response) => {
                             $scope.usersTable = response.result;
                             $scope.tableEmpty     = $scope.usersTable.length === 0;
 
                             dataService.superUsersInterval = $interval(function () {
-                                socketService.sendConstantRequest('get_all_users')
+                                socketService.sendRequest('get_all_users')
                                     .then((response) => {
                                         $scope.tableEmpty = $scope.usersTable.length === 0;
                                         $scope.usersTable = response.result;
@@ -2878,6 +2911,8 @@
 
                     $scope.manageLocations = (user) => {
                         console.log('manage location pressed: ', user);
+                        userId = user.id;
+
                         let manageLocationDialog = {
                             locals             : {user: user},
                             templateUrl        : componentsPath + 'manage-locations.html',
@@ -2901,6 +2936,94 @@
                                         $scope.locations = response.result;
                                     });
 
+                                //inserting a mac
+                                $scope.manageNewLocation = () => {
+                                    $mdDialog.hide();
+                                    $mdDialog.show({
+                                        templateUrl        : componentsPath + 'insert-managed-location.html',
+                                        parent             : angular.element(document.body),
+                                        targetEvent        : event,
+                                        clickOutsideToClose: true,
+                                        multiple           : true,
+                                        controller         : ['$scope', function ($scope) {
+
+
+                                            let locationsIds = [];
+
+                                            $scope.insertManagedLocations = {
+                                                resultClass: '',
+                                                selectedLocations: [],
+                                                allLocations: []
+                                            };
+
+                                            socketService.sendRequest('get_all_locations')
+                                                .then((response) => {
+                                                    console.log(response);
+                                                    $scope.insertManagedLocations.allLocations = response.result;
+                                                });
+
+                                            $scope.addManagedLocation = (form) => {
+                                                form.$submitted = true;
+
+                                                if (form.$valid) {
+
+                                                    $scope.insertManagedLocations.allLocations.filter(l => $scope.insertManagedLocations.selectedLocations.some(sl => sl === l.name))
+                                                        .forEach((location) => {
+                                                            locationsIds.push(location.id);
+                                                        });
+
+                                                    console.log(user);
+                                                    socketService.sendRequest('insert_managed_location', {
+                                                        user  : user.id,
+                                                        locations  : locationsIds,
+                                                    })
+                                                        .then((response) => {
+                                                            $mdDialog.hide();
+                                                            $mdDialog.show(manageLocationDialog);
+                                                            console.log(response);
+                                                        })
+                                                        .catch((error) => {
+                                                            console.log('addMac error => ', error);
+                                                        })
+                                                } else {
+                                                    $scope.insertManagedLocations.resultClass = 'background-red';
+                                                }
+                                            };
+
+                                            $scope.hide = () => {
+                                                $mdDialog.hide();
+                                            }
+                                        }]
+                                    });
+                                };
+
+                                //deleting tag
+                                $scope.deleteManagedLocation = (location) => {
+                                    console.log(location);
+                                    let confirm = $mdDialog.confirm()
+                                        .title('CANCELLAZIONE LOCATION')
+                                        .textContent('Sei sicuro di voler cancellare la location?')
+                                        .targetEvent(event)
+                                        .multiple(true)
+                                        .ok('CANCELLA LOCATION')
+                                        .cancel('ANNULLA');
+
+                                    $mdDialog.show(confirm).then(() => {
+                                        socketService.sendRequest('delete_managed_location', {user: user.id, location_id: location.id})
+                                            .then((response) => {
+                                                if (response.result === 1) {
+                                                    $scope.locations = $scope.locations.filter(l => l.id !== location.id);
+                                                    console.log($scope.locations);
+                                                }
+                                            })
+                                            .catch((error) => {
+                                                console.log('deleteRow error => ', error);
+                                            });
+                                    }, function () {
+                                        console.log('CANCELLATO!!!!');
+                                    });
+                                };
+
                                 $scope.hide = () => {
                                     $mdDialog.hide();
                                 }
@@ -2909,6 +3032,7 @@
 
                         $mdDialog.show(manageLocationDialog);
                     };
+
 
                     $scope.editCell = (event, superUser, superUserName) => {
 
@@ -3541,6 +3665,7 @@
                         x_right    : '',
                         y_up       : '',
                         y_down     : '',
+                        color: '',
                         resultClass: '',
                     };
 
@@ -3556,6 +3681,7 @@
                                 x_right: $scope.insertZone.x_right,
                                 y_up   : $scope.insertZone.y_up,
                                 y_down : $scope.insertZone.y_down,
+                                color: $scope.insertZone.color,
                                 floor  : floor.id
                             };
 
@@ -3576,7 +3702,7 @@
                                     console.log('addTag error => ', error);
                                 })
                         } else {
-                            $scope.insertTag.resultClass = 'background-red';
+                            $scope.insertZone.resultClass = 'background-red';
                         }
                     };
 
@@ -3610,7 +3736,6 @@
                         user    : dataService.username
                     })
                         .then((response) => {
-                            console.log(response);
                             $scope.zones = response.result;
                         });
 

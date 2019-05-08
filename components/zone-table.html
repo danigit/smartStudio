@@ -37,6 +37,7 @@
                     <th md-column md-order-by="x_right"><span class="color-darkcyan">X RIGHT</span></th>
                     <th md-column md-order-by="y_up"><span class="color-darkcyan">Y UP</span></th>
                     <th md-column md-order-by="y_down"><span class="color-darkcyan">Y DOWN</span></th>
+                    <th md-column md-order-by="y_down"><span class="color-darkcyan">COLOR</span></th>
                     <th md-column></th>
                 </tr>
                 </thead>
@@ -58,6 +59,9 @@
                     </td>
                     <td md-cell ng-click="editCell($event, zone, 'y_down')"
                         ng-class="{'md-placeholder': !zone.y_down}">{{zone.y_down || 'Inserire valore'}}
+                    </td>
+                    <td md-cell ng-click="editCell($event, zone, 'color')"
+                        ng-class="{'md-placeholder': !zone.color}">{{zone.color || 'Inserire valore'}}
                     </td>
                     <td md-cell ng-click="deleteRow(zone)"><img src="img/icons/delete_trash_24.png" alt="Cancella tag" title="Cancella tag"></td>
                 </tr>

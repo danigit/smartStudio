@@ -32,20 +32,22 @@
                 <thead md-head md-order="query.order">
                 <tr md-row>
                     <th md-column><span class="color-darkcyan"></span></th>
-                    <th md-column><span class="color-darkcyan">TAG</span></th>
-                    <th md-column><span class="color-darkcyan">NOME</span></th>
-                    <th md-column><span class="color-darkcyan">DESCRIZIONE</span></th>
+                    <th md-column md-order-by="tag"><span class="color-darkcyan">TAG</span></th>
+                    <th md-column md-order-by="name"><span class="color-darkcyan">NOME</span></th>
+                    <th md-column md-order-by="description"><span class="color-darkcyan">DESCRIZIONE</span></th>
+                    <th md-column md-order-by="location"><span class="color-darkcyan">LOCATION</span></th>
                 </tr>
                 </thead>
 
                 <tbody md-body>
                 <tr ng-hide="alarm.name === 'Tag fuori sito' && !outlocationTags" md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
-                    ng-repeat="alarm in alarms | limitTo: query.limit: (query.page -1 ) * query.limit">
-                    <td md-cell><img ng-src="{{alarm.image}}" class="md-avatar" alt="{{alarm.name}}" title="alarm.name" />
+                    ng-repeat="alarm in alarms | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
+                    <td md-cell><img ng-src="{{alarm.image}}" class="md-avatar" alt="{{alarm.name}}" title="{{alarm.name}}" />
                     </td>
                     <td md-cell class="no-wrap">{{alarm.tag}}</td>
                     <td md-cell class="no-wrap" >{{alarm.name}}</td>
                     <td md-cell class="no-wrap" >{{alarm.description}}</td>
+                    <td md-cell class="no-wrap" >{{alarm.location}}</td>
                     <td md-cell class="no-wrap" ><md-button ng-click="(alarm.name !== 'Tag fuori sito') ? loadLocation(alarm) : loadTagPosition(alarm)" class="md-raised background-darkcyan color-white">
                         Apri sito
                     </md-button></td>

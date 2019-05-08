@@ -212,12 +212,13 @@
         };
 
         //creating the informations to be shown on the info window of the canvas objects
-        service.createAlarmObjectForInfoWindow = (tag, name, description, image) => {
+        service.createAlarmObjectForInfoWindow = (tag, name, description, image, location) => {
             return {
                 tag        : tag.name,
                 name       : name,
                 description: description,
-                image      : image
+                image      : image,
+                location
             };
         };
 
@@ -235,49 +236,61 @@
         };
 
         //getting all the alarms of the tag passed as parameter and creating the objects to be shown in info window
-        service.loadTagAlarmsForInfoWindow = (tag, locations) => {
+        service.loadTagAlarmsForInfoWindow = (tag, locations, tagLocation) => {
             let alarms = [];
 
             if (tag.sos) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'SOS', 'Richiesta di aiuto.', tagsIconPath + 'sos_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'SOS', 'Richiesta di aiuto.', tagsIconPath + 'sos_24.png', tagLocation));
             }
             if (tag.man_down) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Uomo a terra', 'Uomo a terra.', tagsIconPath + 'man_down_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Uomo a terra', 'Uomo a terra.', tagsIconPath + 'man_down_24.png', tagLocation));
             }
             if (tag.battery_status) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Batteria scarica', 'La batteria e\' scarica.', tagsIconPath + 'battery_low_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Batteria scarica', 'La batteria e\' scarica.', tagsIconPath + 'battery_low_24.png', tagLocation));
             }
             if (tag.helmet_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Helmet dpi', 'Helmet dpi', tagsIconPath + 'helmet_dpi_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Helmet dpi', 'Helmet dpi', tagsIconPath + 'helmet_dpi_24.png', tagLocation));
             }
             if (tag.belt_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Belt dpi', 'Belt dpi', tagsIconPath + 'belt_dpi_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Belt dpi', 'Belt dpi', tagsIconPath + 'belt_dpi_24.png', tagLocation));
             }
             if (tag.glove_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Glove dpi', 'Glove dpi', tagsIconPath + 'glove_dpi_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Glove dpi', 'Glove dpi', tagsIconPath + 'glove_dpi_24.png', tagLocation));
             }
             if (tag.shoe_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Shoe dpi', 'Shoe dpi', tagsIconPath + 'shoe_dpi_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Shoe dpi', 'Shoe dpi', tagsIconPath + 'shoe_dpi_24.png', tagLocation));
             }
             if (tag.man_down_disabled) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Man down disabled', 'Man down disabled', tagsIconPath + 'man_down_disbled_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Man down disabled', 'Man down disabled', tagsIconPath + 'man_down_disbled_24.png', tagLocation));
             }
             if (tag.man_down_tacitated) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'man down tacitated', 'Man down tacitated', tagsIconPath + 'man_down_tacitated_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'man down tacitated', 'Man down tacitated', tagsIconPath + 'man_down_tacitated_24.png', tagLocation));
             }
             if (tag.man_in_quote) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Man in quote', 'Man in quote', tagsIconPath + 'man_in_quote_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Man in quote', 'Man in quote', tagsIconPath + 'man_in_quote_24.png', tagLocation));
             }
             if (tag.call_me_alarm) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Call me alarm', 'Call me alarm', tagsIconPath + 'call_me_alarm_24.png'));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Call me alarm', 'Call me alarm', tagsIconPath + 'call_me_alarm_24.png', tagLocation));
             }
+
             if (service.isOutdoor(tag)){
                 let isInLocation = locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
                 if (!isInLocation){
                     alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png'));
                 }
             }
+
             return alarms;
+        };
+
+        service.getIndoorTagLocation = (tag) => {
+            return new Promise(resolve => {
+                socketService.sendRequest('get_indoor_tag_location', {tag: tag.id})
+                    .then((response) => {
+                        console.log(response);
+                        resolve(response.result);
+                    })
+            })
         };
 
         //function that controls if the passed alarm is in the array passed as well as parameter
@@ -491,8 +504,8 @@
             service.socketClosed = true;
         };
 
-        service.sendRequest = (action, data) => {
-            return new Promise(function (resolve, reject) {
+        service.sendRequest = async (action, data) => {
+            return await new Promise(function (resolve, reject) {
 
                 if (isOpen) {
                     server.send(encodeRequest(action, data));
@@ -515,8 +528,8 @@
             });
         };
 
-        service.sendConstantAlertRequest = (action, data) => {
-            return new Promise(function (resolve, reject) {
+        service.sendConstantAlertRequest = async (action, data) => {
+            return await new Promise(function (resolve, reject) {
 
                 if (isOpen) {
                     server.send(encodeRequest(action, data));
@@ -539,8 +552,8 @@
             });
         };
 
-        service.sendConstantRequest = (action, data) => {
-            return new Promise(function (resolve, reject) {
+        service.sendConstantRequest = async (action, data) => {
+            return await new Promise(function (resolve, reject) {
 
                 if (isConstantOpen) {
                     constantUpdateSocket.send(encodeRequest(action, data));

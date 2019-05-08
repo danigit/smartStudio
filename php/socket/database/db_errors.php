@@ -52,6 +52,8 @@ class db_errors
     public static $ERROR_ON_INSERTING_USER = 41;
     public static $ERROR_ON_GETTING_USERS = 42;
     public static $ERROR_ON_SENDING_EMAIL = 43;
+    public static $ERROR_ON_INSERTING_USER_HAS_LOCATION = 44;
+    public static $ERROR_ON_DELETING_USER_LOCATION = 45;
 
     private $error;
 
@@ -168,6 +170,10 @@ class db_errors
                 return '$ERROR_ON_GETTING_USERS';
             case 43:
                 return '$ERROR_ON_SENDING_EMAIL';
+            case 44:
+                return '$ERROR_ON_INSERTING_USER_HAS_LOCATION';
+            case 45:
+                return '$ERROR_ON_DELETING_USER_LOCATION';
             default:
                 return 'UNKNOWN_ERROR';
         }

@@ -44,7 +44,7 @@
                         {{location.name || 'Inserire nome'}}
                     </td>
 
-                    <td md-cell ng-click="deleteManagedLocation($event, location)"><img
+                    <td md-cell ng-click="deleteManagedLocation(location)"><img
                             src="img/icons/delete_trash_24.png" alt="Cancella mac" title="Aggiungi mac"></td>
                 </tr>
                 <tr md-row ng-show="locations.length === 0">

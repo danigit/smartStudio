@@ -1968,7 +1968,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT zone.ID, zone.NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, FLOOR_ID FROM zone JOIN floor 
+            $this->query = "SELECT zone.ID, zone.NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, COLOR, FLOOR_ID FROM zone JOIN floor 
                             ON FLOOR_ID = floor.ID JOIN location l on floor.LOCATION_ID = l.ID JOIN user_has_location 
                             ON l.ID = user_has_location.LOCATION_ID JOIN user u ON user_has_location.USER_ID = u.ID 
                             WHERE floor.NAME = ? AND l.NAME = ? AND u.NAME = ?";
@@ -1985,7 +1985,8 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_left' => $row['X_LEFT'],
-                    'x_right' => $row['X_RIGHT'], 'y_up' => $row['Y_UP'], 'y_down' => $row['Y_DOWN'], 'floor_id' => $row['FLOOR_ID']);
+                    'x_right' => $row['X_RIGHT'], 'y_up' => $row['Y_UP'], 'y_down' => $row['Y_DOWN'],
+                    'color' => $row['COLOR'], 'floor_id' => $row['FLOOR_ID']);
             }
 
             return $result_array;
@@ -2006,10 +2007,10 @@ class Connection
         if ($this->connection) {
             $decoded = json_decode($data, true);
 
-            $this->query = "INSERT INTO zone (NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, FLOOR_ID) VALUES (?, ?, ?, ?, ?, ?)";
+            $this->query = "INSERT INTO zone (NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, COLOR, FLOOR_ID) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            $statement = $this->execute_inserting($this->query, 'siiiii', $decoded['name'], $decoded['x_left'], $decoded['x_right'],
-                $decoded['y_up'], $decoded['y_down'], $decoded['floor']);
+            $statement = $this->execute_inserting($this->query, 'siiiisi', $decoded['name'], $decoded['x_left'], $decoded['x_right'],
+                $decoded['y_up'], $decoded['y_down'], $decoded['color'], $decoded['floor']);
 
             if ($statement instanceof db_errors)
                 return $statement;
@@ -2309,6 +2310,47 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    function insert_managed_location($user, $locations){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            for ($i = 0; $i < count($locations); $i++) {
+
+                $this->query = "INSERT INTO user_has_location (user_id, location_id) VALUES (?, ?)";
+
+                $statement = $this->execute_inserting($this->query, 'ii', $user, $locations[$i]);
+
+                if ($statement instanceof db_errors)
+                    return $statement;
+                else if ($statement == false)
+                    return new db_errors(db_errors::$ERROR_ON_INSERTING_USER_HAS_LOCATION);
+            }
+
+            return $this->connection->insert_id;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function delete_managed_location($user, $locations){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'DELETE FROM user_has_location WHERE USER_ID = ? AND LOCATION_ID = ?';
+
+            $statement = $this->execute_selecting($this->query, 'ii', $user, $locations);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_DELETING_USER_LOCATION);
+
+            return $statement->affected_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
     function get_alpha()
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -2325,6 +2367,33 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array = array('alpha' => $row['ZONE_ALPHA']);
+            }
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function get_indoor_tag_location($tag)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'SELECT l.NAME FROM tag JOIN anchor a on tag.ANCHOR_ID = a.ID JOIN floor f on a.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID WHERE tag.ID = ?';
+
+            $statement = $this->execute_selecting($this->query, 'i', $tag);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATION_BY_USER);
+
+            $this->result = $statement->get_result();
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array = array('name' => $row['NAME']);
             }
 
             return $result_array;

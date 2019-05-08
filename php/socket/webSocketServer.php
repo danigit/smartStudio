@@ -819,6 +819,36 @@ class webSocketServer implements MessageComponentInterface{
                 break;
             }
             //changing the location field
+            case 'insert_managed_location':{
+                $result['action'] = 'insert_managed_location';
+                $query = $this->connection->insert_managed_location($decoded_message['data']['user'], $decoded_message['data']['locations']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
+            case 'delete_managed_location':{
+                $result['action'] = 'delete_managed_location';
+                $query = $this->connection->delete_managed_location($decoded_message['data']['user'], $decoded_message['data']['location_id']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
+            case 'get_indoor_tag_location':{
+                $result['action'] = 'get_indoor_tag_location';
+                $query = $this->connection->get_indoor_tag_location($decoded_message['data']['tag']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
             case 'get_alpha':{
                 $result['action'] = 'get_alpha';
                 $query = $this->connection->get_alpha();
