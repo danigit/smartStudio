@@ -1,9 +1,10 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -13,7 +14,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">SITI</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.sites | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -23,7 +24,7 @@
 <!--popup content-->
 <md-content class="popup-padding">
 
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <md-table-container>
 
@@ -32,10 +33,13 @@
 
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column md-order-by="name"><span class="color-darkcyan">NOME</span></th>
-                    <th md-column md-order-by="latitude"><span class="color-darkcyan">LATITUDE</span></th>
-                    <th md-column md-order-by="longitude"><span class="color-darkcyan">LONGITUDE</span></th>
-                    <th md-column md-order-by="radius"><span class="color-darkcyan">RAGGIO</span></th>
+                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column md-order-by="latitude"><span
+                            class="color-darkcyan">{{lang.latitude | uppercase}}</span></th>
+                    <th md-column md-order-by="longitude"><span
+                            class="color-darkcyan">{{lang.longitude | uppercase}}</span></th>
+                    <th md-column md-order-by="radius"><span class="color-darkcyan">{{lang.radius | uppercase}}</span>
+                    </th>
                     <th md-column></th>
                 </tr>
                 </thead>
@@ -45,22 +49,23 @@
                     ng-repeat="location in locationsTable | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell class="no-wrap" ng-click="editCell($event, location, 'name')"
                         ng-class="{'md-placeholder': !location.name}">
-                        {{location.name || 'Inserire nome'}}
+                        {{location.name || lang.insertName}}
                     </td>
                     <td md-cell class="no-wrap" ng-click="editCell($event, location, 'latitude')"
-                        ng-class="{'md-placeholder': !location.latitude}">{{location.latitude || 'Inserire latitudine'}}
+                        ng-class="{'md-placeholder': !location.latitude}">{{location.latitude || lang.insertLatitude}}
                     </td>
                     <td md-cell class="no-wrap" ng-click="editCell($event, location, 'longitude')"
-                        ng-class="{'md-placeholder': !location.longitude}">{{location.longitude || 'Inserire longitudine'}}
+                        ng-class="{'md-placeholder': !location.longitude}">{{location.longitude || lang.longitude}}
                     </td>
                     <td md-cell class="no-wrap" ng-click="editCell($event, location, 'radius')"
-                        ng-class="{'md-placeholder': !location.radius.toString()}">{{location.radius}}
+                        ng-class="{'md-placeholder': !location.radius.toString()}">{{location.radius ||
+                        lang.insertRadius}}
                     </td>
                     <td md-cell class="no-wrap" ng-click="deleteRow(location)"><img
                             src="img/icons/delete_trash_24.png" alt="Cancella sito" title="Cancella sito"></td>
                 </tr>
                 <tr md-row ng-show="tableEmpty">
-                    <td md-cell colspan="8" class="text-center color-red">Nessun risultato trovato</td>
+                    <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -69,7 +74,7 @@
         <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
-                     ng-click="addNewRow()" alt="Aggiungi sito" title="Aggiungi sito">
+                     ng-click="addNewRow()" alt="{{lang.addSite}}" title="{{lang.addSite}}">
             </div>
         </md-input-container>
 

@@ -1,9 +1,9 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" ng-class="insertManagedLocations.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -13,7 +13,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">LOCATIONS</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.locations}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -23,7 +23,7 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <form id="insertManagedLocationsForm" name="insertManagedLocationsForm">
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
@@ -40,7 +40,7 @@
 
             <div layout="row" layout-align="center end" class="width-100 margin-top-20-px">
                 <md-button ng-click="addManagedLocation(insertManagedLocationsForm)" class="md-raised background-darkcyan color-white">
-                    INSERISCI LOCATION
+                    {{lang.insertLocation}}
                 </md-button>
             </div>
         </form>

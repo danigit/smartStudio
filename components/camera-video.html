@@ -1,0 +1,31 @@
+<div ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="isTagInAlarm">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{camera.description}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+    <!--end popup header-->
+
+    <!--popup content-->
+    <md-content>
+        <div layout="column" layout-align="center center">
+            <video width="400" controls>
+                <source src="resources/videoplayback.mp4" type="video/mp4">
+            </video>
+        </div>
+    </md-content>
+    <!--end popup content-->

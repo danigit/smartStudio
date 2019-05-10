@@ -1,9 +1,10 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" ng-class="isTagInAlarm">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -24,7 +25,7 @@
         <div layout="column" layout-align="center center">
             <md-list>
                 <md-list-item class="width-300-px">
-                    <p class="float-left">Tipo WeTAG:</p>
+                    <p class="float-left">{{lang.wetagType}}:</p>
                     <p class="float-right text-right">{{tag.type_name}}</p>
                 </md-list-item>
             </md-list>

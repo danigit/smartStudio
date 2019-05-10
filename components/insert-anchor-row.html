@@ -1,9 +1,10 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" ng-class="insertAnchor.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -13,7 +14,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">INSERIMENTO ANCORA</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.insertingAnchor | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -22,33 +23,33 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <form id="insertAnchorForm" name="insertAnchorForm">
             <div layout="row">
                 <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
                     <input required type="text" ng-model="insertAnchor.name" name="insertAnchorName"
-                           placeholder="Nome">
+                           placeholder="{{lang.name}}">
                     <div ng-messages="insertAnchorForm.insertAnchorName.$error || insertAnchorForm.$submitted"
                          role="alert">
-                        <div ng-message=" required">Inserire un nome</div>
+                        <div ng-message=" required">{{lang.insertName}}</div>
                     </div>
                 </md-input-container>
 
                 <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
                     <input required type="text" ng-model="insertAnchor.mac" name="insertAnchorMac"
-                           placeholder="Mac">
+                           placeholder="{{lang.mac}}">
                     <div ng-messages="insertAnchorForm.insertAnchorMac.$error || insertAnchorForm.$submitted"
                          role="alert">
-                        <div ng-message=" required">Inserire un mac</div>
+                        <div ng-message=" required">{{lang.insertMac}}</div>
                     </div>
                 </md-input-container>
             </div>
             <div layout="row">
                 <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0 width-50">
-                    <label>Tipologia</label>
+                    <label>{{lang.type}}</label>
                     <md-select ng-model="insertAnchor.selectedType">
-                        <md-option><em>Nessuno</em></md-option>
+                        <md-option><em>{{lang.nothing}}</em></md-option>
                         <md-option ng-repeat="anchorType in anchorTypes track by $index"
                                    ng-value="anchorType.description">
                             {{anchorType.description}}
@@ -57,10 +58,10 @@
                 </md-input-container>
                 <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
                     <input required type="text" ng-model="insertAnchor.ip" name="insertAnchorIp"
-                           placeholder="Ip">
+                           placeholder="{{lang.ip}}">
                     <div ng-messages="insertAnchorForm.insertAnchorIp.$error || insertAnchorForm.$submitted"
                          role="alert">
-                        <div ng-message=" required">Inserire un ip</div>
+                        <div ng-message=" required">{{lang.insertIp}}</div>
                     </div>
                 </md-input-container>
             </div>
@@ -68,31 +69,31 @@
             <div layout="row">
                 <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
                     <input required type="number" ng-model="insertAnchor.proximity" name="insertAnchorProximity"
-                           placeholder="Proximity">
+                           placeholder="{{lang.proximity}}">
                     <div ng-messages="insertAnchorForm.insertAnchorProximity.$error || insertAnchorForm.$submitted"
                          role="alert">
-                        <div ng-message=" required">Inserire proximity</div>
+                        <div ng-message=" required">{{lang.insertProximity}}</div>
                     </div>
                 </md-input-container>
                 <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
                     <input required type="number" ng-model="insertAnchor.rssi" name="insertAnchorRssi"
-                           placeholder="Rssi">
+                           placeholder="{{lang.rssi}}">
                     <div ng-messages="insertAnchorForm.insertAnchorRssi.$error || insertAnchorForm.$submitted"
                          role="alert">
-                        <div ng-message=" required">Inserire rssi</div>
+                        <div ng-message=" required">{{lang.insertRssi}}</div>
                     </div>
                 </md-input-container>
             </div>
 
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                <label>Neighbors</label>
-                <md-select ng-model="selectedNeighbors"
+                <label>{{lang.neighbors}}</label>
+                <md-select ng-model="insertAnchor.selectedNeighbors"
                            md-on-close="clearSearch()"
                            multiple>
                     <md-select-header class="multiple-selection-list-header">
                         <input ng-model="searchString"
                                type="search"
-                               placeholder="Cerca un'ancora..."
+                               placeholder="{{lang.searchAnchor}}"
                                class="search-input"
                                ng-keydown="updateSearch($event)">
                     </md-select-header>
@@ -105,14 +106,14 @@
             </md-input-container>
 
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                <label>Permitted</label>
-                <md-select ng-model="selectedPermitteds"
+                <label>{{lang.permitted}}</label>
+                <md-select ng-model="insertAnchor.selectedPermitteds"
                            md-on-close="clearSearch()"
                            multiple>
                     <md-select-header class="multiple-selection-list-header">
                         <input ng-model="searchString"
                                type="search"
-                               placeholder="Cerca un tag..."
+                               placeholder="{{lang.searchTag}}"
                                class="search-input"
                                ng-keydown="updateSearch($event)">
                     </md-select-header>
@@ -126,7 +127,7 @@
 
             <div layout="row" layout-align="center end" class="width-100 margin-top-15-px">
                 <md-button ng-click="addAnchor(insertAnchorForm)" class="md-raised background-darkcyan color-white">
-                    INSERISCI ANCORA
+                    {{lang.insertAnchor | uppercase}}
                 </md-button>
             </div>
         </form>

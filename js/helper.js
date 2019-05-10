@@ -26,6 +26,14 @@ function encodeRequest(action, data) {
     return JSON.stringify({action: action, data: data});
 }
 
+function encodeRequestWithId(id, action, data) {
+    return JSON.stringify({id: id, action: action, data: data});
+}
+
+function parseResponse(response) {
+    return JSON.parse(response.data);
+}
+
 /**
  * Function that draws the grid on the canvas
  * @param canvasWidth
@@ -208,7 +216,6 @@ function convertImageToBase64(img) {
         return Promise.resolve(null);
 
     let image = new Image();
-    image.src = URL.createObjectURL(img);
 
     let canvas  = document.createElement('canvas');
     let context = canvas.getContext('2d');
@@ -224,7 +231,9 @@ function convertImageToBase64(img) {
             data = canvas.toDataURL('image/png');
 
             resolve(data);
-        }
+        };
+
+        image.src = URL.createObjectURL(img);
     })
 }
 
@@ -235,18 +244,19 @@ function convertImageToBase64(img) {
  * @param canvasHeight
  * @param elemWidth
  * @param elemHeight
- * @returns {{x: number, y: number}}
+ * @returns {{x: string, y: string}}
  */
 function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemWidth, elemHeight) {
     let realHeight       = (floorWidth * canvasHeight) / canvasWidth;
     let reversePositionX = ((elemWidth * floorWidth * 100) / canvasWidth) / 100;
     let reversePositionY = ((elemHeight * realHeight * 100) / canvasHeight) / 100;
 
-    return {x: reversePositionX, y: reversePositionY};
+    return {x: reversePositionX.toFixed(2), y: reversePositionY.toFixed(2)};
 }
 
 /**
  * Function that clears the canvas and drawing the background and the grid system
+ * @param dataService
  * @param lines
  * @param canvasWidth
  * @param canvasHeight
@@ -256,7 +266,7 @@ function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemW
  * @param floorWidth
  * @param showDrawing
  */
-function updateDrawingCanvas(lines, canvasWidth, canvasHeight, canvasContext, image, map_spacing, floorWidth, showDrawing) {
+function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canvasContext, image, map_spacing, floorWidth, showDrawing) {
     // console.log('showdrawing: ', showDrawing);
     updateCanvas(canvasWidth, canvasHeight, canvasContext, image);
 
@@ -267,6 +277,17 @@ function updateDrawingCanvas(lines, canvasWidth, canvasHeight, canvasContext, im
     lines.forEach((line) => {
         drawLine(line.begin, line.end, line.type, canvasContext, showDrawing);
     });
+
+
+    if (showDrawing && anchorPositioning) {
+        dataService.loadImagesAsynchronouslyWithPromise(dataService.anchors, 'anchor').then(
+            function (allImages) {
+                allImages.forEach(function (image, index) {
+                    drawIcon(dataService.anchors[index], canvasContext, image, floorWidth, canvasWidth, canvasHeight, false);
+                })
+            }
+        )
+    }
 }
 
 /**
@@ -282,26 +303,24 @@ function drawLine(begin, end, type, drawingContext, showDrawing) {
     drawingContext.lineWidth   = 2;
     drawingContext.strokeStyle = 'black';
     drawingContext.beginPath();
+    drawingContext.moveTo(begin.x, begin.y);
     if (type === 'vertical') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect({x: begin.x, y: end.y}, drawingContext);
         }
-        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(begin.x, end.y);
     } else if (type === 'horizontal') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect({x: end.x, y: begin.y}, drawingContext);
         }
-        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(end.x, begin.y);
     } else if (type === 'inclined') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect(end, drawingContext);
         }
-        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(end.x, end.y)
     }
     drawingContext.stroke();

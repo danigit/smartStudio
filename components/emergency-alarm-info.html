@@ -1,9 +1,10 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" class="background-red">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -13,7 +14,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">STATO EVACUAZIONE</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.evacuationState | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -32,26 +33,25 @@
             <div layout="column">
                 <md-list>
                     <md-list-item class="md-3-line">
-                        <img src="img/icons/safe-men.png" class="md-avatar" alt="Persona in area sicura"
-                             title="Persona in area sicura">
+                        <img src="img/icons/safe-men.png" class="md-avatar" alt="{{lang.safeAreaPersons}}"
+                             title="{{lang.safeAreaPersons}}">
                         <div class="md-list-item-text" layout="column">
-                            <h3>Persone nell'area sicura: <b class="color-green">{{ men.safe }}</b></h3>
-                            <h4>{{ men.safe }} persone si trovano in una zona sicura</h4>
+                            <h3>{{lang.safeAreaPersons}}: <b class="color-green">{{ men.safe }}</b></h3>
+                            <h4>{{ men.safe }} {{lang.safeAreaPersons | lowercase}}</h4>
                         </div>
                     </md-list-item>
                     <md-list-item class="md-3-line">
                         <img src="img/icons/unsafe-men.png" class="md-avatar"
-                             alt="Persona non in area sicura" title="Persona non in area sicura">
+                             alt="{{lang.notSafeAreaPersons}}" title="{{lang.notSafeAreaPersons}}">
                         <div class="md-list-item-text" layout="column">
-                            <h3>Persone disperse: <b class="color-red">{{ men.unsafe }}</b></h3>
-                            <h4>{{ men.unsafe }} persone risultano disperse all'interno del locale</h4>
-                            <p>
-                                <md-chips input-aria-label="Tag non in area sicura">
-                                    <md-chip class="background-red color-white" ng-repeat="unsafeTag in unsafeTags">
-                                        {{unsafeTag.name}}
-                                    </md-chip>
-                                </md-chips>
-                            </p>
+                            <h3>{{lang.notSafeAreaPersons}}: <b class="color-red">{{ men.unsafe }}</b></h3>
+                            <h4>{{ men.unsafe }} {{lang.notSafeAreaPersons | lowercase}}</h4>
+                            <md-select ng-if="unsafeTags.length > 0" ng-model="antani"
+                                       placeholder="{{lang.lostPersons}}">
+                                <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in unsafeTags">
+                                    {{tag.name}}
+                                </md-option>
+                            </md-select>
                         </div>
                     </md-list-item>
                 </md-list>

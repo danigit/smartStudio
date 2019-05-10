@@ -1,9 +1,10 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" class="background-red">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -13,16 +14,17 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">ALLARMI ATTIVI</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.activeAllarms | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
 </div>
 <!--end popup header-->
 
+
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <md-table-container>
 
@@ -32,25 +34,33 @@
                 <thead md-head md-order="query.order">
                 <tr md-row>
                     <th md-column><span class="color-darkcyan"></span></th>
-                    <th md-column md-order-by="tag"><span class="color-darkcyan">TAG</span></th>
-                    <th md-column md-order-by="name"><span class="color-darkcyan">NOME</span></th>
-                    <th md-column md-order-by="description"><span class="color-darkcyan">DESCRIZIONE</span></th>
-                    <th md-column md-order-by="location"><span class="color-darkcyan">LOCATION</span></th>
+                    <th md-column md-order-by="tag"><span class="color-darkcyan">{{lang.tag | uppercase}}</span></th>
+                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column md-order-by="description"><span class="color-darkcyan">{{lang.description | uppercase}}</span>
+                    </th>
+                    <th md-column md-order-by="location"><span
+                            class="color-darkcyan">{{lang.location | uppercase}}</span></th>
                 </tr>
                 </thead>
 
                 <tbody md-body>
-                <tr ng-hide="alarm.name === 'Tag fuori sito' && !outlocationTags" md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
+                <tr ng-hide="alarm.name === 'Tag fuori sito' && !outlocationTags" md-row md-select="anchor"
+                    md-on-select="logItem" md-auto-select="true"
                     ng-repeat="alarm in alarms | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
-                    <td md-cell><img ng-src="{{alarm.image}}" class="md-avatar" alt="{{alarm.name}}" title="{{alarm.name}}" />
+                    <td md-cell><img ng-src="{{alarm.image}}" class="md-avatar" alt="{{alarm.name}}"
+                                     title="{{alarm.name}}"/>
                     </td>
                     <td md-cell class="no-wrap">{{alarm.tag}}</td>
-                    <td md-cell class="no-wrap" >{{alarm.name}}</td>
-                    <td md-cell class="no-wrap" >{{alarm.description}}</td>
-                    <td md-cell class="no-wrap" >{{alarm.location}}</td>
-                    <td md-cell class="no-wrap" ><md-button ng-click="(alarm.name !== 'Tag fuori sito') ? loadLocation(alarm) : loadTagPosition(alarm)" class="md-raised background-darkcyan color-white">
-                        Apri sito
-                    </md-button></td>
+                    <td md-cell class="no-wrap">{{alarm.name}}</td>
+                    <td md-cell class="no-wrap">{{alarm.description}}</td>
+                    <td md-cell class="no-wrap">{{alarm.location}}</td>
+                    <td md-cell class="no-wrap">
+                        <md-button
+                                ng-click="(alarm.name !== 'Tag fuori sito') ? loadLocation(alarm) : loadTagPosition(alarm)"
+                                class="md-raised background-darkcyan color-white">
+                            {{lang.openSite | uppercase}}
+                        </md-button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -60,21 +70,6 @@
                              md-page="query.page"
                              md-total="{{alarms.length}}" md-on-paginate="getAnchors">
         </md-table-pagination>
-
-        <!--<md-progress-circular ng-show="alarms.length === 0" md-diameter="100"-->
-                              <!--md-mode="indeterminate"></md-progress-circular>-->
-        <!--<md-list>-->
-            <!--<md-divider></md-divider>-->
-            <!--<md-list-item class="md-3-line" ng-repeat="alarm in alarms" ng-click="loadLocation(alarm)">-->
-                <!--<md-divider></md-divider>-->
-                <!--<img ng-src="{{alarm.image}}" class="md-avatar" alt="{{alarm.name}}"/>-->
-                <!--<div class="md-list-item-text" layout="column">-->
-                    <!--<h3>{{ alarm.tag }}</h3>-->
-                    <!--<h4>{{ alarm.name }}</h4>-->
-                    <!--<p>{{ alarm.description }}</p>-->
-                <!--</div>-->
-            <!--</md-list-item>-->
-        <!--</md-list>-->
     </div>
 </md-content>
 <!--end popup content-->

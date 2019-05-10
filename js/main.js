@@ -67,6 +67,12 @@
                                         result.isUserManager      = response.result[0].role;
                                         result.password_changed = response.result[0].password_changed;
                                         console.log(result.password_changed)
+                                    }else if (response.result[0].role === 0){
+                                        dataService.isAdmin = 0;
+                                        dataService.isUserManager = 0;
+                                        result.isAdmin = 0;
+                                        result.isUserManager = 0;
+                                        result.password_changed = response.result[0].password_changed;
                                     }
                                     console.log(response.result[0]);
                                     return socketService.sendRequest('get_markers', {username: response.result[0].username})
@@ -77,7 +83,7 @@
                             .then((response) => {
                                 result.markers = response.result;
                                 console.log(result.markers);
-                                if (response.result.length === 1){
+                                if (response.result.length === 1 && response.result[0].one_location === 1){
                                     socketService.sendRequest('save_location', {location: response.result[0].name})
                                         .then((response) => {
                                             if (response.result === 'location_saved') {
@@ -161,6 +167,7 @@
                             .then((response) => {
                                 if (response !== null && response !== undefined) {
                                     dataService.allTags = response.result;
+                                    dataService.alarmsSounds = [];
                                     promise.resolve(result);
                                 }
                             })

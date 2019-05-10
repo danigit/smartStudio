@@ -88,6 +88,7 @@ class webSocketServer implements MessageComponentInterface{
         switch ($decoded_message['action']){
             //handeling login
             case 'login':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'login';
                 $query = $this->connection->login($decoded_message['data']['username'], $decoded_message['data']['password']);
 
@@ -108,6 +109,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //handeling logout
             case 'logout':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'logout';
 
                 if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'])) {
@@ -122,6 +124,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //geting the user
             case 'get_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_user';
 
                 if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'])) {
@@ -137,6 +140,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a location
             case 'insert_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_location';
                 $query = $this->connection->insert_location($decoded_message['data']['user'], $decoded_message['data']['name'], $decoded_message['data']['description'],
                     $decoded_message['data']['latitude'], $decoded_message['data']['longitude'], $decoded_message['data']['imageName'], $decoded_message['data']['radius'],
@@ -149,6 +153,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //deleting a location
             case 'delete_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_location';
 
                 $query = $this->connection->delete_location($decoded_message['data']['location_id']);
@@ -160,6 +165,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //saving a location
             case 'save_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_location';
 
                 if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'])) {
@@ -173,6 +179,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'change_location_field':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_location_field';
                 $query = $this->connection->change_location_field($decoded_message['data']['location_id'], $decoded_message['data']['location_field'],
                     $decoded_message['data']['field_value']);
@@ -184,6 +191,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting a location infos
             case 'get_location_info':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_location_info';
 
                 if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'], $_SESSION['location'])) {
@@ -199,6 +207,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting all the locations
             case 'get_all_locations':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_all_locations';
 
                 $query = $this->connection->get_all_locations();
@@ -210,6 +219,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting a location by user
             case 'get_locations_by_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_location_by_user';
 
                 $query = $this->connection->get_locations_by_user($decoded_message['data']['user']);
@@ -221,6 +231,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //saving marker image
             case 'save_marker_image':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_marker_image';
 
                 if (array_key_exists('image', $decoded_message['data'])) {
@@ -234,6 +245,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the locations
             case 'get_markers':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_markers';
                 $query = $this->connection->get_markers($decoded_message['data']['username']);
 
@@ -244,6 +256,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a floor
             case 'insert_floor':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_floor';
                 $query = $this->connection->insert_floor($decoded_message['data']['name'], $decoded_message['data']['map_image'], $decoded_message['data']['map_width'],
                 $decoded_message['data']['spacing'], $decoded_message['data']['location']);
@@ -255,6 +268,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //deleting a floor
             case 'delete_floor':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_floor';
 
                 $query = $this->connection->delete_floor($decoded_message['data']['floor_id']);
@@ -266,6 +280,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //saving floor image
             case 'save_floor_image':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_floor_image';
 
                 if (array_key_exists('image', $decoded_message['data'])) {
@@ -279,6 +294,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //updating floor image
             case 'update_floor_image':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_floor_image';
 
                 $query = $this->connection->update_floor_image($decoded_message['data']['name'], $decoded_message['data']['id']);
@@ -297,6 +313,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting floor info
             case 'get_floor_info':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_floor_info';
                 $query = $this->connection->get_floor_info($decoded_message['data']['location'], $decoded_message['data']['floor']);
 
@@ -307,6 +324,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the floors by location
             case 'get_floors_by_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_floors_by_location';
                 $query = $this->connection->get_floors_by_location($decoded_message['data']['location']);
 
@@ -317,6 +335,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the floors by user
             case 'get_floors_by_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_floors_by_user';
                 $query = $this->connection->get_floors_by_user($decoded_message['data']['user']);
 
@@ -327,6 +346,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the floor field
             case 'change_floor_field':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_floor_field';
                 $query = $this->connection->change_floor_field($decoded_message['data']['floor_id'], $decoded_message['data']['floor_field'], $decoded_message['data']['field_value']);
 
@@ -337,6 +357,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //save the canvas drawing
             case 'save_drawing':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_drawing';
                 $query = $this->connection->save_drawing($decoded_message['data']['lines'], $decoded_message['data']['floor'], $decoded_message['data']['zones']);
 
@@ -347,6 +368,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the saved drawing
             case 'get_drawing':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_drawing';
                 $query = $this->connection->get_drawing($decoded_message['data']['floor']);
 
@@ -357,6 +379,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a tag
             case 'insert_tag':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_tag';
 
                 $query = $this->connection->insert_tag($decoded_message['data']['name'], $decoded_message['data']['type'], $decoded_message['data']['macs']);
@@ -368,6 +391,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //deleting a tag
             case 'delete_tag':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_tag';
 
                 $query = $this->connection->delete_tag($decoded_message['data']['tag_id']);
@@ -379,6 +403,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changeng the tag field
             case 'change_tag_field':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_tag_field';
                 $query = $this->connection->change_tag_field($decoded_message['data']['tag_id'], $decoded_message['data']['tag_field'],
                     $decoded_message['data']['field_value']);
@@ -390,6 +415,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting all the tags
             case 'get_all_tags':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_all_tags';
                 $query = $this->connection->get_all_tags();
 
@@ -400,6 +426,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the tags by user
             case 'get_tags_by_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_tags_by_user';
                 $query = $this->connection->get_tags_by_user($decoded_message['data']['user']);
 
@@ -410,6 +437,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the tags by floor and location
             case 'get_tags_by_floor_and_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_tags_by_floor_and_location';
                 $query = $this->connection->get_tags_by_floor_and_location($decoded_message['data']['floor'], $decoded_message['data']['location']);
 
@@ -420,6 +448,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the tag macs
             case 'get_tag_macs':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_tag_macs';
 
                 $query = $this->connection->get_tag_macs($decoded_message['data']['tag']);
@@ -431,6 +460,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the tag types
             case 'get_all_types':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_all_types';
 
                 $query = $this->connection->get_all_types();
@@ -442,6 +472,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the floor of a certain tag
             case 'get_tag_floor':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_tag_floor';
                 $query = $this->connection->get_tag_floor($decoded_message['data']['tag']);
 
@@ -452,6 +483,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a mac
             case 'insert_mac':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_mac';
 
                 $query = $this->connection->insert_mac($decoded_message['data']['name'], $decoded_message['data']['type'], $decoded_message['data']['tag_id']);
@@ -463,6 +495,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //deleting a mac
             case 'delete_mac':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_mac';
 
                 $query = $this->connection->delete_mac($decoded_message['data']['mac_id']);
@@ -474,6 +507,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the mac field
             case 'change_mac_field':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_mac_field';
                 $query = $this->connection->change_mac_field($decoded_message['data']['mac_id'], $decoded_message['data']['mac_field'],
                     $decoded_message['data']['field_value']);
@@ -485,6 +519,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting an anchor
             case 'insert_anchor':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_anchor';
 
                 $query = $this->connection->insert_anchor($decoded_message['data']['name'], $decoded_message['data']['mac'], $decoded_message['data']['type'], $decoded_message['data']['ip'],
@@ -497,6 +532,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //deleting an anchor
             case 'delete_anchor':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_anchor';
 
                 $query = $this->connection->delete_anchor($decoded_message['data']['anchor_id']);
@@ -508,6 +544,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the anchor tipes
             case 'get_anchor_types':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_anchor_types';
 
                 $query = $this->connection->get_anchor_types();
@@ -519,6 +556,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the anchor field
             case 'change_anchor_field':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_anchor_field';
                 $query = $this->connection->change_anchor_field($decoded_message['data']['anchor_id'], $decoded_message['data']['anchor_field'], $decoded_message['data']['field_value']);
 
@@ -529,6 +567,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //updating the achor pasition
             case 'update_anchor_position':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'update_anchor_position';
 
                 $query = $this->connection->update_anchor_position($decoded_message['data']['x'], $decoded_message['data']['y'], $decoded_message['data']['id']);
@@ -540,6 +579,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the anchors by floor and location
             case 'get_anchors_by_floor_and_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_anchors_by_floor_and_location';
                 $query = $this->connection->get_anchors_by_floor_and_location($decoded_message['data']['floor'], $decoded_message['data']['location']);
 
@@ -550,6 +590,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the anchors by location
             case 'get_anchors_by_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_anchors_by_location';
                 $query = $this->connection->get_anchors_by_location($decoded_message['data']['location']);
 
@@ -560,6 +601,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the anchors by user
             case 'get_anchors_by_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_anchors_by_user';
                 $query = $this->connection->get_anchors_by_user($decoded_message['data']['user']);
 
@@ -570,6 +612,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the history
             case 'get_history':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_history';
                 $fromDate = $decoded_message['data']['fromDate'];
                 $toDate = $decoded_message['data']['toDate'];
@@ -586,6 +629,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the password
             case 'change_password':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_password';
                 $query = $this->connection->change_password($decoded_message['data']['oldPassword'], $decoded_message['data']['newPassword']);
 
@@ -596,6 +640,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the cameras by floor and location
             case 'get_cameras_by_floor_and_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_cameras_by_floor_and_location';
                 $query = $this->connection->get_cameras_by_floor_and_location($decoded_message['data']['floor'], $decoded_message['data']['location']);
 
@@ -606,6 +651,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the events
             case 'get_events':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_events';
                 $query = $this->connection->get_events();
 
@@ -616,6 +662,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the emergency info
             case 'get_emergency_info':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_emergency_info';
                 $query = $this->connection->get_emergency_info($decoded_message['data']['location'], $decoded_message['data']['floor']);
 
@@ -626,6 +673,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the emergency info
             case 'get_tag_outside_location_zoom':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_emergency_info';
                 $query = $this->connection->get_tag_outside_location_zoom();
 
@@ -636,6 +684,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the user settings
             case 'get_user_settings':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_user_settings';
                 $query = $this->connection->get_user_settings($decoded_message['data']['username']);
 
@@ -646,6 +695,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the user settings
             case 'update_user_settings':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'update_user_settings';
                 $query = $this->connection->update_user_settings($decoded_message['data']['username'], $decoded_message['data']['data']);
 
@@ -656,6 +706,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the zones
             case 'get_floor_zones':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_floor_zones';
 
                 $query = $this->connection->get_floor_zones($decoded_message['data']['floor'], $decoded_message['data']['location'], $decoded_message['data']['user']);
@@ -667,6 +718,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the zones
             case 'insert_floor_zone':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_floor_zone';
 
                 $query = $this->connection->insert_floor_zone($decoded_message['data']['data']);
@@ -678,6 +730,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the zones
             case 'delete_floor_zone':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_floor_zone';
 
                 $query = $this->connection->delete_floor_zone($decoded_message['data']['zone_id']);
@@ -689,6 +742,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'update_floor_zone':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'update_zone_floor';
                 $query = $this->connection->update_floor_zone($decoded_message['data']['zone_id'], $decoded_message['data']['x_left'],
                     $decoded_message['data']['x_right'], $decoded_message['data']['y_up'], $decoded_message['data']['y_down']);
@@ -700,6 +754,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'change_zone_field':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_zone_field';
                 $query = $this->connection->change_zone_field($decoded_message['data']['zone_id'], $decoded_message['data']['zone_field'],
                     $decoded_message['data']['field_value']);
@@ -710,6 +765,7 @@ class webSocketServer implements MessageComponentInterface{
                 break;
             }
             case 'delete_floor_zones': {
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_floor_zones';
 
                 $zones = $decoded_message['data']['zones'];
@@ -727,6 +783,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'get_generic_users':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_generic_users';
                 $query = $this->connection->get_generic_users();
 
@@ -737,6 +794,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a location
             case 'insert_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_user';
                 $query = $this->connection->insert_user($decoded_message['data']['username'], $decoded_message['data']['name'], $decoded_message['data']['email']);
 
@@ -747,6 +805,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a location
             case 'delete_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_user';
                 $query = $this->connection->delete_user($decoded_message['data']['user_id']);
 
@@ -757,6 +816,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'change_user_field':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_user_field';
                 $query = $this->connection->change_user_field($decoded_message['data']['user_id'], $decoded_message['data']['user_field'],
                     $decoded_message['data']['field_value']);
@@ -768,6 +828,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'get_all_users':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_all_users';
                 $query = $this->connection->get_all_users();
 
@@ -778,6 +839,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a location
             case 'insert_super_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_super_user';
                 $query = $this->connection->insert_super_user($decoded_message['data']['username'], $decoded_message['data']['name'],
                     $decoded_message['data']['email'], $decoded_message['data']['role']);
@@ -789,6 +851,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a location
             case 'delete_super_user':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_super_user';
                 $query = $this->connection->delete_user($decoded_message['data']['user_id']);
 
@@ -799,6 +862,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'change_super_user_field':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_super_user_field';
                 $query = $this->connection->change_user_field($decoded_message['data']['super_user_id'], $decoded_message['data']['super_user_field'],
                     $decoded_message['data']['field_value']);
@@ -810,6 +874,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'get_user_locations':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_user_locations';
                 $query = $this->connection->get_user_locations($decoded_message['data']['user']);
 
@@ -820,6 +885,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'insert_managed_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_managed_location';
                 $query = $this->connection->insert_managed_location($decoded_message['data']['user'], $decoded_message['data']['locations']);
 
@@ -830,6 +896,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'delete_managed_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_managed_location';
                 $query = $this->connection->delete_managed_location($decoded_message['data']['user'], $decoded_message['data']['location_id']);
 
@@ -840,6 +907,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'get_indoor_tag_location':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_indoor_tag_location';
                 $query = $this->connection->get_indoor_tag_location($decoded_message['data']['tag']);
 
@@ -850,6 +918,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'get_alpha':{
+                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_alpha';
                 $query = $this->connection->get_alpha();
 

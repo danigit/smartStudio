@@ -1,73 +1,75 @@
-<!--<div>-->
-<!--popup header-->
-<md-toolbar id="popup-toolbar" ng-class="location.resultClass">
-    <div layout="row" layout-align="end center" class="width-100">
-        <md-button class="md-icon-button margin-none" ng-click="hide()">
-            <img src="img/icons/close-icon.png" alt="Close" title="Close"/>
-        </md-button>
-    </div>
-
-    <div layout="row" layout-align="center center" class="margin-top--20-px">
-        <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
-    </div>
-
-    <div layout="column">
-        <div layout="row" layout-align="center center" class="">
-            <h1 class=" font-iceberg font-x-large">INSERIMENTO SITO</h1>
+<div ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="location.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
+            </md-button>
         </div>
-    </div>
-</md-toolbar>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{lang.insertingSite | uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
 <!--end popup header-->
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <form id="insertLocationForm" name="insertLocationForm">
             <md-input-container md-no-float class="margin-bottom-0">
                 <input required type="text" ng-model="location.name" name="locationName"
-                       placeholder="Nome">
+                       placeholder="{{lang.name}}">
                 <div ng-messages="insertLocationForm.locationName.$error || insertLocationForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire un nome</div>
+                    <div ng-message=" required">{{lang.insertName}}</div>
                 </div>
             </md-input-container>
 
             <md-input-container md-no-float class="margin-bottom-0">
                 <input required type="text" ng-model="location.description" name="locationDescription"
-                       placeholder=" Descrizione">
+                       placeholder="{{lang.description}}">
                 <div ng-messages="insertLocationForm.locationDescription.$error || insertLocationForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire una descrizione</div>
+                    <div ng-message=" required">{{lang.insertDescription}}</div>
                 </div>
             </md-input-container>
 
             <div layout="row">
                 <md-input-container md-no-float class="padding-right-10-px margin-bottom-0">
                     <input required type="number" ng-model="location.latitude" name="locationLat"
-                           placeholder="Latitude">
+                           placeholder="{{lang.latitude}}">
                     <div ng-messages="insertLocationForm.locationLat.$error || insertLocationForm.$submitted"
                          role="alert">
-                        <div ng-message=" required">Inserire la latitudine</div>
+                        <div ng-message=" required">{{lang.insertLatitude}}</div>
                     </div>
                 </md-input-container>
 
                 <md-input-container md-no-float class="padding-left-10-px margin-bottom-0">
                     <input required type="number" ng-model="location.longitude" name="locationLon"
-                           placeholder="Longitude">
+                           placeholder="{{lang.longitude}}">
                     <div ng-messages="insertLocationForm.locationLon.$error || insertLocationForm.$submitted"
                          role="alert">
-                        <div ng-message=" required">Inserire la longitudine</div>
+                        <div ng-message=" required">{{lang.insertLongitude}}</div>
                     </div>
                 </md-input-container>
             </div>
 
             <md-input-container ng-show="!location.isIndoor" md-no-float class="padding-left-10-px margin-bottom-0">
                 <input required type="number" ng-model="location.radius" name="locationRadius"
-                       placeholder="Radius">
+                       placeholder="{{lang.coverInGrades}}">
                 <div ng-messages="insertLocationForm.locationRadius.$error || insertLocationForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire il raggio</div>
+                    <div ng-message=" required">{{lang.insertRadius}}</div>
                 </div>
             </md-input-container>
 
@@ -75,7 +77,7 @@
                 <div layout="row" layout-align="center center">
                     <md-checkbox ng-model="location.isIndoor" aria-label="Checkbox 1"
                                  class="md-primary color-lightgray">
-                        Is indoor
+                        {{lang.isIndoor}}
                     </md-checkbox>
                 </div>
             </md-input-container>
@@ -98,11 +100,11 @@
                                    class="ng-hide"
                                    id="marker-image">
                         </label>
-                        SELEZIONA IMMAGINE
+                        {{lang.selectImage | uppercase}}
                     </md-button>
                 </div>
                 <md-button ng-click="insertLocation(insertLocationForm)"
-                           class="md-raised background-darkcyan color-white">INSERISCI SITO
+                           class="md-raised background-darkcyan color-white">{{lang.insertSite | uppercase}}
                 </md-button>
             </div>
         </form>

@@ -1,9 +1,10 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" ng-class="insertFloor.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -13,7 +14,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">INSERIMENTO PIANO</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.insertingFloor | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -22,32 +23,32 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <form id="insertFloorForm" name="insertFloorForm">
             <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
                 <input required type="text" ng-model="insertFloor.floorName" name="insertFloorFloorName"
-                       placeholder="Nome">
+                       placeholder="{{lang.name}}">
                 <div ng-messages="insertFloorForm.insertFloorName.$error || insertFloorForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire un nome</div>
+                    <div ng-message=" required">{{lang.insertName}}</div>
                 </div>
             </md-input-container>
 
             <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
                 <input required type="number" ng-model="insertFloor.mapWidth" name="insertFloorMapWidth"
-                       placeholder="Lunghezza">
+                       placeholder="{{lang.lengthValue}}">
                 <div ng-messages="insertFloorForm.insertFloorMapWidth.$error || insertFloorForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire una lunghezza</div>
+                    <div ng-message=" required">{{lang.insertLength}}</div>
                 </div>
             </md-input-container>
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
                 <input required type="number" ng-model="insertFloor.spacing" name="insertFloorSpacing"
-                       placeholder="Spaziatura">
+                       placeholder="{{lang.spacing}}">
                 <div ng-messages="insertFloorForm.insertFloorSpacing.$error || insertFloorForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire una spaziatura</div>
+                    <div ng-message=" required">{{lang.insertSpacing}}</div>
                 </div>
             </md-input-container>
 
@@ -69,11 +70,11 @@
                                    class="ng-hide"
                                    id="marker-image">
                         </label>
-                        SELEZIONA IMMAGINE
+                        {{lang.selectImage | uppercase}}
                     </md-button>
                 </div>
                 <md-button ng-click="insertFloor(insertFloorForm)" class="md-raised  background-darkcyan color-white">
-                    INSERISCI PIANO
+                    {{lang.insertFloor | uppercase}}
                 </md-button>
             </div>
         </form>

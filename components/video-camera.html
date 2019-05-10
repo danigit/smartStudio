@@ -1,9 +1,9 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" ng-class="isTagInAlarm">
         <div class="width-100" layout="row" layout-align="end center">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img alt="Close" src="img/icons/close-icon.png" title="Close"/>
+                <img alt="{{lang.close}}" src="img/icons/close-icon.png" title="{{lang.closeButton}}" aria-label="{{lang.closeButton}}" }}"/>
             </md-button>
         </div>
 
