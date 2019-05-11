@@ -78,7 +78,8 @@
         let imageIndex = 0;
         let alarmLocationsLength = 0;
         let allarmZoom = undefined;
-        let zoomSetted = false;
+        let zoomSetted = 0;
+        let controllerMap = null;
 
         //visualizing the data according if the user is admin or not
         homeCtrl.isAdmin = homeData.isAdmin;
@@ -222,11 +223,12 @@
                             if (!alarmLocationsContainLocation(marker)) {
                                 alarmLocations.push(marker);
                             }
-                            markerSelected.setIcon(markersIconPath + 'alarm_marker_32.png');
+                            markerSelected.setIcon(iconsPath + 'offline_tags_alert_64.png');
                         } else {
                             if (alarmLocationsContainLocation(marker)) {
                                 alarmLocations = alarmLocations.filter(l => !angular.equals(l.position === marker.position));
                             }
+
                             markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                         }
 
@@ -239,7 +241,7 @@
                             if (!alarmLocationsContainLocation(marker) && imageIndex === 0) {
                                 alarmLocations.push(marker);
                             }
-                            markerSelected.setIcon(markersIconPath + 'alarm_marker_32.png');
+                            markerSelected.setIcon(iconsPath + 'offline_tags_alert_64.png');
                         } else if (imageIndex === 0) {
                             if (alarmLocationsContainLocation(marker)) {
                                 alarmLocations = alarmLocations.filter(l => angular.equals(l.position !== marker.position));
@@ -250,7 +252,7 @@
                         let anchorsHaveAlarms = checkIfAnchorsHaveAlarms(locationAnchors);
 
                         if (anchorsHaveAlarms && imageIndex === 1) {
-                            markerSelected.setIcon(markersIconPath + 'alarm_anchor_marker_32.png');
+                            markerSelected.setIcon(iconsPath + 'offline_anchors_alert_64.png');
                         } else if (imageIndex === 1) {
                             markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                         }
@@ -310,24 +312,30 @@
                             findTagLocation(tags, indoorTags, parsedResponse.result, map);
                             // console.log(alarmLocations);
 
-                            if (alarmLocations.length === 0){
+                            console.log(zoomSetted);
+                            console.log(alarmLocations.length);
+                            if (alarmLocations.length === 0 && zoomSetted === 0){
                                 console.log('inside allarm location empty');
                                 alarmLocationsLength = 0;
-                                map.setCenter(new google.maps.LatLng(44.44, 8.88));
-                                // map.fitBounds(bounds);
+                                map.setCenter(bounds.getCenter());
+                                map.fitBounds(bounds);
+                                zoomSetted = 1
+                            }else if (alarmLocations.length > 0) {
+                                console.log('inside else');
+                                zoomSetted = 0;
                             }
 
-                            anchors                         = null;
+                            // anchors                         = null;
                             homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
 
                         }
                     };
                 }, 1000);
 
-                if (alarmLocations.length > 0){
-                    console.log('inside allarm location empty');
-                    map.setCenter(new google.maps.LatLng(44.44, 8.88));
-                }
+                // if (alarmLocations.length > 0){
+                //     console.log('inside allarm location not empty');
+                //     map.setCenter(new google.maps.LatLng(44.44, 8.88));
+                // }
             };
 
             $rootScope.$on('constantUpdateNotifications', function(event, map) {
@@ -335,6 +343,7 @@
             });
 
             NgMap.getMap('main-map').then((map) => {
+                controllerMap = map;
                 constantUpdateNotifications(map);
                 map.set('styles', mapConfiguration);
 
@@ -405,21 +414,27 @@
                     map.setZoom(11);
                 }//if the map has more than one marker I let maps to set automatically the zoom
                 else {
-                    // map.setCenter(bounds.getCenter());
-                    // map.fitBounds(bounds);
+                    map.setCenter(bounds.getCenter());
+                    map.fitBounds(bounds);
                 }
             });
 
             //showing the info window with the online/offline tags
             homeCtrl.showOfflineTagsHome = () => {
-                $interval.cancel(dataService.homeTimer);
-                dataService.showOfflineTags(false, constantUpdateNotifications);
+                if (dataService.homeTimer !== undefined){
+                    $interval.cancel(dataService.homeTimer);
+                    dataService.homeTimer = undefined;
+                    dataService.showOfflineTags('home', constantUpdateNotifications, controllerMap);
+                }
             };
 
             //showing the info window with the online/offline anchors
             homeCtrl.showOfflineAnchorsHome = () => {
-                $interval.cancel(dataService.homeTimer);
-                dataService.showOfflineAnchors(false, constantUpdateNotifications);
+                if (dataService.homeTimer !== undefined) {
+                    $interval.cancel(dataService.homeTimer);
+                    dataService.homeTimer = undefined;
+                    dataService.showOfflineAnchors('home', constantUpdateNotifications, controllerMap);
+                }
             };
 
             // const getTagsLocation = async (tags, locations) => {
@@ -658,6 +673,7 @@
         let tags         = null;
         let bounds       = new google.maps.LatLngBounds();
         let locationInfo = [];
+        let controllerMap = null;
 
         let socket = socketService.getSocket();
         dataService.updateMapTimer = null;
@@ -675,12 +691,20 @@
 
         //showing the info window with the online/offline tags
         outdoorCtrl.showOfflineTags = () => {
-            dataService.showOfflineTags(true);
+            if (dataService.updateMapTimer !== undefined){
+                $interval.cancel(dataService.updateMapTimer);
+                dataService.updateMapTimer = undefined;
+                dataService.showOfflineTags('outdoor', constantUpdateMapTags, controllerMap);
+            }
         };
 
         //showing the info window with the online/offline anchors
         outdoorCtrl.showOfflineAnchors = () => {
-            dataService.showOfflineAnchors(true);
+            if (dataService.updateMapTimer !== undefined) {
+                $interval.cancel(dataService.updateMapTimer);
+                dataService.updateMapTimer = undefined;
+                dataService.showOfflineAnchors('outdoor', constantUpdateMapTags, controllerMap);
+            }
         };
 
         //showing the info window with all the alarms
@@ -710,18 +734,42 @@
                             tags = parsedResponse.result;
                             dataService.getAllLocations()
                                 .then((response) => {
-                                    tags.forEach((tag) => {
 
-                                        let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, parsedResponse.result);
-
-                                        tagAlarms.forEach((tagAlarm) => {
-                                            $scope.alarms.push(tagAlarm);
+                                    dataService.getTagsLocation(tags, response.result)
+                                        .then((response) => {
+                                            response.forEach((tagAlarms) => {
+                                                if (tagAlarms.length !== 0){
+                                                    tagAlarms.forEach((alarm) => {
+                                                        $scope.alarms.push(alarm);
+                                                        console.log($scope.alarms);
+                                                    })
+                                                }
+                                            });
                                         })
-                                    });
-
                                 });
                         }
                     };
+
+                    // let id1 = ++requestId;
+                    // socket.send(encodeRequestWithId(id1, 'get_all_tags'));
+                    // socket.onmessage = (response) => {
+                    //     let parsedResponse = parseResponse(response);
+                    //     if (parsedResponse.id === id1) {
+                    //         tags = parsedResponse.result;
+                    //         dataService.getAllLocations()
+                    //             .then((response) => {
+                    //                 tags.forEach((tag) => {
+                    //
+                    //                     let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, response.result);
+                    //
+                    //                     tagAlarms.forEach((tagAlarm) => {
+                    //                         $scope.alarms.push(tagAlarm);
+                    //                     })
+                    //                 });
+                    //
+                    //             });
+                    //     }
+                    // };
 
                     //function that load a location when an alarm is clicked
                     $scope.loadLocation = (alarm) => {
@@ -825,7 +873,11 @@
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
-                }]
+                }],
+                onRemoving: function (event, removePromise) {
+                    if (dataService.updateMapTimer === undefined)
+                        constantUpdateMapTags(controllerMap);
+                }
             })
         };
 
@@ -838,6 +890,7 @@
         };
 
         NgMap.getMap('outdoor-map').then((map) => {
+            controllerMap = map;
             map.set('styles', mapConfiguration);
 
             if (!dataService.isSearchingTag)
@@ -893,6 +946,7 @@
                     });
 
                     dataService.updateMapTimer = $interval(() => {
+                        console.log('constant update outdoor map');
                         id1     = ++requestId;
                         let id2 = -1;
                         socket.send(encodeRequestWithId(id1, 'get_all_tags'));
@@ -941,7 +995,12 @@
                                                     controller         : ['$scope', 'tag', ($scope, tag) => {
                                                         $scope.tag          = tag;
                                                         $scope.isTagInAlarm = 'background-red';
-                                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
+                                                        $scope.alarms = [];
+
+                                                        dataService.getAllLocations()
+                                                            .then((response) => {
+                                                                $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag, response);
+                                                            });
 
                                                         if ($scope.alarms.length === 0) {
                                                             ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
@@ -1218,6 +1277,9 @@
 
             if (newValues[3]) {
                 openFullScreen(document.querySelector('body'));
+            }else if(document.fullscreenElement|| document.webkitFullscreenElement || document.mozFullScreenElement ||
+                document.msFullscreenElement){
+                document.exitFullscreen();
                 canvasCtrl.switch.showFullscreen = false;
             }
 
@@ -1251,11 +1313,11 @@
                         socket.send(encodeRequestWithId(id1, 'get_drawing', {floor: canvasCtrl.defaultFloor[0].id}));
                     } else if (parsedResponse.id === id1){
                         dragingImage.onload = () => {
-                            let parsedResponse = JSON.parse(response.result);
-                            drawedLines        = (parsedResponse === null) ? [] : parsedResponse;
+                            let parsedResponseDrawing = JSON.parse(parsedResponse.result);
+                            drawedLines        = (parsedResponseDrawing === null) ? [] : parsedResponseDrawing;
 
                             if (drawedLines !== null)
-                                updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
+                                updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
 
                             if (zones !== null)
                                 zones.forEach((zone) => {
@@ -1296,7 +1358,7 @@
             canvasCtrl.floorData.floor_image_map  = canvasCtrl.defaultFloor[0].image_map;
             context.clearRect(0, 0, canvas.width, canvas.height);
             $interval.cancel(dataService.canvasInterval);
-            if (dataService.canvasInterval === undefined) constantUpdateCanvas();
+            constantUpdateCanvas();
         });
 
         //function that handles the click on the drawing mode
@@ -1469,7 +1531,7 @@
                         } else if (parsedResponse.id === id2) {
                             dataService.anchors = parsedResponse.result;
                             if (parsedResponse.result.length > 0) {
-                                loadAndDrawImagesOnCanvas(parsedResponse.result, 'anchor', dataService.switch.showAnchors);
+                                loadAndDrawImagesOnCanvas(parsedResponse.result, 'anchor', bufferCanvas, bufferContext, dataService.switch.showAnchors);
                                 canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
                             }
                             id3 = ++requestId;
@@ -1479,7 +1541,7 @@
                             }));
                         } else if (parsedResponse.id === id3) {
                             if (parsedResponse.result.length > 0)
-                                loadAndDrawImagesOnCanvas(parsedResponse.result, 'camera', bufferCanvas, bufferContext, canvasCtrl.switch.showCameras);
+                                loadAndDrawImagesOnCanvas(parsedResponse.result, 'camera', bufferCanvas, bufferContext, dataService.switch.showCameras);
 
                             dataService.cameras = parsedResponse.result;
 
@@ -1664,9 +1726,9 @@
                     let tempDrawZones = [];
                     drawedZones.forEach((zone) => {
                         let topLeft = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.topLeft.x, zone.topLeft.y);
-                        let fixedTopLeft = {x: topLeft.x.toFixed(2), y: topLeft.y.toFixed(2)};
+                        let fixedTopLeft = {x: topLeft.x, y: topLeft.y};
                         let bottomRight = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.bottomRight.x, zone.bottomRight.y);
-                        let fixedBottomRightt = {x: bottomRight.x.toFixed(2), y: bottomRight.y.toFixed(2)};
+                        let fixedBottomRightt = {x: bottomRight.x, y: bottomRight.y};
                         let zonesModified = parsedResponse.result.some(z => zone.id === z.id);
                         if (!zonesModified)
                             tempDrawZones.push({topLeft: fixedTopLeft, bottomRight: fixedBottomRightt, floor: zone.floor});
@@ -1691,9 +1753,10 @@
                         position: scaledAnchorPosition,
                         id: drawAnchor,
                         floor: canvasCtrl.floorData.defaultFloorName
-                    }))
-                    canvasCtrl.switch.showAnchors = true;
-                    canvasCtrl.switch.showCameras = true;
+                    }));
+
+                    dataService.switch.showAnchors = true;
+                    dataService.switch.showCameras = true;
                     canvasCtrl.switch.showDrawing = false;
 
                     dropAnchorPosition                 = null;
@@ -1707,8 +1770,8 @@
         };
 
         canvasCtrl.cancelDrawing = () => {
-            canvasCtrl.switch.showAnchors = true;
-            canvasCtrl.switch.showCameras = true;
+            dataService.switch.showAnchors = true;
+            dataService.switch.showCameras = true;
             canvasCtrl.switch.showDrawing = false;
 
             dropAnchorPosition                 = null;
@@ -1721,7 +1784,7 @@
         canvas.addEventListener('mousemove', (event) => {
             if (dataService.switch !== undefined && canvasCtrl.switch.showDrawing) {
                 if (drawedLines !== null && canvasCtrl.speedDial.clickedButton !== 'drop_anchor') {
-                    updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
+                    updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
 
                     if (dragingStarted === 1 && canvasCtrl.speedDial.clickedButton !== 'draw_zone') {
                         if (drawedLines.some(l => ((l.begin.x - 5 <= prevClick.x && prevClick.x <= l.begin.x + 5) && (l.begin.y - 5 <= prevClick.y && prevClick.y <= l.begin.y + 5)))) {
@@ -1873,7 +1936,7 @@
                     drawedLines = drawedLines.filter(l => !toBeRemoved.some(r => r.begin.x === l.begin.x && r.begin.y === l.begin.y
                         && r.end.x === l.end.x && r.end.y === l.end.y));
 
-                    updateDrawingCanvas(drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing);
+                    updateDrawingCanvas([], drawedLines, canvas.width, canvas.height, context, dragingImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
                 }
             }
 
@@ -2354,12 +2417,20 @@
 
         //showing the info window with the online/offline tags
         $scope.showOfflineTagsIndoor = () => {
-            dataService.showOfflineTags(true);
+            if (dataService.canvasInterval !== undefined){
+                $interval.cancel(dataService.canvasInterval);
+                dataService.canvasInterval = undefined;
+                dataService.showOfflineTags('canvas', constantUpdateCanvas, null);
+            }
         };
 
         //showing the info window with the online/offline anchors
         $scope.showOfflineAnchorsIndoor = () => {
-            dataService.showOfflineAnchors(true);
+            if (dataService.canvasInterval !== undefined) {
+                $interval.cancel(dataService.canvasInterval);
+                dataService.canvasInterval = undefined;
+                dataService.showOfflineAnchors('canvas', constantUpdateCanvas, null);
+            }
         };
 
         //functionthat handles the emergency zone dialog
@@ -2739,41 +2810,37 @@
                         page        : 1
                     };
 
-                    let id = ++requestId;
-                    let id1 = -1;
-
-                    socket.send(encodeRequestWithId(id, 'get_generic_users'));
-                    socket.onmessage = (response) => {
-                        let parsedResponse = parseResponse(response);
-                        if (parsedResponse.id === id){
-                            $scope.usersTable = parsedResponse.result;
-                            $scope.tableEmpty     = $scope.usersTable.length === 0;
-
-                            dataService.usersInterval = $interval(function () {
-                                id1 = ++requestId;
-                                socket.send(encodeRequestWithId(id1, 'get_generic_users'));
-                                socket.onmessage = (response) => {
-                                    let parsedResponse = parseResponse(response)
-                                    if (parsedResponse.id === id1){
-                                        $scope.tableEmpty = $scope.usersTable.length === 0;
-                                        $scope.usersTable = parsedResponse.result;
-                                    }
-                                };
-                            }, 1000);
-                        }
+                    let updateIntermediateUserTable = () => {
+                        let id1 = ++requestId;
+                        socket.send(encodeRequestWithId(id1, 'get_generic_users'));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response)
+                            if (parsedResponse.id === id1){
+                                $scope.usersTable = parsedResponse.result;
+                                $scope.tableEmpty = $scope.usersTable.length === 0;
+                                $scope.$apply();
+                            }
+                        };
                     };
 
+                    updateIntermediateUserTable();
+
+                    $rootScope.$on('updateIntermediateUserTable', function () {
+                        updateIntermediateUserTable()
+                    });
+
                     $scope.manageLocations = (user) => {
-                        console.log('manage location pressed: ', user);
                         let manageLocationDialog = {
                             locals             : {user: user},
                             templateUrl        : componentsPath + 'manage-locations.html',
                             parent             : angular.element(document.body),
                             targetEvent        : event,
                             clickOutsideToClose: true,
+                            multiple: true,
                             controller         : ['$scope', 'user', function ($scope, user) {
 
                                 $scope.locations = [];
+                                $scope.tableEmpty = false;
                                 let id2 = ++requestId;
 
                                 socket.send(encodeRequestWithId(id2, 'get_user_locations', {
@@ -2784,17 +2851,112 @@
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id2){
                                         $scope.locations = parsedResponse.result;
+                                        $scope.tableEmpty = $scope.locations.length === 0;
                                     }
+                                };
+
+                                //inserting a mac
+                                $scope.manageNewLocation = () => {
+                                    $mdDialog.hide();
+                                    $mdDialog.show({
+                                        templateUrl        : componentsPath + 'insert-managed-location.html',
+                                        parent             : angular.element(document.body),
+                                        targetEvent        : event,
+                                        clickOutsideToClose: true,
+                                        multiple           : true,
+                                        controller         : ['$scope', function ($scope) {
+
+
+                                            let locationsIds = [];
+
+                                            $scope.insertManagedLocations = {
+                                                resultClass: '',
+                                                selectedLocations: [],
+                                                allLocations: []
+                                            };
+
+                                            let id3 = ++requestId;
+                                            socket.send(encodeRequestWithId(id3, 'get_all_locations'));
+                                            socket.onmessage = (response) => {
+                                                let parsedResponse = parseResponse(response);
+                                                if (parsedResponse.id === id3){
+                                                    $scope.insertManagedLocations.allLocations = parsedResponse.result;
+                                                }
+                                            };
+
+                                            $scope.addManagedLocation = (form) => {
+                                                form.$submitted = true;
+
+                                                if (form.$valid) {
+
+                                                    $scope.insertManagedLocations.allLocations.filter(l => $scope.insertManagedLocations.selectedLocations.some(sl => sl === l.name))
+                                                        .forEach((location) => {
+                                                            locationsIds.push(location.id);
+                                                        });
+
+                                                    console.log(user);
+                                                    let id4 = ++requestId;
+                                                    socket.send(encodeRequestWithId(id4, 'insert_managed_location', {
+                                                        user  : user.id,
+                                                        locations  : locationsIds,
+                                                    }));
+                                                    socket.onmessage = (response) => {
+                                                        let parsedResponse = parseResponse(response);
+                                                        if (parsedResponse.id === id4){
+                                                            $mdDialog.hide();
+                                                            $mdDialog.show(manageLocationDialog);
+                                                        }
+                                                    };
+                                                } else {
+                                                    $scope.insertManagedLocations.resultClass = 'background-red';
+                                                }
+                                            };
+
+                                            $scope.hide = () => {
+                                                $mdDialog.hide();
+                                            }
+                                        }]
+                                    });
+                                };
+
+                                //deleting tag
+                                $scope.deleteManagedLocation = (location) => {
+                                    let confirm = $mdDialog.confirm()
+                                        .title(lang.deleteLocation.toUpperCase())
+                                        .textContent(lang.deleteLocationText)
+                                        .targetEvent(event)
+                                        .multiple(true)
+                                        .ok(lang.deleteLocation)
+                                        .cancel(lang.cancel);
+
+                                    $mdDialog.show(confirm).then(() => {
+                                        let id5 = ++requestId;
+                                        socket.send(encodeRequestWithId(id5, 'delete_managed_location', {
+                                            user: user.id,
+                                            location_id: location.id
+                                        }));
+                                        socket.onmessage = (response) => {
+                                            let parsedResponse = parseResponse(response);
+                                            if (parsedResponse.id === id5){
+                                                if (parsedResponse.result === 1) {
+                                                    $scope.locations = $scope.locations.filter(l => l.id !== location.id);
+                                                    $scope.$apply();
+                                                    console.log($scope.locations);
+                                                }
+                                            }
+                                        };
+                                    }, function () {
+                                        console.log('CANCELLATO!!!!');
+                                    });
                                 };
 
                                 $scope.hide = () => {
                                     $mdDialog.hide();
-                                    $mdDialog.show(registryDialog);
                                 }
                             }]
                         };
 
-                        mdDialog.show(manageLocationDialog);
+                        $mdDialog.show(manageLocationDialog);
                     };
 
                     $scope.editCell = (event, user, userName) => {
@@ -2850,6 +3012,7 @@
                                 if (parsedResponse.id === id4){
                                     if (response.result !== 0) {
                                         $scope.usersTable   = $scope.usersTable.filter(u => u.id !== user.id);
+                                        $scope.$apply();
                                     }
                                 }
                             };
@@ -2914,7 +3077,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id5){
-                                    if (response.result.length === 0){
+                                    console.log(parsedResponse);
+                                    if (parsedResponse.result.length === 0){
                                         $scope.user.resultClass = 'background-green';
                                         $scope.user.showSuccess = true;
                                         $scope.user.showError   = false;
@@ -2924,13 +3088,12 @@
 
                                         $timeout(function () {
                                             $mdDialog.hide();
-                                            $mdDialog.hide(usersDialog);
-                                            $mdDialog.show(usersDialog);
+                                            $rootScope.$emit('updateIntermediateUserTable', {});
                                         }, 1000);
                                     }else{
                                         $scope.user.showSuccess = false;
                                         $scope.user.showError   = true;
-                                        $scope.user.message     = lang.canInsertUser
+                                        $scope.user.message     = lang.canInsertUser;
                                         $scope.user.resultClass = 'background-red';
                                         $scope.$apply();
                                     }
@@ -3013,6 +3176,7 @@
                                     limit       : 5,
                                     page        : 1
                                 };
+
                                 let id2 = ++requestId;
                                 socket.send(encodeRequestWithId(id2, 'get_user_locations', {user: user.id}));
                                 socket.onmessage = (response) => {
@@ -3288,11 +3452,16 @@
         };
 
         //history table
-        $scope.viewHistory = function () {
-            if (dataService.homeTimer !== null) {
+        $scope.viewHistory = function (position) {
+            if (dataService.homeTimer !== undefined) {
                 $interval.cancel(dataService.homeTimer);
                 dataService.homeTimer = undefined;
             }
+            if (dataService.canvasInterval !== undefined) {
+                $interval.cancel(dataService.canvasInterval);
+                dataService.canvasInterval = undefined;
+            }
+
             $mdDialog.show({
                 templateUrl        : componentsPath + 'history-table.html',
                 parent             : angular.element(document.body),
@@ -3358,10 +3527,13 @@
                     }
                 }],
                 onRemoving: function (event, removePromise) {
-                    if (dataService.homeTimer === undefined){
+                    if (dataService.homeTimer === undefined && position === 'home'){
                         NgMap.getMap('main-map').then((map) => {
                             $rootScope.$emit('constantUpdateNotifications', map)
                         });
+                    }
+                    if (dataService.canvasInterval === undefined && position === 'canvas'){
+                        $rootScope.$emit('constantUpdateCanvas')
                     }
                 }
             });
@@ -3856,6 +4028,9 @@
         };
 
         $scope.zone = () => {
+            $interval.cancel(dataService.canvasInterval);
+            dataService.canvasInterval = undefined;
+
             let floor = dataService.userFloors.filter(f => f.name === dataService.defaultFloorName)[0];
 
             let addRowDialog = {
@@ -3901,8 +4076,7 @@
                                         $scope.insertZone.resultClass = 'background-green';
                                         $timeout(function () {
                                             $mdDialog.hide(addRowDialog);
-                                            $mdDialog.hide(zoneDialog);
-                                            $mdDialog.show(zoneDialog);
+                                            $rootScope.$emit('updateZoneTable', {});
                                         }, 1000);
                                         $scope.$apply();
                                     }
@@ -3927,7 +4101,6 @@
                 clickOutsideToClose: true,
                 multiple           : true,
                 controller         : ['$scope', 'admin', function ($scope, admin) {
-
                     $scope.selected = [];
                     $scope.zones    = [];
                     $scope.query    = {
@@ -3937,18 +4110,27 @@
                         page        : 1
                     };
 
-                    let id1 = ++requestId;
-                    socket.send(encodeRequestWithId(id1, 'get_floor_zones', {
-                        floor   : floor.name,
-                        location: dataService.location,
-                        user    : dataService.username
-                    }));
-                    socket.onmessage = (response) => {
-                        let parsedResponse = parseResponse(response);
-                        if (parsedResponse.id === id1) {
-                            $scope.zones = parsedResponse.result;
-                        }
+                    let updateZoneTable = () => {
+                        let id1 = ++requestId;
+                        socket.send(encodeRequestWithId(id1, 'get_floor_zones', {
+                            floor   : floor.name,
+                            location: dataService.location,
+                            user    : dataService.username
+                        }));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            if (parsedResponse.id === id1) {
+                                $scope.zones = parsedResponse.result;
+                                $scope.$apply();
+                            }
+                        };
                     };
+
+                    updateZoneTable();
+
+                    $rootScope.$on('updateZoneTable', function () {
+                        updateZoneTable();
+                    });
 
                     $scope.editCell = (event, zone, zoneName) => {
 
@@ -4004,6 +4186,7 @@
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id3){
                                     $scope.zones = $scope.zones.filter(z => z.id !== zone.id);
+                                    $scope.$apply();
                                 }
                             };
                         }, function () {
@@ -4019,7 +4202,12 @@
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
-                }]
+                }],
+                onRemoving: function (event, removePromise) {
+                    if (dataService.canvasInterval === undefined) {
+                        $rootScope.$emit('constantUpdateCanvas', {})
+                    }
+                }
             };
 
             $mdDialog.show(zoneDialog);
@@ -4595,6 +4783,14 @@
 
         //function that makes the logout of the user
         $scope.logout = () => {
+            if (dataService.canvasInterval !== undefined){
+                $interval.cancel(dataService.canvasInterval);
+                dataService.canvasInterval = undefined;
+            }
+            if (dataService.homeTimer !== undefined){
+                $interval.cancel(dataService.homeTimer);
+                dataService.homeTimer = undefined;
+            }
             let id = ++requestId;
             socket.send(encodeRequestWithId(id, 'logout'));
             socket.onmessage = (response) => {

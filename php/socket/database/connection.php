@@ -972,6 +972,10 @@ class Connection
         if ($this->connection) {
             $this->connection->autocommit(false);
             $errors = array();
+            if ($image_name === '' && $is_indoor === 1)
+                $image_name = 'location-marker.png';
+            else
+                $image_name = 'mountain.png';
 
             $this->query = "INSERT INTO location (NAME, DESCRIPTION, LATITUDE, LONGITUDE, ICON, RADIUS, IS_INSIDE) VALUES (?, ?, ?, ?, ?, ?, ?)";
             $statement = $this->execute_inserting($this->query, 'sssssdi', $name, $description, $latitude, $longitude, $image_name, $radius, (int)$is_indoor);
@@ -2498,5 +2502,5 @@ class Connection
     }
 }
 
-$conn = new Connection();
-//var_dump($conn->get_user('daniel'));
+//$conn = new Connection();
+//var_dump($conn->register('dani', 'danin'));

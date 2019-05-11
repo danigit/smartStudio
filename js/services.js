@@ -70,7 +70,11 @@
 
 
         //function that show the offline tags
-        service.showOfflineTags = (isOutside, constantUpdateNotifications) => {
+        service.showOfflineTags = (position, constantUpdateNotifications, map) => {
+            if (service.updateMapTimer !== undefined){
+                $interval.cancel(service.updateMapTimer);
+                service.updateMapTimer = undefined;
+            }
             $mdDialog.show({
                 templateUrl        : componentsPath + 'indoor_offline_tags_info.html',
                 parent             : angular.element(document.body),
@@ -142,10 +146,19 @@
                     }
                 }],
                 onRemoving: function(event, removePromise){
-                    $interval.cancel(service.offlineTagsInterval);
-                    if (!isOutside) {
-                        $interval.cancel(service.homeTimer);
-                        constantUpdateNotifications();
+                    if (service.offlineTagsInterval !== undefined) {
+                        $interval.cancel(service.offlineTagsInterval);
+                        service.offlineTagsInterval = undefined;
+                        if (position === 'home') {
+                            if (service.homeTimer === undefined) 
+                                constantUpdateNotifications(map);
+                        }else if (position === 'outside') {
+                            if (service.updateMapTimer === undefined) 
+                                constantUpdateNotifications(map);
+                        }else if (position === 'canvas') {
+                            if (service.canvasInterval === undefined)
+                                constantUpdateNotifications();
+                        }
                     }
                 },
             });
@@ -168,7 +181,7 @@
         };
 
         //showing the info window with the online/offline anchors
-        service.showOfflineAnchors = (isOutside, constantUpdateNotifications) => {
+        service.showOfflineAnchors = (position, constantUpdateNotifications, map) => {
             $mdDialog.show({
                 templateUrl        : componentsPath + 'indoor_offline_anchors_info.html',
                 parent             : angular.element(document.body),
@@ -215,10 +228,19 @@
                     }
                 }],
                 onRemoving: function(event, removePromise){
-                    $interval.cancel(service.offlineAnchorsInterval);
-                    if (!isOutside) {
-                        $interval.cancel(service.homeTimer);
-                        constantUpdateNotifications();
+                    if (service.offlineAnchorsInterval !== undefined) {
+                        $interval.cancel(service.offlineAnchorsInterval);
+                        service.offlineAnchorsInterval = undefined;
+                        if (position === 'home') {
+                            if (service.homeTimer === undefined)
+                                constantUpdateNotifications(map);
+                        }else if (position === 'outside') {
+                            if (service.updateMapTimer === undefined)
+                                constantUpdateNotifications(map);
+                        }else if (position === 'canvas') {
+                            if (service.canvasInterval === undefined)
+                                constantUpdateNotifications();
+                        }
                     }
                 },
             })

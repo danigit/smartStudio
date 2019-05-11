@@ -61,7 +61,6 @@
                                         dataService.isAdmin = response.result[0].role;
                                         result.isAdmin      = response.result[0].role;
                                         result.password_changed = response.result[0].password_changed;
-                                        console.log(result.password_changed)
                                     }else if (response.result[0].role === 2){
                                         dataService.isUserManager = response.result[0].role;
                                         result.isUserManager      = response.result[0].role;
@@ -74,7 +73,6 @@
                                         result.isUserManager = 0;
                                         result.password_changed = response.result[0].password_changed;
                                     }
-                                    console.log(response.result[0]);
                                     return socketService.sendRequest('get_markers', {username: response.result[0].username})
                                 } else {
                                     $state.go('login');
