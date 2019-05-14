@@ -108,7 +108,7 @@
                         lang.insertValue}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="deleteRow(anchor)"><img
+                    <td md-cell ng-show="isAdmin || isUserManager" class="no-wrap" ng-click="deleteRow(anchor)"><img
                             src="img/icons/delete_trash_24.png" alt="{{lang.deleteAnchor}}"
                             title="{{lang.deleteAnchor}}"></td>
 
@@ -120,7 +120,7 @@
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
+        <md-input-container md-no-float ng-show="isAdmin || isUserManager" class="md-block width-100 margin-bottom-0">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="{{lang.addAnchor}}" title="{{lang.addAnchor}}">

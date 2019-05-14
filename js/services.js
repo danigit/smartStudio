@@ -14,7 +14,7 @@
 
     function dataService($mdDialog, $interval, $state, socketService) {
         let service = this;
-
+        let socket = socketService.getSocket();
 
         service.user             = '';
         service.location             = '';
@@ -39,34 +39,42 @@
         service.isSearchingTag       = false;
         service.offlineTagsIsOpen    = false;
         service.offlineAnchorsIsOpen = false;
+        service.defaultFloorCanceled = false;
         // service.gridSpacing = 0;
 
         service.loadUserSettings = () => {
-            socketService.sendRequest('get_user_settings', {username: service.user.username})
-                .then((response) => {
-                    if(response.result.length !== 0) {
+            let id = ++requestId;
+            socket.send(encodeRequestWithId(id, 'get_user_settings', {username: service.user.username}));
+            socket.onmessage = (response) => {
+                let parsedResponse = parseResponse(response);
+                if (parsedResponse.id === id){
+                    if(parsedResponse.result.length !== 0) {
                         service.switch = {
-                            showGrid   : (response.result[0].grid_on === 1),
-                            showAnchors: (response.result[0].anchors_on === 1),
-                            showCameras: (response.result[0].cameras_on === 1),
-                            showOutrangeTags: (response.result[0].outag_on === 1),
-                            showZones: (response.result[0].zones_on === 1),
-                            playAudio  : (response.result[0].sound_on === 1),
+                            showGrid   : (parsedResponse.result[0].grid_on === 1),
+                            showAnchors: (parsedResponse.result[0].anchors_on === 1),
+                            showCameras: (parsedResponse.result[0].cameras_on === 1),
+                            showOutrangeTags: (parsedResponse.result[0].outag_on === 1),
+                            showZones: (parsedResponse.result[0].zones_on === 1),
+                            playAudio  : (parsedResponse.result[0].sound_on === 1),
                             showRadius : true,
                         };
-                        console.log(service.switch);
                     }
-                })
+                }
+            };
         };
 
         service.updateUserSettings = () => {
             let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};
             let stringifyData = JSON.stringify(data);
-            socketService.sendRequest('update_user_settings', {username: service.user.username, data: stringifyData})
-                .then((response) => {
-                    console.log(response);
+            let id = ++requestId;
+
+            socket.send(encodeRequestWithId(id, 'update_user_settings', {username: service.user.username, data: stringifyData}));
+            socket.onmessage = (response) => {
+                let parsedResponse = parseResponse(response);
+                if (parsedResponse.id === id){
                     service.loadUserSettings();
-                })
+                }
+            };
         };
 
 
@@ -98,7 +106,6 @@
                     $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315", "#F76E41"];
                     $scope.labels = [lang.disabledTags, lang.activeTags, lang.shutDownTags, lang.lostTags];
 
-                    let socket = socketService.getSocket();
                     service.offlineTagsInterval     = $interval(function () {
                         let id = ++requestId;
                         socket.send(encodeRequestWithId(id, 'get_all_tags'));
@@ -201,7 +208,6 @@
                     $scope.colors = ["#D3D3D3", "#4BAE5A"];
                     $scope.labels = [$scope.lang.disabledAnchors, $scope.lang.enabledAnchors];
 
-                    let socket = socketService.getSocket();
                     $interval.cancel(service.offlineTagsInterval);
                     service.offlineAnchorsInterval = $interval(function () {
                         let id = ++requestId;
@@ -374,6 +380,10 @@
                     || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
                     || tag.call_me_alarm || tag.diagnostic_request;
             })
+        };
+
+        service.checkIfAnchorsHaveAlarms = (anchors) => {
+            return anchors.some(a => a.battery_status);
         };
 
         //function that palay the alarms audio of the tags passed as parameter
@@ -638,7 +648,7 @@
 
         service.isElementAtClick = (virtualTagPosition, mouseDownCoords, distance) => {
             return ((virtualTagPosition.width - distance) < mouseDownCoords.x && mouseDownCoords.x < (virtualTagPosition.width + distance)) && ((virtualTagPosition.height - distance) < mouseDownCoords.y && mouseDownCoords.y < (virtualTagPosition.height + distance));
-        }
+        };
 
         service.isTagOffline = (tag) => {
             return (tag.is_exit && tag.radio_switched_off);
@@ -668,7 +678,7 @@
         };
 
         serializedSocket.onerror = function () {
-            console.log('error on connection')
+            console.error('error on connection')
         };
 
         serializedSocket.onerror = function() {

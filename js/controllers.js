@@ -177,16 +177,7 @@
                 return anchors.filter(a => (a.location_latitude === location.position[0] && a.location_longitude === location.position[1]));
             };
 
-            let checkIfAnchorsHaveAlarms = (anchors) => {
-                return anchors.some(a => a.battery_status);
-            };
-
             let alarmLocationsContainLocation = (alarms, location) => {
-                console.log(alarms.length);
-                alarms.forEach((alarm) => {
-                    console.log(alarm);
-                    console.log(alarm.position[0] === location.position[0] && alarm.position[1] === location.position[1])
-                })
                 return alarms.some(l => l.position[0] === location.position[0] && l.position[1] === location.position[1])
             };
 
@@ -200,66 +191,49 @@
 
             let findTagLocation = (allTags, indoorTags, anchors, map) => {
                 let alarmBounds = new google.maps.LatLngBounds();
-                let bothAlarms = 0;
-                console.log('image index: ', imageIndex);
 
                 markers.forEach((marker) => {
                     let tags           = getLocationTags(marker, allTags);
+
                     let markerObject   = new google.maps.Marker({
                         position: new google.maps.LatLng(marker.position[0], marker.position[1]),
                     });
 
                     let markerSelected = homeCtrl.dynamicMarkers.filter(m => m.getPosition().lat() === markerObject.getPosition().lat() && m.getPosition().lng() === markerObject.getPosition().lng())[0];
 
-                    console.log('marker number: ', marker);
                     //if the marker is inside it cannot be an anchor i alarm
                     if (!marker.is_inside) {
-                        if (dataService.checkIfTagsHaveAlarms(tags) && imageIndex === 0) {
-                            console.log('outside marker has alarm: ', marker)
-                            console.log('outside marker locations: ', alarmLocations)
-                            console.log(alarmLocationsContainLocation(alarmLocations, marker));
+                        if (dataService.checkIfTagsHaveAlarms(tags)) {
                             if (!alarmLocationsContainLocation(alarmLocations, marker)) {
-                                console.log('adding marker: ', marker)
                                 alarmLocations.push(marker);
                             }
-                            console.log('SETTING OFFLINE TAG ALLERT')
                             markerSelected.setIcon(iconsPath + 'offline_tags_alert_64.png');
                         } else {
-                            console.log('outside marker has no alarms: ', marker)
-                            console.log('else locations; ', alarmLocations);
                             if (alarmLocationsContainLocation(alarmLocations, marker)) {
-                                console.log('removing from outside', marker);
-                                alarmLocations = alarmLocations.filter(l => !angular.equals(l.position === marker.position));
+                                alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
+                                markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                             }
-
-                            markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                         }
-
-                    }//I control il the anchors have alarm
+                    }//I control if the anchors have alarm
                     else {
                         let locationAnchors = getLocationAnchors(marker, anchors);
                         let locationTags    = getIndoorLocationTags(marker, indoorTags);
 
                         if (dataService.checkIfTagsHaveAlarms(locationTags)) {
-                            bothAlarms++;
-                            if (!alarmLocationsContainLocation(alarmLocations, marker) && imageIndex === 0) {
-                                console.log('adding marker:', marker);
+                            if (!alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations.push(marker);
                             }
-                            markerSelected.setIcon(iconsPath + 'offline_tags_alert_64.png');
-                        } else if (imageIndex === 0) {
+                            if (imageIndex === 0)
+                                markerSelected.setIcon(iconsPath + 'offline_tags_alert_64.png');
+                        } else if (!dataService.checkIfAnchorsHaveAlarms(locationAnchors)) {
                             if (alarmLocationsContainLocation(alarmLocations, marker)) {
-                                alarmLocations = alarmLocations.filter(l => angular.equals(l.position !== marker.position));
+                                alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
+                                markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                             }
-                            markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                         }
 
-                        console.log(imageIndex);
-                        if (checkIfAnchorsHaveAlarms(locationAnchors)) {
-                            if (!alarmLocationsContainLocation(alarmLocations, marker)  && dataService.checkIfTagsHaveAlarms(locationTags)  && imageIndex === 0) {
-                                console.log('adding marker anchor', marker)
-                                alarmLocations.push(marker);
-                            }else if (!alarmLocationsContainLocation(alarmLocations, marker)  && imageIndex === 0){
+                        if (dataService.checkIfAnchorsHaveAlarms(locationAnchors)) {
+                            if (!alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations.push(marker);
                             }
                             if (imageIndex === 1)
@@ -267,6 +241,7 @@
                         }
                     }
                 });
+
 
                 //resizing the zoom of the map to see only the locations in alarm
                 if (alarmLocations.length > 0 && alarmLocations.length !== alarmLocationsLength) {
@@ -281,7 +256,6 @@
                     }
 
                     alarmLocationsLength = alarmLocations.length;
-                    console.log(alarmLocationsLength)
                 }
 
                 imageIndex++;
@@ -2626,6 +2600,7 @@
                             let id5 = ++requestId;
                             let id6 = -1;
 
+                            console.log(fileName);
                             socket.send(encodeRequestWithId(id5, 'insert_location', {
                                 user       : dataService.user.id,
                                 name       : $scope.location.name,
@@ -4589,6 +4564,9 @@
                                     if (parsedResponse.id === id){
                                         if (parsedResponse.result > 0) {
                                             $scope.floors = $scope.floors.filter(a => a.id !== floor.id);
+                                            console.log(floor.name);
+                                            if (floor.name === 'Piano di default')
+                                                dataService.defaultFloorCanceled = true;
                                             $scope.$apply();
                                         }
                                     }
@@ -4641,8 +4619,15 @@
                     }
                 }],
                 onRemoving: function (event, removePromise) {
+                    console.log('default floor canceled: ', dataService.defaultFloorCanceled);
                     if (dataService.canvasInterval === undefined){
-                        $rootScope.$emit('constantUpdateCanvas', {})
+                        if (dataService.defaultFloorCanceled) {
+                            console.log('reloading windows');
+                            window.location.reload();
+                        }else {
+                            console.log('emiting');
+                            $rootScope.$emit('constantUpdateCanvas', {})
+                        }
                     }
                 }
             };

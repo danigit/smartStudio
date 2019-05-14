@@ -63,14 +63,14 @@
                     <td md-cell ng-click="editCell($event, zone, 'color')"
                         ng-class="{'md-placeholder': !zone.color}">{{zone.color || lang.insertColor}}
                     </td>
-                    <td md-cell ng-click="deleteRow(zone)"><img src="img/icons/delete_trash_24.png" alt="{{lang.deleteTag}}"
+                    <td md-cell ng-show="isAdmin || isUserManager" ng-click="deleteRow(zone)"><img src="img/icons/delete_trash_24.png" alt="{{lang.deleteTag}}"
                                                                 title="{{lang.deleteTag}}"></td>
                 </tr>
                 </tbody>
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
+        <md-input-container md-no-float ng-show="isAdmin || isUserManager" class="md-block width-100 margin-bottom-0">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="{{lang.insertTag}}" title="{{lang.insertTag}}">
