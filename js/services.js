@@ -16,12 +16,13 @@
         let service = this;
 
 
-        service.username             = '';
+        service.user             = '';
         service.location             = '';
         service.locationFromClick    = '';
         service.isAdmin              = '';
         service.defaultFloorName     = '';
         service.tags                 = [];
+        service.userTags                 = [];
         service.floorTags            = [];
         service.anchors              = [];
         service.floors               = [];
@@ -41,7 +42,7 @@
         // service.gridSpacing = 0;
 
         service.loadUserSettings = () => {
-            socketService.sendRequest('get_user_settings', {username: service.username})
+            socketService.sendRequest('get_user_settings', {username: service.user.username})
                 .then((response) => {
                     if(response.result.length !== 0) {
                         service.switch = {
@@ -61,7 +62,7 @@
         service.updateUserSettings = () => {
             let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};
             let stringifyData = JSON.stringify(data);
-            socketService.sendRequest('update_user_settings', {username: service.username, data: stringifyData})
+            socketService.sendRequest('update_user_settings', {username: service.user.username, data: stringifyData})
                 .then((response) => {
                     console.log(response);
                     service.loadUserSettings();
@@ -204,7 +205,7 @@
                     $interval.cancel(service.offlineTagsInterval);
                     service.offlineAnchorsInterval = $interval(function () {
                         let id = ++requestId;
-                        socket.send(encodeRequestWithId(id, 'get_anchors_by_user', {user: dataService.username}));
+                        socket.send(encodeRequestWithId(id, 'get_anchors_by_user', {user: dataService.user.username}));
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id) {
@@ -308,10 +309,12 @@
                 alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.callMeAllarm, lang.callMeAllarm, tagsIconPath + 'call_me_alarm_24.png', tagLocation));
             }
 
-            if (service.isOutdoor(tag) && locations.length > 0){
-                let isInLocation = locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
-                if (!isInLocation){
-                    alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png'));
+            if (locations !== null) {
+                if (service.isOutdoor(tag) && locations.length > 0) {
+                    let isInLocation = locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
+                    if (!isInLocation) {
+                        alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png'));
+                    }
                 }
             }
 
@@ -632,6 +635,14 @@
 
             return alarms;
         };
+
+        service.isElementAtClick = (virtualTagPosition, mouseDownCoords, distance) => {
+            return ((virtualTagPosition.width - distance) < mouseDownCoords.x && mouseDownCoords.x < (virtualTagPosition.width + distance)) && ((virtualTagPosition.height - distance) < mouseDownCoords.y && mouseDownCoords.y < (virtualTagPosition.height + distance));
+        }
+
+        service.isTagOffline = (tag) => {
+            return (tag.is_exit && tag.radio_switched_off);
+        }
     }
 
     /**

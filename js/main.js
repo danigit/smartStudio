@@ -56,21 +56,18 @@
                         socketService.sendRequest('get_user', {})
                             .then((response) => {
                                 if (response.result !== 'no_user') {
-                                    dataService.username = response.result[0].username;
+                                    dataService.user = response.result[0];
                                     if (response.result[0].role === 1) {
                                         dataService.isAdmin = response.result[0].role;
-                                        result.isAdmin      = response.result[0].role;
+                                        dataService.isUserManager = response.result[0].role;
                                         result.password_changed = response.result[0].password_changed;
                                     }else if (response.result[0].role === 2){
-                                        dataService.isUserManager = response.result[0].role;
-                                        result.isUserManager      = response.result[0].role;
+                                        dataService.isAdmin = 0;
+                                        dataService.isUserManager      = response.result[0].role;
                                         result.password_changed = response.result[0].password_changed;
-                                        console.log(result.password_changed)
                                     }else if (response.result[0].role === 0){
                                         dataService.isAdmin = 0;
                                         dataService.isUserManager = 0;
-                                        result.isAdmin = 0;
-                                        result.isUserManager = 0;
                                         result.password_changed = response.result[0].password_changed;
                                     }
                                     return socketService.sendRequest('get_markers', {username: response.result[0].username})
@@ -80,7 +77,6 @@
                             })
                             .then((response) => {
                                 result.markers = response.result;
-                                console.log(result.markers);
                                 if (response.result.length === 1 && response.result[0].one_location === 1){
                                     socketService.sendRequest('save_location', {location: response.result[0].name})
                                         .then((response) => {
@@ -139,35 +135,39 @@
                             .then((response) => {
                                 if (response.result[0].username !== undefined) {
 
-                                    dataService.username = response.result[0].username;
+                                    dataService.user = response.result[0];
 
-                                    result.username     = response.result[0].username;
-                                    result.isAdmin      = response.result[0].role;
-                                    dataService.isAdmin = response.result[0].role;
-                                    return socketService.sendRequest('get_tags_by_user', {user: dataService.username})
+                                    if (response.result[0].role === 1){
+                                        dataService.isAdmin = response.result[0].role;
+                                        dataService.isUserManager = response.result[0].role;
+                                    } else if (response.result[0].role === 2){
+                                        dataService.isAdmin = 0;
+                                        dataService.isUserManager = response.result[0].role;
+                                    } else if (response.result[0].role === 0){
+                                        dataService.isAdmin = 0;
+                                        dataService.isUserManager = 0;
+                                    }
+
+                                    return socketService.sendRequest('get_tags_by_user', {user: dataService.user.username})
                                 } else {
                                     $state.go('login');
                                 }
                             })
                             .then((response) => {
 
-                                dataService.tags = response.result;
-                                result.tags      = response.result;
-
-                                return socketService.sendRequest('get_anchors_by_user', {user: dataService.username})
-                            })
-                            .then((response) => {
-                                result.anchors = response.result;
-
-                                dataService.alarmsSounds = [];
+                                dataService.userTags = response.result;
                                 return socketService.sendRequest('get_all_tags', {});
                             })
                             .then((response) => {
                                 if (response !== null && response !== undefined) {
                                     dataService.allTags = response.result;
                                     dataService.alarmsSounds = [];
-                                    promise.resolve(result);
+                                    return socketService.sendRequest('get_location_info', {})
                                 }
+                            })
+                            .then((response) => {
+                                dataService.location =  response.result;
+                                promise.resolve(result);
                             })
                             .catch((error) => {
                                 console.log('outdoorLocationState => ', error);
@@ -191,8 +191,17 @@
                         socketService.sendRequest('get_user', {})
                             .then((response) => {
                                 if (response.result[0].username !== undefined) {
-                                    dataService.username = response.result[0].username;
-                                    dataService.isAdmin  = response.result[0].role;
+                                    dataService.user = response.result[0];
+                                    if (response.result[0].role === 1){
+                                        dataService.isAdmin  = response.result[0].role;
+                                        dataService.isUserManager = 0;
+                                    } else if (response.result[0].role === 2){
+                                        dataService.isAdmin  = 0;
+                                        dataService.isUserManager = response.result[0].role;
+                                    } else if (response.result[0].role === 0){
+                                        dataService.isAdmin  = 0;
+                                        dataService.isUserManager = 0;
+                                    }
 
                                     return socketService.sendRequest('get_location_info', {})
                                 } else {
@@ -211,12 +220,13 @@
                             .then((response) => {
                                 dataService.floors = response.result;
 
-                                return socketService.sendRequest('get_tags_by_user', {user: dataService.username});
+                                return socketService.sendRequest('get_tags_by_user', {user: dataService.user.username});
                             })
                             .then((response) => {
-                                dataService.tags = response.result;
+                                dataService.userTags = response.result;
 
-                                return socketService.sendRequest('get_floors_by_user', {user: dataService.username});
+                                console.log(dataService.user)
+                                return socketService.sendRequest('get_floors_by_user', {user: dataService.user.username});
                             })
                             .then((response) => {
                                 dataService.userFloors = response.result;
@@ -230,6 +240,7 @@
                             })
                             .then((response) => {
                                 result.alpha = response.result.alpha;
+                                console.log(dataService.location);
                                 promise.resolve(result);
                             })
                             .catch((error) => {

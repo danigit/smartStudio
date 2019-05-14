@@ -570,7 +570,7 @@ class webSocketServer implements MessageComponentInterface{
                 $result['id'] = $decoded_message['id'];
                 $result['action'] = 'update_anchor_position';
 
-                $query = $this->connection->update_anchor_position($decoded_message['data']['x'], $decoded_message['data']['y'], $decoded_message['data']['id']);
+                $query = $this->connection->update_anchor_position($decoded_message['data']['position'], $decoded_message['data']['id'], $decoded_message['data']['floor']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

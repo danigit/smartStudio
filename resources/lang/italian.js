@@ -246,4 +246,6 @@ let lang = {
 	deleteFloor                     : 'Cancellazione piano',
     okDeleteFloor                   : 'Sei sicuro di voler cancellare il piano?',
     selectFloorFile                 : 'Seleziona un\'immagine per il piano',
+    tagNotFound                     : 'Tag non trovato',
+	tagNotLoggedUser                : 'Il tag non appartiene all\'user logato!',
 }

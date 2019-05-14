@@ -299,29 +299,34 @@ function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canv
  * @param drawingContext
  * @param showDrawing
  */
-function drawLine(begin, end, type, drawingContext, showDrawing) {
+function drawLine(begin, end, type, drawingContext, showDrawing) {;
     drawingContext.setLineDash([]);
     drawingContext.lineWidth   = 2;
     drawingContext.strokeStyle = 'black';
-    drawingContext.beginPath();
-    drawingContext.moveTo(begin.x, begin.y);
+
     if (type === 'vertical') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect({x: begin.x, y: end.y}, drawingContext);
         }
+        drawingContext.beginPath();
+        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(begin.x, end.y);
     } else if (type === 'horizontal') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect({x: end.x, y: begin.y}, drawingContext);
         }
+        drawingContext.beginPath();
+        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(end.x, begin.y);
     } else if (type === 'inclined') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect(end, drawingContext);
         }
+        drawingContext.beginPath();
+        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(end.x, end.y)
     }
     drawingContext.stroke();
@@ -394,7 +399,6 @@ function drawZoneRectFromDrawing(begin, drawingContext, floorWidth, canvasWidth,
     drawingContext.beginPath();
     drawingContext.fillStyle = 'black';
     drawingContext.fillRect(begin.x - 5, begin.y - 5, 10, 10);
-    // drawingContext.fillRect(begin.xx - 5, begin.yy - 5, 10, 10);
     drawingContext.globalAlpha = alpha;
     drawingContext.fillStyle = color;
     drawingContext.fillRect(begin.x, begin.y, width, height);
