@@ -3,6 +3,10 @@
     width: 100%;
 }
 
+#zoom-location-container md-input-container{
+    width: 100%;
+}
+
 #change-grid-container .md-subheader-inner{
     padding: 0!important;
 }

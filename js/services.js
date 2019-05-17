@@ -40,6 +40,7 @@
         service.offlineTagsIsOpen    = false;
         service.offlineAnchorsIsOpen = false;
         service.defaultFloorCanceled = false;
+        service.homeMap = null;
         // service.gridSpacing = 0;
 
         service.loadUserSettings = () => {

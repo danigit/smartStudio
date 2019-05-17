@@ -59,7 +59,7 @@
                                     dataService.user = response.result[0];
                                     if (response.result[0].role === 1) {
                                         dataService.isAdmin = response.result[0].role;
-                                        dataService.isUserManager = response.result[0].role;
+                                        dataService.isUserManager = 0;
                                         result.password_changed = response.result[0].password_changed;
                                     }else if (response.result[0].role === 2){
                                         dataService.isAdmin = 0;

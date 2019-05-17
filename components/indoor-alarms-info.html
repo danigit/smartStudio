@@ -40,6 +40,7 @@
                     </th>
                     <th md-column md-order-by="location"><span
                             class="color-darkcyan">{{lang.location | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan"></span></th>
                 </tr>
                 </thead>
 
@@ -68,7 +69,7 @@
 
         <md-table-pagination class="color-red" md-limit="query.limit" md-limit-options="query.limitOptions"
                              md-page="query.page"
-                             md-total="{{alarms.length}}" md-on-paginate="getAnchors">
+                             md-total="{{alarms.length}}" md-on-paginate="">
         </md-table-pagination>
     </div>
 </md-content>

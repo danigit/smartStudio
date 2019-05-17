@@ -189,6 +189,7 @@ function languageController($scope) {
     	yUp: 'Y up',
     	yDown: 'Y down',
     	insertColor: 'Inserire colore',
+        searchLocation: 'Cerca sito',
     }
 };
 

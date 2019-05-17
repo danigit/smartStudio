@@ -183,7 +183,7 @@
 
                                     <label>{{lang.searchWetag}}</label>
 
-                                    <md-select ng-model="selectedTag">
+                                    <md-select ng-model="selectedTag" md-on-open="getAllWetags()">
                                         <md-option ng-repeat="tag in menuTags" ng-value="tag.name">
                                             {{tag.name}}
                                         </md-option>

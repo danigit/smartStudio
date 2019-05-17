@@ -313,6 +313,7 @@
 
             NgMap.getMap('main-map').then((map) => {
                 controllerMap = map;
+                dataService.homeMap = map;
                 constantUpdateNotifications(map);
                 map.set('styles', mapConfiguration);
 
@@ -1371,7 +1372,6 @@
                             });
                         }
                         id7 = ++requestId;
-                        console.log('get zones location: ', canvasCtrl.floorData.location);
                         socket.send(encodeRequestWithId(id7, 'get_floor_zones', {
                             floor   : canvasCtrl.floorData.defaultFloorName,
                             location: canvasCtrl.floorData.location,
@@ -2374,9 +2374,36 @@
         $scope.isAdmin     = dataService.isAdmin;
         $scope.isUserManager     = dataService.isUserManager;
         $scope.selectedTag = '';
+        $scope.selectedLocation = '';
 
         $scope.switch      = {
             mapFullscreen: false
+        };
+
+        $scope.getAllWetags = () => {
+            let id1 = ++requestId;
+
+            socket.send(encodeRequestWithId(id1, 'get_all_tags'));
+            socket.onmessage = (response) => {
+                let parsedResponse = parseResponse(response);
+                if (parsedResponse.id === id1) {
+                    $scope.menuTags = parsedResponse.result;
+                    console.log($scope.menuTags);
+                }
+            }
+        };
+
+        $scope.getAllLocations = () => {
+            console.log('getting all locations')
+            let id1 = ++requestId;
+
+            socket.send(encodeRequestWithId(id1, 'get_all_locations'));
+            socket.onmessage = (response) => {
+                let parsedResponse = parseResponse(response);
+                if (parsedResponse.id === id1) {
+                    $scope.locations = parsedResponse.result;
+                }
+            }
         };
 
         //opening and closing the menu
@@ -3999,6 +4026,9 @@
                 multiple           : true,
                 controller         : ['$scope', 'admin', function ($scope, admin) {
                     $scope.selected = [];
+                    $scope.isAdmin = dataService.isAdmin;
+                    $scope.isUserManager = dataService.isUserManager;
+
                     $scope.zones    = [];
                     $scope.query    = {
                         limitOptions: [5, 10, 15],
@@ -4235,6 +4265,8 @@
                 multiple           : true,
                 controller         : ['$scope', 'admin', function ($scope, admin) {
                     $scope.selected = [];
+                    $scope.isAdmin = dataService.isAdmin;
+                    $scope.isUserManager = dataService.isUserManager;
 
                     $scope.query = {
                         limitOptions: [5, 10, 15],
@@ -4477,6 +4509,8 @@
                 clickOutsideToClose: true,
                 controller         : ['$scope', 'admin', function ($scope, admin) {
                     $scope.selected = [];
+                    $scope.isAdmin = dataService.isAdmin;
+                    $scope.isUserManager = dataService.isUserManager;
 
                     $scope.query = {
                         limitOptions: [5, 10, 15],
@@ -4690,6 +4724,18 @@
                 }
             };
         };
+
+        //handeling search tags functionality
+        $scope.$watch('selectedLocation', function (newValue) {
+            console.log(newValue);
+
+            let latlng = new google.maps.LatLng(newValue.latitude, newValue.longitude);
+            if (dataService.homeMap !== null) {
+                dataService.homeMap.setCenter(latlng);
+                dataService.homeMap.setZoom(15);
+                $scope.selectedLocation = '';
+            }
+        });
 
         //handeling search tags functionality
         $scope.$watch('selectedTag', function (newValue) {

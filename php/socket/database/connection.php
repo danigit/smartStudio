@@ -972,7 +972,7 @@ class Connection
         if ($this->connection) {
             $this->connection->autocommit(false);
             $errors = array();
-            if ($image_name === '' && $is_indoor === 1)
+            if ($image_name === '' && $is_indoor === true)
                 $image_name = 'location-marker.png';
             else if ($image_name === '')
                 $image_name = 'mountain.png';
