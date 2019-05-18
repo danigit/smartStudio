@@ -207,7 +207,7 @@
                             if (!alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations.push(marker);
                             }
-                            markerSelected.setIcon(iconsPath + 'offline_tags_alert_64.png');
+                            markerSelected.setIcon(iconsPath + 'alarm-icon.png');
                         } else {
                             if (alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
@@ -224,7 +224,7 @@
                                 alarmLocations.push(marker);
                             }
                             if (imageIndex === 0)
-                                markerSelected.setIcon(iconsPath + 'offline_tags_alert_64.png');
+                                markerSelected.setIcon(iconsPath + 'alarm-icon.png');
                         } else if (!dataService.checkIfAnchorsHaveAlarms(locationAnchors)) {
                             if (alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
@@ -232,7 +232,7 @@
                             }
                         }
 
-                        if (dataService.checkIfAnchorsHaveAlarms(locationAnchors)) {
+                        if (dataService.checkIfAnchorsHaveAlarms(locationAnchors) || dataService.checkIfAreAnchorsOffline(locationAnchors)) {
                             if (!alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations.push(marker);
                             }
@@ -2375,6 +2375,7 @@
         $scope.isUserManager     = dataService.isUserManager;
         $scope.selectedTag = '';
         $scope.selectedLocation = '';
+        $scope.zoneColor = '';
 
         $scope.switch      = {
             mapFullscreen: false
@@ -2393,11 +2394,11 @@
             }
         };
 
-        $scope.getAllLocations = () => {
+        $scope.getUserLocations = () => {
             console.log('getting all locations')
             let id1 = ++requestId;
 
-            socket.send(encodeRequestWithId(id1, 'get_all_locations'));
+            socket.send(encodeRequestWithId(id1, 'get_user_locations', {user: dataService.user.id}));
             socket.onmessage = (response) => {
                 let parsedResponse = parseResponse(response);
                 if (parsedResponse.id === id1) {
@@ -4027,6 +4028,7 @@
                 controller         : ['$scope', 'admin', function ($scope, admin) {
                     $scope.selected = [];
                     $scope.isAdmin = dataService.isAdmin;
+                    $scope.tableEmptyZone = false;
                     $scope.isUserManager = dataService.isUserManager;
 
                     $scope.zones    = [];
@@ -4035,6 +4037,22 @@
                         order       : 'name',
                         limit       : 5,
                         page        : 1
+                    };
+
+                    $scope.changeColor = (zoneId, zoneColor) => {
+                        console.log(zoneId);
+                        console.log(zoneColor);
+                        let id1 = ++requestId;
+                        socket.send(encodeRequestWithId(id1, 'update_zone_color', {
+                            zone_id   : zoneId,
+                            zone_color: zoneColor,
+                        }));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            if (parsedResponse.id === id1) {
+                                console.log(parsedResponse.result);
+                            }
+                        }
                     };
 
                     let updateZoneTable = () => {
@@ -4048,6 +4066,7 @@
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id1) {
                                 $scope.zones = parsedResponse.result;
+                                $scope.tableEmptyZone = parsedResponse.result.length === 0;
                                 $scope.$apply();
                             }
                         };
@@ -4267,6 +4286,7 @@
                     $scope.selected = [];
                     $scope.isAdmin = dataService.isAdmin;
                     $scope.isUserManager = dataService.isUserManager;
+                    $scope.tableEmpty = false;
 
                     $scope.query = {
                         limitOptions: [5, 10, 15],
@@ -4285,10 +4305,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id4){
-                                if (parsedResponse.result.length === 0){
-                                    $scope.tableEmpty     = true;
-                                }
                                 $scope.anchors = parsedResponse.result;
+                                $scope.tableEmpty = parsedResponse.result.length === 0;
                                 $scope.$apply();
                             }
                         };
@@ -4724,6 +4742,11 @@
                 }
             };
         };
+
+        //handeling search tags functionality
+        $scope.$watch('zoneColor', function (newValue) {
+            console.log(newValue);
+        });
 
         //handeling search tags functionality
         $scope.$watch('selectedLocation', function (newValue) {

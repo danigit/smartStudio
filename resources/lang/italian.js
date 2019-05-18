@@ -190,6 +190,14 @@ function languageController($scope) {
     	yDown: 'Y down',
     	insertColor: 'Inserire colore',
         searchLocation: 'Cerca sito',
+        shutDownAnchors: 'Ancore scariche',
+        areShutDownAnchors: 'Ancore sono spente',
+        anchorState: 'Stato ancora',
+        online: 'Online',
+        offline: 'Offline',
+        batteryStatus: 'Stato batteria',
+        tagType: 'Tipo tag',
+        tagAlarms: 'Allarmi tag',
     }
 };
 

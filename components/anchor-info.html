@@ -19,34 +19,45 @@
         </div>
     </md-toolbar>
     <!--end popup header-->
-
-    <!--popup content-->
-    <md-content class="popup-padding">
-        <div layout="column" layout-align="center center">
-            <md-list>
-                <md-list-item class="width-300-px">
-                    <p class="float-left margin-right-50-px">{{lang.ip}}:</p>
-                    <p class="float-right text-right">{{anchor.ip}}</p>
-                </md-list-item>
-                <md-list-item class="width-300-px">
-                    <p class="float-left">{{lang.buildingName}}:</p>
-                    <p class="float-right text-right">{{anchor.location_name}}</p>
-                </md-list-item>
-                <md-list-item class="width-300-px">
-                    <p class="float-left">{{lang.mac}}:</p>
-                    <p class="float-right text-right">{{anchor.mac}}</p>
-                </md-list-item>
-                <md-list-item class="width-300-px">
-                    <p class="float-left">{{lang.type}}:</p>
-                    <p class="float-right text-right">{{anchor.type}}</p>
-                </md-list-item>
-                <md-list-item class="width-300-px">
-                    <p class="float-left">{{lang.rssi}}:</p>
-                    <p class="float-right text-right">{{anchor.rssi}}</p>
-                </md-list-item>
-
-            </md-list>
-        </div>
-    </md-content>
-    <!--end popup content-->
 </div>
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+        <md-list>
+            <md-list-item class="width-300-px">
+                <p class="float-left margin-right-50-px">{{lang.ip}}:</p>
+                <p class="float-right text-right">{{anchor.ip}}</p>
+            </md-list-item>
+            <md-list-item class="width-300-px">
+                <p class="float-left">{{lang.buildingName}}:</p>
+                <p class="float-right text-right">{{anchor.location_name}}</p>
+            </md-list-item>
+            <md-list-item class="width-300-px">
+                <p class="float-left">{{lang.mac}}:</p>
+                <p class="float-right text-right">{{anchor.mac}}</p>
+            </md-list-item>
+            <md-list-item class="width-300-px">
+                <p class="float-left">{{lang.type}}:</p>
+                <p class="float-right text-right">{{anchor.type}}</p>
+            </md-list-item>
+            <md-list-item class="width-300-px">
+                <p class="float-left">{{lang.rssi}}:</p>
+                <p class="float-right text-right">{{anchor.rssi}}</p>
+            </md-list-item>
+            <md-list-item class="width-300-px">
+                <p class="float-left">{{lang.anchorState}}:</p>
+                <p class="float-right text-right" ng-class="{'color-green': anchor.is_online, 'color-red': !anchor.is_online}">{{(anchor.is_online ? (lang.online | uppercase) : (lang.offline | uppercase))}}</p>
+            </md-list-item>
+
+            <md-list-item class="width-300-px">
+                <p class="float-left">{{lang.batteryStatus}}:</p>
+                <p class="float-right text-right"><img alt="{{lang.batteryStatus}}" title="{{lang.batteryStatus}}"
+                                                       aria-label="{{lang.batteryStatus}}"
+                                                       ng-src="{{anchor.battery_status ? 'img/icons/battery_empty_24.png' : 'img/icons/battery_full_24.png'}}"></p>
+            </md-list-item>
+
+        </md-list>
+    </div>
+</md-content>
+<!--end popup content-->

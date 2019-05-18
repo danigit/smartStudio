@@ -19,39 +19,41 @@
         </div>
     </md-toolbar>
     <!--end popup header-->
-
-    <!--popup content-->
-    <md-content class="popup-padding">
-        <div layout="column" layout-align="center center">
-            <md-list>
-                <md-list-item class="width-300-px">
-                    <p class="float-left">{{lang.tag}}:</p>
-                    <p class="float-right text-right">{{tag.id}}</p>
-                </md-list-item>
-                <md-list-item class="width-300-px">
-                    <p class="float-left">{{lang.floor}}:</p>
-                    <p class="float-right text-right">{{tag.floor_name}}</p>
-                </md-list-item>
-                <md-list-item class="width-300-px">
-                    <p class="float-left">{{lang.anchor}}:</p>
-                    <p class="float-right text-right">{{tag.anchor_name}}</p>
-                </md-list-item>
-                <md-list-item class="width-300-px">
-                    <p class="float-left">{{lang.batteryLevel}}:</p>
-                    <p class="float-right text-right">{{tag.battery_status === 0 ? '100' : '0'}}</p>
-                </md-list-item>
-            </md-list>
-            <md-list>
-                <md-list-item class="md-3-line" ng-repeat="alarm in alarms" ng-click="null">
-                    <img ng-src="{{alarm.image}}" class="md-avatar" alt="{{item.who}}"/>
-                    <div class="md-list-item-text" layout="column">
-                        <h3>{{ alarm.tag }}</h3>
-                        <h4>{{ alarm.name }}</h4>
-                        <p>{{ alarm.description }}</p>
-                    </div>
-                </md-list-item>
-            </md-list>
-        </div>
-    </md-content>
-    <!--end popup content-->
 </div>
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+        <md-list>
+            <md-list-item class="width-300-px">
+                <p class="float-left">{{lang.tagType}}:</p>
+                <p class="float-right text-right">{{tag.tag_type_name}}</p>
+            </md-list-item>
+            <md-list-item class="width-300-px">
+                <p class="float-left">{{lang.floor}}:</p>
+                <p class="float-right text-right">{{tag.floor_name}}</p>
+            </md-list-item>
+            <md-list-item class="width-300-px">
+                <p class="float-left">{{lang.anchor}}:</p>
+                <p class="float-right text-right">{{tag.anchor_name}}</p>
+            </md-list-item>
+            <md-list-item class="width-300-px">
+                <p class="float-left">{{lang.batteryLevel}}:</p>
+                <p class="float-right text-right"><img alt="{{lang.batteryStatus}}" title="{{lang.batteryStatus}}"
+                                                       aria-label="{{lang.batteryStatus}}"
+                                                       ng-src="{{tag.battery_status ? 'img/icons/battery_empty_24.png' : 'img/icons/battery_full_24.png'}}"></p>
+            </md-list-item>
+        </md-list>
+        <md-list>
+            <p class="text-center color-red text-bold">{{lang.tagAlarms | uppercase}}</p>
+            <md-list-item class="md-3-line" ng-repeat="alarm in alarms" ng-click="null">
+                <img ng-src="{{alarm.image}}" class="md-avatar" alt="{{item.who}}"/>
+                <div class="md-list-item-text" layout="column">
+                    <h3>{{ alarm.tag }}</h3>
+                    <h4>{{ alarm.name }}</h4>
+                    <p>{{ alarm.description }}</p>
+                </div>
+            </md-list-item>
+        </md-list>
+    </div>
+</md-content>
+<!--end popup content-->

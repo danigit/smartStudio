@@ -743,7 +743,7 @@ class webSocketServer implements MessageComponentInterface{
             //changing the location field
             case 'update_floor_zone':{
                 $result['id'] = $decoded_message['id'];
-                $result['action'] = 'update_zone_floor';
+                $result['action'] = 'update_floor_zone';
                 $query = $this->connection->update_floor_zone($decoded_message['data']['zone_id'], $decoded_message['data']['x_left'],
                     $decoded_message['data']['x_right'], $decoded_message['data']['y_up'], $decoded_message['data']['y_down']);
 
@@ -758,6 +758,17 @@ class webSocketServer implements MessageComponentInterface{
                 $result['action'] = 'change_zone_field';
                 $query = $this->connection->change_zone_field($decoded_message['data']['zone_id'], $decoded_message['data']['zone_field'],
                     $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
+            case 'update_zone_color':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'update_zone_color';
+                $query = $this->connection->update_zone_color($decoded_message['data']['zone_id'], $decoded_message['data']['zone_color']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

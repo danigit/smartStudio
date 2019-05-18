@@ -100,7 +100,7 @@
 
                                 <md-input-container class="margin-bottom-0 margin-top-10">
                                     <label>{{lang.searchLocation}}</label>
-                                    <md-select ng-model="selectedLocation" md-on-open="getAllLocations()">
+                                    <md-select ng-model="selectedLocation" md-on-open="getUserLocations()">
 
                                         <md-option ng-repeat="location in locations" ng-value="location">
                                             {{location.name}}

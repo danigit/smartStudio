@@ -60,11 +60,17 @@
                     <td md-cell ng-click="editCell($event, zone, 'y_down')"
                         ng-class="{'md-placeholder': !zone.y_down}">{{zone.y_down || lang.insertValue}}
                     </td>
-                    <td md-cell ng-click="editCell($event, zone, 'color')"
-                        ng-class="{'md-placeholder': !zone.color}">{{zone.color || lang.insertColor}}
+<!--                    <td md-cell ng-click="editCell($event, zone, 'color')"-->
+<!--                        ng-class="{'md-placeholder': !zone.color}">{{zone.color || lang.insertColor}}-->
+<!--                    </td>-->
+                    <td md-cell><input ng-change="changeColor(zone.id, zone.color)" type="color" value="zone.color" ng-model="zone.color"
+                                                                          colorpick-eyedropper-active="true">
                     </td>
                     <td md-cell ng-show="isAdmin || isUserManager" ng-click="deleteRow(zone)"><img src="img/icons/delete_trash_24.png" alt="{{lang.deleteTag}}"
                                                                 title="{{lang.deleteTag}}"></td>
+                </tr>
+                <tr md-row ng-show="tableEmptyZone">
+                    <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
                 </tr>
                 </tbody>
             </table>

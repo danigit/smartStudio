@@ -184,8 +184,17 @@
 
         //checking if there is at least an anchor offline
         service.checkIfAnchorsAreOffline = (anchors) => {
+            console.log(anchors);
             return anchors.some(function (anchor) {
                 return anchor.is_online !== true;
+            });
+        };
+
+        //checking if there is at least an anchor offline
+        service.checkIfAreAnchorsOffline = (anchors) => {
+            console.log(anchors);
+            return anchors.some(function (anchor) {
+                return anchor.is_online === 0;
             });
         };
 
@@ -199,15 +208,17 @@
                 controller         : ['$scope', '$controller', 'dataService', 'socketService', function ($scope, $controller, dataService, socketService) {
                     $controller('languageController', {$scope: $scope});
                     $scope.offlineAnchors = [];
+                    $scope.shutDownAnchors = [];
                     $scope.data           = [];
 
                     $scope.anchorsState = {
                         offline: 0,
-                        online : 0
+                        online : 0,
+                        shutDown: 0
                     };
 
-                    $scope.colors = ["#D3D3D3", "#4BAE5A"];
-                    $scope.labels = [$scope.lang.disabledAnchors, $scope.lang.enabledAnchors];
+                    $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315"];
+                    $scope.labels = [$scope.lang.disabledAnchors, $scope.lang.enabledAnchors, $scope.lang.shutDownAnchors];
 
                     $interval.cancel(service.offlineTagsInterval);
                     service.offlineAnchorsInterval = $interval(function () {
@@ -222,10 +233,13 @@
                                     $scope.offlineAnchors = tempOfflineAnchors;
                                 }
 
+                                $scope.shutDownAnchors = parsedResponse.result.filter(a => a.battery_status === 1);
+
                                 $scope.anchorsState.offline = $scope.offlineAnchors.length;
                                 $scope.anchorsState.online  = parsedResponse.result.length - $scope.offlineAnchors.length;
+                                $scope.anchorsState.shutDown = $scope.shutDownAnchors.length;
 
-                                $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online];
+                                $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online, $scope.anchorsState.shutDown];
                             }
                         };
                     }, 1000);

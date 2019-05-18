@@ -2086,6 +2086,33 @@ class Connection
     /**
      * Function that change the value of a tag field
      * @param $zone_id
+     * @param $zone_color
+     * @return db_errors|int|mysqli_stmt
+     */
+    function update_zone_color($zone_id, $zone_color)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE zone SET COLOR = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'ss', $zone_color, $zone_id);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+
+            $this->result = $this->connection->affected_rows;
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Function that change the value of a tag field
+     * @param $zone_id
      * @param $x_left
      * @param $x_right
      * @param $y_up
