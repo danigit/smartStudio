@@ -55,6 +55,7 @@
                             showAnchors: (parsedResponse.result[0].anchors_on === 1),
                             showCameras: (parsedResponse.result[0].cameras_on === 1),
                             showOutrangeTags: (parsedResponse.result[0].outag_on === 1),
+                            showOutdoorTags: (parsedResponse.result[0].outdoor_tag_on === 1),
                             showZones: (parsedResponse.result[0].zones_on === 1),
                             playAudio  : (parsedResponse.result[0].sound_on === 1),
                             showRadius : true,
@@ -65,7 +66,8 @@
         };
 
         service.updateUserSettings = () => {
-            let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};
+            console.log(service.switch)
+            let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, outdoor_tag_on: service.switch.showOutdoorTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};
             let stringifyData = JSON.stringify(data);
             let id = ++requestId;
 
@@ -184,7 +186,6 @@
 
         //checking if there is at least an anchor offline
         service.checkIfAnchorsAreOffline = (anchors) => {
-            console.log(anchors);
             return anchors.some(function (anchor) {
                 return anchor.is_online !== true;
             });
@@ -192,7 +193,6 @@
 
         //checking if there is at least an anchor offline
         service.checkIfAreAnchorsOffline = (anchors) => {
-            console.log(anchors);
             return anchors.some(function (anchor) {
                 return anchor.is_online === 0;
             });
@@ -223,7 +223,82 @@
                     $interval.cancel(service.offlineTagsInterval);
                     service.offlineAnchorsInterval = $interval(function () {
                         let id = ++requestId;
-                        socket.send(encodeRequestWithId(id, 'get_anchors_by_user', {user: dataService.user.username}));
+                        socket.send(encodeRequestWithId(id, 'get_anchors_by_user', {
+                            user: dataService.user.username
+                        }));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            if (parsedResponse.id === id) {
+                                let tempOfflineAnchors = parsedResponse.result.filter(a => !a.is_online);
+
+                                if (!angular.equals(tempOfflineAnchors, $scope.offlineAnchors)) {
+                                    $scope.offlineAnchors = tempOfflineAnchors;
+                                }
+
+                                $scope.shutDownAnchors = parsedResponse.result.filter(a => a.battery_status === 1);
+
+                                $scope.anchorsState.offline = $scope.offlineAnchors.length;
+                                $scope.anchorsState.online  = parsedResponse.result.length - $scope.offlineAnchors.length;
+                                $scope.anchorsState.shutDown = $scope.shutDownAnchors.length;
+
+                                $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online, $scope.anchorsState.shutDown];
+                            }
+                        };
+                    }, 1000);
+
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    }
+                }],
+                onRemoving: function(event, removePromise){
+                    if (service.offlineAnchorsInterval !== undefined) {
+                        $interval.cancel(service.offlineAnchorsInterval);
+                        service.offlineAnchorsInterval = undefined;
+                        if (position === 'home') {
+                            if (service.homeTimer === undefined)
+                                constantUpdateNotifications(map);
+                        }else if (position === 'outside') {
+                            if (service.updateMapTimer === undefined)
+                                constantUpdateNotifications(map);
+                        }else if (position === 'canvas') {
+                            if (service.canvasInterval === undefined)
+                                constantUpdateNotifications();
+                        }
+                    }
+                },
+            })
+        };
+
+        //showing the info window with the online/offline anchors
+        service.showOfflineAnchorsIndoor = (position, constantUpdateNotifications, map) => {
+            $mdDialog.show({
+                templateUrl        : componentsPath + 'indoor_offline_anchors_info.html',
+                parent             : angular.element(document.body),
+                targetEvent        : event,
+                clickOutsideToClose: true,
+                controller         : ['$scope', '$controller', 'dataService', 'socketService', function ($scope, $controller, dataService, socketService) {
+                    $controller('languageController', {$scope: $scope});
+                    $scope.offlineAnchors = [];
+                    $scope.shutDownAnchors = [];
+                    $scope.data           = [];
+
+                    $scope.anchorsState = {
+                        offline: 0,
+                        online : 0,
+                        shutDown: 0
+                    };
+
+                    $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315"];
+                    $scope.labels = [$scope.lang.disabledAnchors, $scope.lang.enabledAnchors, $scope.lang.shutDownAnchors];
+
+                    $interval.cancel(service.offlineTagsInterval);
+                    service.offlineAnchorsInterval = $interval(function () {
+                        let id = ++requestId;
+                        socket.send(encodeRequestWithId(id, 'get_anchors_by_floor_and_location', {
+                            floor: dataService.defaultFloorName,
+                            location: dataService.location
+                        }));
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id) {
@@ -395,6 +470,21 @@
                     || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
                     || tag.call_me_alarm || tag.diagnostic_request;
             })
+        };
+
+        service.checkIfTagsHaveAlarmsOutdoor = (tags) => {
+            let tagInAllarm = false;
+            tags.forEach((tag) => {
+                if (service.isOutdoor(tag)){
+                    if(tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
+                        || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
+                        || tag.call_me_alarm || tag.diagnostic_request){
+                        tagInAllarm = true;
+                    }
+                }
+            });
+
+            return tagInAllarm;
         };
 
         service.checkIfAnchorsHaveAlarms = (anchors) => {

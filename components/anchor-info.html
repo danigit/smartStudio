@@ -50,7 +50,7 @@
                 <p class="float-right text-right" ng-class="{'color-green': anchor.is_online, 'color-red': !anchor.is_online}">{{(anchor.is_online ? (lang.online | uppercase) : (lang.offline | uppercase))}}</p>
             </md-list-item>
 
-            <md-list-item class="width-300-px">
+            <md-list-item class="width-300-px" ng-show="anchor.type === 'BEACON'">
                 <p class="float-left">{{lang.batteryStatus}}:</p>
                 <p class="float-right text-right"><img alt="{{lang.batteryStatus}}" title="{{lang.batteryStatus}}"
                                                        aria-label="{{lang.batteryStatus}}"

@@ -198,6 +198,10 @@ function languageController($scope) {
         batteryStatus: 'Stato batteria',
         tagType: 'Tipo tag',
         tagAlarms: 'Allarmi tag',
+        audio: 'Audio',
+        zones: 'Zone',
+        outLocationTags: 'Wetags fuori',
+        showOutdoorTagsLabel: 'Wetags'
     }
 };
 

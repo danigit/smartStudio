@@ -36,6 +36,7 @@
                     <th md-column></th>
                     <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
                     <th md-column md-order-by="type_name"><span class="color-darkcyan">{{lang.type | uppercase}}</span>
+                    <th md-column md-order-by="type_name"><span class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span>
                     </th>
                     <th md-column></th>
                 </tr>
@@ -53,6 +54,7 @@
                     <td md-cell
                         ng-class="{'md-placeholder': !tag.type_name}">{{tag.type_name || lang.insertType}}
                     </td>
+                    <td md-cell><img ng-src="{{tag.battery_status ? 'img/icons/battery_empty_24.png' : 'img/icons/battery_full_24.png'}}" alt="{{lang.batteryLevel}}" title="{{lang.batteryLevel}}"></td>
                     <td md-cell ng-show="isAdmin || isUserManager">
                         <md-button ng-click="tagMacs(tag)" class="md-raised background-darkcyan color-white">
                             {{lang.macsManaging | uppercase}}

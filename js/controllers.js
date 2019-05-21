@@ -606,6 +606,7 @@
 
         outdoorCtrl.isAdmin = dataService.isAdmin;
 
+        console.log(outdoorCtrl.isAdmin);
         outdoorCtrl.mapConfiguration = {
             zoom    : 11,
             map_type: mapType,
@@ -925,64 +926,129 @@
                                         })
                                     });
 
-                                    if ((new Date(Date.now()) - (new Date(tag.gps_time)) < tag.sleep_time_outdoor)) {
-                                        if (dataService.checkIfTagHasAlarm(tag)) {
-                                            if (markerIsOnMap(dataService.dynamicTags, marker)) {
-                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
-                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
-                                                        if (alarmsCounts[index] > tagAlarms.length - 1)
-                                                            alarmsCounts[index] = 0;
 
-                                                        dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
+                                    if ((new Date(Date.now()) - (new Date(tag.gps_time)) < tag.sleep_time_outdoor) && dataService.switch.showOutdoorTags) {
+                                        if (outdoorCtrl.isAdmin ) {
+                                            if (dataService.checkIfTagsHaveAlarmsOutdoor(tags)) {
+                                                if (dataService.checkIfTagHasAlarm(tag)) {
+                                                    if (markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                        dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                            if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                                if (alarmsCounts[index] > tagAlarms.length - 1)
+                                                                    alarmsCounts[index] = 0;
 
-                                                        if (tagAlarms.length !== prevAlarmCounts[index]) {
-                                                            google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
-                                                            dataService.dynamicTags[tagIndex].addListener('click', () => {
-                                                                $mdDialog.show({
-                                                                    locals             : {tag: tag},
-                                                                    templateUrl        : componentsPath + 'tag-info-outdoor.html',
-                                                                    parent             : angular.element(document.body),
-                                                                    targetEvent        : event,
-                                                                    clickOutsideToClose: true,
-                                                                    controller         : ['$scope', 'tag', ($scope, tag) => {
-                                                                        $scope.tag          = tag;
-                                                                        $scope.isTagInAlarm = 'background-red';
-                                                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag, null, null);
+                                                                dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
 
-                                                                        if ($scope.alarms.length === 0) {
-                                                                            ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
-                                                                                ? $scope.isTagInAlarm = 'background-gray'
-                                                                                : $scope.isTagInAlarm = 'background-green';
-                                                                        }
+                                                                if (tagAlarms.length !== prevAlarmCounts[index]) {
+                                                                    google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
+                                                                    dataService.dynamicTags[tagIndex].addListener('click', () => {
+                                                                        $mdDialog.show({
+                                                                            locals             : {tag: tag},
+                                                                            templateUrl        : componentsPath + 'tag-info-outdoor.html',
+                                                                            parent             : angular.element(document.body),
+                                                                            targetEvent        : event,
+                                                                            clickOutsideToClose: true,
+                                                                            controller         : ['$scope', 'tag', ($scope, tag) => {
+                                                                                $scope.tag          = tag;
+                                                                                $scope.isTagInAlarm = 'background-red';
+                                                                                $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag, null, null);
 
-                                                                        $scope.hide = () => {
-                                                                            $mdDialog.hide();
-                                                                        }
-                                                                    }]
-                                                                })
-                                                            })
-                                                        }
+                                                                                if ($scope.alarms.length === 0) {
+                                                                                    ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
+                                                                                        ? $scope.isTagInAlarm = 'background-gray'
+                                                                                        : $scope.isTagInAlarm = 'background-green';
+                                                                                }
+
+                                                                                $scope.hide = () => {
+                                                                                    $mdDialog.hide();
+                                                                                }
+                                                                            }]
+                                                                        })
+                                                                    })
+                                                                }
+                                                            }
+                                                        });
+                                                    } else {
+                                                        setIcon(tag, marker);
+                                                        dataService.dynamicTags.push(marker);
+                                                        marker.setMap(map);
+                                                        bounds.extend(marker.getPosition());
                                                     }
-                                                });
-                                            } else {
-                                                setIcon(tag, marker);
-                                                dataService.dynamicTags.push(marker);
-                                                marker.setMap(map);
-                                                bounds.extend(marker.getPosition());
+                                                } else {
+                                                    if (markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                        setIcon(tag, marker);
+                                                        dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                            if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                                dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
+                                                            }
+                                                        });
+                                                    } else {
+                                                        setIcon(tag, marker);
+                                                        dataService.dynamicTags.push(marker);
+                                                        marker.setMap(map);
+                                                        bounds.extend(marker.getPosition());
+                                                    }
+                                                }
                                             }
-                                        } else {
-                                            if (markerIsOnMap(dataService.dynamicTags, marker)) {
-                                                setIcon(tag, marker);
-                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
-                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
-                                                        dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
-                                                    }
-                                                });
+                                        }else {
+                                            if (dataService.checkIfTagHasAlarm(tag)) {
+                                                if (markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                    dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                        if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                            if (alarmsCounts[index] > tagAlarms.length - 1)
+                                                                alarmsCounts[index] = 0;
+
+                                                            dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
+
+                                                            if (tagAlarms.length !== prevAlarmCounts[index]) {
+                                                                google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
+                                                                dataService.dynamicTags[tagIndex].addListener('click', () => {
+                                                                    $mdDialog.show({
+                                                                        locals             : {tag: tag},
+                                                                        templateUrl        : componentsPath + 'tag-info-outdoor.html',
+                                                                        parent             : angular.element(document.body),
+                                                                        targetEvent        : event,
+                                                                        clickOutsideToClose: true,
+                                                                        controller         : ['$scope', 'tag', ($scope, tag) => {
+                                                                            $scope.tag          = tag;
+                                                                            $scope.isTagInAlarm = 'background-red';
+                                                                            $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag, null, null);
+
+                                                                            if ($scope.alarms.length === 0) {
+                                                                                ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
+                                                                                    ? $scope.isTagInAlarm = 'background-gray'
+                                                                                    : $scope.isTagInAlarm = 'background-green';
+                                                                            }
+
+                                                                            $scope.hide = () => {
+                                                                                $mdDialog.hide();
+                                                                            }
+                                                                        }]
+                                                                    })
+                                                                })
+                                                            }
+                                                        }
+                                                    });
+                                                } else {
+                                                    setIcon(tag, marker);
+                                                    dataService.dynamicTags.push(marker);
+                                                    marker.setMap(map);
+                                                    bounds.extend(marker.getPosition());
+                                                }
                                             } else {
-                                                setIcon(tag, marker);
-                                                dataService.dynamicTags.push(marker);
-                                                marker.setMap(map);
-                                                bounds.extend(marker.getPosition());
+                                                if (markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                    setIcon(tag, marker);
+                                                    dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                        if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                            dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
+                                                        }
+                                                    });
+                                                } else {
+                                                    setIcon(tag, marker);
+                                                    dataService.dynamicTags.push(marker);
+                                                    marker.setMap(map);
+                                                    bounds.extend(marker.getPosition());
+                                                }
                                             }
                                         }
                                     } else if (dataService.checkIfTagHasAlarm(tag)) {
@@ -1234,7 +1300,7 @@
 
                         if (zones !== null)
                             zones.forEach((zone) => {
-                                drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', true, alpha);
+                                drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.color, true, alpha);
                             })
                     }
                 };
@@ -1668,7 +1734,7 @@
 
                 if (zones !== null && canvasCtrl.speedDial.clickedButton !== 'drop_anchor'){
                     zones.forEach((zone) => {
-                        drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', true, alpha);
+                        drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.color, true, alpha);
                     })
                 }
 
@@ -1788,13 +1854,14 @@
 
                     if (zones !== null && canvasCtrl.speedDial.clickedButton !== 'drop_anchor'){
                         zones.forEach((zone) => {
-                            drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', true, alpha);
+                            drawZoneRect({x: zone.x_left, y: zone.y_up, xx: zone.x_right, yy: zone.y_down}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.color, true, alpha);
                         })
                     }
 
                     if (drawedZones !== null && canvasCtrl.speedDial.clickedButton !== 'drop_anchor'){
                         drawedZones.forEach((zone) => {
-                            drawZoneRectFromDrawing({x: zone.topLeft.x, y: zone.topLeft.y, xx: zone.bottomRight.x, yy: zone.bottomRight.y}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', alpha);
+                            console.log(zone);
+                            drawZoneRectFromDrawing({x: zone.topLeft.x, y: zone.topLeft.y, xx: zone.bottomRight.x, yy: zone.bottomRight.y}, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.color, alpha);
                         })
                     }
                 }
@@ -1867,88 +1934,98 @@
 
                         if (prevClick.x >= virtualPositionTop.width - 5 | 0 && prevClick.x <= virtualPositionTop.width + 10 | 0 && prevClick.y >= virtualPositionTop.height - 5 | 0 && prevClick.y <= virtualPositionTop.height + 10 | 0){
                             zoneToModify = {id: zone.id, topLeft: {x: virtualPositionTop.width, y: virtualPositionTop.height}, bottomRight: {x: virtualPositionBottom.width, y: virtualPositionBottom.height}, floor: canvasCtrl.defaultFloor[0].id};
+                        }else if (zoneToModify === null) {
+                            dragingStarted = 0;
                         }
                     }
                 });
 
                 if (dragingStarted === 2){
-                    if (zoneToModify.id !== undefined){
-                        let topLeft = null;
-                        let bottomRight = null;
-                        if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y){
-                            drawedZones.push({
-                                id: zoneToModify.id,
-                                topLeft: mouseDownCoords,
-                                bottomRight: zoneToModify.bottomRight,
-                                floor: canvasCtrl.defaultFloor[0].id
-                            })
-                        } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y){
-                            topLeft = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
-                            bottomRight = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
-                            drawedZones.push({
-                                id: zoneToModify.id,
-                                topLeft: topLeft,
-                                bottomRight: bottomRight,
-                                floor: canvasCtrl.defaultFloor[0].id
-                            })
-                        } else if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y){
-                            topLeft = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
-                            bottomRight = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
-                            drawedZones.push({
-                                id: zoneToModify.id,
-                                topLeft: topLeft,
-                                bottomRight: bottomRight,
-                                floor: canvasCtrl.defaultFloor[0].id
-                            })
-                        } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y){
-                            drawedZones.push({
-                                id: zoneToModify.id,
-                                topLeft: zoneToModify.bottomRight,
-                                bottomRight: mouseDownCoords,
-                                floor: canvasCtrl.defaultFloor[0].id
-                            })
-                        }
+                    if (zoneToModify !== null) {
+                        if (zoneToModify.id !== undefined) {
+                            let topLeft     = null;
+                            let bottomRight = null;
+                            if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
+                                drawedZones.push({
+                                    id         : zoneToModify.id,
+                                    topLeft    : mouseDownCoords,
+                                    bottomRight: zoneToModify.bottomRight,
+                                    floor      : canvasCtrl.defaultFloor[0].id
+                                })
+                            } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
+                                topLeft     = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
+                                bottomRight = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
+                                drawedZones.push({
+                                    id         : zoneToModify.id,
+                                    topLeft    : topLeft,
+                                    bottomRight: bottomRight,
+                                    floor      : canvasCtrl.defaultFloor[0].id
+                                })
+                            } else if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
+                                topLeft     = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
+                                bottomRight = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
+                                drawedZones.push({
+                                    id         : zoneToModify.id,
+                                    topLeft    : topLeft,
+                                    bottomRight: bottomRight,
+                                    floor      : canvasCtrl.defaultFloor[0].id
+                                })
+                            } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
+                                drawedZones.push({
+                                    id         : zoneToModify.id,
+                                    topLeft    : zoneToModify.bottomRight,
+                                    bottomRight: mouseDownCoords,
+                                    floor      : canvasCtrl.defaultFloor[0].id
+                                })
+                            }
 
-                        let modifiedZone = drawedZones.filter(z => z.id === zoneToModify.id)[0];
+                            let modifiedZone = drawedZones.filter(z => z.id === zoneToModify.id)[0];
 
-                        let topLeftScaled = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, modifiedZone.topLeft.x, modifiedZone.topLeft.y);
-                        let bottomDownScalled = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, modifiedZone.bottomRight.x, modifiedZone.bottomRight.y);
+                            let topLeftScaled     = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, modifiedZone.topLeft.x, modifiedZone.topLeft.y);
+                            let bottomDownScalled = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, modifiedZone.bottomRight.x, modifiedZone.bottomRight.y);
 
-                        socketService.sendRequest('update_floor_zone', {zone_id: zoneToModify.id, x_left: topLeftScaled.x, x_right: bottomDownScalled.x, y_up: topLeftScaled.y, y_down: bottomDownScalled.y})
-                            .then((response) => {
-                                // console.log(response);
+                            socketService.sendRequest('update_floor_zone', {
+                                zone_id: zoneToModify.id,
+                                x_left : topLeftScaled.x,
+                                x_right: bottomDownScalled.x,
+                                y_up   : topLeftScaled.y,
+                                y_down : bottomDownScalled.y
                             })
-                    }else {
-                        let topLeft     = null;
-                        let bottomRight = null;
-                        if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
-                            drawedZones.push({
-                                topLeft    : mouseDownCoords,
-                                bottomRight: zoneToModify.bottomRight,
-                                floor      : canvasCtrl.defaultFloor[0].id
-                            })
-                        } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
-                            topLeft     = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
-                            bottomRight = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
-                            drawedZones.push({
-                                topLeft    : topLeft,
-                                bottomRight: bottomRight,
-                                floor      : canvasCtrl.defaultFloor[0].id
-                            })
-                        } else if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
-                            topLeft     = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
-                            bottomRight = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
-                            drawedZones.push({
-                                topLeft    : topLeft,
-                                bottomRight: bottomRight,
-                                floor      : canvasCtrl.defaultFloor[0].id
-                            })
-                        } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
-                            drawedZones.push({
-                                topLeft    : zoneToModify.bottomRight,
-                                bottomRight: mouseDownCoords,
-                                floor      : canvasCtrl.defaultFloor[0].id
-                            })
+                                .then((response) => {
+                                    // console.log(response);
+                                })
+                        } else {
+                            let topLeft     = null;
+                            let bottomRight = null;
+                            if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
+                                drawedZones.push({
+                                    topLeft    : mouseDownCoords,
+                                    bottomRight: zoneToModify.bottomRight,
+                                    floor      : canvasCtrl.defaultFloor[0].id
+                                })
+                            } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
+                                topLeft     = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
+                                bottomRight = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
+                                drawedZones.push({
+                                    topLeft    : topLeft,
+                                    bottomRight: bottomRight,
+                                    floor      : canvasCtrl.defaultFloor[0].id
+                                })
+                            } else if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
+                                topLeft     = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
+                                bottomRight = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
+                                drawedZones.push({
+                                    topLeft    : topLeft,
+                                    bottomRight: bottomRight,
+                                    floor      : canvasCtrl.defaultFloor[0].id
+                                })
+                            } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
+                                drawedZones.push({
+                                    topLeft    : zoneToModify.bottomRight,
+                                    bottomRight: mouseDownCoords,
+                                    floor      : canvasCtrl.defaultFloor[0].id
+                                })
+                            }
                         }
                     }
                     zoneToModify = null;
@@ -1958,10 +2035,17 @@
 
             if (canvasCtrl.speedDial.clickedButton === 'delete_zone'){
                 let findedZones = findZone(mouseDownCoords, zones, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height);
-                socketService.sendRequest('delete_floor_zones', {zones: findedZones})
-                    .then((response) => {
-                        zones = zones.filter(z => !findedZones.some(fz => fz === z.id));
-                    })
+                let findedDrawedZones = findDrawedZone(mouseDownCoords, drawedZones, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height);
+                if (findedDrawedZones.length !== 0) {
+                    drawedZones = drawedZones.filter(z => !findedDrawedZones.some(fz => angular.equals(z, fz)));
+                }
+
+                if (findedZones.length !== 0) {
+                    socketService.sendRequest('delete_floor_zones', {zones: findedZones})
+                        .then((response) => {
+                            zones = zones.filter(z => !findedZones.some(fz => fz === z.id));
+                        })
+                }
             }
 
             //listen for the tags click
@@ -2301,7 +2385,7 @@
             if (dataService.canvasInterval !== undefined) {
                 $interval.cancel(dataService.canvasInterval);
                 dataService.canvasInterval = undefined;
-                dataService.showOfflineAnchors('canvas', constantUpdateCanvas, null);
+                dataService.showOfflineAnchorsIndoor('canvas', constantUpdateCanvas, null);
             }
         };
 
@@ -4694,12 +4778,15 @@
                 targetEvent        : event,
                 controller         : ['$scope', '$interval', 'dataService', function ($scope, $interval, dataService) {
 
+                    $scope.isAdmin = dataService.isAdmin;
+
                     $scope.switch = {
                         showGrid   : dataService.switch.showGrid,
                         showAnchors: dataService.switch.showAnchors,
                         showCameras: dataService.switch.showCameras,
                         showZones: dataService.switch.showZones,
                         showOutrangeTags: dataService.switch.showOutrangeTags,
+                        showOutdoorTags: dataService.switch.showOutdoorTags,
                         playAudio  : dataService.switch.playAudio
                     };
 
@@ -4709,14 +4796,15 @@
                         $mdDialog.hide();
                     };
 
-                    $scope.$watchGroup(['switch.showGrid', "switch.showAnchors", 'switch.showCameras', 'switch.playAudio', 'switch.showOutrangeTags', 'switch.showZones'], function (newValues) {
-                        console.log('watching');
+                    $scope.$watchGroup(['switch.showGrid', "switch.showAnchors", 'switch.showCameras', 'switch.playAudio', 'switch.showOutrangeTags', 'switch.showOutdoorTags', 'switch.showZones'], function (newValues) {
+                        console.log('watching', newValues[5]);
                         dataService.switch.showGrid    = (newValues[0]);
                         dataService.switch.showAnchors = (newValues[1]);
                         dataService.switch.showCameras = (newValues[2]);
                         dataService.switch.playAudio   = (newValues[3]);
                         dataService.switch.showOutrangeTags = (newValues[4]);
-                        dataService.switch.showZones = (newValues[5]);
+                        dataService.switch.showOutdoorTags = (newValues[5]);
+                        dataService.switch.showZones = (newValues[6]);
                     })
                 }]
             });
@@ -4754,9 +4842,9 @@
 
             let latlng = new google.maps.LatLng(newValue.latitude, newValue.longitude);
             if (dataService.homeMap !== null) {
+                console.log('setting zoom');
                 dataService.homeMap.setCenter(latlng);
                 dataService.homeMap.setZoom(15);
-                $scope.selectedLocation = '';
             }
         });
 

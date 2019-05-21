@@ -71,6 +71,9 @@
                                 <md-list-item ng-click="viewHistory('home')"><p>{{lang.history | uppercase}}</p><img
                                         src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
+                                <md-list-item ng-click="viewVersions()"><p>{{lang.versions | uppercase}}</p><img
+                                        src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
                                 <md-list-item ng-click="quickActions()"><p>{{lang.quickActions | uppercase}}</p><img
                                         src="img/icons/menu/quick_action_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
@@ -109,22 +112,6 @@
                                 </md-input-container>
                             </div>
                             <div layout="row" layout-align="center center" class="width-300-px">
-
-                                <!--<div id="sound-on-off-container" layout="column" class="padding-10-px width-50"-->
-                                     <!--layout-align="center center">-->
-
-                                    <!--<div flex="100" layout layout-align="center center">-->
-                                        <!--<md-subheader class="padding-0" ng-show="switch.playAudio">Audio: <b-->
-                                                <!--class="color-green">ON</b></md-subheader>-->
-                                        <!--<md-subheader class="padding-0" ng-show="!switch.playAudio">Audio:-->
-                                            <!--<b class="color-red">OFF</b></md-subheader>-->
-                                    <!--</div>-->
-
-                                    <!--<md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"-->
-                                               <!--md-no-ink aria-label="Attiva/disattiva audio"-->
-                                               <!--ng-model="switch.playAudio">-->
-                                    <!--</md-switch>-->
-                                <!--</div>-->
 
                                 <div id="fullscreen-on-off-container" layout="column" class="padding-10-px width-50"
                                      layout-align="center center">

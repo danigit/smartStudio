@@ -56,12 +56,12 @@
                     </div>
                 </md-list-item>
                 <md-list-item class="md-3-line">
-                    <img src="img/icons/tags/anchor_offline_24.png" class="md-avatar" alt="{{lang.offlineAnchors}}"
+                    <img src="img/icons/anchor_battery_empty_24.png" class="md-avatar" alt="{{lang.shutDownAnchors}}"
                          title="{{lang.shutDownAnchors}}">
                     <div class="md-list-item-text" layout="column">
                         <h3>{{lang.shutDownAnchors}}: <b class="color-red">{{ shutDownAnchors.length }}</b></h3>
                         <h4>{{ shutDownAnchors.length }} {{lang.areShutDownAnchors}}</h4>
-                        <md-select ng-if="offlineAnchors.length > 0" ng-model="antani"
+                        <md-select ng-if="shutDownAnchors.length > 0" ng-model="antani"
                                    placeholder="{{lang.shutDownAnchors}}">
                             <md-option ng-value="anchor" ng-disabled="$index + 1" ng-repeat="anchor in shutDownAnchors">
                                 {{anchor.name}}

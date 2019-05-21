@@ -41,6 +41,8 @@
                     <th md-column><span class="color-darkcyan">{{lang.floor | uppercase}}</span></th>
                     <th md-column md-numeric><span class="color-darkcyan">{{lang.radius | uppercase}}</span></th>
                     <th md-column><span class="color-darkcyan">{{lang.ip}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.anchorState | uppercase}}</span></th>
                     <th md-column md-numeric=""><span class="color-darkcyan">{{lang.rssi | uppercase}}</span></th>
                     <th md-column md-numeric><span class="color-darkcyan">{{lang.proximity | uppercase}}</span></th>
                     <th md-column><span class="color-darkcyan">{{lang.type}}</span></th>
@@ -86,6 +88,13 @@
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'ip')"
                         ng-class="{'md-placeholder': !anchor.ip}">
                         {{anchor.ip || lang.insertIp}}
+                    </td>
+
+                    <td md-cell class="no-wrap"><img ng-src="{{anchor.battery_status ? 'img/icons/battery_empty_24.png'
+                                                            : 'img/icons/battery_full_24.png'}}">
+                    </td>
+
+                    <td md-cell class="no-wrap" ><span ng-class="{'color-green': anchor.is_online, 'color-red': !anchor.is_online}">{{(anchor.is_online ? (lang.online | uppercase) : (lang.offline | uppercase))}}
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'rssi')"
