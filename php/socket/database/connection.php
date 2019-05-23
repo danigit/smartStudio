@@ -1164,43 +1164,43 @@ class Connection
                 $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
-                            WHERE history.TIME BETWEEN ? AND ? ORDER BY history.time DESC";
+                            WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
             } else if ($tag != null && $event == 'Qualsiasi') {
                 $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
-                            WHERE tag.NAME = ? AND history.TIME BETWEEN ? AND ? ORDER BY history.time DESC";
+                            WHERE tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'sss', $tag, $fromDate, $toDate);
             } else if ($tag == 'Qualsiasi' && $event != null) {
                 $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
-                            WHERE event.DESCRIPTION = ? AND history.TIME BETWEEN ? AND ? ORDER BY history.time DESC";
+                            WHERE event.DESCRIPTION = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'sss', $event, $fromDate, $toDate);
             } else if ($event == null && $tag != null) {
                 $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
-                            WHERE tag.NAME = ? AND history.TIME BETWEEN ? AND ? ORDER BY history.time DESC";
+                            WHERE tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'sss', $tag, $fromDate, $toDate);
             } else if ($event != null && $tag == null) {
                 $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
-                            WHERE event.DESCRIPTION = ? AND history.TIME BETWEEN ? AND ? ORDER BY history.time DESC";
+                            WHERE event.DESCRIPTION = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'sss', $event, $fromDate, $toDate);
             } else if ($event != null && $tag != null) {
                 $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
-                            WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND history.TIME BETWEEN ? AND ? ORDER BY history.time DESC";
+                            WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'ssss', $event, $tag, $fromDate, $toDate);
             } else if ($tag == null && $event == null) {
                 $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
-                            WHERE history.TIME BETWEEN ? AND ? ORDER BY history.time DESC";
+                            WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
             }
 
@@ -1225,6 +1225,29 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * @param $fromDate
+     * @param $toDate
+     * @return db_errors|int|mysqli_stmt
+     */
+    function delete_history( $fromDate, $toDate ){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'DELETE FROM history WHERE history.TIME BETWEEN ? AND ?';
+
+            $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+
+            return $statement->affected_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
     /**
      * Function that retrieve the image of the floor passed as the parameter on the location passed as parameter
      * @param $location - the location where the floor is

@@ -326,6 +326,44 @@
                         icon     : markersIconPath + ((marker.icon) ? marker.icon : (marker.is_inside) ? 'location-marker.png' : 'mountain.png')
                     });
 
+                    // let markerTags = 0;
+                    // let markerAnchors = 0;
+                    // let id = ++requestId;
+                    // let id1 = -1;
+                    //
+                    // if (marker.is_inside === 1){
+                    //     socket.send(encodeRequestWithId(id, 'get_anchors_by_location', {location: marker.name}));
+                    //     socket.onmessage = (response) => {
+                    //         let parsedResponse = parseResponse(response);
+                    //         if (parsedResponse.id === id){
+                    //             markerAnchors = parsedResponse.result.length;
+                    //             tags.forEach((tag) => {
+                    //                 id1 = ++requestId;
+                    //                 socket.send(id1, 'get_indoor_tag_location', {tag_id: tag.id});
+                    //             })
+                    //         } else if (parsedResponse.id === id1){
+                    //
+                    //         }
+                    //     }
+                    // } else{
+                    //     socket.send(encodeRequestWithId(id, 'get_anchors_by_location', {location: marker.name}));
+                    //     socket.onmessage = (response) => {
+                    //         let parsedResponse = parseResponse(response);
+                    //         if (response.id === id){
+                    //             tags.forEach((tag) => {
+                    //                 if (dataService.isOutdoor(tag)){
+                    //                     if (dataService.getTagDistanceFromLocationOrigin(tag, marker.position)) {
+                    //                         markerTags++;
+                    //                     }
+                    //                 } else {
+                    //                     let id
+                    //                     socket.send(id1, 'get_indoor_tag_location', {tag_id: tag.id});
+                    //                 }
+                    //             })
+                    //         }
+                    //     }
+                    // }
+
                     let infoWindow = new google.maps.InfoWindow({
                         content: '<div class="marker-info-container">' +
                             '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
@@ -2068,7 +2106,7 @@
                                         $scope.isTagInAlarm = 'background-red';
                                         let tempAlarmTag    = [];
 
-                                        tagCloud.groupTags.forEach(function (tagElem) {
+                                        $scope.tags.forEach(function (tagElem) {
                                             let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem);
                                             tagAlarms.forEach(function (ta) {
                                                 tempAlarmTag.push(ta);
@@ -3470,6 +3508,7 @@
                 $interval.cancel(dataService.homeTimer);
                 dataService.homeTimer = undefined;
             }
+
             if (dataService.canvasInterval !== undefined) {
                 $interval.cancel(dataService.canvasInterval);
                 dataService.canvasInterval = undefined;
@@ -3503,6 +3542,32 @@
                     };
 
                     $scope.historyRows = [];
+                    $scope.deleteHistory = () => {
+                        let fromDate = $filter('date')($scope.history.fromDate, 'yyyy-MM-dd');
+                        let toDate   = $filter('date')($scope.history.toDate, 'yyyy-MM-dd');
+                        let id = ++requestId;
+                        let id1 = -1;
+                        socket.send(encodeRequestWithId(id, 'delete_history', {fromDate: fromDate, toDate: toDate}));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            if (parsedResponse.id === id){
+                                if (parsedResponse.result !== 0){
+                                    id1 = ++requestId;
+                                    socket.send(encodeRequestWithId(id1, 'get_history', {
+                                        fromDate: fromDate,
+                                        toDate  : toDate,
+                                        tag     : $scope.history.selectedTag,
+                                        event   : $scope.history.selectedEvent
+                                    }))
+                                }
+                            }else if (parsedResponse.id === id1){
+                                console.log('updating history table');
+                                $scope.historyRows = parsedResponse.result;
+                                $scope.tableEmpty  = $scope.historyRows.length === 0;
+                                $scope.$apply();
+                            }
+                        }
+                    };
 
                     $scope.$watchGroup(['history.fromDate', 'history.toDate', 'history.selectedTag', 'history.selectedEvent'], function (newValues) {
                         let fromDate = $filter('date')(newValues[0], 'yyyy-MM-dd');

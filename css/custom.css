@@ -177,6 +177,10 @@ MARGINS
     margin: 0!important;
 }
 
+.margin-auto{
+    margin: auto!important;
+}
+
 .margin-top-0{
     margin-top: 0;
 }

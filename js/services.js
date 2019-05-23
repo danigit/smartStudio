@@ -354,11 +354,6 @@
             };
         };
 
-        //function that control if the tag is indoor
-        service.isOutdoor = (tag) => {
-            return tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0;
-        };
-
         service.getAllLocations = () => {
             return socketService.sendRequest('get_all_locations');
         };

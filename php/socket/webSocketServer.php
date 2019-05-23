@@ -627,6 +627,20 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+
+            case 'delete_history':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'delete_history';
+                $fromDate = $decoded_message['data']['fromDate'];
+                $toDate = $decoded_message['data']['toDate'];
+
+                $query = $this->connection->delete_history($fromDate, $toDate);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //changing the password
             case 'change_password':{
                 $result['id'] = $decoded_message['id'];

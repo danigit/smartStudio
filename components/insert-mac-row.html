@@ -36,13 +36,21 @@
             </md-input-container>
 
             <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
-                <input required type="text" ng-model="insertMac.type" name="insertMacType"
-                       placeholder="{{lang.type}}">
-                <div ng-messages="insertMacRowForm.insertMacType.$error || insertMacRowForm.$submitted"
-                     role="alert">
-                    <div ng-message=" required">{{lang.insertType}}</div>
-                </div>
+                <label>{{lang.type}}</label>
+                <md-select ng-model="insertMac.type">
+                    <md-option ng-value=1>UWB</md-option>
+                    <md-option ng-value=0>BLUETOOTH</md-option>
+                </md-select>
             </md-input-container>
+
+<!--            <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">-->
+<!--                <input required type="text" ng-model="insertMac.type" name="insertMacType"-->
+<!--                       placeholder="{{lang.type}}">-->
+<!--                <div ng-messages="insertMacRowForm.insertMacType.$error || insertMacRowForm.$submitted"-->
+<!--                     role="alert">-->
+<!--                    <div ng-message=" required">{{lang.insertType}}</div>-->
+<!--                </div>-->
+<!--            </md-input-container>-->
 
             <div layout="row" layout-align="center end" class="width-100">
                 <md-button ng-click="addMac(insertMacRowForm)" class="md-raised background-darkcyan color-white">

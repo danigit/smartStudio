@@ -197,11 +197,14 @@ function languageController($scope) {
         offline: 'Offline',
         batteryStatus: 'Stato batteria',
         tagType: 'Tipo tag',
-        tagAlarms: 'Allarmi tag',
+        tagAlarms: 'Allarmi Wetag',
+        tagsAlarms: 'Allarmi Wetags',
         audio: 'Audio',
         zones: 'Zone',
         outLocationTags: 'Wetags fuori',
-        showOutdoorTagsLabel: 'Wetags'
+        showOutdoorTagsLabel: 'Wetags',
+        deleteHistory: 'Cancella storico',
+        wetagsGroup: 'Gruppi Wetag'
     }
 };
 
