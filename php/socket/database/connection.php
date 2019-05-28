@@ -835,6 +835,7 @@ class Connection
 
             $permittedString = '';
 
+
             for ($i = 0; $i < count($permitted); $i++) {
                 $this->query = 'SELECT MAC FROM tag_mac WHERE TAG_ID = ?';
 
@@ -851,11 +852,12 @@ class Connection
                     $permittedString .= $row['MAC'] . ',';
                 }
 
-                if (substr($permittedString, -1, 1) == ',')
-                    $permittedString = substr($permittedString, 0, -1);
-
                 $statement->close();
             }
+
+            if (substr($permittedString, -1, 1) == ',')
+                $permittedString = substr($permittedString, 0, -1);
+
 
             $this->query = 'SELECT ID FROM anchor_types WHERE DESCRIPTION = ?';
             $statement = $this->execute_selecting($this->query, 's', $type);
@@ -871,8 +873,6 @@ class Connection
             $statement->close();
 
             if ($fetch) {
-                var_dump($neighbors);
-                var_dump($permittedString);
                 $this->query = 'INSERT INTO anchor (MAC, NAME, TYPE, NEIGHBORS, PROXIMITY, IP, PERMITTED_ASSET, RSSI_THRESHOLD, FLOOR_ID) VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?)';
 
                 $statement = $this->execute_inserting($this->query, 'ssisissii', $mac, $name, $res_id, $neighbors, $proximity, $ip, $permittedString, $rssi, $floor);
@@ -1074,6 +1074,39 @@ class Connection
 
                 $result_array = array('name' => $row['NAME'], 'description' => $row['DESCRIPTION'], 'latitude' => $row['LATITUDE'], 'longitude' => $row['LONGITUDE'],
                     "icon" => $row['ICON'], 'radius' => $row['RADIUS'], 'is_inside' => $row['IS_INSIDE']);
+            }
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Function that gets the location info
+     * @param $location
+     * @return array|db_errors|mysqli_stmt
+     */
+    function get_location_tags($location)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'SELECT t.ID, t.NAME FROM location JOIN floor f on location.ID = f.LOCATION_ID JOIN anchor a on f.ID = a.FLOOR_ID JOIN tag t on a.ID = t.ANCHOR_ID WHERE location.NAME = ?';
+
+            $statement = $this->execute_selecting($this->query, 's', $location);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATION_INFO);
+
+            $this->result = $statement->get_result();
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+
+                $result_array[] = array('name' => $row['NAME']);
             }
 
             return $result_array;
@@ -1518,7 +1551,7 @@ class Connection
         if ($this->connection) {
             $this->query = 'SELECT t.ID, t.NAME, tt.DESCRIPTION AS TYPE, t.X_POS, t.Y_POS, t.TIME, t.BATTERY_STATUS, t.GPS_NORTH_DEGREE, t.MAN_DOWN, t.GPS_EAST_DEGREE,
                         t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.GPS_TIME, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, 
-                        t.IS_EXIT, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
+                        t.INSIDE_ZONE, t.IS_EXIT, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
                         dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
                         FROM tag AS t JOIN tag_types AS tt ON t.TYPE = tt.ID JOIN dress_alarm ON t.ID = dress_alarm.TAG_ID';
 
@@ -1537,7 +1570,7 @@ class Connection
                     'sos' => (int)$row['SOS'], 'man_in_quote' => (int)$row['MAN_IN_QUOTE'], 'call_me_alarm' => (int)$row['CALL_ME_ALARM'],
                     'diagnostic_request' => (int)$row['DIAGNOSTIC_REQUEST'], 'gps_time' => $row['GPS_TIME'],
                     'sleep_time_outdoor' => (int)$row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => (int)$row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON_NAME'],
-                    'time' => $row['TIME'], 'is_exit' => (int)$row['IS_EXIT'], 'type_id' => (int)$row['TYPE_ID'],
+                    'time' => $row['TIME'], 'inside_zone' => $row['INSIDE_ZONE'], 'is_exit' => (int)$row['IS_EXIT'], 'type_id' => (int)$row['TYPE_ID'],
                     'helmet_dpi' => (int)$row['HELMET_DPI'], 'belt_dpi' => (int)$row['BELT_DPI'], 'glove_dpi' => (int)$row['GLOVE_DPI'], 'shoe_dpi' => (int)$row['SHOE_DPI']);
             }
 
@@ -2012,6 +2045,25 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    function update_user_role($user, $role){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE user SET ROLE= ? WHERE user.ID = ?";
+
+            $statement = $this->execute_selecting($this->query, 'ii', $role, $user);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+
+            return $this->connection->affected_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
     /**
      * Funzione che recupera tutti i tipi di un tag
      * @param $floor
@@ -2181,6 +2233,78 @@ class Connection
                 return $statement;
             else if ($statement == false)
                 return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+
+            return $statement->affected_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /** Funzione che recupera tutti i tipi di un tag
+     * @param $tag_id
+     * @return array|db_errors
+     */
+    function get_forbidden_zones($tag_id)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'SELECT ZONE_ID, NAME FROM prohibitions JOIN zone ON ZONE_ID = ID WHERE TAG_ID = ?';
+
+            $statement = $this->execute_selecting($this->query, 'i', $tag_id);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+
+            $this->result = $statement->get_result();
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('zone_id' => $row['ZONE_ID'], 'name' => $row['NAME']);
+            }
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function insert_managed_zones($tag_id, $zones){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            for ($i = 0; $i < count($zones); $i++) {
+
+                $this->query = "INSERT INTO prohibitions (TAG_ID, ZONE_ID) VALUES (?, ?)";
+
+                $statement = $this->execute_inserting($this->query, 'ii', $tag_id, $zones[$i]);
+
+                if ($statement instanceof db_errors)
+                    return $statement;
+                else if ($statement == false)
+                    return new db_errors(db_errors::$ERROR_ON_INSERTING_USER_HAS_LOCATION);
+            }
+
+            return $this->connection->insert_id;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function delete_managed_zone($tag_id, $zone_id){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'DELETE FROM prohibitions WHERE TAG_ID = ? AND ZONE_ID = ?';
+
+            $statement = $this->execute_selecting($this->query, 'ii', $tag_id, $zone_id);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_DELETING_USER_LOCATION);
 
             return $statement->affected_rows;
         }

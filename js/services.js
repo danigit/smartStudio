@@ -399,6 +399,9 @@
             if (tag.call_me_alarm) {
                 alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.callMeAllarm, lang.callMeAllarm, tagsIconPath + 'call_me_alarm_24.png', tagLocation));
             }
+            if (tag.inside_zone) {
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.insideZone, lang.inside_zone, tagsIconPath + 'inside_zone_24.png', tagLocation));
+            }
 
             if (locations !== null) {
                 if (service.isOutdoor(tag) && locations.length > 0) {
@@ -744,6 +747,49 @@
             }
 
             return alarms;
+        };
+
+        service.getIndoorLocationTags = async (markers) => {
+            let locationInfo = [];
+            let locationTags = [];
+            let locationAnchors = [];
+
+            for (let i = 0; i < markers.length; i++) {
+                if (markers[i].is_inside === 1){
+                    await socketService.sendRequest('get_location_tags', {location: markers[i].name})
+                        .then((response) => {
+                            locationTags.push({location: markers[i].name, tags: response.result.length});
+
+                        });
+                    await socketService.sendRequest('get_anchors_by_location', {location: markers[i].name})
+                        .then((response) => {
+                            locationAnchors.push({location: markers[i].name, anchors: response.result.length})
+                        })
+                }
+            }
+
+            locationInfo.push(locationTags);
+            locationInfo.push(locationAnchors);
+            return locationInfo;
+        };
+
+        service.getOutdoorLocationTags = (markers, allTags) => {
+            let locationTags = [];
+            let locationsTags = [];
+
+            markers.forEach((marker) => {
+                if (marker.is_inside === 0) {
+                    allTags.forEach((tag) => {
+                        if (service.getTagDistanceFromLocationOrigin(tag, marker.position) <= marker.radius) {
+                            locationTags.push(tag.name);
+                        }
+                    });
+                    locationsTags.push({location: marker.name, tags: locationTags.length})
+                    locationTags = [];
+                }
+            });
+
+            return locationsTags;
         };
 
         service.isElementAtClick = (virtualTagPosition, mouseDownCoords, distance) => {

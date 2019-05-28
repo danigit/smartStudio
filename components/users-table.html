@@ -23,7 +23,7 @@
 <!--popup content-->
 <md-content class="popup-padding">
 
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <md-table-container>
 
@@ -50,9 +50,14 @@
                     <td md-cell class="no-wrap" ng-click="editCell($event, user, 'name')"
                         ng-class="{'md-placeholder': !user.name}">{{user.name || 'Inserire nome'}}
                     </td>
-                    <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'role')"
-                        ng-class="{'md-placeholder': !user.role}">{{user.role || 'Inserire ruolo'}}
-                    </td>
+                    <td md-cell ng-show="isAdmin" class="no-wrap">
+                        <md-input-container md-no-float class="md-block">
+                            <md-select ng-model="userRole" ng-change="updateUserRole(user, userRole)">
+                                <md-option ng-selected="{{user.role === '1'}}" ng-value=1>{{lang.adminUser | uppercase}}</md-option>
+                                <md-option ng-selected="{{user.role === '2'}}" ng-value=2>{{lang.intermediateUser | uppercase}}</md-option>
+                                <md-option ng-selected="{{user.role === '0'}}" ng-value=0>{{lang.genericUser | uppercase}}</md-option>
+                            </md-select>
+                        </md-input-container></td>
                     <td md-cell>
                         <md-button ng-click="manageLocations(user)" class="md-raised background-darkcyan color-white">
                             GESTIONE LOCATIONS

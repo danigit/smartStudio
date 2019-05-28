@@ -160,7 +160,6 @@ function languageController($scope) {
         drawZone: 'Disegna zona',
         deleteZone: 'Cancella zona',
         modifyZone: 'Modifica zona',
-        save: 'Salva',
         zoneTable: 'Gestion zone',
         zone: 'Zone',
         quickActions: 'Comandi rapidi',
@@ -192,7 +191,6 @@ function languageController($scope) {
         searchLocation: 'Cerca sito',
         shutDownAnchors: 'Ancore scariche',
         areShutDownAnchors: 'Ancore sono spente',
-        anchorState: 'Stato ancora',
         online: 'Online',
         offline: 'Offline',
         batteryStatus: 'Stato batteria',
@@ -204,7 +202,12 @@ function languageController($scope) {
         outLocationTags: 'Wetags fuori',
         showOutdoorTagsLabel: 'Wetags',
         deleteHistory: 'Cancella storico',
-        wetagsGroup: 'Gruppi Wetag'
+        wetagsGroup: 'Gruppi Wetag',
+        adminUser: 'Amministratore',
+        intermediateUser: 'Intermedio',
+        genericUser: 'Generico',
+        zonesManaging: 'Gestione zone',
+        insertZone: 'Inserisci zona'
     }
 };
 
@@ -238,7 +241,9 @@ let lang = {
     canInsertUser: 'Impossibile inserire l\'utente',
     users: 'Utenti',
     deleteLocation: 'Cancella sito', 
-    deleteLocationText: 'Sei sicuro di voler cancellare la location?', 
+    deleteLocationText: 'Sei sicuro di voler cancellare la location?',
+    deleteZone: 'Cancella zona',
+    deleteZoneText: 'Sei sicuro di voler cancellare la zona?',
     genericUser: 'Utente generico', 
     intermediateUser: 'Utente intermedio',
     invalidOld: 'Password vecchia non valida',
@@ -247,7 +252,6 @@ let lang = {
     dkDeleteTag: 'Sei sicuro di voler cancellare il tag?',
     deleteMac: 'Cancella mac',
     okDeleteMac: 'Sei sicuro di voler cancellare il mac?',
-    deleteZone: 'Cancella zona', 
     okDeleteZone: 'Sei sicuro di voler cancellare la zona?',
     shutdownTags                    : 'WeTags spenti',
     activeTags: 'Tag attivi',

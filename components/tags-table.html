@@ -39,6 +39,8 @@
                     <th md-column md-order-by="type_name"><span class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span>
                     </th>
                     <th md-column></th>
+                    <th md-column></th>
+                    <th md-column></th>
                 </tr>
                 </thead>
 
@@ -58,6 +60,11 @@
                     <td md-cell ng-show="isAdmin || isUserManager">
                         <md-button ng-click="tagMacs(tag)" class="md-raised background-darkcyan color-white">
                             {{lang.macsManaging | uppercase}}
+                        </md-button>
+                    </td>
+                    <td md-cell ng-show="isAdmin || isUserManager">
+                        <md-button ng-click="tagZones(tag)" class="md-raised background-darkcyan color-white">
+                            {{lang.zonesManaging | uppercase}}
                         </md-button>
                     </td>
                     <td md-cell ng-show="isAdmin || isUserManager" ng-click="deleteRow(tag)"><img src="img/icons/delete_trash_24.png"

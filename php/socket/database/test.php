@@ -58,7 +58,7 @@ class Test{
                 break;
             case 'insert_floor': var_dump($this->conn->insert_floor('newFloor', 'newFloorImage.png', 100, 10, 1));
                 break;
-            case 'insert_anchor': var_dump($this->conn->insert_anchor('newAnchor', 'DANIELMAC', 'ANCHOR_BLE', 1, 1, 1, [1, 2, 3, 4],"23344,342432,343423",  1));
+            case 'insert_anchor': var_dump($this->conn->insert_anchor('newAnchor', 'DANIELMAC', 'ANCHOR_BLE', 1, 1, 1, [1, 2, 4, 5],"23344,342432,343423",  1));
                 break;
             case 'change_anchor_field': var_dump($this->conn->change_anchor_field(1, 'name', 'Anchor100'));
                 break;
@@ -84,4 +84,4 @@ class Test{
 }
 
 $test = new Test();
-$test->test_function('insert_location');
+$test->test_function('insert_anchor');

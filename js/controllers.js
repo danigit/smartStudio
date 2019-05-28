@@ -317,114 +317,102 @@
                 constantUpdateNotifications(map);
                 map.set('styles', mapConfiguration);
 
-                //pining the locations on the map
-                markers.forEach((marker) => {
+                dataService.getIndoorLocationTags(markers)
+                    .then((response) => {
 
-                    let markerObject = new google.maps.Marker({
-                        position : new google.maps.LatLng(marker.position[0], marker.position[1]),
-                        animation: google.maps.Animation.DROP,
-                        icon     : markersIconPath + ((marker.icon) ? marker.icon : (marker.is_inside) ? 'location-marker.png' : 'mountain.png')
-                    });
+                        let outdoorLocationTags = dataService.getOutdoorLocationTags(markers, tags);
+                        //pining the locations on the map
+                        markers.forEach((marker) => {
 
-                    // let markerTags = 0;
-                    // let markerAnchors = 0;
-                    // let id = ++requestId;
-                    // let id1 = -1;
-                    //
-                    // if (marker.is_inside === 1){
-                    //     socket.send(encodeRequestWithId(id, 'get_anchors_by_location', {location: marker.name}));
-                    //     socket.onmessage = (response) => {
-                    //         let parsedResponse = parseResponse(response);
-                    //         if (parsedResponse.id === id){
-                    //             markerAnchors = parsedResponse.result.length;
-                    //             tags.forEach((tag) => {
-                    //                 id1 = ++requestId;
-                    //                 socket.send(id1, 'get_indoor_tag_location', {tag_id: tag.id});
-                    //             })
-                    //         } else if (parsedResponse.id === id1){
-                    //
-                    //         }
-                    //     }
-                    // } else{
-                    //     socket.send(encodeRequestWithId(id, 'get_anchors_by_location', {location: marker.name}));
-                    //     socket.onmessage = (response) => {
-                    //         let parsedResponse = parseResponse(response);
-                    //         if (response.id === id){
-                    //             tags.forEach((tag) => {
-                    //                 if (dataService.isOutdoor(tag)){
-                    //                     if (dataService.getTagDistanceFromLocationOrigin(tag, marker.position)) {
-                    //                         markerTags++;
-                    //                     }
-                    //                 } else {
-                    //                     let id
-                    //                     socket.send(id1, 'get_indoor_tag_location', {tag_id: tag.id});
-                    //                 }
-                    //             })
-                    //         }
-                    //     }
-                    // }
+                            let markerObject = new google.maps.Marker({
+                                position : new google.maps.LatLng(marker.position[0], marker.position[1]),
+                                animation: google.maps.Animation.DROP,
+                                icon     : markersIconPath + ((marker.icon) ? marker.icon : (marker.is_inside) ? 'location-marker.png' : 'mountain.png')
+                            });
 
-                    let infoWindow = new google.maps.InfoWindow({
-                        content: '<div class="marker-info-container">' +
-                            '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
-                            '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
-                            '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
-                            '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
-                            '</div>'
-                    });
+                            let infoWindow = null;
 
-                    markerObject.addListener('mouseover', function () {
-                        infoWindow.open(map, this);
-                    });
+                            if (marker.is_inside === 1) {
+                                let locationTags = response[0].filter(l => l.location === marker.name)[0];
+                                let locationAnchors = response[1].filter(l => l.location === marker.name)[0];
 
-                    markerObject.addListener('mouseout', function () {
-                        infoWindow.close(map, this);
-                    });
+                                infoWindow = new google.maps.InfoWindow({
+                                    content: '<div class="marker-info-container">' +
+                                        '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+                                        '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
+                                        '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
+                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
+                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Tags: </p><p class="float-right"><b>' + locationTags.tags + '</b></p></div>' +
+                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Anchors: </p><p class="float-right"><b>' + locationAnchors.anchors + '</b></p></div>' +
+                                        '</div>'
+                                });
+                            }else{
+                                let locationTags = outdoorLocationTags.filter(l => l.location === marker.name)[0];
 
-                    markerObject.addListener('click', () => {
-                        let id1 = ++requestId;
-                        let id2 = -1;
-
-                        //saving the location data on which I clicked, and then opening the location
-                        socket.send(encodeRequestWithId(id1, 'save_location', {location: marker.name}));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id1) {
-                                if (parsedResponse.result === 'location_saved') {
-                                    id2 = ++requestId;
-                                    socket.send(encodeRequestWithId(id2, 'get_location_info'));
-                                }
-                            } else if( parsedResponse.id === id2){
-                                dataService.location          = parsedResponse.result;
-                                dataService.defaultFloorName  = '';
-                                dataService.locationFromClick = '';
-                                (parsedResponse.result.is_inside)
-                                    ? $state.go('canvas')
-                                    : $state.go('outdoor-location');
+                                infoWindow = new google.maps.InfoWindow({
+                                    content: '<div class="marker-info-container">' +
+                                        '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+                                        '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
+                                        '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
+                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
+                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Tags: </p><p class="float-right"><b>' + locationTags.tags + '</b></p></div>' +
+                                        '</div>'
+                                });
                             }
-                        };
+
+                            markerObject.addListener('mouseover', function () {
+                                infoWindow.open(map, this);
+                            });
+
+                            markerObject.addListener('mouseout', function () {
+                                infoWindow.close(map, this);
+                            });
+
+                            markerObject.addListener('click', () => {
+                                let id1 = ++requestId;
+                                let id2 = -1;
+
+                                //saving the location data on which I clicked, and then opening the location
+                                socket.send(encodeRequestWithId(id1, 'save_location', {location: marker.name}));
+                                socket.onmessage = (response) => {
+                                    let parsedResponse = parseResponse(response);
+                                    if (parsedResponse.id === id1) {
+                                        if (parsedResponse.result === 'location_saved') {
+                                            id2 = ++requestId;
+                                            socket.send(encodeRequestWithId(id2, 'get_location_info'));
+                                        }
+                                    } else if( parsedResponse.id === id2){
+                                        dataService.location          = parsedResponse.result;
+                                        dataService.defaultFloorName  = '';
+                                        dataService.locationFromClick = '';
+                                        (parsedResponse.result.is_inside)
+                                            ? $state.go('canvas')
+                                            : $state.go('outdoor-location');
+                                    }
+                                };
+                            });
+
+                            homeCtrl.dynamicMarkers.push(markerObject);
+                            bounds.extend(markerObject.getPosition());
+                        });
+
+                        homeCtrl.markerClusterer = new MarkerClusterer(map, homeCtrl.dynamicMarkers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+
+                        //if there are no markers I set the map to italy with default zoom
+                        if (homeCtrl.dynamicMarkers.length === 0) {
+                            map.setCenter(new google.maps.LatLng(44.44, 8.88));
+                            map.setZoom(mapZoom);
+                        }//if there is only a marker I set the map on the marker with zoom 11
+                        else if (homeCtrl.dynamicMarkers.length === 1) {
+                            map.setCenter(bounds.getCenter());
+                            map.setZoom(mapZoom);
+                        }//if the map has more than one marker I let maps to set automatically the zoom
+                        else {
+                            map.setCenter(bounds.getCenter());
+                            map.fitBounds(bounds);
+                        }
                     });
 
-                    homeCtrl.dynamicMarkers.push(markerObject);
-                    bounds.extend(markerObject.getPosition());
-                });
-
-                homeCtrl.markerClusterer = new MarkerClusterer(map, homeCtrl.dynamicMarkers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-
-                console.log(homeCtrl.dynamicMarkers);
-                //if there are no markers I set the map to italy with default zoom
-                if (homeCtrl.dynamicMarkers.length === 0) {
-                    map.setCenter(new google.maps.LatLng(44.44, 8.88));
-                    map.setZoom(mapZoom);
-                }//if there is only a marker I set the map on the marker with zoom 11
-                else if (homeCtrl.dynamicMarkers.length === 1) {
-                    map.setCenter(bounds.getCenter());
-                    map.setZoom(mapZoom);
-                }//if the map has more than one marker I let maps to set automatically the zoom
-                else {
-                    map.setCenter(bounds.getCenter());
-                    map.fitBounds(bounds);
-                }
             });
 
             //showing the info window with the online/offline tags
@@ -451,6 +439,8 @@
                     $interval.cancel(dataService.homeTimer);
                     dataService.homeTimer = undefined;
                 }
+
+                let locationSelected = false;
 
                 $mdDialog.show({
                     templateUrl        : componentsPath + 'indoor-alarms-info.html',
@@ -505,6 +495,7 @@
                                             let parsedResponse = parseResponse(response);
                                             if (parsedResponse.id === id1) {
                                                 if (parsedResponse.result === 'location_saved') {
+                                                    locationSelected = true;
                                                     $state.go('outdoor-location');
                                                 }
                                             }
@@ -545,6 +536,7 @@
                                                 dataService.defaultFloorName  = indoorTag.floor_name;
                                                 dataService.locationFromClick = indoorTag.location_name;
                                                 $mdDialog.hide();
+                                                locationSelected = true;
                                                 $state.go('canvas');
                                             }
                                         }
@@ -606,7 +598,8 @@
                         }
                     }],
                     onRemoving: function (event, removePromise) {
-                        if (dataService.homeTimer === undefined) {
+                        if (dataService.homeTimer === undefined && !locationSelected) {
+                            console.log('restarting map timer')
                             NgMap.getMap('main-map').then((map) => {
                                 constantUpdateNotifications(map)
                             });
@@ -619,6 +612,7 @@
         //on destroying the pag I release the resources
         $scope.$on('$destroy', function () {
             $mdDialog.hide();
+            console.log('cancelling the timer');
             $interval.cancel(dataService.homeTimer);
             dataService.homeTimer = undefined;
         })
@@ -840,14 +834,6 @@
             })
         };
 
-        //calculating the distance of the tag from the location center
-        let getTagDistanceFromLocationOrigin = (tag, origin) => {
-            let distX = Math.abs(tag.gps_north_degree - origin[0]);
-            let distY = Math.abs(tag.gps_east_degree - origin[1]);
-
-            return Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-        };
-
         NgMap.getMap('outdoor-map').then((map) => {
             controllerMap = map;
             map.set('styles', mapConfiguration);
@@ -930,7 +916,7 @@
 
                         tags.forEach((tag, index) => {
                             if (dataService.isOutdoor(tag)) {
-                                if ((getTagDistanceFromLocationOrigin(tag, [locationInfo.latitude, locationInfo.longitude])) <= locationInfo.radius) {
+                                if ((dataService.getTagDistanceFromLocationOrigin(tag, [locationInfo.latitude, locationInfo.longitude])) <= locationInfo.radius) {
                                     tagAlarms = dataService.getTagAlarms(tag);
 
                                     let marker = new google.maps.Marker({
@@ -2498,6 +2484,7 @@
         $scope.selectedTag = '';
         $scope.selectedLocation = '';
         $scope.zoneColor = '';
+        $scope.userRole = '';
 
         $scope.switch      = {
             mapFullscreen: false
@@ -3178,12 +3165,24 @@
                     $scope.selected       = [];
                     $scope.usersTable = [];
                     $scope.isAdmin = admin;
+                    $scope.userRole = '';
                     $scope.isUserManager = userManager;
                     $scope.tableEmpty     = false;
                     $scope.query          = {
                         limitOptions: [5, 10, 15],
                         limit       : 5,
                         page        : 1
+                    };
+
+                    $scope.updateUserRole = (user, userRole) => {
+                        if (user.role !== userRole.toString()) {
+                            let id = ++requestId;
+                            socket.send(encodeRequestWithId(id, 'update_user_role', {user: user.id, role: userRole}));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                console.log(parsedResponse.result);
+                            }
+                        }
                     };
 
                     let updateUserTable = () => {
@@ -4081,6 +4080,150 @@
                         $mdDialog.show(tagMacsDialog);
                     };
 
+                    $scope.tagZones = (tag) => {
+                        let tagZonesDialog = {
+                            locals             : {tag: tag},
+                            templateUrl        : componentsPath + 'manage-zones.html',
+                            parent             : angular.element(document.body),
+                            targetEvent        : event,
+                            clickOutsideToClose: true,
+                            multiple           : true,
+                            controller         : ['$scope', 'tag', function ($scope, tag) {
+
+                                $scope.zones = [];
+                                $scope.tableEmpty = false;
+
+                                $scope.query = {
+                                    limitOptions: [5, 10, 15],
+                                    order       : 'name',
+                                    limit       : 5,
+                                    page        : 1
+                                };
+
+                                let id2 = ++requestId;
+                                socket.send(encodeRequestWithId(id2, 'get_forbidden_zones', {
+                                    tag_id: tag.id
+                                }));
+
+                                socket.onmessage = (response) => {
+                                    let parsedResponse = parseResponse(response);
+                                    console.log(parsedResponse);
+                                    if (parsedResponse.id === id2 ){
+                                        $scope.tableEmpty = parsedResponse.result.length === 0;
+                                        $scope.zones = parsedResponse.result;
+                                    }
+                                };
+
+
+                                //inserting a mac
+                                $scope.manageNewZone = () => {
+                                    $mdDialog.hide();
+                                    $mdDialog.show({
+                                        locals             : {tag: tag},
+                                        templateUrl        : componentsPath + 'insert-managed-zones.html',
+                                        parent             : angular.element(document.body),
+                                        targetEvent        : event,
+                                        clickOutsideToClose: true,
+                                        multiple           : true,
+                                        controller         : ['$scope', 'tag', function ($scope, tag) {
+
+
+                                            let zonesIds = [];
+
+                                            $scope.insertManagedZones = {
+                                                resultClass: '',
+                                                selectedZones: [],
+                                                allZones: []
+                                            };
+
+                                            let id3 = ++requestId;
+                                            socket.send(encodeRequestWithId(id3, 'get_floor_zones', {
+                                                floor: dataService.defaultFloorName,
+                                                location: dataService.location,
+                                                user: dataService.user.username
+                                            }));
+                                            socket.onmessage = (response) => {
+                                                let parsedResponse = parseResponse(response);
+                                                if (parsedResponse.id === id3){
+                                                    $scope.insertManagedZones.allZones = parsedResponse.result;
+                                                }
+                                            };
+
+                                            $scope.addManagedZones = (form) => {
+                                                form.$submitted = true;
+
+                                                if (form.$valid) {
+
+                                                    $scope.insertManagedZones.allZones.filter(z => $scope.insertManagedZones.selectedZones.some(sz => sz === z.name))
+                                                        .forEach((zone) => {
+                                                            zonesIds.push(zone.id);
+                                                        });
+
+                                                    let id4 = ++requestId;
+                                                    socket.send(encodeRequestWithId(id4, 'insert_managed_zones', {
+                                                        tag_id  : tag.id,
+                                                        zones  : zonesIds,
+                                                    }));
+                                                    socket.onmessage = (response) => {
+                                                        let parsedResponse = parseResponse(response);
+                                                        if (parsedResponse.id === id4){
+                                                            $mdDialog.hide();
+                                                            $mdDialog.show(tagZonesDialog);
+                                                        }
+                                                    };
+                                                } else {
+                                                    $scope.insertManagedZones.resultClass = 'background-red';
+                                                }
+                                            };
+
+                                            $scope.hide = () => {
+                                                $mdDialog.hide();
+                                            }
+                                        }]
+                                    });
+                                };
+
+                                //deleting tag
+                                $scope.deleteManagedZone = (zone) => {
+                                    console.log(zone);
+                                    let confirm = $mdDialog.confirm()
+                                        .title(lang.deleteZone.toUpperCase())
+                                        .textContent(lang.deleteZoneText)
+                                        .targetEvent(event)
+                                        .multiple(true)
+                                        .ok(lang.deleteZone)
+                                        .cancel(lang.cancel);
+
+                                    $mdDialog.show(confirm).then(() => {
+                                        let id5 = ++requestId;
+                                        socket.send(encodeRequestWithId(id5, 'delete_managed_zone', {
+                                            tag_id: tag.id,
+                                            zone_id: zone.zone_id
+                                        }));
+                                        socket.onmessage = (response) => {
+                                            let parsedResponse = parseResponse(response);
+                                            if (parsedResponse.id === id5){
+                                                if (parsedResponse.result === 1) {
+                                                    $scope.zones = $scope.zones.filter(z => z.zone_id !== zone.zone_id);
+                                                    $scope.$apply();
+                                                    console.log($scope.zones);
+                                                }
+                                            }
+                                        };
+                                    }, function () {
+                                        console.log('CANCELLATO!!!!');
+                                    });
+                                };
+
+                                $scope.hide = () => {
+                                    $mdDialog.hide();
+                                }
+                            }]
+                        };
+
+                        $mdDialog.show(tagZonesDialog);
+                    };
+
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
@@ -4383,6 +4526,7 @@
                                     permittedIds.push(t.id);
                                 });
 
+
                             let id3 = ++requestId;
                             socket.send(encodeRequestWithId(id3, 'insert_anchor', {
                                 name      : $scope.insertAnchor.name,
@@ -4551,6 +4695,7 @@
         $scope.floorUpdate = () => {
             $interval.cancel(dataService.canvasInterval);
             dataService.canvasInterval = undefined;
+            let floorChanged = false;
 
             let addRowDialog = {
                 templateUrl        : componentsPath + 'insert-floor-row.html',
@@ -4687,6 +4832,7 @@
                     };
 
                     let updateFloorTable = () => {
+                        console.log('updating floor table');
                         let id = ++requestId;
                         socket.send(encodeRequestWithId(id, 'get_floors_by_location', {location: dataService.location}));
                         socket.onmessage = (response) => {
@@ -4723,8 +4869,11 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id1){
-                                            if (parsedResponse.result !== 1) {
-                                                console.log(parsedResponse.result);
+                                            if (parsedResponse.result === 1) {
+                                                console.log(floorName);
+                                                if (floorName === 'map_width')
+                                                    floorChanged = true;
+                                                updateFloorTable();
                                                 //TODO handre when not saving field
                                             }
                                         }
@@ -4824,6 +4973,8 @@
                     if (dataService.canvasInterval === undefined){
                         if (dataService.defaultFloorCanceled) {
                             console.log('reloading windows');
+                            window.location.reload();
+                        }else if (floorChanged){
                             window.location.reload();
                         }else {
                             console.log('emiting');

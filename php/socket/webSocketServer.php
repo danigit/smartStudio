@@ -205,6 +205,18 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //getting a location infos
+            case 'get_location_tags':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'get_location_tags';
+
+                $query = $this->connection->get_location_tags($decoded_message['data']['location']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //getting all the locations
             case 'get_all_locations':{
                 $result['id'] = $decoded_message['id'];
@@ -718,6 +730,17 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //getting the user settings
+            case 'update_user_role':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'update_user_role';
+                $query = $this->connection->update_user_role($decoded_message['data']['user'], $decoded_message['data']['role']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //getting the zones
             case 'get_floor_zones':{
                 $result['id'] = $decoded_message['id'];
@@ -804,7 +827,40 @@ class webSocketServer implements MessageComponentInterface{
                 $result['result'] = $errors;
 
                 $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'get_forbidden_zones': {
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'get_forbidden_zones';
 
+                $query = $this->connection->get_forbidden_zones($decoded_message['data']['tag_id']);
+                ($query instanceof db_errors) ? array_push($errors, $query->getErrorName()) : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'insert_managed_zones': {
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'insert_managed_zones';
+
+                $query = $this->connection->insert_managed_zones($decoded_message['data']['tag_id'], $decoded_message['data']['zones']);
+
+                ($query instanceof db_errors) ? array_push($errors, $query->getErrorName()) : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+
+            //changing the location field
+            case 'delete_managed_zone':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'delete_managed_zone';
+                $query = $this->connection->delete_managed_zone($decoded_message['data']['tag_id'], $decoded_message['data']['zone_id']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
             }
             //changing the location field
             case 'get_generic_users':{

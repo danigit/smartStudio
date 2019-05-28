@@ -1,0 +1,49 @@
+<div ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="insertManagedZones.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{lang.zones}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+    <!--end popup header-->
+</div>
+<!--popup content-->
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+
+        <form id="insertManagedLocationsForm" name="insertManagedZonesForm">
+            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <label>Zone</label>
+                <md-select ng-model="insertManagedZones.selectedZones"
+                           multiple>
+                    <md-optgroup>
+                        <md-option ng-value="zone.name" ng-repeat="zone in insertManagedZones.allZones | filter:searchString">
+                            {{zone.name}}
+                        </md-option>
+                    </md-optgroup>
+                </md-select>
+            </md-input-container>
+
+            <div layout="row" layout-align="center end" class="width-100 margin-top-20-px">
+                <md-button ng-click="addManagedZones(insertManagedZonesForm)" class="md-raised background-darkcyan color-white">
+                    {{lang.insertZone | uppercase}}
+                </md-button>
+            </div>
+        </form>
+    </div>
+</md-content>
+<!--end popup content-->
