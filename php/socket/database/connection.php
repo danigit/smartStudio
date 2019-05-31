@@ -1570,7 +1570,7 @@ class Connection
                     'sos' => (int)$row['SOS'], 'man_in_quote' => (int)$row['MAN_IN_QUOTE'], 'call_me_alarm' => (int)$row['CALL_ME_ALARM'],
                     'diagnostic_request' => (int)$row['DIAGNOSTIC_REQUEST'], 'gps_time' => $row['GPS_TIME'],
                     'sleep_time_outdoor' => (int)$row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => (int)$row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON_NAME'],
-                    'time' => $row['TIME'], 'inside_zone' => $row['INSIDE_ZONE'], 'is_exit' => (int)$row['IS_EXIT'], 'type_id' => (int)$row['TYPE_ID'],
+                    'time' => $row['TIME'], 'inside_zone' => (int)$row['INSIDE_ZONE'], 'is_exit' => (int)$row['IS_EXIT'], 'type_id' => (int)$row['TYPE_ID'],
                     'helmet_dpi' => (int)$row['HELMET_DPI'], 'belt_dpi' => (int)$row['BELT_DPI'], 'glove_dpi' => (int)$row['GLOVE_DPI'], 'shoe_dpi' => (int)$row['SHOE_DPI']);
             }
 
@@ -1816,6 +1816,33 @@ class Connection
         if ($this->connection) {
             $this->query = "UPDATE tag SET " . strtoupper($tag_field) . " = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'ss', $field_value, $tag_id);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+
+            $this->result = $this->connection->affected_rows;
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Function that change the value of a tag field
+     * @param $tag_id
+     * @param $type
+     * @return db_errors|int|mysqli_stmt
+     */
+    function update_tag_type($tag_id, $type)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE tag SET TYPE = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'ii', $type, $tag_id);
 
             if ($statement instanceof db_errors)
                 return $statement;
@@ -2578,6 +2605,24 @@ class Connection
             }
 
             return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function get_engine_on(){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'SELECT TIME_LE FROM rtls WHERE TIMESTAMPDIFF(SECOND, TIME_LE, CURRENT_TIMESTAMP) <= 60';
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_MAC_TYPES);
+
+
+            return mysqli_num_rows($this->result);
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);

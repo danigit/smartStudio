@@ -78,10 +78,12 @@ class Test{
                 break;
             case 'get_user': var_dump($this->conn->get_user("daniel"));
                 break;
+            case 'get_engine_on': var_dump($this->conn->get_engine_on());
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('insert_anchor');
+$test->test_function('get_engine_on');

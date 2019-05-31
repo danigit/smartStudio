@@ -30,7 +30,8 @@
                 <label>Zone</label>
                 <md-select ng-model="insertManagedZones.selectedZones"
                            multiple>
-                    <md-optgroup>
+                    <md-option ng-if="insertManagedZones.allZones.length === 0" class="color-red">{{lang.noZoneAvailable}}</md-option>
+                    <md-optgroup ng-if="insertManagedZones.allZones.length > 0">
                         <md-option ng-value="zone.name" ng-repeat="zone in insertManagedZones.allZones | filter:searchString">
                             {{zone.name}}
                         </md-option>

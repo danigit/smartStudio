@@ -25,6 +25,8 @@
         service.userTags                 = [];
         service.floorTags            = [];
         service.anchors              = [];
+        service.locationAnchors              = [];
+        service.anchorsToUpdate              = [];
         service.floors               = [];
         service.userFloors           = [];
         service.cameras              = [];
@@ -186,8 +188,9 @@
 
         //checking if there is at least an anchor offline
         service.checkIfAnchorsAreOffline = (anchors) => {
+            console.log(anchors);
             return anchors.some(function (anchor) {
-                return anchor.is_online !== true;
+                return anchor.is_online !== 0 || anchor.battery_status === 1;
             });
         };
 
@@ -399,6 +402,7 @@
             if (tag.call_me_alarm) {
                 alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.callMeAllarm, lang.callMeAllarm, tagsIconPath + 'call_me_alarm_24.png', tagLocation));
             }
+            console.log(tag);
             if (tag.inside_zone) {
                 alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.insideZone, lang.inside_zone, tagsIconPath + 'inside_zone_24.png', tagLocation));
             }
@@ -466,7 +470,7 @@
             return tags.some(function (tag) {
                 return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
                     || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
-                    || tag.call_me_alarm || tag.diagnostic_request;
+                    || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone;
             })
         };
 
@@ -619,7 +623,7 @@
             tags.forEach(function (tag) {
                 if (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
                     || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
-                    || tag.call_me_alarm || tag.diagnostic_request) {
+                    || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone) {
                     tagState.withAlarm = true;
                 } else if (tag.is_exit && !tag.radio_switched_off) {
                     tagState.offline = true;

@@ -207,7 +207,9 @@ function languageController($scope) {
         intermediateUser: 'Intermedio',
         genericUser: 'Generico',
         zonesManaging: 'Gestione zone',
-        insertZone: 'Inserisci zona'
+        insertZone: 'Inserisci zona',
+        noZoneAvailable: 'Nessuna zona disponibile',
+        engineOff: 'Server spento'
     }
 };
 

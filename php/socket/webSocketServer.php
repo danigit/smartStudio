@@ -425,6 +425,17 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'update_tag_type':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'update_tag_type';
+
+                $query = $this->connection->update_tag_type($decoded_message['data']['tag'], $decoded_message['data']['type']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //getting all the tags
             case 'get_all_tags':{
                 $result['id'] = $decoded_message['id'];
@@ -1002,6 +1013,16 @@ class webSocketServer implements MessageComponentInterface{
                 $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_alpha';
                 $query = $this->connection->get_alpha();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'get_engine_on':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'get_engine_on';
+                $query = $this->connection->get_engine_on();
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

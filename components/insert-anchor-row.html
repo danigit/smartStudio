@@ -117,7 +117,7 @@
                                ng-keydown="updateSearch($event)">
                     </md-select-header>
                     <md-optgroup>
-                        <md-option ng-value="permitted.name" ng-repeat="permitted in permitteds | filter:searchString">
+                        <md-option ng-value="permitted.name" ng-selected="{{true}}" ng-repeat="permitted in permitteds | filter:searchString">
                             {{permitted.name}}
                         </md-option>
                     </md-optgroup>

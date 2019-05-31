@@ -11,6 +11,9 @@
                 <img ng-show="homeCtrl.showOfflineAnchorsIcon" ng-click="homeCtrl.showOfflineAnchorsHome()"
                      src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
                      title="{{lang.offlineAnchors}}">
+                <img ng-show="homeCtrl.showEngineOffIcon"
+                     src="img/icons/engine_off_64.png" alt="{{lang.engineOff}}"
+                     title="{{lang.engineOff}}">
             </div>
             <ng-map id="main-map" ng-init="homeCtrl.markerClicked()" center="{{mapConfiguration.center}}"
                     zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="height-100-vh">

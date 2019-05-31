@@ -269,7 +269,7 @@
                     console.log('inside home timer');
 
                     let id1 = ++requestId;
-                    let id2 = -1, id3 = -1;
+                    let id2 = -1, id3 = -1, id4 = -1;
 
                     socket.send(encodeRequestWithId(id1, 'get_all_tags'));
                     socket.onmessage = (response) => {
@@ -302,6 +302,11 @@
                             }
 
                             homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
+                            id4 = ++requestId;
+                            socket.send(encodeRequestWithId(id4, 'get_engine_on'));
+                        }else if (parsedResponse.id === id4){
+                            homeCtrl.showEngineOffIcon = parsedResponse.result === 0;
+                            console.log(homeCtrl.showEngineOffIcon);
                         }
                     };
                 }, 1000);
@@ -316,6 +321,19 @@
                 dataService.homeMap = map;
                 constantUpdateNotifications(map);
                 map.set('styles', mapConfiguration);
+
+                let drawingManager = new google.maps.drawing.DrawingManager({
+                    drawingMode: google.maps.drawing.OverlayType.CIRCLE,
+                    drawingControl: true,
+                    drawingControlOptions: {
+                        position: google.maps.ControlPosition.BOTTOM_CENTER
+                    }
+                });
+
+                drawingManager.setMap(map);
+                console.log(drawingManager.getMap());
+                console.log(map);
+                console.log(drawingManager);
 
                 dataService.getIndoorLocationTags(markers)
                     .then((response) => {
@@ -886,7 +904,7 @@
             dataService.updateMapTimer = $interval(() => {
                 console.log('constant update outdoor map');
                 id1     = ++requestId;
-                let id2 = -1;
+                let id2 = -1, id3 = -1;
                 socket.send(encodeRequestWithId(id1, 'get_all_tags'));
                 socket.onmessage = (response) => {
                     let parsedResponse = parseResponse(response);
@@ -1145,6 +1163,10 @@
                         socket.send(encodeRequestWithId(id2, 'get_anchors_by_user', {user: dataService.user.username}));
                     } else if(parsedResponse.id === id2){
                         outdoorCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
+                        id3 = ++requestId;
+                        socket.send(encodeRequestWithId(id3, 'get_engine_on'));
+                    } else if (parsedResponse.id === id3){
+                        outdoorCtrl.showEngineOffIcon = parsedResponse.result === 0;
                     }
                 }
             }, 1000)
@@ -1592,6 +1614,10 @@
                         canvasCtrl.showAlarmsIcon      = dataService.checkTagsStateAlarmNoAlarmOffline(parsedResponse.result).withAlarm;
                         //showing the offline anchors and alarm button
                         canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(parsedResponse.result);
+                        id6 = ++requestId;
+                        socket.send(encodeRequestWithId(id6, 'get_engine_on'));
+                    } else if (parsedResponse.id === id6){
+                        canvasCtrl.showEngineOffIcon = parsedResponse.result === 0;
                     }
                 };
             }, 1000);
@@ -1692,12 +1718,15 @@
                     let drawAnchor           = [];
 
                     //TODO update anchors only if there is at least one anchor modified
-                    dataService.anchors.forEach((anchor) => {
+                    dataService.anchorsToUpdate.forEach((anchor) => {
                         let scaledSize = {width: anchor.x_pos, height: anchor.y_pos};
                         scaledAnchorPosition.push(scaledSize);
                         drawAnchor.push(anchor.id);
                     });
 
+                    console.log(scaledAnchorPosition);
+                    console.log(drawAnchor);
+                    console.log(canvasCtrl.floorData.defaultFloorName);
                     id1 = ++requestId;
                     socket.send(encodeRequestWithId(id1, 'update_anchor_position', {
                         position: scaledAnchorPosition,
@@ -1838,18 +1867,32 @@
                             selectedAnchor: ''
                         };
 
-                        $scope.anchors        = dataService.anchors;
+                        let id = ++requestId;
+                        socket.send(encodeRequestWithId(id, 'get_anchors_by_location', {
+                            location: dataService.location
+                        }));
+                        socket.onmessage = (response) => {
+                            let parsedResponse = parseResponse(response);
+                            console.log(parsedResponse);
+                            if (parsedResponse.id === id){
+                                $scope.anchors = parsedResponse.result;
+                                dataService.locationAnchors = parsedResponse.result
+                                $scope.$apply();
+                            }
+                        };
 
                         $scope.$watch('dropAnchor.selectedAnchor', (newValue) => {
                             let currentValue = "" + newValue;
                             if (currentValue !== '') {
                                 anchorToDrop = currentValue;
                                 $mdDialog.hide();
-                                for (let index in dataService.anchors){
-                                    if (dataService.anchors[index].name === newValue){
+                                for (let index in dataService.locationAnchors){
+                                    if (dataService.locationAnchors[index].name === newValue){
                                         let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, mouseDownCoords.x, mouseDownCoords.y );
-                                        dataService.anchors[index].x_pos = scaledSize.x;
-                                        dataService.anchors[index].y_pos = scaledSize.y;
+                                        dataService.locationAnchors[index].x_pos = scaledSize.x;
+                                        dataService.locationAnchors[index].y_pos = scaledSize.y;
+                                        dataService.anchorsToUpdate.push(dataService.locationAnchors[index]);
+                                        dataService.anchors.push(dataService.locationAnchors[index]);
                                     }
                                 }
                                 updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
@@ -3175,6 +3218,7 @@
                     };
 
                     $scope.updateUserRole = (user, userRole) => {
+
                         if (user.role !== userRole.toString()) {
                             let id = ++requestId;
                             socket.send(encodeRequestWithId(id, 'update_user_role', {user: user.id, role: userRole}));
@@ -3795,6 +3839,8 @@
                     $scope.tagsOnline = [];
                     $scope.isAdmin = admin;
                     $scope.isUserManager = userManager;
+                    $scope.selectedType = null;
+                    $scope.tagTypes = [];
                     $scope.query      = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
@@ -3803,7 +3849,7 @@
                     };
 
                     let id3 = ++requestId;
-
+                    let id0 = -1;
                     let updateTagsTable = () => {
                         socket.send(encodeRequestWithId(id3, 'get_all_tags'));
                         socket.onmessage = (response) => {
@@ -3838,6 +3884,11 @@
                                 });
 
                                 $scope.tagsOnline = $scope.tags.filter(t => !tempOffgrid.some(to => to.id === t.id));
+                                id0 = ++requestId;
+                                socket.send(encodeRequestWithId(id0, 'get_all_types'));
+                            } else if (parsedResponse.id === id0){
+                                $scope.tagTypes = parsedResponse.result;
+                                console.log(parsedResponse.result);
                             }
                         };
                     };
@@ -3847,6 +3898,22 @@
                     $rootScope.$on('updateTagsTable', function () {
                         updateTagsTable();
                     });
+
+                    $scope.updateTagType = (tag, selectedType) => {
+                        if (tag.type_id.toString() !== selectedType.toString()) {
+                            let id = ++requestId;
+                            socket.send(encodeRequestWithId(id, 'update_tag_type', {
+                                tag : tag.id,
+                                type: selectedType
+                            }));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id) {
+                                    console.log('tag updated');
+                                }
+                            };
+                        }
+                    };
 
                     $scope.tagsContainTag = (tags, tag) => {
                         return tags.some(t => t.id === tag.id);
@@ -4119,13 +4186,13 @@
                                 $scope.manageNewZone = () => {
                                     $mdDialog.hide();
                                     $mdDialog.show({
-                                        locals             : {tag: tag},
+                                        locals             : {tag: tag, zones: $scope.zones},
                                         templateUrl        : componentsPath + 'insert-managed-zones.html',
                                         parent             : angular.element(document.body),
                                         targetEvent        : event,
                                         clickOutsideToClose: true,
                                         multiple           : true,
-                                        controller         : ['$scope', 'tag', function ($scope, tag) {
+                                        controller         : ['$scope', 'tag', 'zones', function ($scope, tag, zones) {
 
 
                                             let zonesIds = [];
@@ -4145,7 +4212,10 @@
                                             socket.onmessage = (response) => {
                                                 let parsedResponse = parseResponse(response);
                                                 if (parsedResponse.id === id3){
-                                                    $scope.insertManagedZones.allZones = parsedResponse.result;
+                                                    console.log(parsedResponse.result);
+                                                    $scope.insertManagedZones.allZones = parsedResponse.result.filter(z => !zones.some(zs => z.id === zs.zone_id));
+                                                    console.log(zones);
+                                                    console.log($scope.insertManagedZones.allZones);
                                                 }
                                             };
 
