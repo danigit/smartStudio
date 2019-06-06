@@ -50,7 +50,9 @@
                         <md-select ng-if="offlineAnchors.length > 0" ng-model="antani"
                                    placeholder="{{lang.offlineAnchors}}">
                             <md-option ng-value="anchor" ng-disabled="$index + 1" ng-repeat="anchor in offlineAnchors">
-                                {{anchor.name}}
+                                <b class="color-darkgray">{{anchor.name}}</b><br>
+                                {{lang.location}} : {{anchor.location_name}}<br>
+                                {{lang.floor}} : {{anchor.floor_name}}
                             </md-option>
                         </md-select>
                     </div>
@@ -63,8 +65,10 @@
                         <h4>{{ shutDownAnchors.length }} {{lang.areShutDownAnchors}}</h4>
                         <md-select ng-if="shutDownAnchors.length > 0" ng-model="antani"
                                    placeholder="{{lang.shutDownAnchors}}">
-                            <md-option ng-value="anchor" ng-disabled="$index + 1" ng-repeat="anchor in shutDownAnchors">
-                                {{anchor.name}}
+                            <md-option class="padding-10-px" ng-value="anchor" ng-disabled="$index + 1" ng-repeat="anchor in shutDownAnchors">
+                                <b class="color-red">{{anchor.name}}</b><br>
+                                {{lang.location}} : {{anchor.location_name}}<br>
+                                {{lang.floor}} : {{anchor.floor_name}}
                             </md-option>
                         </md-select>
                     </div>

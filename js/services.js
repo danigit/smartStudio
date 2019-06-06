@@ -38,11 +38,16 @@
         service.userInterval          = undefined;
         service.superUserInterval          = undefined;
         service.playAlarm            = true;
+        service.isLocationInside = 0;
         service.isSearchingTag       = false;
         service.offlineTagsIsOpen    = false;
         service.offlineAnchorsIsOpen = false;
         service.defaultFloorCanceled = false;
         service.homeMap = null;
+        service.drawingManagerRect = null;
+        service.drawingManagerRound = null;
+        service.outdoorZones = [];
+        service.outdoorZoneInserted = false;
         // service.gridSpacing = 0;
 
         service.loadUserSettings = () => {
@@ -61,6 +66,8 @@
                             showZones: (parsedResponse.result[0].zones_on === 1),
                             playAudio  : (parsedResponse.result[0].sound_on === 1),
                             showRadius : true,
+                            showOutdoorRectDrawing: false,
+                            showOutdoorRoundDrawing: false
                         };
                     }
                 }
@@ -188,9 +195,8 @@
 
         //checking if there is at least an anchor offline
         service.checkIfAnchorsAreOffline = (anchors) => {
-            console.log(anchors);
             return anchors.some(function (anchor) {
-                return anchor.is_online !== 0 || anchor.battery_status === 1;
+                return anchor.is_online !== 1 || anchor.battery_status === 1;
             });
         };
 
@@ -230,6 +236,7 @@
                             user: dataService.user.username
                         }));
                         socket.onmessage = (response) => {
+                            console.log(response.data);
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id) {
                                 let tempOfflineAnchors = parsedResponse.result.filter(a => !a.is_online);
@@ -238,7 +245,11 @@
                                     $scope.offlineAnchors = tempOfflineAnchors;
                                 }
 
-                                $scope.shutDownAnchors = parsedResponse.result.filter(a => a.battery_status === 1);
+                                let tempShutDonwAnchors = parsedResponse.result.filter(a => a.battery_status === 1);
+
+                                if (!angular.equals(tempShutDonwAnchors, $scope.shutDownAnchors)){
+                                    $scope.shutDownAnchors = tempShutDonwAnchors;
+                                }
 
                                 $scope.anchorsState.offline = $scope.offlineAnchors.length;
                                 $scope.anchorsState.online  = parsedResponse.result.length - $scope.offlineAnchors.length;
@@ -300,7 +311,7 @@
                         let id = ++requestId;
                         socket.send(encodeRequestWithId(id, 'get_anchors_by_floor_and_location', {
                             floor: dataService.defaultFloorName,
-                            location: dataService.location
+                            location: dataService.location.name
                         }));
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
@@ -311,7 +322,11 @@
                                     $scope.offlineAnchors = tempOfflineAnchors;
                                 }
 
-                                $scope.shutDownAnchors = parsedResponse.result.filter(a => a.battery_status === 1);
+                                let tempShutDownAnchors = parsedResponse.result.filter(a => a.battery_status === 1);
+
+                                if (!angular.equals(tempShutDownAnchors, $scope.shutDownAnchors)){
+                                    $scope.shutDownAnchors = tempShutDownAnchors;
+                                }
 
                                 $scope.anchorsState.offline = $scope.offlineAnchors.length;
                                 $scope.anchorsState.online  = parsedResponse.result.length - $scope.offlineAnchors.length;
@@ -402,7 +417,6 @@
             if (tag.call_me_alarm) {
                 alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.callMeAllarm, lang.callMeAllarm, tagsIconPath + 'call_me_alarm_24.png', tagLocation));
             }
-            console.log(tag);
             if (tag.inside_zone) {
                 alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.insideZone, lang.inside_zone, tagsIconPath + 'inside_zone_24.png', tagLocation));
             }
@@ -724,7 +738,9 @@
             }
         };
 
-        service.getTagsLocation = async (tags, locations) => {
+        service.getTagsLocation = async (tags, locations, userLocatins) => {
+            console.log(locations);
+            console.log(userLocatins);
             let alarms = [];
             let tagAlarms = [];
 
@@ -733,14 +749,18 @@
                 if (!service.isOutdoor(tags[i])) {
                     await socketService.sendRequest('get_indoor_tag_location', {tag: tags[i].id})
                         .then((response) => {
+                            console.log(response);
                             if (response.result.name !== undefined)
                                 tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, response.result.name);
                             else
                                 tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, 'Nessuna location');
                         })
                 }else{
+                    console.log(tags[i])
                     let someResult = locations.filter(l => service.getTagDistanceFromLocationOrigin(tags[i], [l.latitude, l.longitude]) <= l.radius);
-                    if (someResult.length !== 0){
+                    console.log(someResult);
+                    if (someResult.length !== 0 && userLocatins.some(l => l.name === someResult[0].name)){
+                        console.log('is use location')
                         tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, someResult[0].name);
                     } else {
                         tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, 'Nessuna location');
@@ -751,6 +771,10 @@
             }
 
             return alarms;
+        };
+
+        service.getOutdoorTagLocation = (locations, tag) => {
+            return locations.filter( l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
         };
 
         service.getIndoorLocationTags = async (markers) => {

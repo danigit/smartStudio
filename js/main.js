@@ -124,6 +124,7 @@
                         socketService.sendRequest('get_location_info', {})
                             .then((response) => {
                                 if (response.result !== 'location_not_found') {
+                                    dataService.location = response.result;
                                     if (response.result.is_inside)
                                         $state.go('home')
                                 } else {
@@ -162,12 +163,8 @@
                                 if (response !== null && response !== undefined) {
                                     dataService.allTags = response.result;
                                     dataService.alarmsSounds = [];
-                                    return socketService.sendRequest('get_location_info', {})
+                                    promise.resolve(result);
                                 }
-                            })
-                            .then((response) => {
-                                dataService.location =  response.result;
-                                promise.resolve(result);
                             })
                             .catch((error) => {
                                 console.log('outdoorLocationState => ', error);
@@ -210,9 +207,11 @@
                             })
                             .then((response) => {
                                 if (response.result !== 'location_not_found') {
-                                    (response.result.is_inside)
-                                        ? dataService.location = response.result.name
-                                        : $state.go('home');
+                                    if (response.result.is_inside) {
+                                        dataService.location = response.result
+                                        dataService.isLocationInside = response.result.is_inside;
+                                    }else
+                                        $state.go('home');
 
                                     return socketService.sendRequest('get_floors_by_location', {location: response.result.name});
                                 }

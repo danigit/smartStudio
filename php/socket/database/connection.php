@@ -562,6 +562,37 @@ class Connection
     }
 
     /**
+     * Funzione che recupera tutti i tag di un mac
+     * @param $tag
+     * @return array|db_errors|mysqli_stmt
+     */
+    function get_all_tags_macs()
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'SELECT tag_mac.ID, MAC, tag_mac.TYPE, NAME FROM tag_mac JOIN tag ON tag.ID = TAG_ID';
+
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_MAC_TYPES);
+
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('id' => $row['ID'], 'mac' => $row['MAC'], 'type' => $row['TYPE'],
+                    'tag_name' => $row['NAME']);
+            }
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
      * Funzione che inserisce un nuovo mac
      * @param $name
      * @param $type
@@ -1431,7 +1462,7 @@ class Connection
 
         if ($this->connection) {
             $this->query = 'SELECT anchor.ID, anchor.NAME, X_POS, Y_POS, Z_POS, BATTERY_STATUS, anchor.RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, 
-                        anchor_types.DESCRIPTION, PERMITTED_ASSET, IS_ONLINE, floor.NAME AS FLOOR_NAME, l.LATITUDE AS LOCATION_LATITUDE, l.LONGITUDE AS LOCATION_LONGITUDE
+                        anchor_types.DESCRIPTION, PERMITTED_ASSET, IS_ONLINE, floor.NAME AS FLOOR_NAME, l.NAME AS LOCATION_NAME, l.LATITUDE AS LOCATION_LATITUDE, l.LONGITUDE AS LOCATION_LONGITUDE
                         FROM anchor JOIN anchor_types ON anchor.TYPE = anchor_types.ID JOIN floor ON anchor.FLOOR_ID = floor.ID JOIN location l on floor.LOCATION_ID = l.ID 
                         JOIN user_has_location uhl on l.ID = uhl.LOCATION_ID JOIN user ON uhl.USER_ID = user.ID WHERE user.NAME = ? ORDER BY anchor.NAME';
 
@@ -1449,7 +1480,7 @@ class Connection
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'],
                     'z_pos' => $row['Z_POS'], 'battery_status' => $row['BATTERY_STATUS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'],
                     'type' => $row['DESCRIPTION'], 'permitted_asset' => $row['PERMITTED_ASSET'], 'is_online' => $row['IS_ONLINE'], 'floor_name' => $row['FLOOR_NAME'],
-                    'location_longitude' => $row['LOCATION_LONGITUDE'], 'location_latitude' => $row['LOCATION_LATITUDE']);
+                    'location_name' => $row['LOCATION_NAME'], 'location_longitude' => $row['LOCATION_LONGITUDE'], 'location_latitude' => $row['LOCATION_LATITUDE']);
             }
 
             return $result_array;
@@ -1505,7 +1536,7 @@ class Connection
         if ($this->connection) {
             $this->query = 'SELECT t.ID, t.NAME, tt.DESCRIPTION AS TYPE, t.X_POS, t.Y_POS, t.TIME, t.BATTERY_STATUS, t.GPS_NORTH_DEGREE, t.MAN_DOWN, t.GPS_EAST_DEGREE,
                         t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, 
-                        t.IS_EXIT, floor.NAME AS FLOOR_NAME, floor.IMAGE_MAP, anchor.NAME AS ANCHOR_NAME, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
+                        t.INSIDE_ZONE, t.IS_EXIT, floor.NAME AS FLOOR_NAME, floor.IMAGE_MAP, anchor.NAME AS ANCHOR_NAME, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
                         dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI, l.NAME AS LOCATION_NAME, l.LONGITUDE AS LOCATION_LONGITUDE, l.LATITUDE AS LOCATION_LATITUDE
                         FROM user JOIN user_has_location uhl ON user.ID = uhl.USER_ID
                         JOIN location l ON uhl.LOCATION_ID = l.ID JOIN floor ON l.ID = floor.LOCATION_ID JOIN anchor ON floor.ID = anchor.FLOOR_ID
@@ -1530,7 +1561,7 @@ class Connection
                     'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'],
                     'sleep_time_outdoor' => $row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => $row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON_NAME'],
                     'location_name' => $row['LOCATION_NAME'], 'location_longitude' => $row['LOCATION_LONGITUDE'], 'location_latitude' => $row['LOCATION_LATITUDE'], 'floor_name' => $row['FLOOR_NAME'], 'floor_image' => $row['IMAGE_MAP'],
-                    'time' => $row['TIME'], 'is_exit' => $row['IS_EXIT'], 'anchor_name' => $row['ANCHOR_NAME'], 'type_id' => $row['TYPE_ID'],
+                    'time' => $row['TIME'], 'inside_zone' => $row['INSIDE_ZONE'], 'is_exit' => $row['IS_EXIT'], 'anchor_name' => $row['ANCHOR_NAME'], 'type_id' => $row['TYPE_ID'],
                     'helmet_dpi' => $row['HELMET_DPI'], 'belt_dpi' => $row['BELT_DPI'], 'glove_dpi' => $row['GLOVE_DPI'], 'shoe_dpi' => $row['SHOE_DPI']);
             }
 
@@ -1621,7 +1652,7 @@ class Connection
         if ($this->connection) {
             $this->query = 'SELECT tag.ID, tag.NAME, tag.X_POS, tag.Y_POS, tag.TIME, tag.BATTERY_STATUS, tag.GPS_NORTH_DEGREE, tag.MAN_DOWN, tag.GPS_EAST_DEGREE,
                         tag.MAN_DOWN_DISABLED, tag.MAN_DOWN_DISABLED_ALERTED, tag.MAN_DOWN_TACITATED, tag.SOS, tag.SOS_ALERTED, tag.MAN_IN_QUOTE, tag.MAN_IN_QUOTE_ALERTED,
-                        tag.CALL_ME_ALARM, tag.EVACUATION_ALARM, tag.RADIO_SWITCHED_OFF, tag.DIAGNOSTIC_REQUEST, tag.IS_EXIT, floor.NAME AS FLOOR_NAME, a.NAME AS ANCHOR_NAME, 
+                        tag.CALL_ME_ALARM, tag.EVACUATION_ALARM, tag.RADIO_SWITCHED_OFF, tag.DIAGNOSTIC_REQUEST, tag.INSIDE_ZONE, tag.IS_EXIT, floor.NAME AS FLOOR_NAME, a.NAME AS ANCHOR_NAME, 
                         tag_types.ID AS TYPE_ID, tag_types.DESCRIPTION AS TAG_TYPE_NAME, tag_types.SLEEP_TIME_INDOOR, dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
                         FROM tag JOIN anchor a ON tag.ANCHOR_ID = a.ID JOIN floor ON a.FLOOR_ID = floor.ID JOIN tag_types ON tag. TYPE = tag_types.ID 
                         JOIN location l ON floor.LOCATION_ID = l.ID JOIN dress_alarm ON tag.ID = dress_alarm.TAG_ID
@@ -1643,7 +1674,7 @@ class Connection
                     'man_down_disabled' => $row['MAN_DOWN_DISABLED'], 'man_down_disabled_alerted' => $row['MAN_DOWN_DISABLED_ALERTED'], 'man_down_tacitated' => $row['MAN_DOWN_TACITATED'],
                     'sos' => $row['SOS'], 'sos_alerted' => $row['SOS_ALERTED'], 'man_in_quote' => $row['MAN_IN_QUOTE'], 'man_in_quote_alerted' => $row['MAN_IN_QUOTE_ALERTED'],
                     'call_me_alarm' => $row['CALL_ME_ALARM'], 'evacuation_alarm' => $row['EVACUATION_ALARM'], 'radio_switched_off' => $row['RADIO_SWITCHED_OFF'],
-                    'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'is_exit' => $row['IS_EXIT'], 'floor_name' => $row['FLOOR_NAME'], 'anchor_name' => $row['ANCHOR_NAME'],
+                    'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'inside_zone' => $row['INSIDE_ZONE'], 'is_exit' => $row['IS_EXIT'], 'floor_name' => $row['FLOOR_NAME'], 'anchor_name' => $row['ANCHOR_NAME'],
                     'tag_type_id' => $row['TYPE_ID'], 'tag_type_name' => $row['TAG_TYPE_NAME'], 'sleep_time_indoor' => $row['SLEEP_TIME_INDOOR'],
                     'helmet_dpi' => $row['HELMET_DPI'], 'belt_dpi' => $row['BELT_DPI'], 'glove_dpi' => $row['GLOVE_DPI'], 'shoe_dpi' => $row['SHOE_DPI']);
             }
@@ -1912,6 +1943,39 @@ class Connection
     }
 
     /**
+     * Function that changes the value of an anchor field
+     * @param $anchor_id
+     * @param $permitteds
+     * @return db_errors|int|mysqli_stmt
+     */
+    function update_anchor_permitteds($anchor_id, $permitteds)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+
+            $permittedString = '';
+
+            if (substr($permitteds, -1, 1) == ',')
+                $permittedString = substr($permitteds, 0, -1);
+
+            $this->query = "UPDATE anchor SET anchor.PERMITTED_ASSET = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'si', $permittedString, $anchor_id);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+
+            $this->result = $this->connection->affected_rows;
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
      * Function that changes the value of a floor field
      * @param $floor_id
      * @param $floor_field
@@ -2132,6 +2196,42 @@ class Connection
 
     /**
      * Funzione che recupera tutti i tipi di un tag
+     * @param $location
+     * @return array|db_errors
+     */
+    function get_outdoor_zones($location)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "SELECT ID, NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, RADIUS, GPS_NORTH, GPS_EAST, FLOOR_ID, COLOR, LOCATION 
+                            FROM zone WHERE LOCATION = ?";
+
+            $statement = $this->execute_selecting($this->query, 's', $location);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
+
+            $this->result = $statement->get_result();
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_left' => $row['X_LEFT'],
+                    'x_right' => $row['X_RIGHT'], 'y_up' => $row['Y_UP'], 'y_down' => $row['Y_DOWN'],
+                    'radius' => $row['RADIUS'], 'gps_north' => $row['GPS_NORTH'], 'gps_east' => $row['GPS_EAST'],
+                    'floor' => $row['FLOOR_ID'], 'color' => $row['COLOR'], 'location' => $row['LOCATION']);
+            }
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Funzione che recupera tutti i tipi di un tag
      * @param $data
      * @return array|db_errors
      */
@@ -2146,6 +2246,62 @@ class Connection
 
             $statement = $this->execute_inserting($this->query, 'siiiisi', $decoded['name'], $decoded['x_left'], $decoded['x_right'],
                 $decoded['y_up'], $decoded['y_down'], $decoded['color'], $decoded['floor']);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
+
+            return $this->connection->insert_id;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Funzione che recupera tutti i tipi di un tag
+     * @param $data
+     * @return array|db_errors
+     */
+    function insert_outdoor_rect_zone($data)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $decoded = json_decode($data, true);
+
+            $this->query = "INSERT INTO zone (NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, COLOR, LOCATION) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+            $statement = $this->execute_inserting($this->query, 'sddddss', $decoded['name'], $decoded['x_left'], $decoded['x_right'],
+                $decoded['y_up'], $decoded['y_down'], $decoded['color'], $decoded['location']);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
+
+            return $this->connection->insert_id;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+     /**
+     * Funzione che recupera tutti i tipi di un tag
+     * @param $data
+     * @return array|db_errors
+     */
+    function insert_outdoor_round_zone($data)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $decoded = json_decode($data, true);
+
+            $this->query = "INSERT INTO zone (NAME, RADIUS, GPS_NORTH, GPS_EAST, COLOR, LOCATION) VALUES ( ?, ?, ?, ?, ?, ?)";
+
+            $statement = $this->execute_inserting($this->query, 'sdddss', $decoded['name'], $decoded['radius'], $decoded['x'], $decoded['y'],
+                $decoded['color'], $decoded['location']);
 
             if ($statement instanceof db_errors)
                 return $statement;

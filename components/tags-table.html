@@ -67,7 +67,7 @@
                             {{lang.macsManaging | uppercase}}
                         </md-button>
                     </td>
-                    <td md-cell ng-show="isAdmin || isUserManager">
+                    <td md-cell ng-show="(isAdmin || isUserManager) && !isHome">
                         <md-button ng-click="tagZones(tag)" class="md-raised background-darkcyan color-white">
                             {{lang.zonesManaging | uppercase}}
                         </md-button>

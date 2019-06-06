@@ -481,6 +481,17 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'get_all_tags_macs':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'get_all_tags_macs';
+
+                $query = $this->connection->get_all_tags_macs();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //getting the tag types
             case 'get_all_types':{
                 $result['id'] = $decoded_message['id'];
@@ -582,6 +593,17 @@ class webSocketServer implements MessageComponentInterface{
                 $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_anchor_field';
                 $query = $this->connection->change_anchor_field($decoded_message['data']['anchor_id'], $decoded_message['data']['anchor_field'], $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the anchor field
+            case 'update_anchor_permitteds':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'update_anchor_permitteds';
+                $query = $this->connection->update_anchor_permitteds($decoded_message['data']['anchor_id'], $decoded_message['data']['permitteds']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -765,11 +787,47 @@ class webSocketServer implements MessageComponentInterface{
                 break;
             }
             //getting the zones
+            case 'get_outdoor_zones':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'get_outdoor_zones';
+
+                $query = $this->connection->get_outdoor_zones($decoded_message['data']['location']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //getting the zones
             case 'insert_floor_zone':{
                 $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_floor_zone';
 
                 $query = $this->connection->insert_floor_zone($decoded_message['data']['data']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //getting the zones
+            case 'insert_outdoor_rect_zone':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'insert_outdoor_rect_zone';
+
+                $query = $this->connection->insert_outdoor_rect_zone($decoded_message['data']['data']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //getting the zones
+            case 'insert_outdoor_round_zone':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'insert_outdoor_round_zone';
+
+                $query = $this->connection->insert_outdoor_round_zone($decoded_message['data']['data']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

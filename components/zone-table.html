@@ -34,9 +34,12 @@
                 <tr md-row>
                     <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name}}</span></th>
                     <th md-column md-order-by="x_left"><span class="color-darkcyan">{{lang.xLeft}}</span></th>
-                    <th md-column md-order-by="x_right"><span class="color-darkcyan">{{lang.xRight}}T</span></th>
+                    <th md-column md-order-by="x_right"><span class="color-darkcyan">{{lang.xRight}}</span></th>
                     <th md-column md-order-by="y_up"><span class="color-darkcyan">{{lang.yUp}}</span></th>
                     <th md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.yDown}}</span></th>
+                    <th ng-show="isOutdoor" md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.radius}}</span></th>
+                    <th ng-show="isOutdoor" md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.xCenter}}</span></th>
+                    <th ng-show="isOutdoor" md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.yCenter}}</span></th>
                     <th md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.color}}</span></th>
                     <th md-column></th>
                 </tr>
@@ -48,21 +51,27 @@
                     <td md-cell ng-click="editCell($event, zone, 'name')" ng-class="{'md-placeholder': !zone.name}">
                         {{zone.name || lang.insertName}}
                     </td>
-                    <td md-cell ng-click="editCell($event, zone, 'x_left')"
-                        ng-class="{'md-placeholder': !zone.x_left}">{{zone.x_left || lang.insertValue}}
+                    <td md-cell ng-click="zone.x_left !== null ? editCell($event, zone, 'x_left') : null"
+                        ng-class="{'md-placeholder': !zone.x_left}">{{zone.x_left === null ? 'Valore non necessario' : zone.x_left || lang.insertValue}}
                     </td>
-                    <td md-cell ng-click="editCell($event, zone, 'x_right')"
-                        ng-class="{'md-placeholder': !zone.x_right}">{{zone.x_right || lang.insertValue}}
+                    <td md-cell ng-click="zone.x_right !== null ? editCell($event, zone, 'x_right') : null"
+                        ng-class="{'md-placeholder': !zone.x_right}">{{zone.x_right === null ? "Valore non necessario" : zone.x_right || lang.insertValue}}
                     </td>
-                    <td md-cell ng-click="editCell($event, zone, 'y_up')"
-                        ng-class="{'md-placeholder': !zone.y_up}">{{zone.y_up || lang.insertValue}}
+                    <td md-cell ng-click="zone.y_up !== null ? editCell($event, zone, 'y_up') : null"
+                        ng-class="{'md-placeholder': !zone.y_up}">{{zone.y_up === null ? "Valore non necessario" : zone.y_up || lang.insertValue}}
                     </td>
-                    <td md-cell ng-click="editCell($event, zone, 'y_down')"
-                        ng-class="{'md-placeholder': !zone.y_down}">{{zone.y_down || lang.insertValue}}
+                    <td md-cell ng-click="zone.y_down !== null ? editCell($event, zone, 'y_down') : null"
+                        ng-class="{'md-placeholder': !zone.y_down}">{{zone.y_down === null ? "Valore non necessario" : zone.y_down|| lang.insertValue}}
                     </td>
-<!--                    <td md-cell ng-click="editCell($event, zone, 'color')"-->
-<!--                        ng-class="{'md-placeholder': !zone.color}">{{zone.color || lang.insertColor}}-->
-<!--                    </td>-->
+                    <td ng-show="isOutdoor" md-cell ng-click="zone.radius !== null ? editCell($event, zone, 'radius') : null"
+                        ng-class="{'md-placeholder': !zone.radius}">{{zone.radius === null ? "Valore non necessario" : zone.radius || lang.insertRadius}}
+                    </td>
+                    <td ng-show="isOutdoor" md-cell ng-click="zone.gps_north !== null ? editCell($event, zone, 'gps_north') : null"
+                        ng-class="{'md-placeholder': !zone.gps_north}">{{zone.gps_north === null ? "Valore non necessario" : zone.gps_north || lang.insertValue}}
+                    </td>
+                    <td ng-show="isOutdoor" md-cell ng-click="zone.gps_east !== null ? editCell($event, zone, 'gps_east') : null"
+                        ng-class="{'md-placeholder': !zone.gps_east}">{{zone.gps_east === null ? "Valore non necessario" :  zone.gps_east|| lang.insertValue}}
+                    </td>
                     <td md-cell><input ng-change="changeColor(zone.id, zone.color)" type="color" value="zone.color" ng-model="zone.color"
                                                                           colorpick-eyedropper-active="true">
                     </td>
@@ -78,8 +87,16 @@
 
         <md-input-container md-no-float ng-show="isAdmin || isUserManager" class="md-block width-100 margin-bottom-0">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
-                <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
-                     ng-click="addNewRow()" alt="{{lang.insertTag}}" title="{{lang.insertTag}}">
+                <button ng-click="addNewRectRow()" class="md-button" layout="row" layout-align="center center">
+                    <img src="img/icons/add_row_32.png" class="outline-none margin-right-10-px"
+                      alt="{{lang.insertTag}}" title="{{lang.insertTag}}">
+                    <span>RECTANGLE ZONE</span>
+                </button>
+                <button ng-click="addNewRoundRow()" class="md-button" layout="row" layout-align="center center">
+                    <img src="img/icons/add_row_32.png" class="outline-none margin-right-10-px"
+                     alt="{{lang.insertTag}}" title="{{lang.insertTag}}">
+                    <span>ROUND ZONE</span>
+                </button>
             </div>
         </md-input-container>
 

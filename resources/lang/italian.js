@@ -209,7 +209,12 @@ function languageController($scope) {
         zonesManaging: 'Gestione zone',
         insertZone: 'Inserisci zona',
         noZoneAvailable: 'Nessuna zona disponibile',
-        engineOff: 'Server spento'
+        engineOff: 'Server spento',
+        outdoorRectDrawing: 'Quadrato',
+        outdoorRoundDrawing: 'Cerchio',
+        xCenter: 'Centro x',
+        yCenter: 'Centro y',
+        color: 'Colore',
     }
 };
 

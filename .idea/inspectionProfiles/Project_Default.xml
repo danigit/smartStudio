@@ -4,7 +4,7 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="42">
+          <list size="43">
             <item index="0" class="java.lang.String" itemvalue="layout" />
             <item index="1" class="java.lang.String" itemvalue="layout-align" />
             <item index="2" class="java.lang.String" itemvalue="md-numeric" />
@@ -47,6 +47,7 @@
             <item index="39" class="java.lang.String" itemvalue="flex" />
             <item index="40" class="java.lang.String" itemvalue="md-order-by" />
             <item index="41" class="java.lang.String" itemvalue="ng-disabled" />
+            <item index="42" class="java.lang.String" itemvalue="ng-selected" />
           </list>
         </value>
       </option>

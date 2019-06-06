@@ -55,69 +55,75 @@
                     ng-repeat="anchor in anchors | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell><img alt="{{lang.anchorState}}" title="{{lang.anchorState}}"
                                      aria-label="{{lang.anchorState}}"
-                                     ng-src="{{anchor.is_online ? 'img/icons/tags/anchor_online_16.png' : 'img/icons/tags/anchor_offline_16.png'}}">
+                                     ng-src="{{anchor.anchor.is_online ? 'img/icons/tags/anchor_online_16.png' : 'img/icons/tags/anchor_offline_16.png'}}">
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'name')"
-                        ng-class="{'md-placeholder': !anchor.name}">{{anchor.name || lang.insertName}}
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'name')"
+                        ng-class="{'md-placeholder': !anchor.anchor.name}">{{anchor.anchor.name || lang.insertName}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'x_pos')"
-                        ng-class="{'md-placeholder': !anchor.x_pos.toString()}">{{anchor.x_pos.toString() ||
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'x_pos')"
+                        ng-class="{'md-placeholder': !anchor.anchor.x_pos.toString()}">{{anchor.anchor.x_pos.toString() ||
                         lang.insertXPos}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'y_pos')"
-                        ng-class="{'md-placeholder': !anchor.y_pos.toString()}">{{anchor.y_pos.toString() ||
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'y_pos')"
+                        ng-class="{'md-placeholder': !anchor.anchor.y_pos.toString()}">{{anchor.anchor.y_pos.toString() ||
                         lang.insertYPos}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'z_pos')"
-                        ng-class="{'md-placeholder': !anchor.z_pos.toString()}">{{anchor.z_pos.toString() ||
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'z_pos')"
+                        ng-class="{'md-placeholder': !anchor.anchor.z_pos.toString()}">{{anchor.anchor.z_pos.toString() ||
                         lang.insertZPos}}
                     </td>
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'floor_name')"
-                        ng-class="{'md-placeholder': !anchor.floor_name.toString()}">{{anchor.floor_name.toString()
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'floor_name')"
+                        ng-class="{'md-placeholder': !anchor.anchor.floor_name.toString()}">{{anchor.anchor.floor_name.toString()
                         || lang.insertFloor}}
                     </td>
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'radius')"
-                        ng-class="{'md-placeholder': !anchor.radius.toString()}">{{anchor.radius.toString() ||
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'radius')"
+                        ng-class="{'md-placeholder': !anchor.anchor.radius.toString()}">{{anchor.anchor.radius.toString() ||
                         lang.insertRadius}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'ip')"
-                        ng-class="{'md-placeholder': !anchor.ip}">
-                        {{anchor.ip || lang.insertIp}}
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'ip')"
+                        ng-class="{'md-placeholder': !anchor.anchor.ip}">
+                        {{anchor.anchor.ip || lang.insertIp}}
                     </td>
 
-                    <td md-cell class="no-wrap"><img ng-src="{{anchor.battery_status ? 'img/icons/battery_empty_24.png'
+                    <td md-cell class="no-wrap"><img ng-src="{{anchor.anchor.battery_status ? 'img/icons/battery_empty_24.png'
                                                             : 'img/icons/battery_full_24.png'}}">
                     </td>
 
-                    <td md-cell class="no-wrap" ><span ng-class="{'color-green': anchor.is_online, 'color-red': !anchor.is_online}">{{(anchor.is_online ? (lang.online | uppercase) : (lang.offline | uppercase))}}
+                    <td md-cell class="no-wrap" ><span ng-class="{'color-green': anchor.anchor.is_online, 'color-red': !anchor.anchor.is_online}">{{(anchor.anchor.is_online ? (lang.online | uppercase) : (lang.offline | uppercase))}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'rssi')"
-                        ng-class="{'md-placeholder': !anchor.rssi.toString()}">{{anchor.rssi.toString() ||
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'rssi')"
+                        ng-class="{'md-placeholder': !anchor.anchor.rssi.toString()}">{{anchor.anchor.rssi.toString() ||
                         lang.insertRssi}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'proximity')"
-                        ng-class="{'md-placeholder': !anchor.proximity.toString()}">{{anchor.proximity.toString() ||
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor.anchorInfo, 'proximity')"
+                        ng-class="{'md-placeholder': !anchor.anchor.proximity.toString()}">{{anchor.anchor.proximity.toString() ||
                         lang.insertProximity}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'type')"
-                        ng-class="{'md-placeholder': !anchor.type.toString()}">{{anchor.type.toString() ||
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'type')"
+                        ng-class="{'md-placeholder': !anchor.anchor.type.toString()}">{{anchor.anchor.type.toString() ||
                         lang.insertType}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'permitted_asset')"
-                        ng-class="{'md-placeholder': !anchor.permitted_asset}">{{anchor.permitted_asset ||
-                        lang.insertValue}}
+                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !anchor.permitted_asset}">
+                        <md-select ng-model="anchor.permitteds" placeholder="{{lang.permitted}}" ng-change="updatePermitteds(anchor.anchor.id, anchor.permitteds)"
+                                   multiple>
+                            <md-optgroup label="{{tag.name}}" ng-repeat="tag in anchorTable.tags">
+                                <md-option ng-value="permitted.mac" ng-repeat="permitted in anchorTable.permittedAssets | filter: {tag: tag.name}">
+                                    {{permitted.mac}}
+                                </md-option>
+                            </md-optgroup>
+                        </md-select>
                     </td>
 
-                    <td md-cell ng-show="isAdmin || isUserManager" class="no-wrap" ng-click="deleteRow(anchor)"><img
+                    <td md-cell ng-show="isAdmin || isUserManager" class="no-wrap" ng-click="deleteRow(anchor.anchor)"><img
                             src="img/icons/delete_trash_24.png" alt="{{lang.deleteAnchor}}"
                             title="{{lang.deleteAnchor}}"></td>
 
