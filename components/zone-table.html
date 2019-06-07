@@ -79,14 +79,14 @@
                                                                 title="{{lang.deleteTag}}"></td>
                 </tr>
                 <tr md-row ng-show="tableEmptyZone">
-                    <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
+                    <td md-cell colspan="10" class="text-center color-red">{{lang.noResultFound}}</td>
                 </tr>
                 </tbody>
             </table>
         </md-table-container>
 
         <md-input-container md-no-float ng-show="isAdmin || isUserManager" class="md-block width-100 margin-bottom-0">
-            <div layout="row" layout-align="center end" class="margin-bottom-30-px">
+            <div ng-if="isOutdoor" layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <button ng-click="addNewRectRow()" class="md-button" layout="row" layout-align="center center">
                     <img src="img/icons/add_row_32.png" class="outline-none margin-right-10-px"
                       alt="{{lang.insertTag}}" title="{{lang.insertTag}}">
@@ -97,6 +97,10 @@
                      alt="{{lang.insertTag}}" title="{{lang.insertTag}}">
                     <span>ROUND ZONE</span>
                 </button>
+            </div>
+            <div ng-if="!isOutdoor" layout="row" layout-align="center end" class="margin-bottom-30-px">
+                <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
+                     ng-click="addNewRow()" alt="{{lang.insertTag}}" title="{{lang.insertTag}}">
             </div>
         </md-input-container>
 

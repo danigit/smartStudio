@@ -1020,7 +1020,9 @@
 
                                     if ((new Date(Date.now()) - (new Date(tag.gps_time)) < tag.sleep_time_outdoor) && dataService.switch.showOutdoorTags) {
                                         if (outdoorCtrl.isAdmin ) {
+                                            console.log('is Admin')
                                             if (dataService.checkIfTagsHaveAlarmsOutdoor(tags)) {
+                                                console.log('tags have allarms');
                                                 if (dataService.checkIfTagHasAlarm(tag)) {
                                                     if (markerIsOnMap(dataService.dynamicTags, marker)) {
                                                         dataService.dynamicTags.forEach((insideTag, tagIndex) => {
@@ -1080,6 +1082,16 @@
                                                         bounds.extend(marker.getPosition());
                                                     }
                                                 }
+                                            } else{
+                                                dataService.dynamicTags.forEach((tag, index) => {
+                                                    if (tag.getPosition().equals(marker.getPosition())) {
+                                                        dataService.dynamicTags[index].setMap(null);
+                                                        dataService.dynamicTags.splice(index, 1);
+                                                    }
+                                                });
+                                                // dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                //     dataService.dynamicTags[tagIndex].setMap(null);
+                                                // })
                                             }
                                         }else {
                                             if (dataService.checkIfTagHasAlarm(tag)) {
@@ -1557,6 +1569,7 @@
                         }));
                     } else if (parsedResponse.id === id2) {
                         dataService.anchors = parsedResponse.result;
+                        console.log(dataService.anchors);
                         if (parsedResponse.result.length > 0) {
                             loadAndDrawImagesOnCanvas(parsedResponse.result, 'anchor', bufferCanvas, bufferContext, dataService.switch.showAnchors);
                             canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
@@ -1788,6 +1801,7 @@
                     drawAnchorImage                    = null;
                     canvasCtrl.speedDial.clickedButton = '';
 
+                    dataService.anchorsToUpdate = [];
                     if (dataService.canvasInterval === undefined) constantUpdateCanvas();
                 } else if (parsedResponse.id === id1) {
 
@@ -1912,6 +1926,8 @@
                             selectedAnchor: ''
                         };
 
+                        console.log('empy anchors to update');
+
                         let id = ++requestId;
                         socket.send(encodeRequestWithId(id, 'get_anchors_by_location', {
                             location: dataService.location.name
@@ -1920,7 +1936,7 @@
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id){
                                 $scope.anchors = parsedResponse.result;
-                                dataService.locationAnchors = parsedResponse.result
+                                dataService.locationAnchors = parsedResponse.result;
                                 $scope.$apply();
                             }
                         };
@@ -1930,13 +1946,26 @@
                             if (currentValue !== '') {
                                 anchorToDrop = currentValue;
                                 $mdDialog.hide();
+                                console.log(dataService.anchorsToUpdate);
                                 for (let index in dataService.locationAnchors){
                                     if (dataService.locationAnchors[index].name === newValue){
+                                        console.log(dataService.locationAnchors[index]);
                                         let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, mouseDownCoords.x, mouseDownCoords.y );
-                                        dataService.locationAnchors[index].x_pos = scaledSize.x;
-                                        dataService.locationAnchors[index].y_pos = scaledSize.y;
+                                        dataService.locationAnchors[index].x_pos = parseFloat(scaledSize.x);
+                                        dataService.locationAnchors[index].y_pos = parseFloat(scaledSize.y);
+                                        dataService.locationAnchors[index].floor_id = canvasCtrl.defaultFloor[0].id;
                                         dataService.anchorsToUpdate.push(dataService.locationAnchors[index]);
-                                        dataService.anchors.push(dataService.locationAnchors[index]);
+                                        if (dataService.anchors.some(a => a.id === dataService.locationAnchors[index].id)){
+                                            for(let anchorIndex in dataService.anchors){
+                                                if (dataService.anchors[anchorIndex].id === dataService.locationAnchors[index].id){
+                                                    dataService.anchors[anchorIndex].x_pos = parseFloat(scaledSize.x);
+                                                    dataService.anchors[anchorIndex].y_pos = parseFloat(scaledSize.y);
+                                                    dataService.anchors[anchorIndex].floor_id = dataService.locationAnchors[index].floor_id;
+                                                }
+                                            }
+                                        } else {
+                                            dataService.anchors.push(dataService.locationAnchors[index]);
+                                        }
                                     }
                                 }
                                 updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
@@ -4390,10 +4419,11 @@
                                 x_right: $scope.insertZone.x_right,
                                 y_up   : $scope.insertZone.y_up,
                                 y_down : $scope.insertZone.y_down,
-                                color: $scope.insertZone.color,
+                                color: ($scope.insertZone.color !== undefined) ? $scope.insertZone.color : '#FF0000',
                                 floor  : floor.id
                             };
 
+                            console.log(data);
                             let strigified = JSON.stringify(data);
                             let id = ++requestId;
                             socket.send(encodeRequestWithId(id, 'insert_floor_zone', {data: strigified}));
@@ -5026,6 +5056,7 @@
 
                     let updateAnchorsTable = () => {
                         console.log('updating table');
+                        $scope.anchors = [];
                         let id4 = ++requestId;
                         let id5 = -1;
                         socket.send(encodeRequestWithId(id4, 'get_anchors_by_floor_and_location', {
@@ -5153,8 +5184,9 @@
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id6){
                                     if (parsedResponse.result > 0) {
-                                        $scope.anchors = $scope.anchors.filter(a => a.id !== anchor.id);
-                                        $scope.$apply();
+                                        $rootScope.$emit('updateAnchorsTable', {});
+                                        // $scope.anchors = $scope.anchors.filter(a => a.id !== anchor.id);
+                                        // $scope.$apply();
                                     }
                                 }
                             };

@@ -1426,7 +1426,8 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT anchor.ID, anchor.NAME, X_POS, Y_POS, Z_POS, anchor.RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, anchor_types.DESCRIPTION, PERMITTED_ASSET, IS_ONLINE, floor.NAME AS FLOOR_NAME 
+            $this->query = 'SELECT anchor.ID, anchor.MAC, anchor.NAME, X_POS, Y_POS, Z_POS, anchor.RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, anchor_types.DESCRIPTION, PERMITTED_ASSET, IS_ONLINE, 
+                        EMERGENCY_ZONE, NEIGHBORS, BATTERY_STATUS, floor.ID AS FLOOR_ID, floor.NAME AS FLOOR_NAME 
                         FROM anchor JOIN anchor_types ON anchor.TYPE = anchor_types.ID JOIN floor ON anchor.FLOOR_ID = floor.ID JOIN location l on floor.LOCATION_ID = l.ID WHERE l.NAME = ? ORDER BY anchor.NAME';
 
             $statement = $this->execute_selecting($this->query, 's', $location);
@@ -1440,9 +1441,9 @@ class Connection
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
-                $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'], 'is_online' => $row['IS_ONLINE'], 'floor_name' => $row['FLOOR_NAME'],
-                    'z_pos' => $row['Z_POS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'],
-                    'type' => $row['DESCRIPTION'], 'permitted_asset' => $row['PERMITTED_ASSET']);
+                $result_array[] = array('id' => $row['ID'], 'mac' => $row['MAC'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'], 'is_online' => $row['IS_ONLINE'], 'floor_name' => $row['FLOOR_NAME'],
+                    'z_pos' => $row['Z_POS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'], 'battery_status' => $row['BATTERY_STATUS'], 'floor_id' => $row['FLOOR_ID'],
+                    'type' => $row['DESCRIPTION'], 'permitted_asset' => $row['PERMITTED_ASSET'], 'emergency_zone' => $row['EMERGENCY_ZONE'], 'neighbors' => $row['NEIGHBORS'], 'location_name' => $location);
             }
 
             return $result_array;
