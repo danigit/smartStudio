@@ -56,6 +56,9 @@
             socket.onmessage = (response) => {
                 let parsedResponse = parseResponse(response);
                 if (parsedResponse.id === id){
+                    if (parsedResponse.session_state)
+                        window.location.reload();
+
                     if(parsedResponse.result.length !== 0) {
                         service.switch = {
                             showGrid   : (parsedResponse.result[0].grid_on === 1),
@@ -84,6 +87,9 @@
             socket.onmessage = (response) => {
                 let parsedResponse = parseResponse(response);
                 if (parsedResponse.id === id){
+                    if (parsedResponse.session_state)
+                        window.location.reload();
+
                     service.loadUserSettings();
                 }
             };
@@ -124,6 +130,9 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id) {
+                                if (parsedResponse.session_state)
+                                    window.location.reload();
+
                                 let offgridTagsIndoor  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
                                 let offgridTagsOutdoor = parsedResponse.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
 
@@ -239,6 +248,9 @@
                             console.log(response.data);
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id) {
+                                if (parsedResponse.session_state)
+                                    window.location.reload();
+
                                 let tempOfflineAnchors = parsedResponse.result.filter(a => !a.is_online);
 
                                 if (!angular.equals(tempOfflineAnchors, $scope.offlineAnchors)) {
@@ -316,6 +328,9 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id) {
+                                if (parsedResponse.session_state)
+                                    window.location.reload();
+
                                 let tempOfflineAnchors = parsedResponse.result.filter(a => !a.is_online);
 
                                 if (!angular.equals(tempOfflineAnchors, $scope.offlineAnchors)) {
@@ -437,6 +452,9 @@
             return new Promise(resolve => {
                 socketService.sendRequest('get_indoor_tag_location', {tag: tag.id})
                     .then((response) => {
+                        if (response.result.session_state)
+                            window.location.reload();
+
                         console.log(response);
                         resolve(response.result);
                     })
@@ -749,11 +767,14 @@
                 if (!service.isOutdoor(tags[i])) {
                     await socketService.sendRequest('get_indoor_tag_location', {tag: tags[i].id})
                         .then((response) => {
+                            if (response.result.session_state)
+                                window.location.reload();
+
                             console.log(response);
                             if (response.result.name !== undefined)
                                 tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, response.result.name);
                             else
-                                tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, 'Nessuna location');
+                                tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, lang.noLocation);
                         })
                 }else{
                     console.log(tags[i])
@@ -763,7 +784,7 @@
                         console.log('is use location')
                         tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, someResult[0].name);
                     } else {
-                        tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, 'Nessuna location');
+                        tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, lang.noLocation);
                     }
                 }
 
@@ -786,11 +807,17 @@
                 if (markers[i].is_inside === 1){
                     await socketService.sendRequest('get_location_tags', {location: markers[i].name})
                         .then((response) => {
+                            if (response.result.session_state)
+                                window.location.reload();
+
                             locationTags.push({location: markers[i].name, tags: response.result.length});
 
                         });
                     await socketService.sendRequest('get_anchors_by_location', {location: markers[i].name})
                         .then((response) => {
+                            if (response.result.session_state)
+                                window.location.reload();
+
                             locationAnchors.push({location: markers[i].name, anchors: response.result.length})
                         })
                 }

@@ -250,6 +250,9 @@ MARGINS
     margin-right: 50px;
 }
 
+.margin-top-bottom-25-px{
+    margin: 25px 0!important;
+}
 
 
 
@@ -290,8 +293,13 @@ PADDING
 .padding-left-10-px{
     padding-left: 10px;
 }
+
 .padding-lr-15-px{
     padding: 0 15px 0 15px;
+}
+
+.padding-bottom-10px{
+    padding-bottom: 10px!important;
 }
 
 .popup-padding{

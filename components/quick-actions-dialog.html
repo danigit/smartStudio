@@ -13,7 +13,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">COMANDI RAPIDI</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.quickActions | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -174,7 +174,7 @@
                 <!--</md-slider-container>-->
             <!--</div>-->
 
-            <md-button class="md-primary md-raised background-darkcyan" ng-click="updateUserSettings()">SALVA CONFIGURAZIONE</md-button>
+            <md-button class="md-primary md-raised background-darkcyan" ng-click="updateUserSettings()">{{lang.saveConfiguration | uppercase}}</md-button>
         </div>
     </md-content>
     <!--end popup content-->

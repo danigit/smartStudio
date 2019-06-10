@@ -32,10 +32,10 @@
 
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column md-order-by="name"><span class="color-darkcyan">USERNAME</span></th>
-                    <th md-column md-order-by="latitude"><span class="color-darkcyan">NOME</span></th>
-                    <th md-column md-order-by="longitude" ng-show="isAdmin"><span class="color-darkcyan">RUOLO</span></th>
-                    <th md-column md-order-by="longitude" ng-show="isAdmin || isUserManager"><span class="color-darkcyan">GESTIONE LOCATION</span></th>
+                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.username | uppercase}}</span></th>
+                    <th md-column md-order-by="latitude"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column md-order-by="longitude" ng-show="isAdmin"><span class="color-darkcyan">{{lang.role | uppercase}}</span></th>
+                    <th md-column md-order-by="longitude" ng-show="isAdmin || isUserManager"><span class="color-darkcyan">{{lang.manageLocation | uppercase}}</span></th>
                     <th md-column ng-show="isAdmin || isUserManager"></th>
                 </tr>
                 </thead>

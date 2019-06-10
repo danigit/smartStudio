@@ -993,10 +993,11 @@ class Connection
      * @param $longitude
      * @param $image_name
      * @param $radius
+     * @param $meter_radius
      * @param $is_indoor
      * @return array|db_errors
      */
-    function insert_location($user, $name, $description, $latitude, $longitude, $image_name, $radius, $is_indoor)
+    function insert_location($user, $name, $description, $latitude, $longitude, $image_name, $radius, $meter_radius, $is_indoor)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
@@ -1008,8 +1009,8 @@ class Connection
             else if ($image_name === '')
                 $image_name = 'mountain.png';
 
-            $this->query = "INSERT INTO location (NAME, DESCRIPTION, LATITUDE, LONGITUDE, ICON, RADIUS, IS_INSIDE) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            $statement = $this->execute_inserting($this->query, 'sssssdi', $name, $description, $latitude, $longitude, $image_name, $radius, (int)$is_indoor);
+            $this->query = "INSERT INTO location (NAME, DESCRIPTION, LATITUDE, LONGITUDE, ICON, RADIUS, METER_RADIUS, IS_INSIDE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $statement = $this->execute_inserting($this->query, 'sssssddi', $name, $description, $latitude, $longitude, $image_name, $radius, $meter_radius, (int)$is_indoor);
 
             if ($statement instanceof db_errors)
                 array_push($errors, 'location_db_error');
@@ -1089,7 +1090,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT location.NAME, DESCRIPTION, LATITUDE, LONGITUDE, ICON, RADIUS, IS_INSIDE FROM location WHERE location.NAME = ?';
+            $this->query = 'SELECT location.NAME, DESCRIPTION, LATITUDE, LONGITUDE, ICON, RADIUS, METER_RADIUS, IS_INSIDE FROM location WHERE location.NAME = ?';
 
             $statement = $this->execute_selecting($this->query, 's', $location);
 
@@ -1104,7 +1105,7 @@ class Connection
             while ($row = mysqli_fetch_assoc($this->result)) {
 
                 $result_array = array('name' => $row['NAME'], 'description' => $row['DESCRIPTION'], 'latitude' => $row['LATITUDE'], 'longitude' => $row['LONGITUDE'],
-                    "icon" => $row['ICON'], 'radius' => $row['RADIUS'], 'is_inside' => $row['IS_INSIDE']);
+                    "icon" => $row['ICON'], 'radius' => $row['RADIUS'], 'meter_radius' => $row['METER_RADIUS'], 'is_inside' => $row['IS_INSIDE']);
             }
 
             return $result_array;

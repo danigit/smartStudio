@@ -69,6 +69,7 @@ function languageController($scope) {
         insertLength                    : 'Inserire lungezza',
         insertSpacing                   : 'Inserire spaziatura',
         selectImage                     : 'Seleziona immagine',
+        selectMap                     : 'Seleziona mappa',
         spacing                         : 'Spaziatura',
         addFloor                        : 'Aggiungi piano',
         filter                          : 'Filtro',
@@ -215,6 +216,8 @@ function languageController($scope) {
         xCenter: 'Centro x',
         yCenter: 'Centro y',
         color: 'Colore',
+        saveConfiguration: 'Salva configurazione',
+        manageLocation: 'Gestione siti',
     }
 };
 
@@ -275,4 +278,6 @@ let lang = {
     selectFloorFile                 : 'Seleziona un\'immagine per il piano',
     tagNotFound                     : 'Tag non trovato',
 	tagNotLoggedUser                : 'Il tag non appartiene all\'user logato!',
+    noLocation: 'Nessuna location',
+    insideZone: 'Tag in zona vietata'
 }
