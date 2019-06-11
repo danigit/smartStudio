@@ -285,8 +285,8 @@
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id1) {
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             tags                         = parsedResponse.result;
                             homeCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(parsedResponse.result);
@@ -297,16 +297,16 @@
                             id2 = ++requestId;
                             socket.send(encodeRequestWithId(id2, 'get_tags_by_user', {user: dataService.user.username}));
                         }else if(parsedResponse.id === id2){
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             indoorTags = parsedResponse.result;
 
                             id3 = ++requestId;
                             socket.send(encodeRequestWithId(id3, 'get_anchors_by_user', {user: dataService.user.username}));
                         }else if(parsedResponse.id === id3){
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             findTagLocation(tags, indoorTags, parsedResponse.result, map);
 
@@ -324,8 +324,8 @@
                             id4 = ++requestId;
                             socket.send(encodeRequestWithId(id4, 'get_engine_on'));
                         }else if (parsedResponse.id === id4){
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             homeCtrl.showEngineOffIcon = parsedResponse.result === 0;
                         }
@@ -403,16 +403,16 @@
                                 socket.onmessage = (response) => {
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id1) {
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         if (parsedResponse.result === 'location_saved') {
                                             id2 = ++requestId;
                                             socket.send(encodeRequestWithId(id2, 'get_location_info'));
                                         }
                                     } else if( parsedResponse.id === id2){
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         dataService.location          = parsedResponse.result;
                                         dataService.defaultFloorName  = '';
@@ -502,24 +502,24 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id0){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 userTags = parsedResponse.result;
 
                                 id3 = ++requestId;
                                 socket.send(encodeRequestWithId(id3, 'get_user_locations', {user: dataService.user.id}));
                             } else if (parsedResponse.id === id3){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 userLocations = parsedResponse.result;
 
                                 id = ++requestId;
                                 socket.send(encodeRequestWithId(id, 'get_all_locations'));
                             } else if (parsedResponse.id === id){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 locations = parsedResponse.result;
 
@@ -558,8 +558,8 @@
                                         socket.onmessage = (response) => {
                                             let parsedResponse = parseResponse(response);
                                             if (parsedResponse.id === id1) {
-                                                if (parsedResponse.session_state)
-                                                    window.location.reload();
+                                                if (!parsedResponse.session_state)
+                                                   window.location.reload();
 
                                                 if (parsedResponse.result === 'location_saved') {
                                                     locationSelected = true;
@@ -599,8 +599,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id2) {
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
 
                                             if (parsedResponse.result === 'location_saved') {
                                                 dataService.defaultFloorName  = indoorTag.floor_name;
@@ -638,8 +638,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id1){
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
 
                                             $scope.mapConfiguration.zoom = parsedResponse.result;
                                         }
@@ -762,8 +762,8 @@
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id){
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             locations = parsedResponse.result;
                             dataService.getTagsLocation(tags, parsedResponse.result)
@@ -794,8 +794,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id1) {
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
 
                                             if (parsedResponse.result === 'location_saved') {
                                                 $mdDialog.hide();
@@ -836,8 +836,8 @@
                                 socket.onmessage = (response) => {
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id2) {
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         if (parsedResponse.result === 'location_saved') {
                                             dataService.defaultFloorName  = indoorTag.floor_name;
@@ -875,8 +875,8 @@
                                 socket.onmessage = (response) => {
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id1){
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         $scope.mapConfiguration.zoom = parsedResponse.result;
                                     }
@@ -990,8 +990,8 @@
                 socket.onmessage = (response) => {
                     let parsedResponse = parseResponse(response);
                     if (parsedResponse.id === id){
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         parsedResponse.result.forEach(zone => {
                             if (zone.gps_north === null && zone.gps_east === null && zone.radius === null) {
@@ -1038,8 +1038,8 @@
                 socket.onmessage = (response) => {
                     let parsedResponse = parseResponse(response);
                     if (parsedResponse.id === id1) {
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         tags = parsedResponse.result;
                         outdoorCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(parsedResponse.result);
@@ -1306,15 +1306,15 @@
                         id2 = ++requestId;
                         socket.send(encodeRequestWithId(id2, 'get_anchors_by_user', {user: dataService.user.username}));
                     } else if(parsedResponse.id === id2){
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         outdoorCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
                         id3 = ++requestId;
                         socket.send(encodeRequestWithId(id3, 'get_engine_on'));
                     } else if (parsedResponse.id === id3){
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         outdoorCtrl.showEngineOffIcon = parsedResponse.result === 0;
                     }
@@ -1485,15 +1485,15 @@
                 socket.onmessage = (response) => {
                     let parsedResponse = parseResponse(response);
                     if (parsedResponse.id === id){
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         zones = parsedResponse.result;
                         id1 = ++requestId;
                         socket.send(encodeRequestWithId(id1, 'get_drawing', {floor: canvasCtrl.defaultFloor[0].id}));
                     } else if (parsedResponse.id === id1){
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         let parsedResponseDrawing = JSON.parse(parsedResponse.result);
                         drawedLines        = (parsedResponseDrawing === null) ? [] : parsedResponseDrawing;
@@ -1618,8 +1618,8 @@
                 socket.onmessage = (response) => {
                     let parsedResponse = parseResponse(response);
                     if (parsedResponse.id === id) {
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         if (!angular.equals(canvasCtrl.floors, parsedResponse.result)) {
                             let newFloor = null;
@@ -1636,8 +1636,8 @@
                         id1 = ++requestId;
                         socket.send(encodeRequestWithId(id1, 'get_drawing', {floor: canvasCtrl.defaultFloor[0].id}));
                     } else if (parsedResponse.id === id1) {
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         let parsedDraw = JSON.parse(parsedResponse.result);
                         if (parsedDraw !== null) {
@@ -1652,8 +1652,8 @@
                             user    : dataService.user.username
                         }));
                     } else if (parsedResponse.id === id7) {
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         if (parsedResponse.result.length > 0 && dataService.switch.showZones) {
                             canvasCtrl.floorData.floorZones = parsedResponse.result;
@@ -1672,8 +1672,8 @@
                             location: canvasCtrl.floorData.location
                         }));
                     } else if (parsedResponse.id === id2) {
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         dataService.anchors = parsedResponse.result;
                         console.log(dataService.anchors);
@@ -1687,8 +1687,8 @@
                             location: canvasCtrl.floorData.location
                         }));
                     } else if (parsedResponse.id === id3) {
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         if (parsedResponse.result.length > 0)
                             loadAndDrawImagesOnCanvas(parsedResponse.result, 'camera', bufferCanvas, bufferContext, dataService.switch.showCameras);
@@ -1701,8 +1701,8 @@
                             location: canvasCtrl.floorData.location
                         }));
                     } else if (parsedResponse.id === id4) {
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         dataService.playAlarmsAudio(parsedResponse.result);
                         dataService.floorTags = parsedResponse.result;
@@ -1785,8 +1785,8 @@
                         id5 = ++requestId;
                         socket.send(encodeRequestWithId(id5, 'get_all_tags', {user: dataService.user.username}));
                     }else if (parsedResponse.id === id5){
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         dataService.allTags = parsedResponse.result;
                         canvasCtrl.showAlarmsIcon      = dataService.checkTagsStateAlarmNoAlarmOffline(parsedResponse.result).withAlarm;
@@ -1795,8 +1795,8 @@
                         id6 = ++requestId;
                         socket.send(encodeRequestWithId(id6, 'get_engine_on'));
                     } else if (parsedResponse.id === id6){
-                        if (parsedResponse.session_state)
-                            window.location.reload();
+                        // if (parsedResponse.session_state)
+                        //     window.location.reload();
 
                         canvasCtrl.showEngineOffIcon = parsedResponse.result === 0;
                     }
@@ -1895,8 +1895,8 @@
             socket.onmessage = (response) => {
                 let parsedResponse = parseResponse(response);
                 if (parsedResponse.id === id) {
-                    if (parsedResponse.session_state)
-                        window.location.reload();
+                    // if (parsedResponse.session_state)
+                    //     window.location.reload();
 
                     let scaledAnchorPosition = [];
                     let drawAnchor           = [];
@@ -1926,8 +1926,8 @@
                     dataService.anchorsToUpdate = [];
                     if (dataService.canvasInterval === undefined) constantUpdateCanvas();
                 } else if (parsedResponse.id === id1) {
-                    if (parsedResponse.session_state)
-                        window.location.reload();
+                    // if (parsedResponse.session_state)
+                    //     window.location.reload();
                 }
             }
         };
@@ -2058,8 +2058,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 $scope.anchors = parsedResponse.result;
                                 dataService.locationAnchors = parsedResponse.result;
@@ -2424,7 +2424,7 @@
                                 $scope.anchor         = anchor;
                                 $scope.isAnchorOnline = 'background-green';
 
-                                if (!anchor.is_online) {
+                                if (anchor.is_offline) {
                                     $scope.isAnchorOnline = 'background-gray';
                                 }
 
@@ -2492,8 +2492,8 @@
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id){
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             locations = parsedResponse.result;
                             dataService.getTagsLocation(tags, parsedResponse.result)
@@ -2522,8 +2522,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id1) {
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
 
                                             if (parsedResponse.result === 'location_saved') {
                                                 $mdDialog.hide();
@@ -2563,8 +2563,8 @@
                                 socket.onmessage = (response) => {
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id2) {
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         if (parsedResponse.result === 'location_saved') {
                                             dataService.defaultFloorName  = indoorTag.floor_name;
@@ -2603,8 +2603,8 @@
                                 socket.onmessage = (response) => {
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id1){
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         $scope.mapConfiguration.zoom = parsedResponse.result;
                                     }
@@ -2695,8 +2695,8 @@
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id) {
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             $scope.safeTags   = parsedResponse.result;
                             $scope.unsafeTags = tags.filter(t => !parsedResponse.result.some(i => i.tag_name === t.name));
@@ -2758,8 +2758,8 @@
             socket.onmessage = (response) => {
                 let parsedResponse = parseResponse(response);
                 if (parsedResponse.id === id1) {
-                    if (parsedResponse.session_state)
-                        window.location.reload();
+                    // if (parsedResponse.session_state)
+                    //     window.location.reload();
 
                     $scope.menuTags = parsedResponse.result;
                 }
@@ -2773,8 +2773,8 @@
             socket.onmessage = (response) => {
                 let parsedResponse = parseResponse(response);
                 if (parsedResponse.id === id1) {
-                    if (parsedResponse.session_state)
-                        window.location.reload();
+                    // if (parsedResponse.session_state)
+                    //     window.location.reload();
 
                     $scope.locations = parsedResponse.result;
                 }
@@ -2818,8 +2818,8 @@
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id) {
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             $scope.locationsTable = parsedResponse.result;
                             updateLocationsTable();
@@ -2832,8 +2832,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id1) {
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 if (!angular.equals($scope.locationsTable, parsedResponse.result)) {
                                     $scope.locationsTable = parsedResponse.result;
@@ -2903,8 +2903,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id2){
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
                                         }
                                         //TODO handle if the field is not saved
                                     };
@@ -2938,8 +2938,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id3){
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result.length === 0) {
                                         $scope.locationsTable   = $scope.locationsTable.filter(t => t.id !== location.id);
@@ -3032,8 +3032,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id5) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result.length === 0) {
                                         if (file != null) {
@@ -3067,8 +3067,8 @@
                                         return null
                                     }
                                 } else if (parsedResponse.id === id6) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result === false) {
                                         $scope.location.showSuccess = false;
@@ -3142,8 +3142,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id1){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 $scope.usersTable = parsedResponse.result;
                                 $scope.tableEmpty = $scope.usersTable.length === 0;
@@ -3179,8 +3179,8 @@
                                 socket.onmessage = (response) => {
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id2){
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         $scope.locations = parsedResponse.result;
                                         $scope.tableEmpty = $scope.locations.length === 0;
@@ -3212,8 +3212,8 @@
                                             socket.onmessage = (response) => {
                                                 let parsedResponse = parseResponse(response);
                                                 if (parsedResponse.id === id3){
-                                                    if (parsedResponse.session_state)
-                                                        window.location.reload();
+                                                    if (!parsedResponse.session_state)
+                                                       window.location.reload();
 
                                                     $scope.insertManagedLocations.allLocations = parsedResponse.result;
                                                 }
@@ -3237,8 +3237,8 @@
                                                     socket.onmessage = (response) => {
                                                         let parsedResponse = parseResponse(response);
                                                         if (parsedResponse.id === id4){
-                                                            if (parsedResponse.session_state)
-                                                                window.location.reload();
+                                                            if (!parsedResponse.session_state)
+                                                               window.location.reload();
 
                                                             $mdDialog.hide();
                                                             $mdDialog.show(manageLocationDialog);
@@ -3275,8 +3275,8 @@
                                         socket.onmessage = (response) => {
                                             let parsedResponse = parseResponse(response);
                                             if (parsedResponse.id === id5){
-                                                if (parsedResponse.session_state)
-                                                    window.location.reload();
+                                                if (!parsedResponse.session_state)
+                                                   window.location.reload();
 
                                                 if (parsedResponse.result === 1) {
                                                     $scope.locations = $scope.locations.filter(l => l.id !== location.id);
@@ -3318,8 +3318,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id3){
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
                                         }
                                     };
                                 },
@@ -3350,8 +3350,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id4){
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (response.result !== 0) {
                                         $scope.usersTable   = $scope.usersTable.filter(u => u.id !== user.id);
@@ -3416,8 +3416,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id5){
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result.length === 0){
                                         $scope.user.resultClass = 'background-green';
@@ -3485,8 +3485,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse === id){
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
                                 }
                             }
                         }
@@ -3498,8 +3498,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 $scope.usersTable = parsedResponse.result;
                                 $scope.tableEmpty     = $scope.usersTable.length === 0;
@@ -3541,8 +3541,8 @@
                                 socket.onmessage = (response) => {
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id2){
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         $scope.locations = parsedResponse.result;
                                     }
@@ -3573,8 +3573,8 @@
                                             socket.onmessage = (response) => {
                                                 let parsedResponse = parseResponse(response);
                                                 if (parsedResponse.id === id3){
-                                                    if (parsedResponse.session_state)
-                                                        window.location.reload();
+                                                    if (!parsedResponse.session_state)
+                                                       window.location.reload();
 
                                                     $scope.insertManagedLocations.allLocations = parsedResponse.result;
                                                 }
@@ -3598,8 +3598,8 @@
                                                     socket.onmessage = (response) => {
                                                         let parsedResponse = parseResponse(response);
                                                         if (parsedResponse.id === id4){
-                                                            if (parsedResponse.session_state)
-                                                                window.location.reload();
+                                                            if (!parsedResponse.session_state)
+                                                               window.location.reload();
 
                                                             $mdDialog.hide();
                                                             $mdDialog.show(manageLocationDialog);
@@ -3636,8 +3636,8 @@
                                         socket.onmessage = (response) => {
                                             let parsedResponse = parseResponse(response);
                                             if (parsedResponse.id === id5){
-                                                if (parsedResponse.session_state)
-                                                    window.location.reload();
+                                                if (!parsedResponse.session_state)
+                                                   window.location.reload();
 
                                                 if (parsedResponse.result === 1) {
                                                     $scope.locations = $scope.locations.filter(l => l.id !== location.id);
@@ -3679,8 +3679,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id6) {
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
 
                                             if (response.result !== 1)
                                                 console.log(response.result);
@@ -3717,8 +3717,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id7) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result !== 0) {
                                         updateUserTable();
@@ -3786,8 +3786,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id8) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result.length === 0){
                                         $scope.user.resultClass = 'background-green';
@@ -3874,8 +3874,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 if (parsedResponse.result !== 0){
                                     id1 = ++requestId;
@@ -3887,8 +3887,8 @@
                                     }))
                                 }
                             }else if (parsedResponse.id === id1){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 $scope.historyRows = parsedResponse.result;
                                 $scope.tableEmpty  = $scope.historyRows.length === 0;
@@ -3908,8 +3908,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id) {
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 $scope.history.events = parsedResponse.result;
                                 id1                 = ++requestId;
@@ -3920,8 +3920,8 @@
                                     event   : newValues[3]
                                 }))
                             } else if (parsedResponse.id === id1){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 $scope.historyRows = parsedResponse.result;
                                 $scope.tableEmpty  = $scope.historyRows.length === 0;
@@ -4003,8 +4003,8 @@
                                 socket.onmessage = (response) => {
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id){
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         if (parsedResponse.result === 'wrong_old') {
                                             $scope.changePassword.resultClass = 'background-red';
@@ -4085,8 +4085,8 @@
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id){
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             $scope.tagTypes = parsedResponse.result;
                         }
@@ -4106,8 +4106,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id1) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result.length === 0) {
                                         $scope.insertTag.resultClass = 'background-green';
@@ -4160,8 +4160,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id3) {
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 $scope.tags = parsedResponse.result;
                                 ($scope.tags.length === 0)
@@ -4195,8 +4195,8 @@
                                 id0 = ++requestId;
                                 socket.send(encodeRequestWithId(id0, 'get_all_types'));
                             } else if (parsedResponse.id === id0){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 $scope.tagTypes = parsedResponse.result;
                             }
@@ -4219,8 +4219,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     console.log('tag updated');
                                 }
@@ -4251,8 +4251,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id4){
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
 
                                             if (parsedResponse.result !== 1) {
                                                 console.log(parsedResponse.result);
@@ -4288,8 +4288,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id5){
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result.length === 0) {
                                         $scope.tags = $scope.tags.filter(t => t.id !== tag.id);
@@ -4334,8 +4334,8 @@
                                 socket.onmessage = (response) => {
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id6){
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         $scope.macs = parsedResponse.result;
                                     }
@@ -4357,8 +4357,8 @@
                                         socket.onmessage = (response) => {
                                             let parsedResponse = parseResponse(response);
                                             if (parsedResponse.id === id7){
-                                                if (parsedResponse.session_state)
-                                                    window.location.reload();
+                                                if (!parsedResponse.session_state)
+                                                   window.location.reload();
 
                                                 if (parsedResponse.result !== 0) {
                                                     $scope.macs = $scope.macs.filter(m => m.id !== mac.id);
@@ -4401,8 +4401,8 @@
                                                     socket.onmessage = (response) => {
                                                         let parsedResponse = parseResponse(response);
                                                         if (parsedResponse.id === id8){
-                                                            if (parsedResponse.session_state)
-                                                                window.location.reload();
+                                                            if (!parsedResponse.session_state)
+                                                               window.location.reload();
 
                                                             if (parsedResponse.result !== 0) {
                                                                 $scope.insertMac.resultClass = 'background-green';
@@ -4448,8 +4448,8 @@
                                                 socket.onmessage = (response) => {
                                                     let parsedResponse = parseResponse(response);
                                                     if (parsedResponse.id === id9){
-                                                        if (parsedResponse.session_state)
-                                                            window.location.reload();
+                                                        if (!parsedResponse.session_state)
+                                                           window.location.reload();
 
                                                         if (parsedResponse.result !== 1) {
                                                             console.log(parsedResponse.result);
@@ -4507,8 +4507,8 @@
                                     let parsedResponse = parseResponse(response);
                                     console.log(parsedResponse);
                                     if (parsedResponse.id === id2 ){
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         $scope.tableEmpty = parsedResponse.result.length === 0;
                                         $scope.zones = parsedResponse.result;
@@ -4555,13 +4555,13 @@
                                             socket.onmessage = (response) => {
                                                 let parsedResponse = parseResponse(response);
                                                 if (parsedResponse.id === id3){
-                                                    if (parsedResponse.session_state)
-                                                        window.location.reload();
+                                                    if (!parsedResponse.session_state)
+                                                       window.location.reload();
 
                                                     $scope.insertManagedZones.allZones = parsedResponse.result.filter(z => !zones.some(zs => z.id === zs.zone_id));
                                                 } else if (parsedResponse.id === id4){
-                                                    if (parsedResponse.session_state)
-                                                        window.location.reload();
+                                                    if (!parsedResponse.session_state)
+                                                       window.location.reload();
 
                                                     $scope.insertManagedZones.allZones = parsedResponse.result.filter(z => !zones.some(zs => z.id === zs.zone_id));
                                                 }
@@ -4585,8 +4585,8 @@
                                                     socket.onmessage = (response) => {
                                                         let parsedResponse = parseResponse(response);
                                                         if (parsedResponse.id === id4){
-                                                            if (parsedResponse.session_state)
-                                                                window.location.reload();
+                                                            if (!parsedResponse.session_state)
+                                                               window.location.reload();
 
                                                             $mdDialog.hide();
                                                             $mdDialog.show(tagZonesDialog);
@@ -4624,8 +4624,8 @@
                                         socket.onmessage = (response) => {
                                             let parsedResponse = parseResponse(response);
                                             if (parsedResponse.id === id5){
-                                                if (parsedResponse.session_state)
-                                                    window.location.reload();
+                                                if (!parsedResponse.session_state)
+                                                   window.location.reload();
 
                                                 if (parsedResponse.result === 1) {
                                                     $scope.zones = $scope.zones.filter(z => z.zone_id !== zone.zone_id);
@@ -4718,8 +4718,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result !== 0) {
                                         $scope.insertZone.resultClass = 'background-green';
@@ -4775,8 +4775,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id1) {
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 console.log(parsedResponse.result);
                             }
@@ -4793,8 +4793,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id1) {
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 $scope.zones = parsedResponse.result;
                                 $scope.tableEmptyZone = parsedResponse.result.length === 0;
@@ -4828,8 +4828,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse === id2) {
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
 
                                             if (response.result !== 1)
                                                 console.log(response.result);
@@ -4865,8 +4865,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id3){
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     $scope.zones = $scope.zones.filter(z => z.id !== zone.id);
                                     $scope.$apply();
@@ -4940,8 +4940,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result !== 0) {
                                         NgMap.getMap('outdoor-map').then((map) => {
@@ -5022,8 +5022,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id1) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result !== 0) {
                                         NgMap.getMap('outdoor-map').then((map) => {
@@ -5095,8 +5095,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id1) {
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 console.log(parsedResponse.result);
                                 dataService.outdoorZones.forEach(zone => {
@@ -5117,8 +5117,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id1) {
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 $scope.zones = parsedResponse.result;
                                 $scope.tableEmptyZone = parsedResponse.result.length === 0;
@@ -5152,8 +5152,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse === id2) {
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
 
                                             if (response.result !== 1) {
                                                 console.log(response.result);
@@ -5190,8 +5190,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id3){
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     $scope.zones = $scope.zones.filter(z => z.id !== zone.id);
                                     let deletedZone = dataService.outdoorZones.filter(z => z.id === zone.id)[0];
@@ -5275,15 +5275,15 @@
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id){
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             $scope.neighbors = parsedResponse.result;
                             id1 = ++requestId;
                             socket.send(encodeRequestWithId(id1, 'get_anchor_types'));
                         } else if (parsedResponse.id === id1){
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             $scope.anchorTypes = parsedResponse.result;
 
@@ -5329,8 +5329,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id3){
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result.length === 0) {
                                         $scope.insertAnchor.resultClass = 'background-green';
@@ -5397,8 +5397,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id4){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 // $scope.anchors = parsedResponse.result;
                                 parsedResponse.result.forEach(anchor => {
@@ -5412,8 +5412,8 @@
                                 id5 = ++requestId;
                                 socket.send(encodeRequestWithId(id5, 'get_all_tags_macs'));
                             } else if (parsedResponse.id === id5){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 dataService.allTags.forEach(tag => {
                                     parsedResponse.result.forEach(mac => {
@@ -5451,8 +5451,8 @@
                             socket.onmessage = (response) => {
                                 let persedResponse = parseResponse(response);
                                 if (persedResponse.id === id6) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     console.log("permitteds updated");
                                 }
@@ -5485,8 +5485,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id5) {
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
 
                                             if (parsedResponse.result !== 1)
                                                 console.log(parsedResponse.result);
@@ -5525,8 +5525,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id6){
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result > 0) {
                                         $rootScope.$emit('updateAnchorsTable', {});
@@ -5598,8 +5598,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     currentLocation = parsedResponse.result.filter(l => l.name === dataService.location.name)[0];
 
@@ -5619,8 +5619,8 @@
                                         $scope.insertFloor.resultClass = 'background-red';
                                     }
                                 }else if (parsedResponse.id === id1) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result !== undefined && parsedResponse.result !== 0) {
                                         convertImageToBase64(file)
@@ -5638,8 +5638,8 @@
                                         $scope.insertFloor.resultClass = 'background-red';
                                     }
                                 }else if (parsedResponse.id === id2){
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     if (parsedResponse.result === false) {
                                         $scope.insertFloor.showSuccess = false;
@@ -5708,8 +5708,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 $scope.floors = parsedResponse.result;
                                 $scope.$apply();
@@ -5742,8 +5742,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id1){
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
 
                                             if (parsedResponse.result === 1) {
                                                 if (floorName === 'map_width')
@@ -5787,8 +5787,8 @@
                                 socket.onmessage = (response) => {
                                     let parsedResponse = parseResponse(response);
                                     if (parsedResponse.id === id){
-                                        if (parsedResponse.session_state)
-                                            window.location.reload();
+                                        if (!parsedResponse.session_state)
+                                           window.location.reload();
 
                                         if (parsedResponse.result > 0) {
                                             $scope.floors = $scope.floors.filter(a => a.id !== floor.id);
@@ -5834,8 +5834,8 @@
                                     socket.onmessage = (response) => {
                                         let parsedResponse = parseResponse(response);
                                         if (parsedResponse.id === id){
-                                            if (parsedResponse.session_state)
-                                                window.location.reload();
+                                            if (!parsedResponse.session_state)
+                                               window.location.reload();
 
                                             //TODO handle if the image is not saved
                                         }
@@ -5917,8 +5917,8 @@
             socket.onmessage = (response) => {
                 let parsedRespone = parseResponse(response);
                 if (parsedRespone.id === id){
-                    if (parsedResponse.session_state)
-                        window.location.reload();
+                    // if (parsedResponse.session_state)
+                    //     window.location.reload();
 
                     if (parsedRespone.result === 'logged_out')
                         $state.go('login');
@@ -5947,8 +5947,8 @@
                     socket.onmessage = (response) => {
                         let parsedResponse = parseResponse(response);
                         if (parsedResponse.id === id1) {
-                            if (parsedResponse.session_state)
-                                window.location.reload();
+                            if (!parsedResponse.session_state)
+                               window.location.reload();
 
                             if (parsedResponse.result.location_name === undefined || parsedResponse.result.name === undefined) {
                                 $mdDialog.show({
@@ -6050,8 +6050,8 @@
                             socket.onmessage = (response) => {
                                 let parsedResponse = parseResponse(response);
                                 if (parsedResponse.id === id2) {
-                                    if (parsedResponse.session_state)
-                                        window.location.reload();
+                                    if (!parsedResponse.session_state)
+                                       window.location.reload();
 
                                     let locations = parsedResponse.result;
 
@@ -6141,8 +6141,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 dataService.outdoorZoneInserted = true;
                             }
@@ -6181,8 +6181,8 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id){
-                                if (parsedResponse.session_state)
-                                    window.location.reload();
+                                if (!parsedResponse.session_state)
+                                   window.location.reload();
 
                                 dataService.outdoorZoneInserted = true;
                             }

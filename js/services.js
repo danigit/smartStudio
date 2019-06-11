@@ -56,7 +56,7 @@
             socket.onmessage = (response) => {
                 let parsedResponse = parseResponse(response);
                 if (parsedResponse.id === id){
-                    if (parsedResponse.session_state)
+                    if (!parsedResponse.session_state)
                         window.location.reload();
 
                     if(parsedResponse.result.length !== 0) {
@@ -87,7 +87,7 @@
             socket.onmessage = (response) => {
                 let parsedResponse = parseResponse(response);
                 if (parsedResponse.id === id){
-                    if (parsedResponse.session_state)
+                    if (!parsedResponse.session_state)
                         window.location.reload();
 
                     service.loadUserSettings();
@@ -130,7 +130,7 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id) {
-                                if (parsedResponse.session_state)
+                                if (!parsedResponse.session_state)
                                     window.location.reload();
 
                                 let offgridTagsIndoor  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
@@ -205,14 +205,14 @@
         //checking if there is at least an anchor offline
         service.checkIfAnchorsAreOffline = (anchors) => {
             return anchors.some(function (anchor) {
-                return anchor.is_online !== 1 || anchor.battery_status === 1;
+                return !anchor.is_offline !== 1 || anchor.battery_status === 1;
             });
         };
 
         //checking if there is at least an anchor offline
         service.checkIfAreAnchorsOffline = (anchors) => {
             return anchors.some(function (anchor) {
-                return anchor.is_online === 0;
+                return anchor.is_offline === 1;
             });
         };
 
@@ -248,10 +248,10 @@
                             console.log(response.data);
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id) {
-                                if (parsedResponse.session_state)
+                                if (!parsedResponse.session_state)
                                     window.location.reload();
 
-                                let tempOfflineAnchors = parsedResponse.result.filter(a => !a.is_online);
+                                let tempOfflineAnchors = parsedResponse.result.filter(a => a.is_offline);
 
                                 if (!angular.equals(tempOfflineAnchors, $scope.offlineAnchors)) {
                                     $scope.offlineAnchors = tempOfflineAnchors;
@@ -328,10 +328,10 @@
                         socket.onmessage = (response) => {
                             let parsedResponse = parseResponse(response);
                             if (parsedResponse.id === id) {
-                                if (parsedResponse.session_state)
+                                if (!parsedResponse.session_state)
                                     window.location.reload();
 
-                                let tempOfflineAnchors = parsedResponse.result.filter(a => !a.is_online);
+                                let tempOfflineAnchors = parsedResponse.result.filter(a => a.is_offline);
 
                                 if (!angular.equals(tempOfflineAnchors, $scope.offlineAnchors)) {
                                     $scope.offlineAnchors = tempOfflineAnchors;
@@ -709,9 +709,9 @@
                         return new Promise(function (resolve) {
                             let img = new Image();
 
-                            if (image === 'anchor' && value.is_online)
+                            if (image === 'anchor' && !value.is_offline)
                                 img.src = tagsIconPath + image + '_online_16.png';
-                            else if (image === 'anchor' && !value.is_online)
+                            else if (image === 'anchor' && value.is_offline)
                                 img.src = tagsIconPath + image + '_offline_16.png';
                             else if (image === 'camera')
                                 img.src = tagsIconPath + image + '_online_24.png';
