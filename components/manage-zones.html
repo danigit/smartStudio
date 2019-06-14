@@ -1,4 +1,4 @@
-<div>
+<div class="width-325-px">
     <!--popup header-->
     <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
@@ -21,7 +21,7 @@
 </div>
 <!--popup content-->
 
-<md-content class="popup-padding">
+<md-content class="popup-padding width-300-px">
 
     <div layout="column" layout-align="center center">
 
@@ -54,14 +54,16 @@
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
+        <div ng-if="position" class="margin-bottom-40-px"></div>
+
+        <md-input-container ng-if="!position" md-no-float class="md-block width-100 margin-top-bottom-25-px">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="manageNewZone()" alt="Aggiungi zona" title="Aggiungi zona">
             </div>
         </md-input-container>
 
-        <md-table-pagination class="color-red" md-limit="query.limit" md-limit-options="query.limitOptions"
+        <md-table-pagination class="color-red background-white position-fixed bottom-0" md-limit="query.limit" md-limit-options="query.limitOptions"
                              md-page="query.page"
                              md-total="{{zones.length}}" md-on-paginate="">
         </md-table-pagination>

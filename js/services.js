@@ -205,7 +205,7 @@
         //checking if there is at least an anchor offline
         service.checkIfAnchorsAreOffline = (anchors) => {
             return anchors.some(function (anchor) {
-                return !anchor.is_offline !== 1 || anchor.battery_status === 1;
+                return anchor.is_offline || anchor.battery_status === 1;
             });
         };
 
@@ -780,7 +780,7 @@
                     console.log(tags[i])
                     let someResult = locations.filter(l => service.getTagDistanceFromLocationOrigin(tags[i], [l.latitude, l.longitude]) <= l.radius);
                     console.log(someResult);
-                    if (someResult.length !== 0 && userLocatins.some(l => l.name === someResult[0].name)){
+                    if (someResult.length !== 0 && userLocatins !== undefined && userLocatins.some(l => l.name === someResult[0].name)){
                         console.log('is use location')
                         tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, someResult[0].name);
                     } else {

@@ -85,7 +85,7 @@
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float ng-show="isAdmin || isUserManager" class="md-block width-100 margin-bottom-0">
+        <md-input-container md-no-float ng-show="isAdmin || isUserManager" class="md-block width-100 margin-top-bottom-25-px">
             <div ng-if="isOutdoor" layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <button ng-click="addNewRectRow()" class="md-button" layout="row" layout-align="center center">
                     <img src="img/icons/add_row_32.png" class="outline-none margin-right-10-px"
@@ -104,7 +104,7 @@
             </div>
         </md-input-container>
 
-        <md-table-pagination class="color-red" md-limit="query.limit" md-limit-options="query.limitOptions"
+        <md-table-pagination class="color-red background-white position-fixed width-100 bottom-0" md-limit="query.limit" md-limit-options="query.limitOptions"
                              md-page="query.page"
                              md-total="{{zones.length}}" md-on-paginate="">
         </md-table-pagination>

@@ -918,10 +918,20 @@
             controllerMap = map;
             map.set('styles', mapConfiguration);
             map.setZoom(mapZoom);
-
+            let infoWindow = null;
             google.maps.event.addListener(map,'click',function(event) {
-                console.log(event.latLng.lat());
-                console.log(event.latLng.lng());
+                if (infoWindow !== null)
+                    infoWindow.close();
+                infoWindow = new google.maps.InfoWindow({
+                    content: '<div class="marker-info-container">' +
+                        '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+                        '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + event.latLng.lat() + '</b></p></div>' +
+                        '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + event.latLng.lng() + '</b></p></div>' +
+                        '</div>'
+                });
+
+                infoWindow.open(map);
+                infoWindow.setPosition(event.latLng);
             });
 
             constantUpdateMapTags(map, true);
@@ -971,6 +981,8 @@
             });
 
             circle.addListener('click', function(event){
+                if (infoWindow !== null)
+                    infoWindow.close();
                 infoWindow = new google.maps.InfoWindow({
                     content: '<div class="marker-info-container">' +
                         '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
@@ -982,7 +994,6 @@
                 infoWindow.open(map);
                 infoWindow.setPosition(event.latLng);
             });
-
 
             if (updateZones){
                 let id = ++requestId;
@@ -4489,6 +4500,7 @@
                             controller         : ['$scope', 'tag', function ($scope, tag) {
 
                                 $scope.zones = [];
+                                $scope.position = position === 'home';
                                 $scope.tableEmpty = false;
 
                                 $scope.query = {
@@ -5451,7 +5463,7 @@
                             socket.onmessage = (response) => {
                                 let persedResponse = parseResponse(response);
                                 if (persedResponse.id === id6) {
-                                    if (!parsedResponse.session_state)
+                                    if (!persedResponse.session_state)
                                        window.location.reload();
 
                                     console.log("permitteds updated");

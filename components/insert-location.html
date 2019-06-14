@@ -76,7 +76,7 @@
 
                 <md-input-container ng-show="!location.isIndoor" md-no-float class="padding-left-10-px margin-bottom-0">
                     <input required type="number" ng-model="location.meterRadius" name="locationMeterRadius"
-                           placeholder="{{lang.coverInGrades}}">
+                           placeholder="{{lang.coverInMeters}}">
                     <div ng-messages="insertLocationForm.locationMeterRadius.$error || insertLocationForm.$submitted"
                          role="alert">
                         <div ng-message=" required">{{lang.insertRadius}}</div>

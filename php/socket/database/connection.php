@@ -1186,7 +1186,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT location.ID, location.NAME, DESCRIPTION, LATITUDE, LONGITUDE, RADIUS FROM location JOIN user_has_location uhl on location.ID = uhl.LOCATION_ID JOIN user ON uhl.USER_ID = user.ID WHERE user.NAME = ?';
+            $this->query = 'SELECT location.ID, location.NAME, DESCRIPTION, LATITUDE, LONGITUDE, RADIUS, METER_RADIUS FROM location JOIN user_has_location uhl on location.ID = uhl.LOCATION_ID JOIN user ON uhl.USER_ID = user.ID WHERE user.NAME = ?';
 
             $statement = $this->execute_selecting($this->query, 's', $user);
 
@@ -1200,7 +1200,7 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'description' => $row['DESCRIPTION'], 'latitude' => (double)$row['LATITUDE'],
-                    'longitude' => (double)$row['LONGITUDE'], 'radius' => (double)$row['RADIUS']);
+                    'longitude' => (double)$row['LONGITUDE'], 'radius' => (double)$row['RADIUS'], 'meter_radius' => $row['METER_RADIUS']);
             }
 
             return $result_array;

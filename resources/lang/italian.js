@@ -110,6 +110,7 @@ function languageController($scope) {
         longitude                       : 'Longitudine',
         insertLongitude                 : 'Inserire longitudine',
         coverInGrades                   : 'Copertura in °',
+        coverInMeters                   : 'Copertura in metri',
         isIndoor                        : 'Sito interno',
         insertSite                      : 'Inserire sito',
         insertingMac                    : 'Inserimento MAC',

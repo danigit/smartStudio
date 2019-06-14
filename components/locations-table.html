@@ -38,7 +38,8 @@
                             class="color-darkcyan">{{lang.latitude | uppercase}}</span></th>
                     <th md-column md-order-by="longitude"><span
                             class="color-darkcyan">{{lang.longitude | uppercase}}</span></th>
-                    <th md-column md-order-by="radius"><span class="color-darkcyan">{{lang.radius | uppercase}}</span>
+                    <th md-column md-order-by="radius"><span class="color-darkcyan">{{lang.radius | uppercase}} °</span>
+                    <th md-column md-order-by="radius"><span class="color-darkcyan">{{lang.radius | uppercase}} m</span>
                     </th>
                     <th md-column></th>
                 </tr>
@@ -61,6 +62,10 @@
                         ng-class="{'md-placeholder': !location.radius.toString()}">{{location.radius ||
                         lang.insertRadius}}
                     </td>
+                    <td md-cell class="no-wrap" ng-click="editCell($event, location, 'meter_radius')"
+                        ng-class="{'md-placeholder': !location.meter_radius.toString()}">{{location.meter_radius ||
+                        lang.insertRadius}}
+                    </td>
                     <td md-cell class="no-wrap" ng-click="deleteRow(location)"><img
                             src="img/icons/delete_trash_24.png" alt="Cancella sito" title="Cancella sito"></td>
                 </tr>
@@ -71,14 +76,14 @@
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
+        <md-input-container md-no-float class="md-block width-100 margin-top-bottom-25-px">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="{{lang.addSite}}" title="{{lang.addSite}}">
             </div>
         </md-input-container>
 
-        <md-table-pagination class="color-red" md-limit="query.limit" md-limit-options="query.limitOptions"
+        <md-table-pagination class="color-red background-white position-fixed bottom-0" md-limit="query.limit" md-limit-options="query.limitOptions"
                              md-page="query.page"
                              md-total="{{locationsTable.length}}" md-on-paginate="">
         </md-table-pagination>
