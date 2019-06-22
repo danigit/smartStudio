@@ -790,7 +790,7 @@ class Connection
 
             for ($i = 0; $i < count($zones); $i++){
                 $this->query = "INSERT INTO zone (X_LEFT, X_RIGHT, Y_UP, Y_DOWN, FLOOR_ID) VALUES (?, ?, ?, ?, ?)";
-                $statement = $this->execute_inserting($this->query, 'iiiii', $zones[$i]['topLeft']['x'], $zones[$i]['bottomRight']['x'],
+                $statement = $this->execute_inserting($this->query, 'ddddi', $zones[$i]['topLeft']['x'], $zones[$i]['bottomRight']['x'],
                     $zones[$i]['topLeft']['y'], $zones[$i]['bottomRight']['y'], $floor);
 
                 if ($statement instanceof db_errors)
@@ -1224,6 +1224,8 @@ class Connection
 
         if ($this->connection) {
             $statement = null;
+            $anchorNullStatement = null;
+            $anchorNullQuery = "";
 
             if (($tag == 'Qualsiasi' && $event == 'Qualsiasi') || ($tag == null && $event == 'Qualsiasi') || ($tag == 'Qualsiasi' && $event == null)) {
                 $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS 
@@ -1262,8 +1264,8 @@ class Connection
                             WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'ssss', $event, $tag, $fromDate, $toDate);
             } else if ($tag == null && $event == null) {
-                $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS 
-                            FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
+                $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS
+                            FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
                             WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
@@ -1277,12 +1279,32 @@ class Connection
             $this->result = $statement->get_result();
 
             $array_result = array();
-
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
                     'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
                     'tag_y_pos' => $row['TAG_Y_POS']);
             }
+
+            $statement->close();
+
+            $anchorNullQuery = "SELECT history.TIME, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS FROM history JOIN event ON history.EVENT_ID = event.ID
+                            WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? AND ANCHOR_ID IS NULL ORDER BY history.time DESC";
+
+            $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ss', $fromDate, $toDate);
+
+            if ($anchorNullStatement instanceof db_errors)
+                return $statement;
+            else if ($anchorNullStatement === false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+
+            $this->result = $anchorNullStatement->get_result();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => 'nessun dato',
+                    'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
+                    'tag_y_pos' => $row['TAG_Y_POS']);
+            }
+
 
             return $array_result;
         }
@@ -1584,7 +1606,7 @@ class Connection
         if ($this->connection) {
             $this->query = 'SELECT t.ID, t.NAME, tt.DESCRIPTION AS TYPE, t.X_POS, t.Y_POS, t.TIME, t.BATTERY_STATUS, t.GPS_NORTH_DEGREE, t.MAN_DOWN, t.GPS_EAST_DEGREE,
                         t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.GPS_TIME, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, 
-                        t.INSIDE_ZONE, t.IS_EXIT, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
+                        t.INSIDE_ZONE, t.IS_EXIT, t.ANCHOR_ID, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
                         dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
                         FROM tag AS t JOIN tag_types AS tt ON t.TYPE = tt.ID JOIN dress_alarm ON t.ID = dress_alarm.TAG_ID';
 
@@ -1603,7 +1625,7 @@ class Connection
                     'sos' => (int)$row['SOS'], 'man_in_quote' => (int)$row['MAN_IN_QUOTE'], 'call_me_alarm' => (int)$row['CALL_ME_ALARM'],
                     'diagnostic_request' => (int)$row['DIAGNOSTIC_REQUEST'], 'gps_time' => $row['GPS_TIME'],
                     'sleep_time_outdoor' => (int)$row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => (int)$row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON_NAME'],
-                    'time' => $row['TIME'], 'inside_zone' => (int)$row['INSIDE_ZONE'], 'is_exit' => (int)$row['IS_EXIT'], 'type_id' => (int)$row['TYPE_ID'],
+                    'time' => $row['TIME'], 'inside_zone' => (int)$row['INSIDE_ZONE'], 'is_exit' => (int)$row['IS_EXIT'], 'anchor_id' => $row['ANCHOR_ID'], 'type_id' => (int)$row['TYPE_ID'],
                     'helmet_dpi' => (int)$row['HELMET_DPI'], 'belt_dpi' => (int)$row['BELT_DPI'], 'glove_dpi' => (int)$row['GLOVE_DPI'], 'shoe_dpi' => (int)$row['SHOE_DPI']);
             }
 

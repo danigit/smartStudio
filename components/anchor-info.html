@@ -47,7 +47,7 @@
             </md-list-item>
             <md-list-item class="width-300-px">
                 <p class="float-left">{{lang.anchorState}}:</p>
-                <p class="float-right text-right" ng-class="{'color-green': anchor.is_online, 'color-red': !anchor.is_online}">{{(anchor.is_online ? (lang.online | uppercase) : (lang.offline | uppercase))}}</p>
+                <p class="float-right text-right" ng-class="{'color-green': !anchor.is_offline, 'color-red': anchor.is_offline}">{{(anchor.is_offline ? (lang.offline | uppercase) : (lang.online | uppercase))}}</p>
             </md-list-item>
 
             <md-list-item class="width-300-px" ng-show="anchor.type === 'BEACON'">

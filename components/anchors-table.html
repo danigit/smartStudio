@@ -55,7 +55,7 @@
                     ng-repeat="anchor in anchors | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell><img alt="{{lang.anchorState}}" title="{{lang.anchorState}}"
                                      aria-label="{{lang.anchorState}}"
-                                     ng-src="{{anchor.anchor.is_online ? 'img/icons/tags/anchor_online_16.png' : 'img/icons/tags/anchor_offline_16.png'}}">
+                                     ng-src="{{anchor.anchor.is_offline ? 'img/icons/tags/anchor_offline_16.png' : 'img/icons/tags/anchor_online_16.png'}}">
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'name')"
@@ -94,7 +94,7 @@
                                                             : 'img/icons/battery_full_24.png'}}">
                     </td>
 
-                    <td md-cell class="no-wrap" ><span ng-class="{'color-green': anchor.anchor.is_online, 'color-red': !anchor.anchor.is_online}">{{(anchor.anchor.is_online ? (lang.online | uppercase) : (lang.offline | uppercase))}}
+                    <td md-cell class="no-wrap" ><span ng-class="{'color-green': !anchor.anchor.is_offline, 'color-red': anchor.anchor.is_offline}">{{(anchor.anchor.is_offline ? (lang.offline | uppercase) : (lang.online | uppercase))}}
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'rssi')"
@@ -135,7 +135,7 @@
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float ng-show="isAdmin || isUserManager" class="md-block width-100 margin-bottom-0">
+        <md-input-container md-no-float ng-show="isAdmin || isUserManager" class="md-block width-100 margin-bottom-30-px">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="{{lang.addAnchor}}" title="{{lang.addAnchor}}">

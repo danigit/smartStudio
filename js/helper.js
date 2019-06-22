@@ -139,7 +139,7 @@ function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) 
         context.fillText(id, virtualTag.width - 12, virtualTag.height - 5);
     }
 
-    context.drawImage(img, virtualTag.width, virtualTag.height);
+    context.drawImage(img, virtualTag.width - 10, virtualTag.height - 10);
     context.strokeStyle = '#ff000015';
     context.stroke();
     if (value.radius > 0) {
@@ -205,12 +205,18 @@ function scaleIconSize(width, height, realWidth, realHeight, canvasWidth, canvas
         height: 0
     };
 
-    let realPercentX = (width * 100) / parseInt(realWidth);
-    let realPercentY = (height * 100) / parseInt(realHeight);
+    let ratio = canvasWidth / realWidth;
 
-    scaledSize.width  = (realPercentX * canvasWidth) / 100;
-    scaledSize.height = (realPercentY * canvasHeight) / 100;
+    // let realPercentX = (width * 100) / parseInt(realWidth);
+    // let realPercentY = (height * 100) / parseInt(realHeight);
 
+    // realHeightscaledSize.width  = (realPercentX * canvasWidth) / 100;
+    // scaledSize.height = (realPercentY * canvasHeight) / 100;
+
+    scaledSize.width  = ratio * width;
+    scaledSize.height = ratio * height;
+
+    console.log(scaledSize);
     return scaledSize;
 }
 
@@ -271,9 +277,14 @@ function convertImageToBase64(img) {
  * @returns {{x: string, y: string}}
  */
 function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemWidth, elemHeight) {
-    let realHeight       = (floorWidth * canvasHeight) / canvasWidth;
-    let reversePositionX = ((elemWidth * floorWidth * 100) / canvasWidth) / 100;
-    let reversePositionY = ((elemHeight * realHeight * 100) / canvasHeight) / 100;
+    let ratio = floorWidth / canvasWidth;
+
+    let reversePositionX = ratio * elemWidth;
+    let reversePositionY = ratio * elemHeight;
+
+    // let realHeight       = (floorWidth * canvasHeight) / canvasWidth;
+    // let reversePositionX = ((elemWidth * floorWidth * 100) / canvasWidth) / 100;
+    // let reversePositionY = ((elemHeight * realHeight * 100) / canvasHeight) / 100;
 
     return {x: reversePositionX.toFixed(2), y: reversePositionY.toFixed(2)};
 }
@@ -383,6 +394,7 @@ function drawRect(begin, drawingContext) {
 function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, drawingOn, alpha) {
     let realHeight = (floorWidth * canvasHeight) / canvasWidth;
 
+    console.log(begin);
     let virtualPositionTop    = scaleIconSize(begin.x, begin.y, floorWidth, realHeight, canvasWidth, canvasHeight);
     let virtualPositionBottom = scaleIconSize(begin.xx, begin.yy, floorWidth, realHeight, canvasWidth, canvasHeight);
 

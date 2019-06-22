@@ -80,10 +80,12 @@ class Test{
                 break;
             case 'get_engine_on': var_dump($this->conn->get_engine_on());
                 break;
+            case 'get_history': var_dump($this->conn->get_history("2019-01-15", "2019-06-22", null, null));
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('get_engine_on');
+$test->test_function('get_history');

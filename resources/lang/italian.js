@@ -162,7 +162,7 @@ function languageController($scope) {
         drawZone: 'Disegna zona',
         deleteZone: 'Cancella zona',
         modifyZone: 'Modifica zona',
-        zoneTable: 'Gestion zone',
+        zoneTable: 'Gestione zone',
         zone: 'Zone',
         quickActions: 'Comandi rapidi',
         selectGridSpacing: 'Seleziona la spaziatura della griglia',
@@ -201,8 +201,8 @@ function languageController($scope) {
         tagsAlarms: 'Allarmi Wetags',
         audio: 'Audio',
         zones: 'Zone',
-        outLocationTags: 'Wetags fuori',
-        showOutdoorTagsLabel: 'Wetags',
+        outLocationTags: 'Fuori sito',
+        showOutdoorTagsLabel: 'Squadre',
         deleteHistory: 'Cancella storico',
         wetagsGroup: 'Gruppi Wetag',
         adminUser: 'Amministratore',
@@ -278,7 +278,7 @@ let lang = {
     okDeleteFloor                   : 'Sei sicuro di voler cancellare il piano?',
     selectFloorFile                 : 'Seleziona un\'immagine per il piano',
     tagNotFound                     : 'Tag non trovato',
-	tagNotLoggedUser                : 'Il tag non appartiene all\'user logato!',
+	tagNotLocation                : 'Il tag non appartiene a nessuna location!',
     noLocation: 'Nessuna location',
     insideZone: 'Tag in zona vietata'
 }

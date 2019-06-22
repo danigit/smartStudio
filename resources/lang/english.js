@@ -200,15 +200,24 @@ function languageController($scope) {
         tagsAlarms: 'WeTags alarms',
         audio: 'Audio',
         zones: 'Zone',
-        outLocationTags: 'Out of site WeTags',
-        showOutdoorTagsLabel: 'WeTags',
+        outLocationTags: 'Out of site',
+        showOutdoorTagsLabel: 'Team',
         deleteHistory: 'Delete history',
-        wetagsGroup: 'WeTag team',
+        wetagsGroup: 'WeTag group',
         adminUser: 'Administrator',
         intermediateUser: 'Intermediate',
         genericUser: 'Generic',
         zonesManaging: 'Zone management',
-        insertZone: 'Add zone'
+        insertZone: 'Add zone',
+		noZoneAvailable: 'Zones not available',
+        engineOff: 'Location Engine off',
+        outdoorRectDrawing: 'Rectangular',
+        outdoorRoundDrawing: 'Circle',
+        xCenter: 'Center x',
+        yCenter: 'Center y',
+        color: 'Colour',
+        saveConfiguration: 'Save settings',
+        manageLocation: 'Sites management',
     }
 };
 
@@ -269,4 +278,6 @@ let lang = {
     selectFloorFile                 : 'Select a floor image',
     tagNotFound                     : 'WeTag not found',
 	tagNotLoggedUser                : 'This WeTAG is located in a site not belong to the user!',
+	noLocation: 'Nessuna location',
+    insideZone: 'Tag in zona vietata'
 }

@@ -64,6 +64,7 @@ DIMENSIONS
 
 
 
+
 /******************************************************************
 FONTS
 *******************************************************************/
@@ -150,6 +151,11 @@ md-table-pagination md-icon.ng-scope{
 .no-wrap{
     white-space: nowrap!important;
 }
+
+.md-select-value .md-text{
+    display: inline-block!important;
+}
+
 
 /*.md-select-icon{*/
     /*color: #E12315!important;*/
