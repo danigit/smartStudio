@@ -133,10 +133,10 @@
                                 if (!parsedResponse.session_state)
                                     window.location.reload();
 
-                                let offgridTagsIndoor  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
-                                let offgridTagsOutdoor = parsedResponse.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+                                let offgridTagsIndoor  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && !t.radio_switched_off && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
+                                let offgridTagsOutdoor = parsedResponse.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
 
-                                let tempOffTags = parsedResponse.result.filter(t => (t.type_id === 1 || t.type_id === 14) && (t.is_exit && t.radio_switched_off));
+                                let tempOffTags = parsedResponse.result.filter(t => ((t.type_id === 1 || t.type_id === 14) && (t.is_exit && t.radio_switched_off) || (t.type_id !== 1 && t.type_id !== 14 && t.radio_switched_off)));
 
                                 if (!angular.equals(tempOffTags, $scope.offTags)){
                                     $scope.offTags = tempOffTags;
@@ -196,9 +196,10 @@
         //checking if there is at least one tag offline
         service.checkIfTagsAreOffline = (tags) => {
             return tags.some(function (tag) {
+                console.log(tag);
                 return ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && (tag.type_id === 1 || tag.type_id === 14) && (tag.is_exit && !tag.radio_switched_off))
-                    || ((tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0) && (((Date.now() - new Date(tag.gps_time)) > tag.sleep_time_outdoor)))
-                    || ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && (tag.type_id !== 1 && tag.type_id !== 14) && (((Date.now() - new Date(tag.time)) > tag.sleep_time_indoor)));
+                    || ((tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0) && !tag.radio_switched_off && (((Date.now() - new Date(tag.gps_time)) > tag.sleep_time_outdoor)))
+                    || ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && (tag.type_id !== 1 && tag.type_id !== 14) && !tag.radio_switched_off && (((Date.now() - new Date(tag.time)) > tag.sleep_time_indoor)));
             })
         };
 
@@ -640,6 +641,11 @@
             return tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0;
         };
 
+         //function that control if the tag is indoor
+        service.isOutdoorWithoutLocation = (tag) => {
+            return tag.gps_north_degree === -2 && tag.gps_east_degree === -2;
+        };
+
         service.goHome = () => {
             $state.go('home');
         };
@@ -657,7 +663,7 @@
                     || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
                     || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone) {
                     tagState.withAlarm = true;
-                } else if (tag.is_exit && !tag.radio_switched_off) {
+                } else if (((tag.tag_type_id === 1 || tag.tag_type_id === 14) && tag.is_exit && !tag.radio_switched_off) || (tag.tag_type_id !== 1 && tag.tag_type_id !== 14 && !tag.radio_switched_off && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor))) {
                     tagState.offline = true;
                 } else {
                     tagState.withoutAlarm = true;
@@ -731,16 +737,20 @@
                                         img.src = tagsIconPath + 'cumulative_tags_offline_alert_32.png'
                                     } else if (!tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
                                         img.src = tagsIconPath + 'cumulative_tags_offline_online_32.png'
+                                    } else if (!tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
+                                        img.src = tagsIconPath + 'cumulative_tags_offline_32.png'
                                     } else if (!tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
                                         img.src = tagsIconPath + 'cumulative_tags_32.png'
                                     }
                                 } else {
-                                    if (service.checkIfTagHasAlarm(value[0])) {
-                                        service.assigningTagImage(value[0], img);
-                                    } else if (value[0].is_exit && !value[0].radio_switched_off) {
+                                    if (service.checkIfTagHasAlarm(value)) {
+                                        service.assigningTagImage(value, img);
+                                    } else if ((value.tag_type_id === 1 || value.tag_type_id === 14) && value.is_exit && !value.radio_switched_off) {
                                         img.src = tagsIconPath + 'offline_tag_24.png';
-                                    } else if (!(value[0].is_exit && value[0].radio_switched_off)) {
-                                        service.assigningTagImage(value[0], img);
+                                    } else if (value.tag_type_id !== 1 && value.tag_type_id !== 14 && !value.radio_switched_0ff && (new Date(Date.now()) - (new Date(value.time)) > value.sleep_time_indoor)) {
+                                        img.src = tagsIconPath + 'offline_tag_24.png';
+                                    } else if (!(value.is_exit && value.radio_switched_off)) {
+                                        service.assigningTagImage(value, img);
                                     } else {
                                         img.src = tagsIconPath + 'online_tag_24.png';
                                     }
@@ -789,6 +799,7 @@
                 }
 
                 alarms.push(tagAlarms);
+                tagAlarms = [];
             }
 
             return alarms;

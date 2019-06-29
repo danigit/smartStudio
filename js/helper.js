@@ -216,7 +216,6 @@ function scaleIconSize(width, height, realWidth, realHeight, canvasWidth, canvas
     scaledSize.width  = ratio * width;
     scaledSize.height = ratio * height;
 
-    console.log(scaledSize);
     return scaledSize;
 }
 
@@ -394,7 +393,6 @@ function drawRect(begin, drawingContext) {
 function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, drawingOn, alpha) {
     let realHeight = (floorWidth * canvasHeight) / canvasWidth;
 
-    console.log(begin);
     let virtualPositionTop    = scaleIconSize(begin.x, begin.y, floorWidth, realHeight, canvasWidth, canvasHeight);
     let virtualPositionBottom = scaleIconSize(begin.xx, begin.yy, floorWidth, realHeight, canvasWidth, canvasHeight);
 

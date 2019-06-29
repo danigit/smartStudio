@@ -523,20 +523,30 @@
                                     locations = parsedResponse.result;
 
                                     let indoorTags     = tags.filter(t => !dataService.isOutdoor(t));
-                                    let noLocationIndoorTags = indoorTags.filter(t => t.anchor_id === null);
+                                    // let noLocationIndoorTags = indoorTags.filter(t => t.anchor_id === null && t.gps_north_degree === -1 && t.gps_east_degree === -1);
                                     let outdoorTags    = tags.filter(t => dataService.isOutdoor(t));
-                                    let noLocationOutdoorTags = tags.filter(t => t.gps_north_degree === 0 && t.gps_east_degree === 0);
+                                    // let noLocationOutdoorTags = tags.filter(t => dataService.isOutdoorWithoutLocation(t));
                                     let userIndoorTags = indoorTags.filter(t => userTags.some(ut => t.id === ut.id));
+
+                                    console.log(userIndoorTags);
+
                                     userIndoorTags.forEach(tag => {
                                         outdoorTags.push(tag);
                                     });
-                                    noLocationIndoorTags.forEach(tag => {
-                                        outdoorTags.push(tag);
-                                    });
-                                    noLocationOutdoorTags.forEach(tag => {
-                                        outdoorTags.push(tag);
-                                    });
 
+                                    // noLocationIndoorTags.forEach(tag => {
+                                    //     outdoorTags.push(tag);
+                                    // });
+
+                                    // console.log(noLocationIndoorTags);
+
+                                    // noLocationOutdoorTags.forEach(tag => {
+                                    //     outdoorTags.push(tag);
+                                    // });
+
+                                    // console.log(noLocationOutdoorTags);
+
+                                    console.log(outdoorTags);
                                     // console.log(indoorTags);
                                     dataService.getTagsLocation(outdoorTags, parsedResponse.result, userLocations)
                                         .then((response) => {
@@ -555,31 +565,55 @@
                             $scope.loadLocation = (alarm) => {
                                 let tag = tags.filter(t => t.name === alarm.tag)[0];
 
+                                console.log(tag);
                                 let id1 = ++requestId;
                                 let id2 = -1;
 
-                                if (dataService.isOutdoor(tag)) {
-                                    locations.forEach((location) => {
-                                        if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
-                                            socket.send(encodeRequestWithId(id1, 'save_location', {location: location.name}));
-                                            socket.onmessage = (response) => {
-                                                let parsedResponse = parseResponse(response);
-                                                if (parsedResponse.id === id1) {
-                                                    if (!parsedResponse.session_state)
-                                                        window.location.reload();
+                                if (dataService.isOutdoor(tag) && (tag.gps_north_degree !== -1 && tag.gps_east_degree !== -1)) {
+                                    if (dataService.isOutdoorWithoutLocation(tag)) {
+                                        $mdDialog.hide();
+                                        $timeout(function () {
+                                            $mdDialog.show({
+                                                templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                                                parent             : angular.element(document.body),
+                                                targetEvent        : event,
+                                                clickOutsideToClose: true,
+                                                controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                                    $controller('languageController', {$scope: $scope});
 
-                                                    if (parsedResponse.result === 'location_saved') {
-                                                        locationSelected = true;
-                                                        $state.go('outdoor-location');
+
+                                                    $scope.title   = lang.tagNotFound.toUpperCase();
+                                                    $scope.message = lang.tagNotLocation;
+
+                                                    $scope.hide = () => {
+                                                        $mdDialog.hide();
+                                                    }
+                                                }]
+                                            })
+                                        }, 10);
+                                    } else {
+                                        locations.forEach((location) => {
+                                            if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
+                                                socket.send(encodeRequestWithId(id1, 'save_location', {location: location.name}));
+                                                socket.onmessage = (response) => {
+                                                    let parsedResponse = parseResponse(response);
+                                                    if (parsedResponse.id === id1) {
+                                                        if (!parsedResponse.session_state)
+                                                            window.location.reload();
+
+                                                        if (parsedResponse.result === 'location_saved') {
+                                                            locationSelected = true;
+                                                            $state.go('outdoor-location');
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
                                 } else {
                                     let indoorTag = indoorTags.filter(t => t.name === tag.name)[0];
-
-                                    if (indoorTag === undefined) {
+                                    console.log(indoorTag);
+                                    if (indoorTag === undefined || (indoorTag.gps_north_degree === -1 && indoorTag.gps_east_degree === -1)) {
                                         $mdDialog.hide();
                                         $timeout(function () {
                                             $mdDialog.show({
@@ -701,9 +735,9 @@
      * Function that manages the login map
      * @type {string[]}
      */
-    outdoorController.$inject = ['$scope', '$rootScope', '$state', '$interval', '$mdDialog', 'NgMap', 'socketService', 'dataService', 'outdoorData'];
+    outdoorController.$inject = ['$scope', '$rootScope', '$state', '$interval', '$mdDialog', '$timeout', 'NgMap', 'socketService', 'dataService', 'outdoorData'];
 
-    function outdoorController($scope, $rootScope, $state, $interval, $mdDialog, NgMap, socketService, dataService, outdoorData) {
+    function outdoorController($scope, $rootScope, $state, $interval, $mdDialog, $timeout, NgMap, socketService, dataService, outdoorData) {
         let outdoorCtrl  = this;
         let tags         = null;
         let bounds       = new google.maps.LatLngBounds();
@@ -793,31 +827,9 @@
                         let tag = tags.filter(t => t.name === alarm.tag)[0];
 
                         let id1 = ++requestId;
-                        let id2 = -1;
-
-                        if (dataService.isOutdoor(tag)) {
-                            locations.forEach((location) => {
-                                if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
-                                    socket.send(encodeRequestWithId(id1, 'save_location', {location: location.name}));
-                                    socket.onmessage = (response) => {
-                                        let parsedResponse = parseResponse(response);
-                                        if (parsedResponse.id === id1) {
-                                            if (!parsedResponse.session_state)
-                                               window.location.reload();
-
-                                            if (parsedResponse.result === 'location_saved') {
-                                                $mdDialog.hide();
-                                                if (dataService.location.name !== location.name)
-                                                    window.location.reload();
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                        } else {
-                            let indoorTag = dataService.userTags.filter(t => t.name === tag.name)[0];
-
-                            if (tag === undefined) {
+                        let id2 = -1, id3 = -1;
+                        if (dataService.isOutdoor(tag) && (tag.gps_north_degree !== -1 && tag.gps_east_degree !== -1)) {
+                            if (dataService.isOutdoorWithoutLocation(tag)) {
                                 $mdDialog.hide();
                                 $timeout(function () {
                                     $mdDialog.show({
@@ -830,7 +842,7 @@
 
 
                                             $scope.title   = lang.tagNotFound.toUpperCase();
-                                            $scope.message = lang.tagNotLoggedUser;
+                                            $scope.message = lang.tagNotLocation;
 
                                             $scope.hide = () => {
                                                 $mdDialog.hide();
@@ -838,26 +850,140 @@
                                         }]
                                     })
                                 }, 10);
-                            }else {
-                                id2 = ++requestId;
-                                socket.send(encodeRequestWithId(id2, 'save_location', {location: indoorTag.location_name}));
-                                socket.onmessage = (response) => {
-                                    let parsedResponse = parseResponse(response);
-                                    if (parsedResponse.id === id2) {
-                                        if (!parsedResponse.session_state)
-                                           window.location.reload();
+                            } else {
+                                locations.forEach((location) => {
+                                    if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
+                                        socket.send(encodeRequestWithId(id1, 'save_location', {location: location.name}));
+                                        socket.onmessage = (response) => {
+                                            let parsedResponse = parseResponse(response);
+                                            if (parsedResponse.id === id1) {
+                                                if (!parsedResponse.session_state)
+                                                    window.location.reload();
 
-                                        if (parsedResponse.result === 'location_saved') {
-                                            dataService.defaultFloorName  = indoorTag.floor_name;
-                                            dataService.locationFromClick = indoorTag.location_name;
-                                            $mdDialog.hide();
-                                            $state.go('canvas');
+                                                if (parsedResponse.result === 'location_saved') {
+                                                    locationSelected = true;
+                                                    $state.go('outdoor-location');
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            socket.send(encodeRequestWithId(id3, 'get_tags_by_user', {user: dataService.user.username}));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id3) {
+                                    let indoorTag = parsedResponse.result.filter(t => t.name === tag.name)[0];
+                                    console.log(indoorTag);
+                                    if (indoorTag === undefined || (indoorTag.gps_north_degree === -1 && indoorTag.gps_east_degree === -1)) {
+                                        $mdDialog.hide();
+                                        $timeout(function () {
+                                            $mdDialog.show({
+                                                templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                                                parent             : angular.element(document.body),
+                                                targetEvent        : event,
+                                                clickOutsideToClose: true,
+                                                controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                                    $controller('languageController', {$scope: $scope});
+
+
+                                                    $scope.title   = lang.tagNotFound.toUpperCase();
+                                                    $scope.message = lang.tagNotLocation;
+
+                                                    $scope.hide = () => {
+                                                        $mdDialog.hide();
+                                                    }
+                                                }]
+                                            })
+                                        }, 10);
+                                    } else {
+                                        id2 = ++requestId;
+                                        socket.send(encodeRequestWithId(id2, 'save_location', {location: indoorTag.location_name}));
+                                        socket.onmessage = (response) => {
+                                            let parsedResponse = parseResponse(response);
+                                            if (parsedResponse.id === id2) {
+                                                if (!parsedResponse.session_state)
+                                                    window.location.reload();
+
+                                                if (parsedResponse.result === 'location_saved') {
+                                                    dataService.defaultFloorName  = indoorTag.floor_name;
+                                                    dataService.locationFromClick = indoorTag.location_name;
+                                                    $mdDialog.hide();
+                                                    locationSelected = true;
+                                                    $state.go('canvas');
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
                     };
+
+                    //     if (dataService.isOutdoor(tag)) {
+                    //         locations.forEach((location) => {
+                    //             if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
+                    //                 socket.send(encodeRequestWithId(id1, 'save_location', {location: location.name}));
+                    //                 socket.onmessage = (response) => {
+                    //                     let parsedResponse = parseResponse(response);
+                    //                     if (parsedResponse.id === id1) {
+                    //                         if (!parsedResponse.session_state)
+                    //                            window.location.reload();
+                    //
+                    //                         if (parsedResponse.result === 'location_saved') {
+                    //                             $mdDialog.hide();
+                    //                             if (dataService.location.name !== location.name)
+                    //                                 window.location.reload();
+                    //                         }
+                    //                     }
+                    //                 }
+                    //             }
+                    //         });
+                    //     } else {
+                    //         let indoorTag = dataService.userTags.filter(t => t.name === tag.name)[0];
+                    //
+                    //         if (tag === undefined) {
+                    //             $mdDialog.hide();
+                    //             $timeout(function () {
+                    //                 $mdDialog.show({
+                    //                     templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                    //                     parent             : angular.element(document.body),
+                    //                     targetEvent        : event,
+                    //                     clickOutsideToClose: true,
+                    //                     controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                    //                         $controller('languageController', {$scope: $scope});
+                    //
+                    //
+                    //                         $scope.title   = lang.tagNotFound.toUpperCase();
+                    //                         $scope.message = lang.tagNotLoggedUser;
+                    //
+                    //                         $scope.hide = () => {
+                    //                             $mdDialog.hide();
+                    //                         }
+                    //                     }]
+                    //                 })
+                    //             }, 10);
+                    //         }else {
+                    //             id2 = ++requestId;
+                    //             socket.send(encodeRequestWithId(id2, 'save_location', {location: indoorTag.location_name}));
+                    //             socket.onmessage = (response) => {
+                    //                 let parsedResponse = parseResponse(response);
+                    //                 if (parsedResponse.id === id2) {
+                    //                     if (!parsedResponse.session_state)
+                    //                        window.location.reload();
+                    //
+                    //                     if (parsedResponse.result === 'location_saved') {
+                    //                         dataService.defaultFloorName  = indoorTag.floor_name;
+                    //                         dataService.locationFromClick = indoorTag.location_name;
+                    //                         $mdDialog.hide();
+                    //                         $state.go('canvas');
+                    //                     }
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // };
 
                     //opening the map with the position of the tag out of location
                     //TODO I can create onbly one function that handle home and outdoor location alarms
@@ -1674,11 +1800,9 @@
                         // if (parsedResponse.session_state)
                         //     window.location.reload();
 
-                        console.log(parsedResponse);
                         if (parsedResponse.result.length > 0 && dataService.switch.showZones) {
                             canvasCtrl.floorData.floorZones = parsedResponse.result;
                             parsedResponse.result.forEach((zone) => {
-                                console.log(zone);
                                 drawZoneRect({
                                     x : zone.x_left,
                                     y : zone.y_up,
@@ -1697,7 +1821,6 @@
                         //     window.location.reload();
 
                         dataService.anchors = parsedResponse.result;
-                        console.log(dataService.anchors);
                         if (parsedResponse.result.length > 0) {
                             loadAndDrawImagesOnCanvas(parsedResponse.result, 'anchor', bufferCanvas, bufferContext, dataService.switch.showAnchors);
                             canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
@@ -1737,23 +1860,30 @@
                             singleTags: angular.copy(parsedResponse.result),
                         };
 
-                        for (let i = 0; i < parsedResponse.result.length; i = step) {
+                        for (let i = 0; i < temporaryTagsArray.singleTags.length;) {
                             //getting the near tags of the tag passed as second parameter
-                            temporaryTagsArray = groupNearTags(temporaryTagsArray.singleTags, parsedResponse.result[i]);
+                            console.log(temporaryTagsArray.singleTags);
+                            if (temporaryTagsArray.singleTags.length > 0) {
+                                console.log('grouping tags');
+                                let currentTag = temporaryTagsArray.singleTags[0];
+                                temporaryTagsArray = groupNearTags(temporaryTagsArray.singleTags, temporaryTagsArray.singleTags[0]);
 
-                            if (temporaryTagsArray.groupTags.length > 0) {
-                                singleAndGroupedTags.push(temporaryTagsArray.groupTags);
-                                step += temporaryTagsArray.groupTags.length;
-                            } else {
-                                step++;
+                                console.log(temporaryTagsArray);
+                                if (temporaryTagsArray.groupTags.length > 1) {
+                                    singleAndGroupedTags.push(temporaryTagsArray.groupTags);
+                                }else {
+                                    isolatedTags.push(currentTag);
+                                }
                             }
                         }
 
+                        // console.log(singleAndGroupedTags);
                         //getting the tag clouds
                         tagClouds    = singleAndGroupedTags.filter(x => x.length > 1);
                         //getting the remaining isolated tags
-                        isolatedTags = singleAndGroupedTags.filter(x => x.length === 1);
+                        // isolatedTags = singleAndGroupedTags.filter(x => x.length === 1);
 
+                        // console.log(isolatedTags);
                         dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
                             .then((images) => {
                                 //control if there are clouds to bhe shown
@@ -1768,33 +1898,36 @@
                             })
                             .then((images) => {
                                 if (images !== null) {
+                                    console.log(images);
                                     //drawing the isolated tags
                                     isolatedTags.forEach(function (tag, index) {
-                                        if (!dataService.isOutdoor(tag[0])) {
-                                            if (tag[0].tag_type_id === 1 || tag[0].tag_type_id === 14) {
-                                                if (dataService.checkIfTagHasAlarm(tag[0])) {
-                                                    loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag[0]))
+                                        if (!dataService.isOutdoor(tag)) {
+                                            if (tag.tag_type_id === 1 || tag.tag_type_id === 14) {
+                                                if (dataService.checkIfTagHasAlarm(tag)) {
+                                                    loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
                                                         .then((alarmImages) => {
                                                             if (alarmsCounts[index] > alarmImages.length - 1)
                                                                 alarmsCounts[index] = 0;
-                                                            drawIcon(tag[0], bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                            drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
                                                             context.drawImage(bufferCanvas, 0, 0);
                                                         });
                                                 } else if (!dataService.isTagOffline(tag)) {
-                                                    drawIcon(tag[0], bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                    drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
                                                 }
                                             } else {
-                                                if (dataService.checkIfTagHasAlarm(tag[0])) {
-                                                    loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag[0]))
+                                                if (dataService.checkIfTagHasAlarm(tag)) {
+                                                    loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
                                                         .then((alarmImages) => {
                                                             if (alarmsCounts[index] > alarmImages.length - 1)
                                                                 alarmsCounts[index] = 0;
 
-                                                            drawIcon(tag[0], bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                            drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
                                                             context.drawImage(bufferCanvas, 0, 0);
                                                         })
-                                                } else if ((new Date(Date.now()) - (new Date(tag[0].time)) < tag[0].sleep_time_indoor)) {
-                                                    drawIcon(tag[0], bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                } else if ( tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor)) {
+                                                    drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor)) {
+                                                    drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
                                                 }
                                             }
                                         }
@@ -1850,21 +1983,44 @@
                 groupTags : [],
                 singleTags: []
             };
-
+            console.log(tags);
+            console.log(tag);
+            
+            // console.log(tags);
             tags.forEach(function (tagElement) {
-                if ((tagElement.x_pos - 0.5 < tag.x_pos && tag.x_pos < tagElement.x_pos + 0.5
-                    && (tagElement.y_pos - 0.5 < tag.y_pos && tag.y_pos < tagElement.y_pos + 0.5)) && !(tagElement.is_exit && tagElement.radio_switched_off)) {
-                    if (tagElement.tag_type_id !== 1 && tagElement.tag_type_id !== 14) {
-                        if (dataService.checkIfTagHasAlarm(tagElement) || ((new Date(Date.now()) - (new Date(tagElement.time))) < tagElement.sleep_time_indoor)) {
-                            tagsGrouping.groupTags.push(tagElement)
+                if (tag.id !== tagElement.id) {
+                    if ((tagElement.x_pos - 0.5 < tag.x_pos && tag.x_pos < tagElement.x_pos + 0.5
+                        && (tagElement.y_pos - 0.5 < tag.y_pos && tag.y_pos < tagElement.y_pos + 0.5))) {
+                        if ((dataService.checkIfTagHasAlarm(tag)
+                            || ((tag.tag_type_id !== 1 && tag.tag_type_id !== 14) && !tag.radio_switched_off )
+                            || ((tag.tag_type_id === 1 || tag.tag_type_id === 14) && !(tag.is_exit && tag.radio_switched_off)))){
+
+                            if (!tagsGrouping.groupTags.some(t => t.id === tag.id)) {
+                                tagsGrouping.groupTags.push(tag);
+                                console.log('adding visuble tag');
+                            }
+                        }
+
+                        if (tagElement.tag_type_id !== 1 && tagElement.tag_type_id !== 14) {
+                            if (dataService.checkIfTagHasAlarm(tagElement)) {
+                                tagsGrouping.groupTags.push(tagElement)
+                            } else if (!tagElement.radio_switched_off) {
+                                tagsGrouping.groupTags.push(tagElement)
+                            }
+                        } else if ((tagElement.tag_type_id === 1 || tagElement.tag_type_id === 14)) {
+                            if (dataService.checkIfTagHasAlarm(tagElement)) {
+                                tagsGrouping.groupTags.push(tagElement);
+                            } else if (!(tagElement.is_exit && tagElement.radio_switched_off)) {
+                                tagsGrouping.groupTags.push(tagElement);
+                            }
                         }
                     } else {
-                        tagsGrouping.groupTags.push(tagElement)
+                        tagsGrouping.singleTags.push(tagElement);
                     }
-                } else {
-                    tagsGrouping.singleTags.push(tagElement);
                 }
             });
+
+            // console.log(((tag.tag_type_id === 1 || tag.tag_type_id === 14) && !(tag.is_exit && tag.radio_switched_off)))
 
             return tagsGrouping;
         };
@@ -2340,7 +2496,6 @@
                 }
             }
 
-            //listen for the tags click
             dataService.floorTags.forEach(function (tag) {
                 let virtualTagPosition = scaleIconSize(tag.x_pos, tag.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                 tagCloud               = groupNearTags(dataService.floorTags, tag);
@@ -2402,7 +2557,7 @@
                                         }]
                                     })
                                 }
-                            } else if (dataService.checkIfTagHasAlarm(tag) || (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor)) {
+                            } else if (dataService.checkIfTagHasAlarm(tag) || tag.radio_switched_off !== 1) {
                                 $mdDialog.show({
                                     locals             : {tag: tag},
                                     templateUrl        : componentsPath + 'tag-info.html',
@@ -2414,9 +2569,9 @@
                                         $scope.isTagInAlarm = 'background-red';
                                         $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
 
-                                        if ($scope.alarms.length === 0) {
-                                            $scope.isTagInAlarm = 'background-green';
-                                        }
+                                        ($scope.alarms.length === 0 && (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor))
+                                            ? $scope.isTagInAlarm = 'background-green'
+                                            : $scope.isTagInAlarm = 'background-gray';
 
                                         $scope.hide = () => {
                                             $mdDialog.hide();
@@ -2536,28 +2691,8 @@
                         let id1 = ++requestId;
                         let id2 = -1;
 
-                        if (dataService.isOutdoor(tag)) {
-                            locations.forEach((location) => {
-                                if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
-                                    socket.send(encodeRequestWithId(id1, 'save_location', {location: location.name}));
-                                    socket.onmessage = (response) => {
-                                        let parsedResponse = parseResponse(response);
-                                        if (parsedResponse.id === id1) {
-                                            if (!parsedResponse.session_state)
-                                               window.location.reload();
-
-                                            if (parsedResponse.result === 'location_saved') {
-                                                $mdDialog.hide();
-                                                $state.go('outdoor-location')
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-                        } else {
-                            let indoorTag = dataService.userTags.filter(t => t.name === tag.name)[0];
-
-                            if (tag === undefined) {
+                        if (dataService.isOutdoor(tag) && (tag.gps_north_degree !== -1 && tag.gps_east_degree !== -1)) {
+                            if (dataService.isOutdoorWithoutLocation(tag)) {
                                 $mdDialog.hide();
                                 $timeout(function () {
                                     $mdDialog.show({
@@ -2570,7 +2705,7 @@
 
 
                                             $scope.title   = lang.tagNotFound.toUpperCase();
-                                            $scope.message = lang.tagNotLoggedUser;
+                                            $scope.message = lang.tagNotLocation;
 
                                             $scope.hide = () => {
                                                 $mdDialog.hide();
@@ -2578,21 +2713,70 @@
                                         }]
                                     })
                                 }, 10);
-                            }else {
-                                id2 = ++requestId;
-                                socket.send(encodeRequestWithId(id2, 'save_location', {location: indoorTag.location_name}));
-                                socket.onmessage = (response) => {
-                                    let parsedResponse = parseResponse(response);
-                                    if (parsedResponse.id === id2) {
-                                        if (!parsedResponse.session_state)
-                                           window.location.reload();
+                            } else {
+                                locations.forEach((location) => {
+                                    if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
+                                        socket.send(encodeRequestWithId(id1, 'save_location', {location: location.name}));
+                                        socket.onmessage = (response) => {
+                                            let parsedResponse = parseResponse(response);
+                                            if (parsedResponse.id === id1) {
+                                                if (!parsedResponse.session_state)
+                                                    window.location.reload();
 
-                                        if (parsedResponse.result === 'location_saved') {
-                                            dataService.defaultFloorName  = indoorTag.floor_name;
-                                            dataService.locationFromClick = indoorTag.location_name;
-                                            $mdDialog.hide();
-                                            if (dataService.location.name !== indoorTag.location_name)
-                                                window.location.reload();
+                                                if (parsedResponse.result === 'location_saved') {
+                                                    locationSelected = true;
+                                                    $state.go('outdoor-location');
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            socket.send(encodeRequestWithId(id1, 'get_tags_by_user', {user: dataService.user.username}));
+                            socket.onmessage = (response) => {
+                                let parsedResponse = parseResponse(response);
+                                if (parsedResponse.id === id1) {
+                                    let indoorTag = parsedResponse.result.filter(t => t.name === tag.name)[0];
+                                    console.log(indoorTag);
+                                    if (indoorTag === undefined || (indoorTag.gps_north_degree === -1 && indoorTag.gps_east_degree === -1)) {
+                                        $mdDialog.hide();
+                                        $timeout(function () {
+                                            $mdDialog.show({
+                                                templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                                                parent             : angular.element(document.body),
+                                                targetEvent        : event,
+                                                clickOutsideToClose: true,
+                                                controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                                    $controller('languageController', {$scope: $scope});
+
+
+                                                    $scope.title   = lang.tagNotFound.toUpperCase();
+                                                    $scope.message = lang.tagNotLocation;
+
+                                                    $scope.hide = () => {
+                                                        $mdDialog.hide();
+                                                    }
+                                                }]
+                                            })
+                                        }, 10);
+                                    } else {
+                                        id2 = ++requestId;
+                                        socket.send(encodeRequestWithId(id2, 'save_location', {location: indoorTag.location_name}));
+                                        socket.onmessage = (response) => {
+                                            let parsedResponse = parseResponse(response);
+                                            if (parsedResponse.id === id2) {
+                                                if (!parsedResponse.session_state)
+                                                    window.location.reload();
+
+                                                if (parsedResponse.result === 'location_saved') {
+                                                    dataService.defaultFloorName  = indoorTag.floor_name;
+                                                    dataService.locationFromClick = indoorTag.location_name;
+                                                    $mdDialog.hide();
+                                                    locationSelected = true;
+                                                    $state.go('canvas');
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -3943,8 +4127,23 @@
                             } else if (parsedResponse.id === id1){
                                 if (!parsedResponse.session_state)
                                    window.location.reload();
-
                                 $scope.historyRows = parsedResponse.result;
+
+                                dataService.getAllLocations().then(locations => {
+                                    $scope.historyRows.forEach((event, index) => {
+                                        console.log(event);
+                                        console.log(index);
+                                        if (event.tag_x_pos !== -1 && event.tag_y_pos !== -1 &&
+                                            event.tag_x_pos !== -2 && event.tag_y_pos !== -2 &&
+                                            event.tag_x_pos !== 0 && event.tag_y_pos !== 0){
+                                            console.log(locations);
+                                            let tagLocation = dataService.getOutdoorTagLocation(locations.result, {gps_north_degree: event.tag_x_pos, gps_east_degree: event.tag_y_pos})[0];
+                                            if (tagLocation !== undefined){
+                                                $scope.historyRows[index].location = tagLocation.name;
+                                            }
+                                        }
+                                    });
+                                });
                                 $scope.tableEmpty  = $scope.historyRows.length === 0;
                                 $scope.$apply();
                             }
@@ -4190,7 +4389,7 @@
                                     : $scope.tableEmpty = false;
 
                                 let offgridTagsIndoor  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
-                                let offgridTagsOutdoor = parsedResponse.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+                                let offgridTagsOutdoor = parsedResponse.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
 
                                 let offTags  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id === 1 || t.type_id === 14) && ((t.is_exit && t.radio_switched_off)));
                                 let offTags1 = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id === 1 || t.type_id === 14) && ((t.is_exit && !t.radio_switched_off)));

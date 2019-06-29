@@ -1287,8 +1287,8 @@ class Connection
 
             $statement->close();
 
-            $anchorNullQuery = "SELECT history.TIME, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS FROM history JOIN event ON history.EVENT_ID = event.ID
-                            WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? AND ANCHOR_ID IS NULL ORDER BY history.time DESC";
+            $anchorNullQuery = "SELECT history.TIME, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME FROM history JOIN event ON history.EVENT_ID = event.ID
+                            JOIN tag ON history.TAG_ID = tag.ID WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? AND history.ANCHOR_ID IS NULL ORDER BY history.time DESC";
 
             $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ss', $fromDate, $toDate);
 
@@ -1300,7 +1300,7 @@ class Connection
             $this->result = $anchorNullStatement->get_result();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
-                $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => 'nessun dato',
+                $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
                     'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
                     'tag_y_pos' => $row['TAG_Y_POS']);
             }
