@@ -522,15 +522,14 @@
 
                                     locations = parsedResponse.result;
 
-                                    let indoorTags     = tags.filter(t => !dataService.isOutdoor(t));
+                                    let indoorTags     = tags.filter(t => !dataService.isOutdoor(t) && t.gps_north_degree !== -1 && t.gps_east_degree !== -1);
                                     // let noLocationIndoorTags = indoorTags.filter(t => t.anchor_id === null && t.gps_north_degree === -1 && t.gps_east_degree === -1);
                                     let outdoorTags    = tags.filter(t => dataService.isOutdoor(t));
+                                    console.log(outdoorTags);
                                     // let noLocationOutdoorTags = tags.filter(t => dataService.isOutdoorWithoutLocation(t));
-                                    let userIndoorTags = indoorTags.filter(t => userTags.some(ut => t.id === ut.id));
+                                    // let userIndoorTags = indoorTags.filter(t => userTags.some(ut => t.id === ut.id));
 
-                                    console.log(userIndoorTags);
-
-                                    userIndoorTags.forEach(tag => {
+                                    indoorTags.forEach(tag => {
                                         outdoorTags.push(tag);
                                     });
 
@@ -546,7 +545,7 @@
 
                                     // console.log(noLocationOutdoorTags);
 
-                                    console.log(outdoorTags);
+                                    // console.log(outdoorTags);
                                     // console.log(indoorTags);
                                     dataService.getTagsLocation(outdoorTags, parsedResponse.result, userLocations)
                                         .then((response) => {
@@ -592,8 +591,10 @@
                                             })
                                         }, 10);
                                     } else {
+                                        let hasNoLocation = true;
                                         locations.forEach((location) => {
                                             if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
+                                                hasNoLocation = false;
                                                 socket.send(encodeRequestWithId(id1, 'save_location', {location: location.name}));
                                                 socket.onmessage = (response) => {
                                                     let parsedResponse = parseResponse(response);
@@ -609,6 +610,28 @@
                                                 }
                                             }
                                         });
+                                        if (hasNoLocation) {
+                                            $mdDialog.hide();
+                                            $timeout(function () {
+                                                $mdDialog.show({
+                                                    templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                                                    parent             : angular.element(document.body),
+                                                    targetEvent        : event,
+                                                    clickOutsideToClose: true,
+                                                    controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                                        $controller('languageController', {$scope: $scope});
+
+
+                                                        $scope.title   = lang.tagNotFound.toUpperCase();
+                                                        $scope.message = lang.tagNotLocation;
+
+                                                        $scope.hide = () => {
+                                                            $mdDialog.hide();
+                                                        }
+                                                    }]
+                                                })
+                                            }, 10);
+                                        }
                                     }
                                 } else {
                                     let indoorTag = indoorTags.filter(t => t.name === tag.name)[0];
@@ -1869,9 +1892,11 @@
                                 temporaryTagsArray = groupNearTags(temporaryTagsArray.singleTags, temporaryTagsArray.singleTags[0]);
 
                                 console.log(temporaryTagsArray);
-                                if (temporaryTagsArray.groupTags.length > 1) {
+                                if (temporaryTagsArray.groupTags.length === 1){
+                                    isolatedTags.push(temporaryTagsArray.groupTags[0])
+                                }else if (temporaryTagsArray.groupTags.length > 1) {
                                     singleAndGroupedTags.push(temporaryTagsArray.groupTags);
-                                }else {
+                                } else {
                                     isolatedTags.push(currentTag);
                                 }
                             }
@@ -2681,6 +2706,7 @@
                                             })
                                         }
                                     });
+                                    $scope.$apply();
                                 })
                         }
                     };
@@ -4052,6 +4078,8 @@
                     from.setDate(from.getDate() - 7);
 
                     $scope.tableEmpty = false;
+                    $scope.isAdmin = dataService.isAdmin;
+                    $scope.isUserManager = dataService.isUserManager;
 
                     $scope.history = {
                         fromDate     : from,

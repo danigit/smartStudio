@@ -65,7 +65,7 @@
                     </md-input-container>
                 </div>
             </div>
-            <div layout="row" class="width-100">
+            <div layout="row" class="width-100" ng-show="isAdmin || isUserManager">
                 <md-button ng-click="deleteHistory()" class="md-raised background-red color-white margin-auto margin-top-20-px">{{lang.deleteHistory}}</md-button>
             </div>
         </div>

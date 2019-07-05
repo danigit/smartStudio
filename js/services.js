@@ -787,9 +787,7 @@
                                 tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, lang.noLocation);
                         })
                 }else{
-                    console.log(tags[i])
                     let someResult = locations.filter(l => service.getTagDistanceFromLocationOrigin(tags[i], [l.latitude, l.longitude]) <= l.radius);
-                    console.log(someResult);
                     if (someResult.length !== 0 && userLocatins !== undefined && userLocatins.some(l => l.name === someResult[0].name)){
                         console.log('is use location')
                         tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, someResult[0].name);
