@@ -9,10 +9,11 @@
     main.service('dataService', dataService);
     main.service('recoverPassService', recoverPassService);
     main.service('socketService', socketService);
+    main.service('newSocketService', newSocketService);
 
-    dataService.$inject = ['$mdDialog', '$interval', '$state', 'socketService'];
+    dataService.$inject = ['$mdDialog', '$interval', '$state', 'socketService', 'newSocketService'];
 
-    function dataService($mdDialog, $interval, $state, socketService) {
+    function dataService($mdDialog, $interval, $state, socketService, newSocketService) {
         let service = this;
         let socket = socketService.getSocket();
 
@@ -50,31 +51,38 @@
         service.outdoorZoneInserted = false;
         // service.gridSpacing = 0;
 
-        service.loadUserSettings = () => {
-            let id = ++requestId;
-            socket.send(encodeRequestWithId(id, 'get_user_settings', {username: service.user.username}));
-            socket.onmessage = (response) => {
-                let parsedResponse = parseResponse(response);
-                if (parsedResponse.id === id){
-                    if (!parsedResponse.session_state)
-                        window.location.reload();
+        //#####################################################################
+        //#                             HOME FUNCTIONS                        #
+        //#####################################################################
 
-                    if(parsedResponse.result.length !== 0) {
-                        service.switch = {
-                            showGrid   : (parsedResponse.result[0].grid_on === 1),
-                            showAnchors: (parsedResponse.result[0].anchors_on === 1),
-                            showCameras: (parsedResponse.result[0].cameras_on === 1),
-                            showOutrangeTags: (parsedResponse.result[0].outag_on === 1),
-                            showOutdoorTags: (parsedResponse.result[0].outdoor_tag_on === 1),
-                            showZones: (parsedResponse.result[0].zones_on === 1),
-                            playAudio  : (parsedResponse.result[0].sound_on === 1),
-                            showRadius : true,
-                            showOutdoorRectDrawing: false,
-                            showOutdoorRoundDrawing: false
-                        };
-                    }
+        service.getLocationAnchors = (location, anchors) => {
+            return anchors.filter(a => (a.location_latitude === location.position[0] && a.location_longitude === location.position[1]));
+        };
+
+        service.alarmLocationsContainLocation = (alarms, location) => {
+            return alarms.some(l => l.position[0] === location.position[0] && l.position[1] === location.position[1])
+        };
+
+        service.loadUserSettings = () => {
+            newSocketService.getData('get_user_settings', {username: service.user.username}, (response) => {
+                if (!response.session_state)
+                    window.location.reload();
+
+                if(response.result.length !== 0) {
+                    service.switch = {
+                        showGrid   : (response.result[0].grid_on === 1),
+                        showAnchors: (response.result[0].anchors_on === 1),
+                        showCameras: (response.result[0].cameras_on === 1),
+                        showOutrangeTags: (response.result[0].outag_on === 1),
+                        showOutdoorTags: (response.result[0].outdoor_tag_on === 1),
+                        showZones: (response.result[0].zones_on === 1),
+                        playAudio  : (response.result[0].sound_on === 1),
+                        showRadius : true,
+                        showOutdoorRectDrawing: false,
+                        showOutdoorRoundDrawing: false
+                    };
                 }
-            };
+            })
         };
 
         service.updateUserSettings = () => {
@@ -933,6 +941,37 @@
                     reject(error);
                 }
             });
+        };
+    }
+
+    newSocketService.$inject = ['$state'];
+    function newSocketService($state) {
+        let service              = this;
+        let socketOpened = false;
+        let id = 0;
+        service.server               = new WebSocket('ws://localhost:8090');
+        service.callbacks = [];
+        service.server.addEventListener('open', function (event) {
+            socketOpened = true;
+        });
+
+        service.getData = (action, data, callback) => {
+            let stringifyedData = JSON.stringify({action: action, data: data});
+            if (socketOpened) {
+                service.server.send(stringifyedData);
+                service.callbacks.push({id: id, value: callback});
+            }
+
+            service.server.onmessage = (response) => {
+                let result = JSON.parse(response.data);
+                let call = service.callbacks.shift();
+                call.value(result);
+            };
+
+            service.server.onerror = (error) => {
+                let call = service.callbacks.shift();
+                call.value('error');
+            }
         };
     }
 

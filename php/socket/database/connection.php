@@ -256,7 +256,7 @@ class Connection
             if ($statement instanceof db_errors)
                 return $statement;
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+                return new db_errors(db_errors::$ERROR_ON_UPDATING_PASSWORD);
 
             return $this->connection->affected_rows;
         }
@@ -1446,7 +1446,7 @@ class Connection
                 $statement->close();
 
                 $anchorNullQuery = "SELECT history.TIME, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME FROM history JOIN event ON history.EVENT_ID = event.ID
-                            JOIN tag ON history.TAG_ID = tag.ID WHERE event.DESCRIPTION AND tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? AND history.ANCHOR_ID IS NULL ORDER BY history.time DESC";
+                            JOIN tag ON history.TAG_ID = tag.ID WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND history.ANCHOR_ID IS NULL AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ssss', $event, $tag, $fromDate, $toDate);
 

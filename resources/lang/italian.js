@@ -143,7 +143,7 @@ function languageController($scope) {
         okDeleteSite                    : 'Sei sicuro di voler cancellare il sito?',
         cancel                          : 'Annulla',
         passwordDontMatch               : 'Le password devono coincidere!',
-        invalidOld                      : 'Vecchia password non valida',
+        invalidOld                      : 'Password precedente non valida',
         impossibleChangePassword        : 'Impossibile cambiare la password!',
         passwordChanged                 : 'Password cambiata correnttamente!',
         deleteMac                       : 'Cancellazione MAC',

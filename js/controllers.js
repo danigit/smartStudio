@@ -14,42 +14,32 @@
     main.controller('languageController', languageController);
 
     /**
-     * Function that manage the user login functionalities
+     * Function that manage the user login with email and password
      * @type {string[]}
      */
-    loginController.$inject = ['$scope', 'socketService', '$state', '$timeout'];
+    loginController.$inject = ['$scope', 'socketService', '$state', '$timeout', 'newSocketService'];
 
-    function loginController($scope, socketService, $state, $timeout) {
+    function loginController($scope, socketService, $state, $timeout, newSocketService) {
         $scope.user           = {username: '', password: ''};
         $scope.errorHandeling = {noConnection: false, wrongData: false, socketClosed: socketService.socketClosed};
-        let socket = socketService.getSocket();
 
         // function that makes the log in of the user
         $scope.login = (form) => {
             form.$submitted = 'true';
-            if ($scope.user.username !== '' && $scope.user.password !== '') {
-
-                let id = ++requestId;
-                socket.send(encodeRequestWithId(id, 'login', {username: $scope.user.username, password: $scope.user.password}));
-                socket.onmessage = (response) => {
-                    let parsedResponse = parseResponse(response);
-                    if (parsedResponse.id === id) {
-                        if (parsedResponse.result.id !== undefined) {
-                            document.cookie = "username=" + $scope.user.username;
-                            $state.go('home');
-                        } else {
-                            $scope.errorHandeling.noConnection = false;
-                            $scope.errorHandeling.wrongData    = true;
-                        }
-                        $scope.$apply();
+            if ($scope.user.username !== '' && $scope.user.password !== '')
+                newSocketService.getData('login', {username: $scope.user.username, password: $scope.user.password}, (response) => {
+                    if (response === 'error'){
+                        $scope.errorHandeling.wrongData    = false;
+                        $scope.errorHandeling.noConnection = true;
+                    }else if (response.result.id !== undefined) {
+                        document.cookie = "username=" + $scope.user.username;
+                        $state.go('home');
+                    } else {
+                        $scope.errorHandeling.noConnection = false;
+                        $scope.errorHandeling.wrongData    = true;
                     }
-                };
-
-                socket.onerror = () => {
-                    $scope.errorHandeling.wrongData    = false;
-                    $scope.errorHandeling.noConnection = true;
-                }
-            }
+                    $scope.$apply();
+                });
         };
 
         //change the page to the recover password page
@@ -59,12 +49,14 @@
     }
 
     /**
-     * Function that manges the home page functionalities
+     * Function that manges the home page including:
+     * * locations on the map
+     * * general alarms
      * @type {string[]}
      */
-    homeController.$inject = ['$rootScope', '$scope', '$state', '$mdDialog', '$interval', '$timeout', 'NgMap', 'homeData', 'socketService', 'dataService'];
+    homeController.$inject = ['$rootScope', '$scope', '$state', '$mdDialog', '$interval', '$timeout', 'NgMap', 'homeData', 'socketService', 'dataService', 'newSocketService'];
 
-    function homeController($rootScope, $scope, $state, $mdDialog, $interval, $timeout, NgMap, homeData, socketService, dataService) {
+    function homeController($rootScope, $scope, $state, $mdDialog, $interval, $timeout, NgMap, homeData, socketService, dataService, newSocketService) {
         let homeCtrl = this;
 
         let socket = socketService.getSocket();
@@ -91,7 +83,7 @@
             center  : mapCenter
         };
 
-        //controlling if the user has already changed the default password
+        //controlling if the user has already changed the default password, if not I force him to change the default password
         if (!homeData.password_changed){
             $mdDialog.show({
                 locals: {password_changed: homeData.password_changed},
@@ -112,56 +104,47 @@
                         message      : false
                     };
 
+                    //sending the new password to be modified to the database
                     $scope.sendPassword = (form) => {
                         form.$submitted = true;
 
                         if ($scope.changePassword.newPassword !== $scope.changePassword.reNewPassword) {
-                            $scope.changePassword.resultClass = 'background-red';
+                            $scope.changePassword.resultClass = 'error-color';
                             $scope.changePassword.showError   = true;
                             $scope.changePassword.showSuccess = false;
                             $scope.changePassword.message     = lang.passwordNotEqual;
                         } else {
                             if (form.$valid) {
-                                let id = ++requestId;
-                                socket.send(encodeRequestWithId(id, 'change_password', {
+                                newSocketService.getData('change_password', {
                                     oldPassword: $scope.changePassword.oldPassword,
-                                    newPassword: $scope.changePassword.newPassword
-                                }));
+                                    newPassword: $scope.changePassword.newPassword}, (response) => {
+                                    if (!response.session_state)
+                                        window.location.reload();
 
-                                socket.onmessage = (response) => {
-                                    let parsedResponse = parseResponse(response);
-                                    if (parsedResponse.id === id){
-                                        if (parsedResponse.session_state)
+                                    if (response.result === 'ERROR_ON_CHANGING_PASSWORD_WRONG_OLD') {
+                                        $scope.changePassword.resultClass = 'error-color';
+                                        $scope.changePassword.showError   = true;
+                                        $scope.changePassword.showSuccess = false;
+                                        $scope.changePassword.message     = lang.oldPasswordNotValid;
+                                    } else if (response.result === 'ERROR_ON_CHANGING_PASSWORD' || response.result === 'ERROR_ON_UPDATING_PASSWORD') {
+                                        $scope.changePassword.resultClass = 'error-color';
+                                        $scope.changePassword.showSuccess = false;
+                                        $scope.changePassword.showError   = true;
+                                        $scope.changePassword.message     = lang.impossibleChangePassword;
+                                    } else {
+                                        $scope.changePassword.resultClass = 'success-color';
+                                        $scope.changePassword.showSuccess = true;
+                                        $scope.changePassword.showError   = false;
+                                        $scope.changePassword.message     = lang.passwordChanged;
+                                        $timeout(function () {
+                                            $mdDialog.hide();
                                             window.location.reload();
-
-                                        if (parsedResponse.result === 'wrong_old') {
-                                            $scope.changePassword.resultClass = 'background-red';
-                                            $scope.changePassword.showError   = true;
-                                            $scope.changePassword.showSuccess = false;
-                                            $scope.changePassword.message     = lang.oldPasswordNotValid;
-                                        } else if (parsedResponse.result === 'error_on_changing_password') {
-                                            $scope.changePassword.resultClass = 'background-red';
-                                            $scope.changePassword.showSuccess = false;
-                                            $scope.changePassword.showError   = true;
-                                            $scope.changePassword.message     = lang.impossibleChangePassword;
-                                            $timeout(function () {
-                                                $mdDialog.hide();
-                                            }, 1000);
-                                        } else {
-                                            $scope.changePassword.resultClass = 'background-green';
-                                            $scope.changePassword.showSuccess = true;
-                                            $scope.changePassword.showError   = false;
-                                            $scope.changePassword.message     = lang.passwordChanged;
-                                            $timeout(function () {
-                                                $mdDialog.hide();
-                                                window.location.reload();
-                                            }, 1000);
-                                        }
-                                        $scope.$apply();
+                                        }, 1000);
                                     }
-                                };
+                                    $scope.$apply();
+                                });
                             } else {
-                                $scope.changePassword.resultClass = 'background-red';
+                                $scope.changePassword.resultClass = 'error-color';
                             }
                         }
                     };
@@ -172,17 +155,9 @@
                     }
                 }]
             });
-        }//the default password has been changed so I show the homescreen
+        }//the default password has been changed so I show the home screen
         else {
             dataService.loadUserSettings();
-
-            let getLocationAnchors = (location, anchors) => {
-                return anchors.filter(a => (a.location_latitude === location.position[0] && a.location_longitude === location.position[1]));
-            };
-
-            let alarmLocationsContainLocation = (alarms, location) => {
-                return alarms.some(l => l.position[0] === location.position[0] && l.position[1] === location.position[1])
-            };
 
             let getLocationTags = (location, tags) => {
                 return tags.filter(t => dataService.isTagInLocation(t, location));
@@ -207,7 +182,7 @@
                     //if the marker is inside it cannot be an anchor i alarm
                     if (!marker.is_inside) {
                         if (dataService.checkIfTagsHaveAlarms(tags)) {
-                            if (!alarmLocationsContainLocation(alarmLocations, marker)) {
+                            if (!dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations.push(marker);
                             }
                             if (imageIndex === 0){
@@ -217,18 +192,18 @@
                                 markerSelected.setIcon(iconsPath + 'alarm-icon.png');
                             }
                         } else {
-                            if (alarmLocationsContainLocation(alarmLocations, marker)) {
+                            if (dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
                                 markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                             }
                         }
                     }//I control if the anchors have alarm
                     else {
-                        let locationAnchors = getLocationAnchors(marker, anchors);
+                        let locationAnchors = dataService.getLocationAnchors(marker, anchors);
                         let locationTags    = getIndoorLocationTags(marker, indoorTags);
 
                         if (dataService.checkIfTagsHaveAlarms(locationTags)) {
-                            if (!alarmLocationsContainLocation(alarmLocations, marker)) {
+                            if (!dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations.push(marker);
                             }
                             if (imageIndex === 0)
@@ -236,14 +211,14 @@
                             else
                                 markerSelected.setIcon(markersIconPath + 'location-marker.png');
                         } else if (!dataService.checkIfAnchorsHaveAlarms(locationAnchors)) {
-                            if (alarmLocationsContainLocation(alarmLocations, marker)) {
+                            if (dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
                                 markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                             }
                         }
 
                         if (dataService.checkIfAnchorsHaveAlarms(locationAnchors) || dataService.checkIfAreAnchorsOffline(locationAnchors)) {
-                            if (!alarmLocationsContainLocation(alarmLocations, marker)) {
+                            if (!dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations.push(marker);
                             }
                             if (imageIndex === 1)
