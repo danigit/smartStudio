@@ -55,12 +55,42 @@
         //#                             HOME FUNCTIONS                        #
         //#####################################################################
 
+        //getting the anchors in the location passed as parameter
         service.getLocationAnchors = (location, anchors) => {
             return anchors.filter(a => (a.location_latitude === location.position[0] && a.location_longitude === location.position[1]));
         };
 
+        //controlling if the alarms array passed as parameter contains an alarm in the location passed as parameter as well
         service.alarmLocationsContainLocation = (alarms, location) => {
             return alarms.some(l => l.position[0] === location.position[0] && l.position[1] === location.position[1])
+        };
+
+        //getting the tags in the outdoor location passed as parameter
+        service.getOutdoorLocationTags = (location, tags) => {
+            return tags.filter(t => service.isTagInLocation(t, location));
+        };
+
+        //controlling if the tag passed as parameter is in the location passed as parameter as well
+        service.isTagInLocation = (tag, location) => {
+            return service.getTagDistanceFromLocationOrigin(tag, location.position) <= location.radius;
+        };
+
+        //calculating the distance of the tag from the location center to see if the tag is in the location area
+        service.getTagDistanceFromLocationOrigin = (tag, origin) => {
+
+            if (tag.gps_north_degree !== -1 && tag.gps_east_degree !== -1 && tag.gps_north_degree !== -2 && tag.gps_east_degree !== -2) {
+                let distX = Math.abs(tag.gps_north_degree - origin[0]);
+                let distY = Math.abs(tag.gps_east_degree - origin[1]);
+
+                return Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
+            }else {
+                return Number.MAX_VALUE;
+            }
+        };
+
+        //getting the tags in the location indoor passed as parameter
+        service.getIndoorLocationTags = (location, tags) => {
+            return tags.filter(t => (location.position[0] === t.location_latitude && location.position[1] === t.location_longitude))
         };
 
         service.loadUserSettings = () => {
@@ -85,8 +115,16 @@
             })
         };
 
+        //stopping the passed interval timer and resetting it
+        service.stopTimer = (timer) => {
+            if (timer !== undefined){
+                $interval.cancel(timer);
+            }
+
+            return undefined;
+        };
+
         service.updateUserSettings = () => {
-            console.log(service.switch)
             let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, outdoor_tag_on: service.switch.showOutdoorTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};
             let stringifyData = JSON.stringify(data);
             let id = ++requestId;
@@ -104,18 +142,15 @@
         };
 
 
-        //function that show the offline tags
+        //function that show a window with the tags state
         service.showOfflineTags = (position, constantUpdateNotifications, map) => {
-            if (service.updateMapTimer !== undefined){
-                $interval.cancel(service.updateMapTimer);
-                service.updateMapTimer = undefined;
-            }
+
             $mdDialog.show({
                 templateUrl        : componentsPath + 'indoor_offline_tags_info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', '$controller', 'socketService', 'dataService', function ($scope, $controller, socketService, dataService) {
+                controller         : ['$scope', '$controller', function ($scope, $controller) {
                     $controller('languageController', {$scope: $scope});
                     $scope.offlineTagsIndoor = [];
                     $scope.offgridTags       = [];
@@ -125,7 +160,7 @@
                     $scope.tagsStateIndoor = {
                         offline: 0,
                         online : 0,
-                        offgrid: 0,
+                        offGrid: 0,
                         offTags: 0
                     };
 
@@ -133,69 +168,67 @@
                     $scope.labels = [lang.disabledTags, lang.activeTags, lang.shutDownTags, lang.lostTags];
 
                     service.offlineTagsInterval     = $interval(function () {
-                        let id = ++requestId;
-                        socket.send(encodeRequestWithId(id, 'get_all_tags'));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        newSocketService.getData('get_all_tags', {}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                let offgridTagsIndoor  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && !t.radio_switched_off && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
-                                let offgridTagsOutdoor = parsedResponse.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+                            let offGridTagsIndoor  = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && !t.radio_switched_off && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
+                            let offGridTagsOutdoor = response.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
 
-                                let tempOffTags = parsedResponse.result.filter(t => ((t.type_id === 1 || t.type_id === 14) && (t.is_exit && t.radio_switched_off) || (t.type_id !== 1 && t.type_id !== 14 && t.radio_switched_off)));
+                            let tempOffTags = response.result.filter(t => ((t.type_id === 1 || t.type_id === 14) && (t.is_exit && t.radio_switched_off) || (t.type_id !== 1 && t.type_id !== 14 && t.radio_switched_off)));
 
-                                if (!angular.equals(tempOffTags, $scope.offTags)){
-                                    $scope.offTags = tempOffTags;
-                                }
-
-                                $scope.tagsStateIndoor.offTags = $scope.offTags.length;
-
-                                let tempOffgrid = [];
-                                offgridTagsIndoor.forEach(elem => {
-                                    tempOffgrid.push(elem);
-                                });
-
-                                offgridTagsOutdoor.forEach(elem => {
-                                    tempOffgrid.push(elem);
-                                });
-
-                                if (!angular.equals(tempOffgrid, $scope.offgridTags)){
-                                    $scope.offgridTags             = tempOffgrid;
-                                }
-                                let tempOfflineTagsIndoor = parsedResponse.result.filter(t => (t.is_exit && !t.radio_switched_off));
-                                if (!angular.equals(tempOfflineTagsIndoor, $scope.offlineTagsIndoor)){
-                                    $scope.offlineTagsIndoor       = tempOfflineTagsIndoor;
-                                }
-                                $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
-                                $scope.tagsStateIndoor.online  = parsedResponse.result.length - $scope.offlineTagsIndoor.length - (offgridTagsIndoor.length + offgridTagsOutdoor.length) - $scope.offTags.length;
-                                $scope.tagsStateIndoor.offgrid = offgridTagsIndoor.length + offgridTagsOutdoor.length;
-
-                                $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online, $scope.tagsStateIndoor.offTags, $scope.tagsStateIndoor.offgrid];
-
+                            if (!angular.equals(tempOffTags, $scope.offTags)){
+                                $scope.offTags = tempOffTags;
                             }
-                        };
+
+                            $scope.tagsStateIndoor.offTags = $scope.offTags.length;
+
+                            let tempOffGrid = [];
+
+                            offGridTagsIndoor.forEach(elem => {
+                                tempOffGrid.push(elem);
+                            });
+
+                            offGridTagsOutdoor.forEach(elem => {
+                                tempOffGrid.push(elem);
+                            });
+
+                            if (!angular.equals(tempOffGrid, $scope.offgridTags)){
+                                $scope.offgridTags             = tempOffGrid;
+                            }
+                            let tempOfflineTagsIndoor = response.result.filter(t => (t.is_exit && !t.radio_switched_off));
+                            if (!angular.equals(tempOfflineTagsIndoor, $scope.offlineTagsIndoor)){
+                                $scope.offlineTagsIndoor       = tempOfflineTagsIndoor;
+                            }
+
+                            $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
+                            $scope.tagsStateIndoor.online  = response.result.length - $scope.offlineTagsIndoor.length - (offGridTagsIndoor.length + offGridTagsOutdoor.length) - $scope.offTags.length;
+                            $scope.tagsStateIndoor.offGrid = offGridTagsIndoor.length + offGridTagsOutdoor.length;
+
+                            $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online, $scope.tagsStateIndoor.offTags, $scope.tagsStateIndoor.offGrid];
+
+                        });
                     }, 1000);
 
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
                 }],
-                onRemoving: function(event, removePromise){
-                    if (service.offlineTagsInterval !== undefined) {
-                        $interval.cancel(service.offlineTagsInterval);
-                        service.offlineTagsInterval = undefined;
-                        if (position === 'home') {
-                            if (service.homeTimer === undefined) 
+                onRemoving: function(){
+                    service.offlineTagsInterval = service.stopTimer(service.offlineTagsInterval);
+
+                    switch (position) {
+                        case 'home':
+                            if (service.homeTimer === undefined)
                                 constantUpdateNotifications(map);
-                        }else if (position === 'outside') {
-                            if (service.updateMapTimer === undefined) 
+                            break;
+                        case 'outside':
+                            if (service.updateMapTimer === undefined)
                                 constantUpdateNotifications(map);
-                        }else if (position === 'canvas') {
+                            break;
+                        case 'canvas':
                             if (service.canvasInterval === undefined)
                                 constantUpdateNotifications();
-                        }
                     }
                 },
             });
@@ -204,7 +237,6 @@
         //checking if there is at least one tag offline
         service.checkIfTagsAreOffline = (tags) => {
             return tags.some(function (tag) {
-                console.log(tag);
                 return ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && (tag.type_id === 1 || tag.type_id === 14) && (tag.is_exit && !tag.radio_switched_off))
                     || ((tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0) && !tag.radio_switched_off && (((Date.now() - new Date(tag.gps_time)) > tag.sleep_time_outdoor)))
                     || ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && (tag.type_id !== 1 && tag.type_id !== 14) && !tag.radio_switched_off && (((Date.now() - new Date(tag.time)) > tag.sleep_time_indoor)));
@@ -232,7 +264,7 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', '$controller', 'dataService', 'socketService', function ($scope, $controller, dataService, socketService) {
+                controller         : ['$scope', '$controller', 'dataService', function ($scope, $controller, dataService) {
                     $controller('languageController', {$scope: $scope});
                     $scope.offlineAnchors = [];
                     $scope.shutDownAnchors = [];
@@ -247,38 +279,29 @@
                     $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315"];
                     $scope.labels = [$scope.lang.disabledAnchors, $scope.lang.enabledAnchors, $scope.lang.shutDownAnchors];
 
-                    $interval.cancel(service.offlineTagsInterval);
                     service.offlineAnchorsInterval = $interval(function () {
-                        let id = ++requestId;
-                        socket.send(encodeRequestWithId(id, 'get_anchors_by_user', {
-                            user: dataService.user.username
-                        }));
-                        socket.onmessage = (response) => {
-                            console.log(response.data);
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        newSocketService.getData('get_anchors_by_user', {user: service.user.username}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                let tempOfflineAnchors = parsedResponse.result.filter(a => a.is_offline);
+                            let tempOfflineAnchors = response.result.filter(a => a.is_offline);
 
-                                if (!angular.equals(tempOfflineAnchors, $scope.offlineAnchors)) {
-                                    $scope.offlineAnchors = tempOfflineAnchors;
-                                }
-
-                                let tempShutDonwAnchors = parsedResponse.result.filter(a => a.battery_status === 1);
-
-                                if (!angular.equals(tempShutDonwAnchors, $scope.shutDownAnchors)){
-                                    $scope.shutDownAnchors = tempShutDonwAnchors;
-                                }
-
-                                $scope.anchorsState.offline = $scope.offlineAnchors.length;
-                                $scope.anchorsState.online  = parsedResponse.result.length - $scope.offlineAnchors.length;
-                                $scope.anchorsState.shutDown = $scope.shutDownAnchors.length;
-
-                                $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online, $scope.anchorsState.shutDown];
+                            if (!angular.equals(tempOfflineAnchors, $scope.offlineAnchors)) {
+                                $scope.offlineAnchors = tempOfflineAnchors;
                             }
-                        };
+
+                            let tempShutDonwAnchors = response.result.filter(a => a.battery_status === 1);
+
+                            if (!angular.equals(tempShutDonwAnchors, $scope.shutDownAnchors)){
+                                $scope.shutDownAnchors = tempShutDonwAnchors;
+                            }
+
+                            $scope.anchorsState.offline = $scope.offlineAnchors.length;
+                            $scope.anchorsState.online  = response.result.length - $scope.offlineAnchors.length;
+                            $scope.anchorsState.shutDown = $scope.shutDownAnchors.length;
+
+                            $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online, $scope.anchorsState.shutDown];
+                        });
                     }, 1000);
 
 
@@ -286,20 +309,21 @@
                         $mdDialog.hide();
                     }
                 }],
-                onRemoving: function(event, removePromise){
-                    if (service.offlineAnchorsInterval !== undefined) {
-                        $interval.cancel(service.offlineAnchorsInterval);
-                        service.offlineAnchorsInterval = undefined;
-                        if (position === 'home') {
+                onRemoving: function(){
+                    service.offlineAnchorsInterval = service.stopTimer(service.offlineAnchorsInterval);
+
+                    switch (position) {
+                        case 'home':
                             if (service.homeTimer === undefined)
                                 constantUpdateNotifications(map);
-                        }else if (position === 'outside') {
+                            break;
+                        case 'outside':
                             if (service.updateMapTimer === undefined)
                                 constantUpdateNotifications(map);
-                        }else if (position === 'canvas') {
+                            break;
+                        case 'canvas':
                             if (service.canvasInterval === undefined)
                                 constantUpdateNotifications();
-                        }
                     }
                 },
             })
@@ -312,7 +336,7 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', '$controller', 'dataService', 'socketService', function ($scope, $controller, dataService, socketService) {
+                controller         : ['$scope', '$controller', 'dataService', function ($scope, $controller, dataService) {
                     $controller('languageController', {$scope: $scope});
                     $scope.offlineAnchors = [];
                     $scope.shutDownAnchors = [];
@@ -366,7 +390,7 @@
                         $mdDialog.hide();
                     }
                 }],
-                onRemoving: function(event, removePromise){
+                onRemoving: function(){
                     if (service.offlineAnchorsInterval !== undefined) {
                         $interval.cancel(service.offlineAnchorsInterval);
                         service.offlineAnchorsInterval = undefined;
@@ -388,6 +412,7 @@
         //creating the informations to be shown on the info window of the canvas objects
         service.createAlarmObjectForInfoWindow = (tag, name, description, image, location) => {
             return {
+                tagId      : tag.id,
                 tag        : tag.name,
                 name       : name,
                 description: description,
@@ -472,14 +497,7 @@
 
         //function that controls if the passed alarm is in the array passed as well as parameter
         let controlIfAlarmIsInArray = (alarms, tag, alarmType) => {
-            let result = false;
-            alarms.forEach(function (alarm) {
-                if (alarm.tag === tag && alarm.alarm === alarmType)
-                    result = true
-
-            });
-
-            return result;
+            return alarms.some(a => a.tag === tag && a.alarm === alarmType);
         };
 
         //function that controls if the passed array has the passed alarm
@@ -493,17 +511,9 @@
             return result;
         };
 
-        //function that filters the alarms by the passed parameter
+        //function that filters the alarms by the passed alarmType parameter
         let filterAlarms = (alarms, tag, alarmType) => {
-            let resultAlarms = [];
-            alarms.forEach(function (alarm) {
-                if (alarm.tag === tag && alarm.alarm === alarmType) {
-                } else {
-                    resultAlarms.push(alarm);
-                }
-            });
-
-            return resultAlarms;
+            return alarms.filter(a => !(a.tag === tag && a.alarm === alarmType))
         };
 
         //function that checks if at least one tag has an alarm
@@ -534,7 +544,7 @@
             return anchors.some(a => a.battery_status);
         };
 
-        //function that palay the alarms audio of the tags passed as parameter
+        //function that plays the alarms audio of the tags passed as parameter
         service.playAlarmsAudio = (tags) => {
             let audio;
             tags.forEach(function (tag) {
@@ -583,6 +593,7 @@
                     audio = new Audio(audioPath + 'indila-sos.mp3');
                     audio.play();
                 }
+
                 service.playAlarm = false;
             }
         };
@@ -649,7 +660,7 @@
             return tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0;
         };
 
-         //function that control if the tag is indoor
+        //function that control if the tag is indoor
         service.isOutdoorWithoutLocation = (tag) => {
             return tag.gps_north_degree === -2 && tag.gps_east_degree === -2;
         };
@@ -815,42 +826,13 @@
             return locations.filter( l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
         };
 
-        service.getIndoorLocationTags = async (markers) => {
-            let locationInfo = [];
-            let locationTags = [];
-            let locationAnchors = [];
-
-            for (let i = 0; i < markers.length; i++) {
-                if (markers[i].is_inside === 1){
-                    await socketService.sendRequest('get_location_tags', {location: markers[i].name})
-                        .then((response) => {
-                            if (response.result.session_state)
-                                window.location.reload();
-
-                            locationTags.push({location: markers[i].name, tags: response.result.length});
-
-                        });
-                    await socketService.sendRequest('get_anchors_by_location', {location: markers[i].name})
-                        .then((response) => {
-                            if (response.result.session_state)
-                                window.location.reload();
-
-                            locationAnchors.push({location: markers[i].name, anchors: response.result.length})
-                        })
-                }
-            }
-
-            locationInfo.push(locationTags);
-            locationInfo.push(locationAnchors);
-            return locationInfo;
-        };
-
-        service.getOutdoorLocationTags = (markers, allTags) => {
+        //getting the tags that are in an outdoor location passed as parameter
+        service.getOutdoorLocationsTags = (markers, allTags) => {
             let locationTags = [];
             let locationsTags = [];
 
             markers.forEach((marker) => {
-                if (marker.is_inside === 0) {
+                if (!marker.is_inside) {
                     allTags.forEach((tag) => {
                         if (service.getTagDistanceFromLocationOrigin(tag, marker.position) <= marker.radius) {
                             locationTags.push(tag.name);
@@ -870,7 +852,8 @@
 
         service.isTagOffline = (tag) => {
             return (tag.is_exit && tag.radio_switched_off);
-        }
+        };
+
     }
 
     /**

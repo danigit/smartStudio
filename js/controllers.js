@@ -83,146 +83,71 @@
             center  : mapCenter
         };
 
-        //controlling if the user has already changed the default password, if not I force him to change the default password
-        if (!homeData.password_changed){
-            $mdDialog.show({
-                locals: {password_changed: homeData.password_changed},
-                templateUrl        : componentsPath + 'change-password.html',
-                parent             : angular.element(document.body),
-                targetEvent        : event,
-                controller         : ['$scope', 'password_changed', function ($scope, password_changed) {
-
-                    $scope.title = lang.changePassword.toUpperCase();
-
-                    $scope.changePassword = {
-                        oldPassword  : '',
-                        newPassword  : '',
-                        reNewPassword: '',
-                        resultClass  : '',
-                        showSuccess  : false,
-                        showError    : false,
-                        message      : false
-                    };
-
-                    //sending the new password to be modified to the database
-                    $scope.sendPassword = (form) => {
-                        form.$submitted = true;
-
-                        if ($scope.changePassword.newPassword !== $scope.changePassword.reNewPassword) {
-                            $scope.changePassword.resultClass = 'error-color';
-                            $scope.changePassword.showError   = true;
-                            $scope.changePassword.showSuccess = false;
-                            $scope.changePassword.message     = lang.passwordNotEqual;
-                        } else {
-                            if (form.$valid) {
-                                newSocketService.getData('change_password', {
-                                    oldPassword: $scope.changePassword.oldPassword,
-                                    newPassword: $scope.changePassword.newPassword}, (response) => {
-                                    if (!response.session_state)
-                                        window.location.reload();
-
-                                    if (response.result === 'ERROR_ON_CHANGING_PASSWORD_WRONG_OLD') {
-                                        $scope.changePassword.resultClass = 'error-color';
-                                        $scope.changePassword.showError   = true;
-                                        $scope.changePassword.showSuccess = false;
-                                        $scope.changePassword.message     = lang.oldPasswordNotValid;
-                                    } else if (response.result === 'ERROR_ON_CHANGING_PASSWORD' || response.result === 'ERROR_ON_UPDATING_PASSWORD') {
-                                        $scope.changePassword.resultClass = 'error-color';
-                                        $scope.changePassword.showSuccess = false;
-                                        $scope.changePassword.showError   = true;
-                                        $scope.changePassword.message     = lang.impossibleChangePassword;
-                                    } else {
-                                        $scope.changePassword.resultClass = 'success-color';
-                                        $scope.changePassword.showSuccess = true;
-                                        $scope.changePassword.showError   = false;
-                                        $scope.changePassword.message     = lang.passwordChanged;
-                                        $timeout(function () {
-                                            $mdDialog.hide();
-                                            window.location.reload();
-                                        }, 1000);
-                                    }
-                                    $scope.$apply();
-                                });
-                            } else {
-                                $scope.changePassword.resultClass = 'error-color';
-                            }
-                        }
-                    };
-
-                    $scope.hide = () => {
-                        if (password_changed === 1)
-                            $mdDialog.hide();
-                    }
-                }]
-            });
-        }//the default password has been changed so I show the home screen
-        else {
+        //controlling if the user has already changed the default password, if yes I show the home screen
+        if (homeData.password_changed) {
             dataService.loadUserSettings();
-
-            let getLocationTags = (location, tags) => {
-                return tags.filter(t => dataService.isTagInLocation(t, location));
-            };
-
-            let getIndoorLocationTags = (location, tags) => {
-                return tags.filter(t => (location.position[0] === t.location_latitude && location.position[1] === t.location_longitude))
-            };
 
             let findTagLocation = (allTags, indoorTags, anchors, map) => {
                 let alarmBounds = new google.maps.LatLngBounds();
 
                 markers.forEach((marker) => {
-                    let tags           = getLocationTags(marker, allTags);
+                    let tags = dataService.getOutdoorLocationTags(marker, allTags);
 
-                    let markerObject   = new google.maps.Marker({
+                    let markerObject = new google.maps.Marker({
                         position: new google.maps.LatLng(marker.position[0], marker.position[1]),
                     });
 
                     let markerSelected = homeCtrl.dynamicMarkers.filter(m => m.getPosition().lat() === markerObject.getPosition().lat() && m.getPosition().lng() === markerObject.getPosition().lng())[0];
 
-                    //if the marker is inside it cannot be an anchor i alarm
+                    //if the marker(location) is outside it cannot have anchors so i controll only the tags
                     if (!marker.is_inside) {
                         if (dataService.checkIfTagsHaveAlarms(tags)) {
-                            if (!dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
+                            if (!dataService.alarmLocationsContainLocation(alarmLocations, marker))
                                 alarmLocations.push(marker);
-                            }
-                            if (imageIndex === 0){
-                                markerSelected.setIcon(markersIconPath + 'location-marker.png');
-                            }else {
-                                console.log(imageIndex);
-                                markerSelected.setIcon(iconsPath + 'alarm-icon.png');
-                            }
+
+                            (imageIndex === 0)
+                                ? markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'))
+                                : markerSelected.setIcon(iconsPath + 'alarm-icon.png');
                         } else {
                             if (dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
                                 markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                             }
                         }
-                    }//I control if the anchors have alarm
+                    }//If the marker(location) is indoor I control if the anchors and the tags have alarms
                     else {
                         let locationAnchors = dataService.getLocationAnchors(marker, anchors);
-                        let locationTags    = getIndoorLocationTags(marker, indoorTags);
+                        let locationTags    = dataService.getIndoorLocationTags(marker, indoorTags);
+
 
                         if (dataService.checkIfTagsHaveAlarms(locationTags)) {
-                            if (!dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
+                            if (!dataService.alarmLocationsContainLocation(alarmLocations, marker))
                                 alarmLocations.push(marker);
+
+                            if (dataService.checkIfAnchorsHaveAlarms(locationAnchors) || dataService.checkIfAreAnchorsOffline(locationAnchors)) {
+                                if (!dataService.alarmLocationsContainLocation(alarmLocations, marker))
+                                    alarmLocations.push(marker);
+
+                                (imageIndex === 0)
+                                    ? markerSelected.setIcon(iconsPath + 'alarm-icon.png')
+                                    : markerSelected.setIcon(iconsPath + 'offline_anchors_alert_64.png')
+                            } else {
+                                (imageIndex === 0)
+                                    ? markerSelected.setIcon(iconsPath + 'alarm-icon.png')
+                                    : markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                             }
-                            if (imageIndex === 0)
-                                markerSelected.setIcon(iconsPath + 'alarm-icon.png');
-                            else
-                                markerSelected.setIcon(markersIconPath + 'location-marker.png');
-                        } else if (!dataService.checkIfAnchorsHaveAlarms(locationAnchors)) {
+                        } else if (dataService.checkIfAnchorsHaveAlarms(locationAnchors) || dataService.checkIfAreAnchorsOffline(locationAnchors)) {
+                            if (!dataService.alarmLocationsContainLocation(alarmLocations, marker))
+                                alarmLocations.push(marker);
+
+                            (imageIndex === 1)
+                                ? markerSelected.setIcon(iconsPath + 'offline_anchors_alert_64.png')
+                                : markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
+                        } else if (!dataService.checkIfAnchorsHaveAlarms(locationAnchors) && !dataService.checkIfAreAnchorsOffline(locationAnchors) && !dataService.checkIfTagsHaveAlarms(locationTags)) {
                             if (dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
                                 markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                             }
-                        }
-
-                        if (dataService.checkIfAnchorsHaveAlarms(locationAnchors) || dataService.checkIfAreAnchorsOffline(locationAnchors)) {
-                            if (!dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
-                                alarmLocations.push(marker);
-                            }
-                            if (imageIndex === 1)
-                                markerSelected.setIcon(iconsPath + 'offline_anchors_alert_64.png');
                         }
                     }
                 });
@@ -236,95 +161,83 @@
 
                     map.fitBounds(alarmBounds);
 
-                    if (allarmZoom !== map.getZoom()) {
+                    if (allarmZoom !== map.getZoom())
                         allarmZoom = map.getZoom();
-                    }
 
                     alarmLocationsLength = alarmLocations.length;
                 }
 
                 imageIndex++;
+
                 if (imageIndex === 2)
                     imageIndex = 0;
             };
 
-            //function that updates the alert notifications
+            //function that control every second if the locations state has changed and update the locations state
             let constantUpdateNotifications = (map) => {
                 dataService.homeTimer = $interval(() => {
-                    console.log('inside home timer');
 
-                    let id1 = ++requestId;
-                    let id2 = -1, id3 = -1, id4 = -1;
+                    console.log('home timer start');
+                    newSocketService.getData('get_all_tags', {}, (response) => {
+                        if (!response.session_state)
+                            window.location.reload();
 
-                    socket.send(encodeRequestWithId(id1, 'get_all_tags'));
-                    socket.onmessage = (response) => {
-                        let parsedResponse = parseResponse(response);
-                        if (parsedResponse.id === id1) {
-                            if (!parsedResponse.session_state)
-                               window.location.reload();
+                        tags                         = response.result;
+                        homeCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(response.result);
+                        homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
 
-                            tags                         = parsedResponse.result;
-                            homeCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(parsedResponse.result);
-                            homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(parsedResponse.result);
+                        dataService.playAlarmsAudio(response.result);
+                    });
 
-                            dataService.playAlarmsAudio(parsedResponse.result);
+                    newSocketService.getData('get_anchors_by_user', {user: dataService.user.username}, (response) => {
+                        if (!response.session_state)
+                            window.location.reload();
 
-                            id2 = ++requestId;
-                            socket.send(encodeRequestWithId(id2, 'get_tags_by_user', {user: dataService.user.username}));
-                        }else if(parsedResponse.id === id2){
-                            if (!parsedResponse.session_state)
-                               window.location.reload();
+                        newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
+                            if (!userTags.session_state)
+                                window.location.reload();
 
-                            indoorTags = parsedResponse.result;
+                            findTagLocation(tags, userTags.result, response.result, map);
 
-                            id3 = ++requestId;
-                            socket.send(encodeRequestWithId(id3, 'get_anchors_by_user', {user: dataService.user.username}));
-                        }else if(parsedResponse.id === id3){
-                            if (!parsedResponse.session_state)
-                               window.location.reload();
-
-                            findTagLocation(tags, indoorTags, parsedResponse.result, map);
-
-                            //setting the zoom of the map if there are no alarms
-                            if (alarmLocations.length === 0 && zoomSetted === 0){
+                            //setting the zoom of the map to see all the locations if there are no locations with alarms
+                            if (alarmLocations.length === 0 && zoomSetted === 0) {
                                 alarmLocationsLength = 0;
                                 map.setCenter(bounds.getCenter());
                                 map.fitBounds(bounds);
                                 zoomSetted = 1
-                            }else if (alarmLocations.length > 0) {
+                            } else if (alarmLocations.length > 0) {
                                 zoomSetted = 0;
                             }
 
-                            homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(parsedResponse.result);
-                            id4 = ++requestId;
-                            socket.send(encodeRequestWithId(id4, 'get_engine_on'));
-                        }else if (parsedResponse.id === id4){
-                            if (!parsedResponse.session_state)
-                               window.location.reload();
+                            homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
+                        });
+                    });
 
-                            homeCtrl.showEngineOffIcon = parsedResponse.result === 0;
-                        }
-                    };
+                    newSocketService.getData('get_engine_on', {}, (response) => {
+                        if (!response.session_state)
+                            window.location.reload();
+
+                        homeCtrl.showEngineOffIcon = response.result === 0;
+                    })
                 }, 1000);
             };
 
-            $rootScope.$on('constantUpdateNotifications', function(event, map) {
+            $rootScope.$on('constantUpdateNotifications', function (event, map) {
                 constantUpdateNotifications(map);
             });
 
             NgMap.getMap('main-map').then((map) => {
-                controllerMap = map;
+                controllerMap       = map;
                 dataService.homeMap = map;
                 constantUpdateNotifications(map);
                 map.set('styles', mapConfiguration);
 
-                dataService.getIndoorLocationTags(markers)
-                    .then((response) => {
+                newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
 
-                        let outdoorLocationTags = dataService.getOutdoorLocationTags(markers, tags);
-                        //pining the locations on the map
-                        markers.forEach((marker) => {
+                    newSocketService.getData('get_anchors_by_user', {user: dataService.user.username}, (response) => {
 
+                        //creating the interaction with the location icon, infoWindow, click
+                        markers.forEach(marker => {
                             let markerObject = new google.maps.Marker({
                                 position : new google.maps.LatLng(marker.position[0], marker.position[1]),
                                 animation: google.maps.Animation.DROP,
@@ -333,9 +246,9 @@
 
                             let infoWindow = null;
 
-                            if (marker.is_inside === 1) {
-                                let locationTags = response[0].filter(l => l.location === marker.name)[0];
-                                let locationAnchors = response[1].filter(l => l.location === marker.name)[0];
+                            if (marker.is_inside) {
+                                let locationTags    = dataService.getIndoorLocationTags(marker, userTags.result);
+                                let locationAnchors = dataService.getLocationAnchors(marker, response.result);
 
                                 infoWindow = new google.maps.InfoWindow({
                                     content: '<div class="marker-info-container">' +
@@ -343,12 +256,12 @@
                                         '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
                                         '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
                                         '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
-                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Tags: </p><p class="float-right"><b>' + locationTags.tags + '</b></p></div>' +
-                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Anchors: </p><p class="float-right"><b>' + locationAnchors.anchors + '</b></p></div>' +
+                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Tags: </p><p class="float-right"><b>' + locationTags.length + '</b></p></div>' +
+                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Anchors: </p><p class="float-right"><b>' + locationAnchors.length + '</b></p></div>' +
                                         '</div>'
                                 });
-                            }else{
-                                let locationTags = outdoorLocationTags.filter(l => l.location === marker.name)[0];
+                            } else {
+                                let locationTags = dataService.getOutdoorLocationsTags(markers, tags).filter(l => l.location === marker.name)[0];
 
                                 infoWindow = new google.maps.InfoWindow({
                                     content: '<div class="marker-info-container">' +
@@ -370,33 +283,24 @@
                             });
 
                             markerObject.addListener('click', () => {
-                                let id1 = ++requestId;
-                                let id2 = -1;
+                                newSocketService.getData('save_location', {location: marker.name}, (response) => {
+                                    if (!response.session_state)
+                                        window.location.reload();
 
-                                //saving the location data on which I clicked, and then opening the location
-                                socket.send(encodeRequestWithId(id1, 'save_location', {location: marker.name}));
-                                socket.onmessage = (response) => {
-                                    let parsedResponse = parseResponse(response);
-                                    if (parsedResponse.id === id1) {
-                                        if (!parsedResponse.session_state)
-                                           window.location.reload();
+                                    if (response.result === 'location_saved') {
+                                        newSocketService.getData('get_location_info', {}, (locationInfo) => {
+                                            if (!locationInfo.session_state)
+                                                window.location.reload();
 
-                                        if (parsedResponse.result === 'location_saved') {
-                                            id2 = ++requestId;
-                                            socket.send(encodeRequestWithId(id2, 'get_location_info'));
-                                        }
-                                    } else if( parsedResponse.id === id2){
-                                        if (!parsedResponse.session_state)
-                                           window.location.reload();
-
-                                        dataService.location          = parsedResponse.result;
-                                        dataService.defaultFloorName  = '';
-                                        dataService.locationFromClick = '';
-                                        (parsedResponse.result.is_inside)
-                                            ? $state.go('canvas')
-                                            : $state.go('outdoor-location');
+                                            dataService.location          = locationInfo.result;
+                                            dataService.defaultFloorName  = '';
+                                            dataService.locationFromClick = '';
+                                            (locationInfo.result.is_inside)
+                                                ? $state.go('canvas')
+                                                : $state.go('outdoor-location');
+                                        });
                                     }
-                                };
+                                });
                             });
 
                             homeCtrl.dynamicMarkers.push(markerObject);
@@ -418,26 +322,20 @@
                             map.setCenter(bounds.getCenter());
                             map.fitBounds(bounds);
                         }
-                    });
-
+                    })
+                });
             });
 
             //showing the info window with the online/offline tags
             homeCtrl.showOfflineTagsHome = () => {
-                if (dataService.homeTimer !== undefined){
-                    $interval.cancel(dataService.homeTimer);
-                    dataService.homeTimer = undefined;
-                    dataService.showOfflineTags('home', constantUpdateNotifications, controllerMap);
-                }
+                dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
+                dataService.showOfflineTags('home', constantUpdateNotifications, controllerMap);
             };
 
             //showing the info window with the online/offline anchors
             homeCtrl.showOfflineAnchorsHome = () => {
-                if (dataService.homeTimer !== undefined) {
-                    $interval.cancel(dataService.homeTimer);
-                    dataService.homeTimer = undefined;
-                    dataService.showOfflineAnchors('home', constantUpdateNotifications, controllerMap);
-                }
+                dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
+                dataService.showOfflineAnchors('home', constantUpdateNotifications, controllerMap);
             };
 
             //showing the info window with all the alarms
@@ -497,31 +395,14 @@
 
                                     locations = parsedResponse.result;
 
-                                    let indoorTags     = tags.filter(t => !dataService.isOutdoor(t) && t.gps_north_degree !== -1 && t.gps_east_degree !== -1);
-                                    // let noLocationIndoorTags = indoorTags.filter(t => t.anchor_id === null && t.gps_north_degree === -1 && t.gps_east_degree === -1);
-                                    let outdoorTags    = tags.filter(t => dataService.isOutdoor(t));
-                                    console.log(outdoorTags);
-                                    // let noLocationOutdoorTags = tags.filter(t => dataService.isOutdoorWithoutLocation(t));
-                                    // let userIndoorTags = indoorTags.filter(t => userTags.some(ut => t.id === ut.id));
+                                    let indoorTags  = tags.filter(t => !dataService.isOutdoor(t) && t.gps_north_degree !== -1 && t.gps_east_degree !== -1);
+                                    let outdoorTags = tags.filter(t => dataService.isOutdoor(t));
 
                                     indoorTags.forEach(tag => {
                                         outdoorTags.push(tag);
                                     });
 
-                                    // noLocationIndoorTags.forEach(tag => {
-                                    //     outdoorTags.push(tag);
-                                    // });
-
-                                    // console.log(noLocationIndoorTags);
-
-                                    // noLocationOutdoorTags.forEach(tag => {
-                                    //     outdoorTags.push(tag);
-                                    // });
-
-                                    // console.log(noLocationOutdoorTags);
-
-                                    // console.log(outdoorTags);
-                                    // console.log(indoorTags);
+                                    //TODO - da cambiare la logica in modo da non usare async/await
                                     dataService.getTagsLocation(outdoorTags, parsedResponse.result, userLocations)
                                         .then((response) => {
                                             response.forEach((tagAlarms) => {
@@ -531,15 +412,16 @@
                                                     })
                                                 }
                                             });
+                                            console.log($scope.alarms);
                                         })
+
                                 }
                             };
 
                             //opening the location where the alarm is
                             $scope.loadLocation = (alarm) => {
-                                let tag = tags.filter(t => t.name === alarm.tag)[0];
+                                let tag = tags.filter(t => t.id === alarm.tagId)[0];
 
-                                console.log(tag);
                                 let id1 = ++requestId;
                                 let id2 = -1;
 
@@ -552,7 +434,7 @@
                                                 parent             : angular.element(document.body),
                                                 targetEvent        : event,
                                                 clickOutsideToClose: true,
-                                                controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                                controller         : ['$scope', '$controller', ($scope, $controller) => {
                                                     $controller('languageController', {$scope: $scope});
 
 
@@ -610,7 +492,6 @@
                                     }
                                 } else {
                                     let indoorTag = indoorTags.filter(t => t.name === tag.name)[0];
-                                    console.log(indoorTag);
                                     if (indoorTag === undefined || (indoorTag.gps_north_degree === -1 && indoorTag.gps_east_degree === -1)) {
                                         $mdDialog.hide();
                                         $timeout(function () {
@@ -719,6 +600,79 @@
                     })
                 }
             };
+        }//if the default password hasn't been changed, I force the user to change it
+        else {
+            $mdDialog.show({
+                locals     : {password_changed: homeData.password_changed},
+                templateUrl: componentsPath + 'change-password.html',
+                parent     : angular.element(document.body),
+                targetEvent: event,
+                controller : ['$scope', 'password_changed', function ($scope, password_changed) {
+
+                    $scope.title = lang.changePassword.toUpperCase();
+
+                    $scope.changePassword = {
+                        oldPassword  : '',
+                        newPassword  : '',
+                        reNewPassword: '',
+                        resultClass  : '',
+                        showSuccess  : false,
+                        showError    : false,
+                        message      : false
+                    };
+
+                    //sending the new password to be modified to the database
+                    $scope.sendPassword = (form) => {
+                        form.$submitted = true;
+
+                        if ($scope.changePassword.newPassword !== $scope.changePassword.reNewPassword) {
+                            $scope.changePassword.resultClass = 'error-color';
+                            $scope.changePassword.showError   = true;
+                            $scope.changePassword.showSuccess = false;
+                            $scope.changePassword.message     = lang.passwordNotEqual;
+                        } else {
+                            if (form.$valid) {
+                                newSocketService.getData('change_password', {
+                                    oldPassword: $scope.changePassword.oldPassword,
+                                    newPassword: $scope.changePassword.newPassword
+                                }, (response) => {
+                                    if (!response.session_state)
+                                        window.location.reload();
+
+                                    if (response.result === 'ERROR_ON_CHANGING_PASSWORD_WRONG_OLD') {
+                                        $scope.changePassword.resultClass = 'error-color';
+                                        $scope.changePassword.showError   = true;
+                                        $scope.changePassword.showSuccess = false;
+                                        $scope.changePassword.message     = lang.oldPasswordNotValid;
+                                    } else if (response.result === 'ERROR_ON_CHANGING_PASSWORD' || response.result === 'ERROR_ON_UPDATING_PASSWORD') {
+                                        $scope.changePassword.resultClass = 'error-color';
+                                        $scope.changePassword.showSuccess = false;
+                                        $scope.changePassword.showError   = true;
+                                        $scope.changePassword.message     = lang.impossibleChangePassword;
+                                    } else {
+                                        $scope.changePassword.resultClass = 'success-color';
+                                        $scope.changePassword.showSuccess = true;
+                                        $scope.changePassword.showError   = false;
+                                        $scope.changePassword.message     = lang.passwordChanged;
+                                        $timeout(function () {
+                                            $mdDialog.hide();
+                                            window.location.reload();
+                                        }, 1000);
+                                    }
+                                    $scope.$apply();
+                                });
+                            } else {
+                                $scope.changePassword.resultClass = 'error-color';
+                            }
+                        }
+                    };
+
+                    $scope.hide = () => {
+                        if (password_changed === 1)
+                            $mdDialog.hide();
+                    }
+                }]
+            });
         }
 
         //on destroying the pag I release the resources
