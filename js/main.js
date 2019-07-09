@@ -50,62 +50,52 @@
                 templateUrl: componentsPath + 'home.html',
                 controller : 'homeController as homeCtrl',
                 resolve    : {
-                    homeData: ['socketService', 'dataService', '$state', '$q', function (socketService, dataService, $state, $q) {
+                    homeData: ['newSocketService', 'socketService', 'dataService', '$state', '$q', function (newSocketService, socketService, dataService, $state, $q) {
                         let promise = $q.defer();
                         let result  = {};
-                        socketService.sendRequest('get_user', {})
-                            .then((response) => {
-                                if (response.result !== 'no_user') {
-                                    dataService.user = response.result[0];
-                                    if (response.result[0].role === 1) {
-                                        dataService.isAdmin = response.result[0].role;
-                                        dataService.isUserManager = 0;
-                                        result.password_changed = response.result[0].password_changed;
-                                    }else if (response.result[0].role === 2){
-                                        dataService.isAdmin = 0;
-                                        dataService.isUserManager      = response.result[0].role;
-                                        result.password_changed = response.result[0].password_changed;
-                                    }else if (response.result[0].role === 0){
-                                        dataService.isAdmin = 0;
-                                        dataService.isUserManager = 0;
-                                        result.password_changed = response.result[0].password_changed;
-                                    }
-                                    return socketService.sendRequest('get_markers', {username: response.result[0].username})
-                                } else {
-                                    $state.go('login');
+                        newSocketService.getData('get_user', {}, (response) => {
+                            if (response.result !== 'no_user') {
+                                dataService.user = response.result[0];
+                                if (response.result[0].role === 1) {
+                                    dataService.isAdmin = response.result[0].role;
+                                    dataService.isUserManager = 0;
+                                    result.password_changed = response.result[0].password_changed;
+                                }else if (response.result[0].role === 2){
+                                    dataService.isAdmin = 0;
+                                    dataService.isUserManager      = response.result[0].role;
+                                    result.password_changed = response.result[0].password_changed;
+                                }else if (response.result[0].role === 0){
+                                    dataService.isAdmin = 0;
+                                    dataService.isUserManager = 0;
+                                    result.password_changed = response.result[0].password_changed;
                                 }
-                            })
-                            .then((response) => {
-                                result.markers = response.result;
-                                if (response.result.length === 1 && response.result[0].one_location === 1){
-                                    socketService.sendRequest('save_location', {location: response.result[0].name})
-                                        .then((response) => {
+                                newSocketService.getData('get_markers', {username: response.result[0].username}, (markers) => {
+                                    result.markers = markers.result;
+                                    if (response.result.length === 1 && response.result[0].one_location === 1){
+                                        newSocketService.getData('save_location', {location: markers.result[0].name}, (locationSaved) => {
                                             if (response.result === 'location_saved') {
-                                                return socketService.sendRequest('get_location_info', {})
+                                                newSocketService.getData('get_location_info', {}, (locationInfo) => {
+                                                    dataService.defaultFloorName  = '';
+                                                    dataService.locationFromClick = '';
+                                                    if (locationInfo.result.is_inside)
+                                                        $state.go('canvas');
+                                                    promise.resolve(result);
+                                                })
+                                            }
+                                        });
+                                    }else {
+                                        newSocketService.getData('get_all_tags', {}, (tags) => {
+                                            if (tags !== null && tags !== undefined) {
+                                                dataService.allTags = tags.result;
+                                                promise.resolve(result);
                                             }
                                         })
-                                        .then((response) => {
-                                            dataService.defaultFloorName  = '';
-                                            dataService.locationFromClick = '';
-                                            if (response.result.is_inside)
-                                                $state.go('canvas')
-                                        })
-                                        .catch((error) => {
-                                            console.log('markerAddListener error => ', error);
-                                        });
-                                }else {
-                                    return socketService.sendRequest('get_all_tags', {});
-                                }
-                            })
-                            .then((response) => {
-                                if (response !== null && response !== undefined) {
-                                    dataService.allTags = response.result;
-                                    promise.resolve(result);
-                                }
-                            })
-                            .catch((error) => {
-                                console.log('homeState error => ', error);
-                            });
+                                    }
+                                })
+                            } else {
+                                $state.go('login');
+                            }
+                        });
 
                         return promise.promise;
                     }],

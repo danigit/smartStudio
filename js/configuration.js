@@ -22,6 +22,7 @@ const canvasGridPattern = [5, 5];
  * MAPS COFIGURATIONS
  ***************************************************************/
 const mapZoom = 10;
+const outdoorLocationZoom = 15;
 const mapType = 'TERAIN';
 const mapCenter = [41.87194, 12.56738];
 
@@ -46,3 +47,9 @@ let mapConfiguration = [{
         {visibility: "off"}
     ]
 }];
+
+let socketServer               = new WebSocket('ws://localhost:8090');
+let socketOpened = false;
+socketServer.addEventListener('open', function () {
+    socketOpened = true;
+});

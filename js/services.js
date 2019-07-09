@@ -124,6 +124,23 @@
             return undefined;
         };
 
+        service.checkIfTagsAreOutOfLocations = (tags) => {
+            let tagOutOfLocation = false;
+            tags.forEach(tag => {
+                if (service.isOutdoor(tag) && (tag.gps_north_degree === -2 && tag.gps_east_degree === -2)){
+                    tagOutOfLocation = true;
+                } else if (!service.isOutdoor(tag) && tag.anchor_id === null){
+                    tagOutOfLocation = true;
+                } else {
+                    newSocketService.getData('get_user_locations', service.user.id, (response) => {
+                        tagOutOfLocation = response.result.some(l => !service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius)
+                    })
+                }
+            });
+
+            return tagOutOfLocation;
+        };
+
         service.updateUserSettings = () => {
             let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, outdoor_tag_on: service.switch.showOutdoorTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};
             let stringifyData = JSON.stringify(data);
@@ -431,6 +448,7 @@
 
         //getting all the alarms of the tag passed as parameter and creating the objects to be shown in info window
         service.loadTagAlarmsForInfoWindow = (tag, locations, tagLocation) => {
+            console.log(tag);
             let alarms = [];
 
             if (tag.sos) {
@@ -785,9 +803,9 @@
             }
         };
 
-        service.getTagsLocation = async (tags, locations, userLocatins) => {
+        service.getTagsLocation = async (tags, locations, userLocations) => {
             console.log(locations);
-            console.log(userLocatins);
+            console.log(userLocations);
             let alarms = [];
             let tagAlarms = [];
 
@@ -807,7 +825,7 @@
                         })
                 }else{
                     let someResult = locations.filter(l => service.getTagDistanceFromLocationOrigin(tags[i], [l.latitude, l.longitude]) <= l.radius);
-                    if (someResult.length !== 0 && userLocatins !== undefined && userLocatins.some(l => l.name === someResult[0].name)){
+                    if (someResult.length !== 0 && userLocations !== undefined && userLocations.some(l => l.name === someResult[0].name)){
                         console.log('is use location')
                         tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, someResult[0].name);
                     } else {
@@ -930,13 +948,9 @@
     newSocketService.$inject = ['$state'];
     function newSocketService($state) {
         let service              = this;
-        let socketOpened = false;
         let id = 0;
-        service.server               = new WebSocket('ws://localhost:8090');
+        service.server               = socketServer;
         service.callbacks = [];
-        service.server.addEventListener('open', function (event) {
-            socketOpened = true;
-        });
 
         service.getData = (action, data, callback) => {
             let stringifyedData = JSON.stringify({action: action, data: data});
