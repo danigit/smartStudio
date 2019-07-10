@@ -280,5 +280,9 @@ let lang = {
     tagNotFound                     : 'Tag non trovato',
 	tagNotLocation                : 'Il tag non appartiene a nessuna location!',
     noLocation: 'Nessuna location',
-    insideZone: 'Tag in zona vietata'
+    insideZone: 'Tag in zona vietata',
+    unableToSaveData: 'Impossibile salvare i dati',
+    dataSavedSuccessfully: 'I dati sono stati salvati correttamente',
+    dataSaved: 'Dati salvati',
+    actionCanceled: 'Operazione cancellata'
 }

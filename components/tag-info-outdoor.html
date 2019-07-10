@@ -46,7 +46,7 @@
             </md-list>
             <md-list>
                 <md-list-item class="md-3-line" ng-repeat="alarm in alarms" ng-click="null">
-                    <img ng-src="{{alarm.image}}" class="md-avatar" alt="{{item.who}}"/>
+                    <img ng-src="{{alarm.image}}" class="md-avatar" alt="{{alarm.description}}"/>
                     <div class="md-list-item-text" layout="column">
                         <h3>{{ alarm.tag }}</h3>
                         <h4>{{ alarm.name }}</h4>

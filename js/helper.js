@@ -128,13 +128,9 @@ function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) 
     context.beginPath();
     if (isTag) {
         context.fillStyle = 'red';
-        // (value.id < 10) ? id = '0' + value.id : id = value.id;
         context.fillText(value.name, virtualTag.width - 5, virtualTag.height - 3);
     } else {
-        // context.fillStyle = '#0093c4';
-        // context.fillRect(virtualTag.width - 13, virtualTag.height - 17, 46, 16);
         context.fillStyle = '#0093c4';
-        // (value.id < 10) ? id = '0' + value.id : id = value.id;
         id = value.name;
         context.fillText(id, virtualTag.width - 12, virtualTag.height - 5);
     }
@@ -281,10 +277,6 @@ function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemW
     let reversePositionX = ratio * elemWidth;
     let reversePositionY = ratio * elemHeight;
 
-    // let realHeight       = (floorWidth * canvasHeight) / canvasWidth;
-    // let reversePositionX = ((elemWidth * floorWidth * 100) / canvasWidth) / 100;
-    // let reversePositionY = ((elemHeight * realHeight * 100) / canvasHeight) / 100;
-
     return {x: reversePositionX.toFixed(2), y: reversePositionY.toFixed(2)};
 }
 
@@ -299,9 +291,9 @@ function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemW
  * @param map_spacing
  * @param floorWidth
  * @param showDrawing
+ * @param anchorPositioning
  */
 function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canvasContext, image, map_spacing, floorWidth, showDrawing, anchorPositioning) {
-    // console.log('showdrawing: ', showDrawing);
     updateCanvas(canvasWidth, canvasHeight, canvasContext, image);
 
     drawDashedLine(canvasWidth, canvasHeight, canvasContext, map_spacing, floorWidth, 'vertical');
@@ -311,7 +303,6 @@ function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canv
     lines.forEach((line) => {
         drawLine(line.begin, line.end, line.type, canvasContext, showDrawing);
     });
-
 
     if (showDrawing && anchorPositioning) {
         dataService.loadImagesAsynchronouslyWithPromise(dataService.anchors, 'anchor').then(

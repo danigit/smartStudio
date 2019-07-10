@@ -274,6 +274,131 @@
             });
         };
 
+
+        //#####################################################################
+        //#                          OUTDOOR FUNCTIONS                        #
+        //#####################################################################
+
+
+
+        //function that sets an icon image to the marker passed as parameter
+        service.setIcon = (tag, marker) => {
+            if (tag.sos) {
+                marker.setIcon(tagsIconPath + 'sos_24.png');
+            } else if (tag.man_down) {
+                marker.setIcon(tagsIconPath + 'man_down_24.png');
+            } else if (tag.battery_status) {
+                marker.setIcon(tagsIconPath + 'battery_low_24.png');
+            } else if (tag.helmet_dpi) {
+                marker.setIcon(tagsIconPath + 'helmet_dpi_24.png');
+            } else if (tag.belt_dpi) {
+                marker.setIcon(tagsIconPath + 'belt_dpi_24.png');
+            } else if (tag.glove_dpi) {
+                marker.setIcon(tagsIconPath + 'glove_dpi_24.png');
+            } else if (tag.shoe_dpi) {
+                marker.setIcon(tagsIconPath + 'shoe_dpi_24.png');
+            } else if (tag.man_down_disabled) {
+                marker.setIcon(tagsIconPath + 'man-down-disabled_24.png');
+            } else if (tag.man_down_tacitated) {
+                marker.setIcon(tagsIconPath + 'man-down-tacitated_24.png');
+            } else if (tag.man_in_quote) {
+                marker.setIcon(tagsIconPath + 'man_in_quote_24.png');
+            } else if (tag.call_me_alarm) {
+                marker.setIcon(tagsIconPath + 'call_me_alarm_24.png');
+            } else {
+                marker.setIcon(tagsIconPath + 'online_tag_24.png');
+            }
+        };
+
+        //function that controls if the passed marker is on the map
+        service.markerIsOnMap = (markers, marker) => {
+            return markers.some(m => m.getPosition().equals(marker.getPosition()));
+        };
+
+        //function tha maintain a local copy of the tags at n-1 time
+        service.compareLocalTagsWithRemote = (remoteTags, localTags) => {
+            let result = [];
+
+            if (localTags.length === 0)
+                angular.copy(remoteTags, localTags);
+
+            localTags = localTags.filter(t => remoteTags.some(rt => rt.id === t.id));
+
+            remoteTags.forEach((remote) => {
+                let tag = localTags.find(t => t.id === remote.id);
+
+                if (tag !== undefined) {
+                    if (tag.gps_north_degree !== remote.gps_north_degree || tag.gps_east_degree !== remote.gps_east_degree)
+                        result.push(tag);
+                }
+            });
+
+            return result;
+        };
+
+
+        //#####################################################################
+        //#                           CANVAS FUNCTIONS                        #
+        //#####################################################################
+
+
+        //function that loads all the images passed as parameter
+        service.loadAlarmsImagesWithPromise = (images) => {
+            return Promise.all(
+                images.map(function (image) {
+                    return new Promise(function (resolve) {
+                        let localImage = new Image();
+
+                        localImage.src    = image;
+                        localImage.onload = function () {
+                            resolve(localImage);
+                        }
+                    })
+                })
+            )
+        };
+
+        //grouping the tags in one object divided by clouds of tags and single tags
+        service.groupNearTags = (tags, tag) => {
+            let tagsGrouping = {
+                groupTags : [],
+                singleTags: []
+            };
+
+            tags.forEach(function (tagElement) {
+                if (tag.id !== tagElement.id) {
+                    if ((tagElement.x_pos - 0.5 < tag.x_pos && tag.x_pos < tagElement.x_pos + 0.5
+                        && (tagElement.y_pos - 0.5 < tag.y_pos && tag.y_pos < tagElement.y_pos + 0.5))) {
+                        if ((service.checkIfTagHasAlarm(tag)
+                            || ((tag.tag_type_id !== 1 && tag.tag_type_id !== 14) && !tag.radio_switched_off)
+                            || ((tag.tag_type_id === 1 || tag.tag_type_id === 14) && !(tag.is_exit && tag.radio_switched_off)))) {
+
+                            if (!tagsGrouping.groupTags.some(t => t.id === tag.id)) {
+                                tagsGrouping.groupTags.push(tag);
+                            }
+                        }
+
+                        if (tagElement.tag_type_id !== 1 && tagElement.tag_type_id !== 14) {
+                            if (service.checkIfTagHasAlarm(tagElement)) {
+                                tagsGrouping.groupTags.push(tagElement)
+                            } else if (!tagElement.radio_switched_off) {
+                                tagsGrouping.groupTags.push(tagElement)
+                            }
+                        } else if ((tagElement.tag_type_id === 1 || tagElement.tag_type_id === 14)) {
+                            if (service.checkIfTagHasAlarm(tagElement)) {
+                                tagsGrouping.groupTags.push(tagElement);
+                            } else if (!(tagElement.is_exit && tagElement.radio_switched_off)) {
+                                tagsGrouping.groupTags.push(tagElement);
+                            }
+                        }
+                    } else {
+                        tagsGrouping.singleTags.push(tagElement);
+                    }
+                }
+            });
+            return tagsGrouping;
+        };
+
         //showing the info window with the online/offline anchors
         service.showOfflineAnchors = (position, constantUpdateNotifications, map) => {
             $mdDialog.show({
@@ -448,7 +573,6 @@
 
         //getting all the alarms of the tag passed as parameter and creating the objects to be shown in info window
         service.loadTagAlarmsForInfoWindow = (tag, locations, tagLocation) => {
-            console.log(tag);
             let alarms = [];
 
             if (tag.sos) {
@@ -544,18 +668,9 @@
         };
 
         service.checkIfTagsHaveAlarmsOutdoor = (tags) => {
-            let tagInAllarm = false;
-            tags.forEach((tag) => {
-                if (service.isOutdoor(tag)){
-                    if(tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                        || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
-                        || tag.call_me_alarm || tag.diagnostic_request){
-                        tagInAllarm = true;
-                    }
-                }
-            });
-
-            return tagInAllarm;
+            return tags.some(tag => service.isOutdoor(tag) && (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
+                || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
+                || tag.call_me_alarm || tag.diagnostic_request));
         };
 
         service.checkIfAnchorsHaveAlarms = (anchors) => {
@@ -872,6 +987,7 @@
             return (tag.is_exit && tag.radio_switched_off);
         };
 
+        service.showAlarms = () => {}
     }
 
     /**
