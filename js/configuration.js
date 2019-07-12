@@ -1,3 +1,15 @@
+console.log('configuration called');
+/***************************************************************
+ * SOCKET COFIGURATIONS
+ ***************************************************************/
+const socketServer               = new WebSocket('ws://localhost:8090');
+let socketOpened = false;
+
+socketServer.onopen = function () {
+    console.log('SOCKET OPENED');
+    socketOpened = true;
+};
+
 /***************************************************************
  * DIRECTORIES PATHS
  ***************************************************************/
@@ -5,10 +17,8 @@ const mainPath = '';
 const componentsPath = 'components/';
 const imagePath = 'img/';
 const iconsPath = 'img/icons/';
-const menuIconsPath = 'img/icons/menu/';
 const markersIconPath = 'img/icons/markers/';
 const tagsIconPath = 'img/icons/tags/';
-const resourcePath = 'resources/';
 const audioPath = 'resources/audio/';
 const floorPath = 'img/floors/';
 
@@ -25,8 +35,6 @@ const mapZoom = 10;
 const outdoorLocationZoom = 17;
 const mapType = 'TERAIN';
 const mapCenter = [41.87194, 12.56738];
-
-let requestId = 0;
 
 let mapConfiguration = [{
     featureType: "poi",
@@ -47,9 +55,3 @@ let mapConfiguration = [{
         {visibility: "off"}
     ]
 }];
-
-let socketServer               = new WebSocket('ws://localhost:8090');
-let socketOpened = false;
-socketServer.addEventListener('open', function () {
-    socketOpened = true;
-});

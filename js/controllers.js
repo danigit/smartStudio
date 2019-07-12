@@ -17,11 +17,11 @@
      * Function that manage the user login with email and password
      * @type {string[]}
      */
-    loginController.$inject = ['$scope', 'socketService', '$state', '$timeout', 'newSocketService'];
+    loginController.$inject = ['$scope', '$state', '$timeout', 'newSocketService'];
 
-    function loginController($scope, socketService, $state, $timeout, newSocketService) {
+    function loginController($scope, $state, $timeout, newSocketService) {
         $scope.user           = {username: '', password: ''};
-        $scope.errorHandeling = {noConnection: false, wrongData: false, socketClosed: socketService.socketClosed};
+        $scope.errorHandeling = {noConnection: false, wrongData: false, socketClosed: newSocketService.socketClosed};
 
         // function that makes the log in of the user
         $scope.login = (form) => {
@@ -57,9 +57,9 @@
      * * general alarms
      * @type {string[]}
      */
-    homeController.$inject = ['$rootScope', '$scope', '$state', '$mdDialog', '$interval', '$timeout', 'NgMap', 'homeData', 'socketService', 'dataService', 'newSocketService'];
+    homeController.$inject = ['$rootScope', '$scope', '$state', '$mdDialog', '$interval', '$timeout', 'NgMap', 'homeData', 'dataService', 'newSocketService'];
 
-    function homeController($rootScope, $scope, $state, $mdDialog, $interval, $timeout, NgMap, homeData, socketService, dataService, newSocketService) {
+    function homeController($rootScope, $scope, $state, $mdDialog, $interval, $timeout, NgMap, homeData, dataService, newSocketService) {
         let homeCtrl = this;
 
         let markers              = homeData.markers;
@@ -238,9 +238,7 @@
                     newSocketService.getData('get_anchors_by_user', {user: dataService.user.username}, (response) => {
 
                         //creating the interaction with the location icon, infoWindow, click
-                        console.log(markers);
                         markers.forEach(marker => {
-                            console.log(marker);
                             let markerObject = new google.maps.Marker({
                                 position : new google.maps.LatLng(marker.position[0], marker.position[1]),
                                 animation: google.maps.Animation.DROP,
@@ -253,14 +251,15 @@
                                 let locationTags    = dataService.getIndoorLocationTags(marker, userTags.result);
                                 let locationAnchors = dataService.getLocationAnchors(marker, response.result);
 
+                                console.log(marker);
                                 infoWindow = new google.maps.InfoWindow({
                                     content: '<div class="marker-info-container">' +
-                                        '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+                                        '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
                                         '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
                                         '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
                                         '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
-                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Tags: </p><p class="float-right"><b>' + locationTags.length + '</b></p></div>' +
-                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Anchors: </p><p class="float-right"><b>' + locationAnchors.length + '</b></p></div>' +
+                                        '<div class="clear-float display-flex"><div class="width-50 margin-left-10-px"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
+                                        '</div><div class="width-45 "><img src="' + iconsPath + 'offline_anchors_alert_30.png" class="margin-right-10-px"><span class="font-large vertical-align-super color-red"><b>' + locationAnchors.length + '</b></span></div></div>' +
                                         '</div>'
                                 });
                             } else {
@@ -268,11 +267,12 @@
 
                                 infoWindow = new google.maps.InfoWindow({
                                     content: '<div class="marker-info-container">' +
-                                        '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+                                        '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
                                         '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
                                         '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
                                         '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
-                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Tags: </p><p class="float-right"><b>' + locationTags.tags + '</b></p></div>' +
+                                        '<div class="clear-float display-flex"><div class="margin-auto"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.tags + '</b></span>' +
+                                        '</div></div' +
                                         '</div>'
                                 });
                             }
@@ -353,7 +353,7 @@
                     targetEvent        : event,
                     clickOutsideToClose: true,
                     multiple           : true,
-                    controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
+                    controller         : ['$scope', 'dataService', ($scope, dataService) => {
                         $scope.alarms          = [];
                         $scope.outlocationTags = dataService.switch.showOutrangeTags;
                         let locations          = [];
@@ -434,8 +434,6 @@
                                             $scope.alarms.push(alarm);
                                         })
                                     });
-
-                                    console.log($scope.alarms);
                                 });
 
                             });
@@ -471,7 +469,6 @@
                                 } else {
                                     let tagLocation = locations.filter(l => (dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude])) <= l.radius);
 
-                                    console.log(alarm.name);
                                     //if the tag has a location then I show go to the location
                                     if (tagLocation.length > 0) {
                                         newSocketService.getData('save_location', {location: tagLocation[0].name}, (response) => {
@@ -486,12 +483,12 @@
                                     } //if the tag is out of all the locations the I show the message tag out of locations
                                     else if (alarm.name === 'Tag fuori sito') {
                                         $mdDialog.show({
-                                            locals             : {tagName: alarm, outerScope: $scope},
+                                            locals             : {tagName: alarm},
                                             templateUrl        : componentsPath + 'search-tag-outside.html',
                                             parent             : angular.element(document.body),
                                             targetEvent        : event,
                                             clickOutsideToClose: true,
-                                            controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
+                                            controller         : ['$scope', 'NgMap', 'tagName', function ($scope, NgMap, tagName) {
                                                 $scope.isTagOutOfLocation = 'background-red';
                                                 $scope.locationName       = tagName.tag + ' ' + lang.tagOutSite.toUpperCase();
                                                 $scope.mapConfiguration   = {
@@ -534,7 +531,7 @@
                                                 parent             : angular.element(document.body),
                                                 targetEvent        : event,
                                                 clickOutsideToClose: true,
-                                                controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                                controller         : ['$scope', '$controller', ($scope, $controller) => {
                                                     $controller('languageController', {$scope: $scope});
 
 
@@ -561,7 +558,7 @@
                                             parent             : angular.element(document.body),
                                             targetEvent        : event,
                                             clickOutsideToClose: true,
-                                            controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                            controller         : ['$scope', '$controller', ($scope, $controller) => {
                                                 $controller('languageController', {$scope: $scope});
 
 
@@ -696,9 +693,9 @@
      * * location areas
      * @type {string[]}
      */
-    outdoorController.$inject = ['$scope', '$rootScope', '$state', '$interval', '$mdDialog', '$timeout', 'NgMap', 'socketService', 'dataService', 'newSocketService'];
+    outdoorController.$inject = ['$scope', '$rootScope', '$state', '$interval', '$mdDialog', '$timeout', 'NgMap', 'dataService', 'newSocketService'];
 
-    function outdoorController($scope, $rootScope, $state, $interval, $mdDialog, $timeout, NgMap, socketService, dataService, newSocketService) {
+    function outdoorController($scope, $rootScope, $state, $interval, $mdDialog, $timeout, NgMap, dataService, newSocketService) {
         let outdoorCtrl                = this;
         let tags                       = null;
         let bounds                     = new google.maps.LatLngBounds();
@@ -747,7 +744,7 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
+                controller         : ['$scope', 'dataService', ($scope, dataService) => {
                     $scope.alarms          = [];
                     $scope.outlocationTags = dataService.switch.showOutrangeTags;
                     let locations          = [];
@@ -866,7 +863,6 @@
                                 //if the tag has a location then I show go to the location
                                 if (tagLocation.length > 0) {
                                     let outdoorLocationOld = dataService.location;
-                                    console.log(outdoorLocationOld.is_inside);
                                     newSocketService.getData('save_location', {location: tagLocation[0].name}, (response) => {
                                         if (!response.session_state)
                                             window.location.reload();
@@ -886,7 +882,7 @@
                                         parent             : angular.element(document.body),
                                         targetEvent        : event,
                                         clickOutsideToClose: true,
-                                        controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
+                                        controller         : ['$scope', 'NgMap', 'tagName', function ($scope, NgMap, tagName) {
                                             $scope.isTagOutOfLocation = 'background-red';
                                             $scope.locationName       = tagName.tag + ' ' + lang.tagOutSite.toUpperCase();
                                             $scope.mapConfiguration   = {
@@ -929,7 +925,7 @@
                                             parent             : angular.element(document.body),
                                             targetEvent        : event,
                                             clickOutsideToClose: true,
-                                            controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                            controller         : ['$scope', '$controller', ($scope, $controller) => {
                                                 $controller('languageController', {$scope: $scope});
 
 
@@ -956,7 +952,7 @@
                                         parent             : angular.element(document.body),
                                         targetEvent        : event,
                                         clickOutsideToClose: true,
-                                        controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                        controller         : ['$scope', '$controller', ($scope, $controller) => {
                                             $controller('languageController', {$scope: $scope});
 
 
@@ -1034,8 +1030,6 @@
             let localTags       = [];
             let alarmsCounts    = new Array(100).fill(0);
             let prevAlarmCounts = new Array(100).fill(0);
-
-            let id1 = -1;
 
             let circle = new google.maps.Circle({
                 strokeColor  : '#0093c4',
@@ -1418,9 +1412,9 @@
      * * drawings management
      * @type {string[]}
      */
-    canvasController.$inject = ['$rootScope', '$scope', '$state', '$mdDialog', '$timeout', '$interval', '$mdSidenav', 'socketService', 'canvasData', 'dataService', 'newSocketService'];
+    canvasController.$inject = ['$rootScope', '$scope', '$state', '$mdDialog', '$timeout', '$interval', '$mdSidenav', 'canvasData', 'dataService', 'newSocketService'];
 
-    function canvasController($rootScope, $scope, $state, $mdDialog, $timeout, $interval, $mdSidenav, socketService, canvasData, dataService, newSocketService) {
+    function canvasController($rootScope, $scope, $state, $mdDialog, $timeout, $interval, $mdSidenav, canvasData, dataService, newSocketService) {
         let canvasCtrl         = this;
         let canvas             = document.querySelector('#canvas-id');
         let context            = canvas.getContext('2d');
@@ -1430,7 +1424,6 @@
         let tags       = [];
         let mouseDownCoords    = null;
         let prevClick          = null;
-        let drawAnchor         = null;
         let drawAnchorImage    = null;
         let dropAnchorPosition = null;
         let dragingStarted     = 0;
@@ -1442,7 +1435,6 @@
         let anchorToDrop       = '';
         let zoneToModify       = null;
         let alpha              = canvasData.alpha;
-        let socket             = socketService.getSocket();
 
         canvasCtrl.floors                 = dataService.floors;
         canvasCtrl.showAlarmsIcon         = false;
@@ -1880,9 +1872,6 @@
 
         //function that save the canvas drawing
         canvasCtrl.saveDrawing = () => {
-            let id  = ++requestId;
-            let id1 = -1, id2 = -1;
-
             let tempDrawZones = [];
 
             drawedZones.forEach((zone) => {
@@ -1908,7 +1897,7 @@
                         parent             : angular.element(document.body),
                         targetEvent        : event,
                         clickOutsideToClose: true,
-                        controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                        controller         : ['$scope', '$controller', ($scope, $controller) => {
                             $controller('languageController', {$scope: $scope});
 
 
@@ -1943,7 +1932,7 @@
                                 parent             : angular.element(document.body),
                                 targetEvent        : event,
                                 clickOutsideToClose: true,
-                                controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                controller         : ['$scope', '$controller', ($scope, $controller) => {
                                     $controller('languageController', {$scope: $scope});
 
 
@@ -1975,7 +1964,7 @@
                                 parent             : angular.element(document.body),
                                 targetEvent        : event,
                                 clickOutsideToClose: true,
-                                controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                controller         : ['$scope', '$controller', ($scope, $controller) => {
                                     $controller('languageController', {$scope: $scope});
 
 
@@ -1999,7 +1988,7 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                controller         : ['$scope', '$controller', ($scope, $controller) => {
                     $controller('languageController', {$scope: $scope});
 
 
@@ -2147,7 +2136,7 @@
                     parent             : angular.element(document.body),
                     targetEvent        : event,
                     clickOutsideToClose: true,
-                    controller         : ['$scope', 'socketService', 'dataService', ($scope, socketService, dataService) => {
+                    controller         : ['$scope', 'dataService', ($scope, dataService) => {
                         $scope.dropAnchor = {
                             selectedAnchor: ''
                         };
@@ -2159,14 +2148,13 @@
                             $scope.anchors              = response.result;
                             dataService.locationAnchors = response.result;
                             $scope.$apply();
-                        })
+                        });
 
                         $scope.$watch('dropAnchor.selectedAnchor', (newValue) => {
                             let currentValue = "" + newValue;
                             if (currentValue !== '') {
                                 anchorToDrop = currentValue;
                                 $mdDialog.hide();
-                                console.log(dataService.anchorsToUpdate);
                                 for (let index in dataService.locationAnchors) {
                                     if (dataService.locationAnchors[index].name === newValue) {
                                         let scaledSize                              = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, mouseDownCoords.x, mouseDownCoords.y);
@@ -2302,7 +2290,7 @@
                         let virtualPositionTop    = scaleIconSize(zone.x_left, zone.y_up, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                         let virtualPositionBottom = scaleIconSize(zone.x_right, zone.y_down, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
 
-                        if (prevClick.x >= virtualPositionTop.width - 5 | 0 && prevClick.x <= virtualPositionTop.width + 10 | 0 && prevClick.y >= virtualPositionTop.height - 5 | 0 && prevClick.y <= virtualPositionTop.height + 10 | 0) {
+                        if (prevClick.x >= virtualPositionTop.width - (5 | 0) && prevClick.x <= virtualPositionTop.width + (10 | 0) && prevClick.y >= virtualPositionTop.height - (5 | 0) && prevClick.y <= virtualPositionTop.height + (10 | 0)) {
                             zoneToModify = {
                                 id         : zone.id,
                                 topLeft    : {x: virtualPositionTop.width, y: virtualPositionTop.height},
@@ -2578,7 +2566,7 @@
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', 'socketService', 'dataService', function ($scope, socketService, dataService) {
+                controller         : ['$scope', 'dataService', function ($scope, dataService) {
                     $scope.alarms          = [];
                     $scope.outlocationTags = dataService.switch.showOutrangeTags;
                     let locations          = [];
@@ -2697,7 +2685,6 @@
                                 //if the tag has a location then I show go to the location
                                 if (tagLocation.length > 0) {
                                     let outdoorLocationOld = dataService.location;
-                                    console.log(outdoorLocationOld.is_inside);
                                     newSocketService.getData('save_location', {location: tagLocation[0].name}, (response) => {
                                         if (!response.session_state)
                                             window.location.reload();
@@ -2717,7 +2704,7 @@
                                         parent             : angular.element(document.body),
                                         targetEvent        : event,
                                         clickOutsideToClose: true,
-                                        controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
+                                        controller         : ['$scope', 'NgMap', 'tagName', function ($scope, NgMap, tagName) {
                                             $scope.isTagOutOfLocation = 'background-red';
                                             $scope.locationName       = tagName.tag + ' ' + lang.tagOutSite.toUpperCase();
                                             $scope.mapConfiguration   = {
@@ -2760,7 +2747,7 @@
                                             parent             : angular.element(document.body),
                                             targetEvent        : event,
                                             clickOutsideToClose: true,
-                                            controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                            controller         : ['$scope', '$controller', ($scope, $controller) => {
                                                 $controller('languageController', {$scope: $scope});
 
 
@@ -2787,7 +2774,7 @@
                                         parent             : angular.element(document.body),
                                         targetEvent        : event,
                                         clickOutsideToClose: true,
-                                        controller         : ['$scope', '$controller', 'socketService', 'dataService', ($scope, $controller, socketService, dataService) => {
+                                        controller         : ['$scope', '$controller', ($scope, $controller) => {
                                             $controller('languageController', {$scope: $scope});
 
 
@@ -2911,11 +2898,10 @@
      * Function that handle the menu interaction
      * @type {string[]}
      */
-    menuController.$inject = ['$rootScope', '$scope', '$mdDialog', '$mdEditDialog', '$location', '$state', '$filter', '$timeout', '$mdSidenav', '$interval', '$element', 'NgMap', 'dataService', 'socketService'];
+    menuController.$inject = ['$rootScope', '$scope', '$mdDialog', '$mdEditDialog', '$location', '$state', '$filter', '$timeout', '$mdSidenav', '$interval', '$element', 'NgMap', 'dataService'];
 
-    function menuController($rootScope, $scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, $interval, $element, NgMap, dataService, socketService) {
+    function menuController($rootScope, $scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, $interval, $element, NgMap, dataService) {
 
-        let socket              = socketService.getSocket();
         $scope.menuTags         = dataService.allTags;
         $scope.isAdmin          = dataService.isAdmin;
         $scope.isUserManager    = dataService.isUserManager;
@@ -2935,7 +2921,7 @@
                 if (!response.session_state)
                     window.location.reload();
 
-                $scope.menuTags = parsedResponse.result;
+                $scope.menuTags = response.result;
             });
         };
 
@@ -2944,7 +2930,7 @@
                 if (!response.session_state)
                     window.location.reload();
 
-                $scope.locations = parsedResponse.result;
+                $scope.locations = response.result;
             });
         };
 
@@ -2980,7 +2966,7 @@
                     };
 
                     newSocketService.getData('get_locations_by_user', {user: dataService.user.username}, (response) => {
-                        if (!parsedResponse.session_state)
+                        if (!response.session_state)
                         window.location.reload();
 
                         $scope.locationsTable = response.result;
@@ -3052,7 +3038,7 @@
 
                                 if (response.result.length === 0) {
                                     $scope.locationsTable = $scope.locationsTable.filter(t => t.id !== location.id);
-                                    $rootScope.$emit('updateLocationsTable', {})
+                                    $rootScope.$emit('updateLocationsTable', {});
                                     locationsHasChanged = true;
                                     $scope.$apply();
                                 }
@@ -3071,7 +3057,7 @@
                         $mdDialog.hide();
                     }
                 }],
-                onRemoving         : function (event, removePromise) {
+                onRemoving         : function () {
                     if (dataService.homeTimer === undefined && !locationsHasChanged) {
                         NgMap.getMap('main-map').then((map) => {
                             $rootScope.$emit('constantUpdateNotifications', map);
@@ -3293,10 +3279,10 @@
                                             };
 
                                             newSocketService.getData('get_all_locations', {}, (response) => {
-                                                if (!parsedResponse.session_state)
+                                                if (!response.session_state)
                                                     window.location.reload();
 
-                                                $scope.insertManagedLocations.allLocations = parsedResponse.result;
+                                                $scope.insertManagedLocations.allLocations = response.result;
                                             });
 
                                             $scope.addManagedLocation = (form) => {
@@ -3506,8 +3492,8 @@
         };
 
         $scope.openSuperuserManager = function () {
-            $interval.cancel(dataService.homeTimer);
-            dataService.homeTimer = undefined;
+            dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
+
             let userId            = null;
             let superUsersDialog  = {
                 locals             : {admin: $scope.isAdmin, userManager: $scope.isUserManager},
@@ -3531,34 +3517,23 @@
                     };
 
                     $scope.updateUserRole = (user, userRole) => {
-
                         if (user.role !== userRole.toString()) {
-                            let id = ++requestId;
-                            socket.send(encodeRequestWithId(id, 'update_user_role', {user: user.id, role: userRole}));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse === id) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
-                                }
-                            }
+                            newSocketService.getData('update_user_role', {user: user.id, role: userRole}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
+                            });
                         }
                     };
 
                     let updateUserTable = () => {
-                        let id = ++requestId;
-                        socket.send(encodeRequestWithId(id, 'get_all_users'));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        newSocketService.getData('get_all_users', {}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                $scope.usersTable = parsedResponse.result;
-                                $scope.tableEmpty = $scope.usersTable.length === 0;
-                                $scope.$apply();
-                            }
-                        };
+                            $scope.usersTable = response.result;
+                            $scope.tableEmpty = $scope.usersTable.length === 0;
+                            $scope.$apply();
+                        })
                     };
 
                     updateUserTable();
@@ -3589,17 +3564,12 @@
                                     page        : 1
                                 };
 
-                                let id2 = ++requestId;
-                                socket.send(encodeRequestWithId(id2, 'get_user_locations', {user: user.id}));
-                                socket.onmessage = (response) => {
-                                    let parsedResponse = parseResponse(response);
-                                    if (parsedResponse.id === id2) {
-                                        if (!parsedResponse.session_state)
-                                            window.location.reload();
+                                newSocketService.getData('get_user_locations', {user: user.id}, (response) => {
+                                    if (!response.session_state)
+                                        window.location.reload();
 
-                                        $scope.locations = parsedResponse.result;
-                                    }
-                                };
+                                    $scope.locations = response.result;
+                                });
 
                                 //inserting a mac
                                 $scope.manageNewLocation = () => {
@@ -3621,17 +3591,12 @@
                                                 allLocations     : []
                                             };
 
-                                            let id3 = ++requestId;
-                                            socket.send(encodeRequestWithId(id3, 'get_all_locations'));
-                                            socket.onmessage = (response) => {
-                                                let parsedResponse = parseResponse(response);
-                                                if (parsedResponse.id === id3) {
-                                                    if (!parsedResponse.session_state)
-                                                        window.location.reload();
+                                            newSocketService.getData('get_all_locations', {}, (response) => {
+                                                if (!response.session_state)
+                                                    window.location.reload();
 
-                                                    $scope.insertManagedLocations.allLocations = parsedResponse.result;
-                                                }
-                                            };
+                                                $scope.insertManagedLocations.allLocations = response.result;
+                                            });
 
                                             $scope.addManagedLocation = (form) => {
                                                 form.$submitted = true;
@@ -3643,21 +3608,17 @@
                                                             locationsIds.push(location.id);
                                                         });
 
-                                                    let id4 = ++requestId;
-                                                    socket.send(encodeRequestWithId(id4, 'insert_managed_location', {
+                                                    newSocketService.getData('insert_managed_location', {
                                                         user     : user.id,
                                                         locations: locationsIds,
-                                                    }));
-                                                    socket.onmessage = (response) => {
-                                                        let parsedResponse = parseResponse(response);
-                                                        if (parsedResponse.id === id4) {
-                                                            if (!parsedResponse.session_state)
-                                                                window.location.reload();
 
-                                                            $mdDialog.hide();
-                                                            $mdDialog.show(manageLocationDialog);
-                                                        }
-                                                    };
+                                                    }, (response) => {
+                                                        if (!response.session_state)
+                                                            window.location.reload();
+
+                                                        $mdDialog.hide();
+                                                        $mdDialog.show(manageLocationDialog);
+                                                    });
                                                 } else {
                                                     $scope.insertManagedLocations.resultClass = 'background-red';
                                                 }
@@ -3681,23 +3642,18 @@
                                         .cancel(lang.cancel);
 
                                     $mdDialog.show(confirm).then(() => {
-                                        let id5 = ++requestId;
-                                        socket.send(encodeRequestWithId(id5, 'delete_managed_location', {
+                                        newSocketService.getData('delete_managed_location', {
                                             user       : user.id,
                                             location_id: location.id
-                                        }));
-                                        socket.onmessage = (response) => {
-                                            let parsedResponse = parseResponse(response);
-                                            if (parsedResponse.id === id5) {
-                                                if (!parsedResponse.session_state)
-                                                    window.location.reload();
+                                        }, (response) => {
+                                            if (!response.session_state)
+                                                window.location.reload();
 
-                                                if (parsedResponse.result === 1) {
-                                                    $scope.locations = $scope.locations.filter(l => l.id !== location.id);
-                                                    $scope.$apply();
-                                                }
+                                            if (response.result === 1) {
+                                                $scope.locations = $scope.locations.filter(l => l.id !== location.id);
+                                                $scope.$apply();
                                             }
-                                        };
+                                        });
                                     }, function () {
                                         console.log('CANCELLATO!!!!');
                                     });
@@ -3723,23 +3679,14 @@
                                 save       : function (input) {
                                     input.$invalid           = true;
                                     superUser[superUserName] = input.$modelValue;
-                                    let id6                  = ++requestId;
-                                    socket.send(encodeRequestWithId(id6, 'change_super_user_field', {
+                                    newSocketService.getData('change_super_user_field', {
                                         super_user_id   : superUser.id,
                                         super_user_field: superUserName,
                                         field_value     : input.$modelValue
-                                    }));
-                                    socket.onmessage = (response) => {
-                                        let parsedResponse = parseResponse(response);
-                                        if (parsedResponse.id === id6) {
-                                            if (!parsedResponse.session_state)
-                                                window.location.reload();
-
-                                            if (response.result !== 1)
-                                                console.log(response.result);
-                                        }
-
-                                    };
+                                    }, (response) => {
+                                        if (!response.session_state)
+                                            window.location.reload();
+                                    });
                                 },
                                 targetEvent: event,
                                 title      : lang.insertValue,
@@ -3763,21 +3710,14 @@
                             .cancel(lang.cancel);
 
                         $mdDialog.show(confirm).then(() => {
-                            let id7 = ++requestId;
-                            socket.send(encodeRequestWithId(id7, 'delete_super_user', {
-                                user_id: user.id
-                            }));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id7) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            newSocketService.getData('delete_super_user', {user_id: user.id}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
 
-                                    if (parsedResponse.result !== 0) {
-                                        updateUserTable();
-                                    }
+                                if (response.result !== 0) {
+                                    updateUserTable();
                                 }
-                            };
+                            });
                         }, function () {
                             console.log('CANCELLATO!!!!');
                         });
@@ -3793,7 +3733,6 @@
                     }
                 }],
                 onRemoving         : function () {
-                    $interval.cancel(dataService.superUsersInterval);
                     if (dataService.homeTimer === undefined) {
                         NgMap.getMap('main-map').then((map) => {
                             $rootScope.$emit('constantUpdateNotifications', map);
@@ -3809,7 +3748,7 @@
                 parent             : angular.element(document.body),
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', '$interval', 'dataService', function ($scope, $interval, dataService) {
+                controller         : ['$scope', function ($scope) {
                     $scope.roles    = [lang.genericUser, lang.intermediateUser];
                     $scope.userRole = '';
                     $scope.user     = {
@@ -3828,40 +3767,34 @@
                         form.$submitted = true;
 
                         if (form.$valid) {
-                            let id8 = ++requestId;
-                            socket.send(encodeRequestWithId(id8, 'insert_super_user', {
+                            newSocketService.getData('insert_super_user', {
                                 username: $scope.user.username,
                                 name    : $scope.user.name,
                                 email   : $scope.user.email,
                                 role    : ($scope.userRole === 'Utente generico') ? 0 : 2
-                            }));
+                            }, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
 
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id8) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                                if (response.result.length === 0) {
+                                    $scope.user.resultClass = 'background-green';
+                                    $scope.user.showSuccess = true;
+                                    $scope.user.showError   = false;
+                                    $scope.user.message     = lang.userInserted;
 
-                                    if (parsedResponse.result.length === 0) {
-                                        $scope.user.resultClass = 'background-green';
-                                        $scope.user.showSuccess = true;
-                                        $scope.user.showError   = false;
-                                        $scope.user.message     = lang.userInserted;
+                                    $scope.$apply();
 
-                                        $scope.$apply();
-
-                                        $timeout(function () {
-                                            $mdDialog.hide();
-                                        }, 1000);
-                                    } else {
-                                        $scope.user.showSuccess = false;
-                                        $scope.user.showError   = true;
-                                        $scope.user.message     = lang.canInsertUser;
-                                        $scope.user.resultClass = 'background-red';
-                                        $scope.$apply();
-                                    }
+                                    $timeout(function () {
+                                        $mdDialog.hide();
+                                    }, 1000);
+                                } else {
+                                    $scope.user.showSuccess = false;
+                                    $scope.user.showError   = true;
+                                    $scope.user.message     = lang.canInsertUser;
+                                    $scope.user.resultClass = 'background-red';
+                                    $scope.$apply();
                                 }
-                            };
+                            });
                         } else {
                             $scope.user.resultClass = 'background-red';
                         }
@@ -3871,7 +3804,7 @@
                         $mdDialog.hide();
                     }
                 }],
-                onRemoving         : function (event, removePromise) {
+                onRemoving         : function () {
                     if (dataService.superUsersInterval === undefined)
                         $rootScope.$emit('updateUserTable', {});
                 }
@@ -3880,15 +3813,9 @@
 
         //history table
         $scope.viewHistory = function (position) {
-            if (dataService.homeTimer !== undefined) {
-                $interval.cancel(dataService.homeTimer);
-                dataService.homeTimer = undefined;
-            }
-
-            if (dataService.canvasInterval !== undefined) {
-                $interval.cancel(dataService.canvasInterval);
-                dataService.canvasInterval = undefined;
-            }
+            dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
+            dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
+            dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
 
             $mdDialog.show({
                 templateUrl        : componentsPath + 'history-table.html',
@@ -3923,98 +3850,91 @@
                     $scope.deleteHistory = () => {
                         let fromDate = $filter('date')($scope.history.fromDate, 'yyyy-MM-dd');
                         let toDate   = $filter('date')($scope.history.toDate, 'yyyy-MM-dd');
-                        let id       = ++requestId;
-                        let id1      = -1;
-                        socket.send(encodeRequestWithId(id, 'delete_history', {fromDate: fromDate, toDate: toDate}));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
 
-                                if (parsedResponse.result !== 0) {
-                                    id1 = ++requestId;
-                                    socket.send(encodeRequestWithId(id1, 'get_history', {
-                                        fromDate: fromDate,
-                                        toDate  : toDate,
-                                        tag     : $scope.history.selectedTag,
-                                        event   : $scope.history.selectedEvent
-                                    }))
-                                }
-                            } else if (parsedResponse.id === id1) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        newSocketService.getData('delete_history', {fromDate: fromDate, toDate: toDate}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                $scope.historyRows = parsedResponse.result;
-                                $scope.tableEmpty  = $scope.historyRows.length === 0;
-                                $scope.$apply();
+                            if (response.result !== 0) {
+                                newSocketService.getData('get_history', {
+                                    fromDate: fromDate,
+                                    toDate  : toDate,
+                                    tag     : $scope.history.selectedTag,
+                                    event   : $scope.history.selectedEvent
+                                }, (history) => {
+                                    if (!history.session_state)
+                                        window.location.reload();
+
+                                    $scope.historyRows = history.result;
+                                    $scope.tableEmpty  = $scope.historyRows.length === 0;
+                                    $scope.$apply();
+                                });
                             }
-                        }
+                        });
                     };
 
                     $scope.$watchGroup(['history.fromDate', 'history.toDate', 'history.selectedTag', 'history.selectedEvent'], function (newValues) {
                         let fromDate = $filter('date')(newValues[0], 'yyyy-MM-dd');
                         let toDate   = $filter('date')(newValues[1], 'yyyy-MM-dd');
 
-                        let id       = ++requestId;
-                        let id1, id2 = -1;
 
-                        socket.send(encodeRequestWithId(id, 'get_events'));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        newSocketService.getData('get_events', {}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                $scope.history.events = parsedResponse.result;
-                                id1                   = ++requestId;
-                                socket.send(encodeRequestWithId(id1, 'get_history', {
-                                    fromDate: fromDate,
-                                    toDate  : toDate,
-                                    tag     : newValues[2],
-                                    event   : newValues[3]
-                                }))
-                            } else if (parsedResponse.id === id1) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
-                                $scope.historyRows = parsedResponse.result;
+                            $scope.history.events = response.result;
+                        });
 
-                                dataService.getAllLocations().then(locations => {
-                                    $scope.historyRows.forEach((event, index) => {
-                                        console.log(event);
-                                        console.log(index);
-                                        if (event.tag_x_pos !== -1 && event.tag_y_pos !== -1 &&
-                                            event.tag_x_pos !== -2 && event.tag_y_pos !== -2 &&
-                                            event.tag_x_pos !== 0 && event.tag_y_pos !== 0) {
-                                            console.log(locations);
-                                            let tagLocation = dataService.getOutdoorTagLocation(locations.result, {
-                                                gps_north_degree: event.tag_x_pos,
-                                                gps_east_degree : event.tag_y_pos
-                                            })[0];
-                                            if (tagLocation !== undefined) {
-                                                $scope.historyRows[index].location = tagLocation.name;
-                                            }
+                        newSocketService.getData('get_history', {
+                            fromDate: fromDate,
+                            toDate  : toDate,
+                            tag     : newValues[2],
+                            event   : newValues[3]
+                        }, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
+
+                            $scope.historyRows = response.result;
+
+                            newSocketService.getData('get_all_locations', {}, (locations) =>{
+                                $scope.historyRows.forEach((event, index) => {
+                                    if (event.tag_x_pos !== -1 && event.tag_y_pos !== -1 &&
+                                        event.tag_x_pos !== -2 && event.tag_y_pos !== -2 &&
+                                        event.tag_x_pos !== 0 && event.tag_y_pos !== 0) {
+                                        let tagLocation = dataService.getOutdoorTagLocation(locations.result, {
+                                            gps_north_degree: event.tag_x_pos,
+                                            gps_east_degree : event.tag_y_pos
+                                        })[0];
+                                        if (tagLocation !== undefined) {
+                                            $scope.historyRows[index].location = tagLocation.name;
                                         }
-                                    });
+                                    }
                                 });
-                                $scope.tableEmpty = $scope.historyRows.length === 0;
-                                $scope.$apply();
-                            }
-                        };
+                            });
+
+                            $scope.tableEmpty = $scope.historyRows.length === 0;
+                            $scope.$apply();
+                        });
                     });
 
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
                 }],
-                onRemoving         : function (event, removePromise) {
-                    if (dataService.homeTimer === undefined && position === 'home') {
-                        NgMap.getMap('main-map').then((map) => {
-                            $rootScope.$emit('constantUpdateNotifications', map)
-                        });
-                    }
-                    if (dataService.canvasInterval === undefined && position === 'canvas') {
-                        $rootScope.$emit('constantUpdateCanvas')
+                onRemoving         : function () {
+                    switch (position) {
+                        case 'home':
+                            if (dataService.homeTimer === undefined){
+                                NgMap.getMap('main-map').then((map) => {
+                                    $rootScope.$emit('constantUpdateNotifications', map)
+                                });
+                            }
+                            break;
+                        case 'canvas':
+                            if (dataService.canvasInterval === undefined){
+                                $rootScope.$emit('constantUpdateCanvas')
+                            }
+                            break;
                     }
                 }
             });
@@ -4067,43 +3987,37 @@
                         } else {
                             if (form.$valid) {
 
-                                let id = ++requestId;
-
-                                socket.send(encodeRequestWithId(id, 'change_password', {
+                                newSocketService.getData('change_password', {
                                     oldPassword: $scope.changePassword.oldPassword,
                                     newPassword: $scope.changePassword.newPassword
-                                }));
-                                socket.onmessage = (response) => {
-                                    let parsedResponse = parseResponse(response);
-                                    if (parsedResponse.id === id) {
-                                        if (!parsedResponse.session_state)
-                                            window.location.reload();
+                                }, (response) => {
+                                    if (!response.session_state)
+                                        window.location.reload();
 
-                                        if (parsedResponse.result === 'wrong_old') {
-                                            $scope.changePassword.resultClass = 'background-red';
-                                            $scope.changePassword.showError   = true;
-                                            $scope.changePassword.showSuccess = false;
-                                            $scope.changePassword.message     = lang.invalidOld;
-                                        } else if (parsedResponse.result === 'error_on_changing_password') {
-                                            $scope.changePassword.resultClass = 'background-red';
-                                            $scope.changePassword.showSuccess = false;
-                                            $scope.changePassword.showError   = true;
-                                            $scope.changePassword.message     = lang.impossibleChangePassword
-                                            $timeout(function () {
-                                                $mdDialog.hide();
-                                            }, 1000);
-                                        } else {
-                                            $scope.changePassword.resultClass = 'background-green';
-                                            $scope.changePassword.showSuccess = true;
-                                            $scope.changePassword.showError   = false;
-                                            $scope.changePassword.message     = lang.passwordChanged;
-                                            $timeout(function () {
-                                                $mdDialog.hide();
-                                            }, 1000);
-                                        }
-                                        $scope.$apply();
+                                    if (response.result === 'wrong_old') {
+                                        $scope.changePassword.resultClass = 'background-red';
+                                        $scope.changePassword.showError   = true;
+                                        $scope.changePassword.showSuccess = false;
+                                        $scope.changePassword.message     = lang.invalidOld;
+                                    } else if (response.result === 'error_on_changing_password') {
+                                        $scope.changePassword.resultClass = 'background-red';
+                                        $scope.changePassword.showSuccess = false;
+                                        $scope.changePassword.showError   = true;
+                                        $scope.changePassword.message     = lang.impossibleChangePassword;
+                                        $timeout(function () {
+                                            $mdDialog.hide();
+                                        }, 1000);
+                                    } else {
+                                        $scope.changePassword.resultClass = 'background-green';
+                                        $scope.changePassword.showSuccess = true;
+                                        $scope.changePassword.showError   = false;
+                                        $scope.changePassword.message     = lang.passwordChanged;
+                                        $timeout(function () {
+                                            $mdDialog.hide();
+                                        }, 1000);
                                     }
-                                };
+                                    $scope.$apply();
+                                });
                             } else {
                                 $scope.changePassword.resultClass = 'background-red';
                             }
@@ -4119,18 +4033,9 @@
 
         //function that handle the tags crud
         $scope.registry = (position) => {
-            if (dataService.homeTimer !== undefined) {
-                $interval.cancel(dataService.homeTimer);
-                dataService.homeTimer = undefined;
-            }
-            if (dataService.canvasInterval !== undefined) {
-                $interval.cancel(dataService.canvasInterval);
-                dataService.canvasInterval = undefined;
-            }
-            if (dataService.updateMapTimer !== undefined) {
-                $interval.cancel(dataService.updateMapTimer);
-                dataService.updateMapTimer = undefined;
-            }
+            dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
+            dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
+            dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
 
             $scope.clickedTag = null;
 
@@ -4152,45 +4057,34 @@
 
                     let macs = [];
 
-                    let id = ++requestId;
+                    newSocketService.getData('get_all_types', {}, (response) => {
+                        if (!response.session_state)
+                            window.location.reload();
 
-                    socket.send(encodeRequestWithId(id, "get_all_types"));
-                    socket.onmessage = (response) => {
-                        let parsedResponse = parseResponse(response);
-                        if (parsedResponse.id === id) {
-                            if (!parsedResponse.session_state)
-                                window.location.reload();
-
-                            $scope.tagTypes = parsedResponse.result;
-                        }
-                    };
+                        $scope.tagTypes = response.result;
+                    });
 
                     //insert a tag
                     $scope.addTag = function (form) {
                         form.$submitted = true;
 
                         if (form.$valid) {
-                            let id1 = ++requestId;
-                            socket.send(encodeRequestWithId(id1, 'insert_tag', {
+                            newSocketService.getData('insert_tag', {
                                 name: $scope.insertTag.name,
                                 type: $scope.insertTag.type,
                                 macs: macs
-                            }));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id1) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            }, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
 
-                                    if (parsedResponse.result.length === 0) {
-                                        $scope.insertTag.resultClass = 'background-green';
-                                        $timeout(function () {
-                                            $mdDialog.hide();
-                                            $rootScope.$emit('updateTagsTable', {});
-                                        }, 1000);
-                                    }
+                                if (response.result.length === 0) {
+                                    $scope.insertTag.resultClass = 'background-green';
+                                    $timeout(function () {
+                                        $mdDialog.hide();
+                                        $rootScope.$emit('updateTagsTable', {});
+                                    }, 1000);
                                 }
-                            };
+                            });
                         } else {
                             $scope.insertTag.resultClass = 'background-red';
                         }
@@ -4226,54 +4120,48 @@
                         page        : 1
                     };
 
-                    let id3             = ++requestId;
-                    let id0             = -1;
                     let updateTagsTable = () => {
-                        socket.send(encodeRequestWithId(id3, 'get_all_tags'));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id3) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        newSocketService.getData('get_all_tags', {}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                $scope.tags = parsedResponse.result;
-                                ($scope.tags.length === 0)
-                                    ? $scope.tableEmpty = true
-                                    : $scope.tableEmpty = false;
+                            $scope.tags = response.result;
+                            ($scope.tags.length === 0)
+                                ? $scope.tableEmpty = true
+                                : $scope.tableEmpty = false;
 
-                                let offgridTagsIndoor  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
-                                let offgridTagsOutdoor = parsedResponse.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+                            let offgridTagsIndoor  = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
+                            let offgridTagsOutdoor = response.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
 
-                                let offTags  = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id === 1 || t.type_id === 14) && ((t.is_exit && t.radio_switched_off)));
-                                let offTags1 = parsedResponse.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id === 1 || t.type_id === 14) && ((t.is_exit && !t.radio_switched_off)));
+                            let offTags  = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id === 1 || t.type_id === 14) && ((t.is_exit && t.radio_switched_off)));
+                            let offTags1 = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id === 1 || t.type_id === 14) && ((t.is_exit && !t.radio_switched_off)));
 
-                                let tempOffgrid = [];
-                                offgridTagsIndoor.forEach(elem => {
-                                    tempOffgrid.push(elem);
-                                });
+                            let tempOffgrid = [];
+                            offgridTagsIndoor.forEach(elem => {
+                                tempOffgrid.push(elem);
+                            });
 
-                                offgridTagsOutdoor.forEach(elem => {
-                                    tempOffgrid.push(elem);
-                                });
+                            offgridTagsOutdoor.forEach(elem => {
+                                tempOffgrid.push(elem);
+                            });
 
-                                offTags.forEach(elem => {
-                                    tempOffgrid.push(elem);
-                                });
+                            offTags.forEach(elem => {
+                                tempOffgrid.push(elem);
+                            });
 
-                                offTags1.forEach(elem => {
-                                    tempOffgrid.push(elem);
-                                });
+                            offTags1.forEach(elem => {
+                                tempOffgrid.push(elem);
+                            });
 
-                                $scope.tagsOnline = $scope.tags.filter(t => !tempOffgrid.some(to => to.id === t.id));
-                                id0               = ++requestId;
-                                socket.send(encodeRequestWithId(id0, 'get_all_types'));
-                            } else if (parsedResponse.id === id0) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                            $scope.tagsOnline = $scope.tags.filter(t => !tempOffgrid.some(to => to.id === t.id));
+                        });
 
-                                $scope.tagTypes = parsedResponse.result;
-                            }
-                        };
+                        newSocketService.getData('get_all_types', {}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
+
+                            $scope.tagTypes = response.result;
+                        });
                     };
 
                     updateTagsTable();
@@ -4284,20 +4172,13 @@
 
                     $scope.updateTagType = (tag, selectedType) => {
                         if (tag.type_id.toString() !== selectedType.toString()) {
-                            let id = ++requestId;
-                            socket.send(encodeRequestWithId(id, 'update_tag_type', {
+                            newSocketService.getData('update_tag_type', {
                                 tag : tag.id,
                                 type: selectedType
-                            }));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
-
-                                    console.log('tag updated');
-                                }
-                            };
+                            }, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
+                            });
                         }
                     };
 
@@ -4315,24 +4196,14 @@
                                 save       : function (input) {
                                     input.$invalid = true;
                                     tag[tagName]   = input.$modelValue;
-                                    let id4        = ++requestId;
-                                    socket.send(encodeRequestWithId(id4, 'change_tag_field', {
+                                    newSocketService.getData('change_tag_field', {
                                         tag_id     : tag.id,
                                         tag_field  : tagName,
                                         field_value: input.$modelValue
-                                    }));
-                                    socket.onmessage = (response) => {
-                                        let parsedResponse = parseResponse(response);
-                                        if (parsedResponse.id === id4) {
-                                            if (!parsedResponse.session_state)
-                                                window.location.reload();
-
-                                            if (parsedResponse.result !== 1) {
-                                                console.log(parsedResponse.result);
-                                                //TODO handle if the field is not saved
-                                            }
-                                        }
-                                    };
+                                    }, (response) => {
+                                        if (!response.session_state)
+                                            window.location.reload();
+                                    });
                                 },
                                 targetEvent: event,
                                 title      : lang.insertValue,
@@ -4356,20 +4227,15 @@
                             .cancel(lang.cancel.toUpperCase());
 
                         $mdDialog.show(confirm).then(() => {
-                            let id5 = ++requestId;
-                            socket.send(encodeRequestWithId(id5, 'delete_tag', {tag_id: tag.id}));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id5) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            newSocketService.getData('delete_tag', {tag_id: tag.id}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
 
-                                    if (parsedResponse.result.length === 0) {
-                                        $scope.tags = $scope.tags.filter(t => t.id !== tag.id);
-                                        $scope.$apply();
-                                    }
+                                if (response.result.length === 0) {
+                                    $scope.tags = $scope.tags.filter(t => t.id !== tag.id);
+                                    $scope.$apply();
                                 }
-                            };
+                            });
                         }, function () {
                             console.log('CANCELLATO!!!!');
                         });
@@ -4402,17 +4268,12 @@
                                     page        : 1
                                 };
 
-                                let id6 = ++requestId;
-                                socket.send(encodeRequestWithId(id6, 'get_tag_macs', {tag: tag.id}));
-                                socket.onmessage = (response) => {
-                                    let parsedResponse = parseResponse(response);
-                                    if (parsedResponse.id === id6) {
-                                        if (!parsedResponse.session_state)
-                                            window.location.reload();
+                                newSocketService.getData('get_tag_macs', {tag: tag.id}, (response) => {
+                                    if (!response.session_state)
+                                        window.location.reload();
 
-                                        $scope.macs = parsedResponse.result;
-                                    }
-                                };
+                                    $scope.macs = response.result;
+                                });
 
                                 //deleting a mac
                                 $scope.deleteMac = (event, mac) => {
@@ -4425,20 +4286,15 @@
                                         .cancel(lang.cancel.toUpperCase());
 
                                     $mdDialog.show(confirm).then(function () {
-                                        let id7 = ++requestId;
-                                        socket.send(encodeRequestWithId(id7, 'delete_mac', {mac_id: mac.id}));
-                                        socket.onmessage = (response) => {
-                                            let parsedResponse = parseResponse(response);
-                                            if (parsedResponse.id === id7) {
-                                                if (!parsedResponse.session_state)
-                                                    window.location.reload();
+                                        newSocketService.getData('delete_mac', {mac_id: mac.id}, (response) => {
+                                            if (!response.session_state)
+                                                window.location.reload();
 
-                                                if (parsedResponse.result !== 0) {
-                                                    $scope.macs = $scope.macs.filter(m => m.id !== mac.id);
-                                                    $scope.$apply();
-                                                }
+                                            if (response.result !== 0) {
+                                                $scope.macs = $scope.macs.filter(m => m.id !== mac.id);
+                                                $scope.$apply();
                                             }
-                                        }
+                                        });
                                     }, function () {
                                         console.log('CANCELLATO!!!!');
                                     });
@@ -4465,31 +4321,26 @@
                                                 form.$submitted = true;
 
                                                 if (form.$valid) {
-                                                    let id8 = ++requestId;
-                                                    socket.send(encodeRequestWithId(id8, 'insert_mac', {
+                                                    newSocketService.getData('insert_mac', {
                                                         name  : $scope.insertMac.name,
                                                         type  : $scope.insertMac.type,
                                                         tag_id: tag.id
-                                                    }));
-                                                    socket.onmessage = (response) => {
-                                                        let parsedResponse = parseResponse(response);
-                                                        if (parsedResponse.id === id8) {
-                                                            if (!parsedResponse.session_state)
-                                                                window.location.reload();
+                                                    }, (response) => {
+                                                        if (!response.session_state)
+                                                            window.location.reload();
 
-                                                            if (parsedResponse.result !== 0) {
-                                                                $scope.insertMac.resultClass = 'background-green';
-                                                                $timeout(function () {
-                                                                    $mdDialog.hide();
-                                                                    $mdDialog.hide(tagMacsDialog);
-                                                                    $mdDialog.show(tagMacsDialog);
-                                                                }, 1000);
-                                                                $scope.$apply();
-                                                            } else {
-                                                                $scope.insertTag.resultClass = 'background-red';
-                                                            }
+                                                        if (response.result !== 0) {
+                                                            $scope.insertMac.resultClass = 'background-green';
+                                                            $timeout(function () {
+                                                                $mdDialog.hide();
+                                                                $mdDialog.hide(tagMacsDialog);
+                                                                $mdDialog.show(tagMacsDialog);
+                                                            }, 1000);
+                                                            $scope.$apply();
+                                                        } else {
+                                                            $scope.insertTag.resultClass = 'background-red';
                                                         }
-                                                    };
+                                                    });
                                                 } else {
                                                     $scope.insertTag.resultClass = 'background-red';
                                                 }
@@ -4512,24 +4363,14 @@
                                             save       : function (input) {
                                                 input.$invalid = true;
                                                 mac[macName]   = input.$modelValue;
-                                                let id9        = ++requestId;
-                                                socket.send(encodeRequestWithId(id9, 'change_mac_field', {
+                                                newSocketService.getData('change_mac_field', {
                                                     mac_id     : mac.id,
                                                     mac_field  : macName,
                                                     field_value: input.$modelValue
-                                                }));
-                                                socket.onmessage = (response) => {
-                                                    let parsedResponse = parseResponse(response);
-                                                    if (parsedResponse.id === id9) {
-                                                        if (!parsedResponse.session_state)
-                                                            window.location.reload();
-
-                                                        if (parsedResponse.result !== 1) {
-                                                            console.log(parsedResponse.result);
-                                                            //TODO handle the case in witch the field is not changed
-                                                        }
-                                                    }
-                                                };
+                                                }, (response) => {
+                                                    if (!response.session_state)
+                                                        window.location.reload();
+                                                });
                                             },
                                             targetEvent: event,
                                             title      : lang.insertValue,
@@ -4572,23 +4413,13 @@
                                     page        : 1
                                 };
 
-                                let id2 = ++requestId;
-                                socket.send(encodeRequestWithId(id2, 'get_forbidden_zones', {
-                                    tag_id: tag.id
-                                }));
+                                newSocketService.getData('get_forbidden_zones', {tag_id: tag.id}, (response) => {
+                                    if (!response.session_state)
+                                        window.location.reload();
 
-                                socket.onmessage = (response) => {
-                                    let parsedResponse = parseResponse(response);
-                                    console.log(parsedResponse);
-                                    if (parsedResponse.id === id2) {
-                                        if (!parsedResponse.session_state)
-                                            window.location.reload();
-
-                                        $scope.tableEmpty = parsedResponse.result.length === 0;
-                                        $scope.zones      = parsedResponse.result;
-                                    }
-                                };
-
+                                    $scope.tableEmpty = response.result.length === 0;
+                                    $scope.zones      = response.result;
+                                });
 
                                 //inserting a mac
                                 $scope.manageNewZone = () => {
@@ -4610,36 +4441,26 @@
                                                 selectedZones: [],
                                                 allZones     : []
                                             };
-                                            let id3                   = -1, id4 = -1;
-
 
                                             if (dataService.location.is_inside === 0) {
-                                                id3 = ++requestId;
-                                                socket.send(encodeRequestWithId(id3, 'get_outdoor_zones', {
-                                                    location: dataService.location.name,
-                                                }));
+                                                newSocketService.getData('get_outdoor_zones', {location: dataService.location.name}, (response) => {
+                                                    if (!response.session_state)
+                                                        window.location.reload();
+
+                                                    $scope.insertManagedZones.allZones = response.result.filter(z => !zones.some(zs => z.id === zs.zone_id));
+                                                });
                                             } else {
-                                                id4 = ++requestId;
-                                                socket.send(encodeRequestWithId(id4, 'get_floor_zones', {
+                                                newSocketService.getData('get_floor_zones', {
                                                     floor   : dataService.defaultFloorName,
                                                     location: dataService.location.name,
                                                     user    : dataService.user.username
-                                                }));
+                                                }, (response) => {
+                                                    if (!response.session_state)
+                                                        window.location.reload();
+
+                                                    $scope.insertManagedZones.allZones = response.result.filter(z => !zones.some(zs => z.id === zs.zone_id));
+                                                });
                                             }
-                                            socket.onmessage = (response) => {
-                                                let parsedResponse = parseResponse(response);
-                                                if (parsedResponse.id === id3) {
-                                                    if (!parsedResponse.session_state)
-                                                        window.location.reload();
-
-                                                    $scope.insertManagedZones.allZones = parsedResponse.result.filter(z => !zones.some(zs => z.id === zs.zone_id));
-                                                } else if (parsedResponse.id === id4) {
-                                                    if (!parsedResponse.session_state)
-                                                        window.location.reload();
-
-                                                    $scope.insertManagedZones.allZones = parsedResponse.result.filter(z => !zones.some(zs => z.id === zs.zone_id));
-                                                }
-                                            };
 
                                             $scope.addManagedZones = (form) => {
                                                 form.$submitted = true;
@@ -4651,21 +4472,16 @@
                                                             zonesIds.push(zone.id);
                                                         });
 
-                                                    let id4 = ++requestId;
-                                                    socket.send(encodeRequestWithId(id4, 'insert_managed_zones', {
+                                                    newSocketService.getData('insert_managed_zones', {
                                                         tag_id: tag.id,
                                                         zones : zonesIds,
-                                                    }));
-                                                    socket.onmessage = (response) => {
-                                                        let parsedResponse = parseResponse(response);
-                                                        if (parsedResponse.id === id4) {
-                                                            if (!parsedResponse.session_state)
-                                                                window.location.reload();
+                                                    }, (response) => {
+                                                        if (!response.session_state)
+                                                            window.location.reload();
 
-                                                            $mdDialog.hide();
-                                                            $mdDialog.show(tagZonesDialog);
-                                                        }
-                                                    };
+                                                        $mdDialog.hide();
+                                                        $mdDialog.show(tagZonesDialog);
+                                                    });
                                                 } else {
                                                     $scope.insertManagedZones.resultClass = 'background-red';
                                                 }
@@ -4680,7 +4496,6 @@
 
                                 //deleting tag
                                 $scope.deleteManagedZone = (zone) => {
-                                    console.log(zone);
                                     let confirm = $mdDialog.confirm()
                                         .title(lang.deleteZone.toUpperCase())
                                         .textContent(lang.deleteZoneText)
@@ -4690,24 +4505,18 @@
                                         .cancel(lang.cancel);
 
                                     $mdDialog.show(confirm).then(() => {
-                                        let id5 = ++requestId;
-                                        socket.send(encodeRequestWithId(id5, 'delete_managed_zone', {
+                                        newSocketService.getData('delete_managed_zone', {
                                             tag_id : tag.id,
                                             zone_id: zone.zone_id
-                                        }));
-                                        socket.onmessage = (response) => {
-                                            let parsedResponse = parseResponse(response);
-                                            if (parsedResponse.id === id5) {
-                                                if (!parsedResponse.session_state)
-                                                    window.location.reload();
+                                        }, (response) => {
+                                            if (!response.session_state)
+                                                window.location.reload();
 
-                                                if (parsedResponse.result === 1) {
-                                                    $scope.zones = $scope.zones.filter(z => z.zone_id !== zone.zone_id);
-                                                    $scope.$apply();
-                                                    console.log($scope.zones);
-                                                }
+                                            if (response.result === 1) {
+                                                $scope.zones = $scope.zones.filter(z => z.zone_id !== zone.zone_id);
+                                                $scope.$apply();
                                             }
-                                        };
+                                        });
                                     }, function () {
                                         console.log('CANCELLATO!!!!');
                                     });
@@ -4726,19 +4535,27 @@
                         $mdDialog.hide();
                     }
                 }],
-                onRemoving         : function (event, removePromise) {
-                    if (dataService.homeTimer === undefined && position === 'home') {
-                        NgMap.getMap('main-map').then((map) => {
-                            $rootScope.$emit('constantUpdateNotifications', map)
-                        });
-                    }
-                    if (dataService.canvasInterval === undefined && position === 'canvas') {
-                        $rootScope.$emit('constantUpdateCanvas', {})
-                    }
-                    if (dataService.updateMapTimer === undefined && position === 'outdoor') {
-                        NgMap.getMap('outdoor-map').then((map) => {
-                            $rootScope.$emit('constantUpdateMapTags', map)
-                        });
+                onRemoving         : function () {
+                    switch (position) {
+                        case 'home':
+                            if (dataService.homeTimer === undefined) {
+                                NgMap.getMap('main-map').then((map) => {
+                                    $rootScope.$emit('constantUpdateNotifications', map)
+                                });
+                            }
+                            break;
+                        case 'canvas':
+                            if (dataService.canvasInterval === undefined) {
+                                $rootScope.$emit('constantUpdateCanvas', {})
+                            }
+                            break;
+                        case 'outdoor':
+                            if (dataService.updateMapTimer === undefined) {
+                                NgMap.getMap('outdoor-map').then((map) => {
+                                    $rootScope.$emit('constantUpdateMapTags', map)
+                                });
+                            }
+                            break;
                     }
                 }
             };
@@ -4771,7 +4588,6 @@
 
                     //insert a zone
                     $scope.insertZone = function (form) {
-                        console.log('insert zone called', $scope.insertZone.color);
                         form.$submitted = true;
 
                         if (form.$valid) {
@@ -4785,26 +4601,21 @@
                                 floor  : floor.id
                             };
 
-                            console.log(data);
-                            let strigified = JSON.stringify(data);
-                            let id         = ++requestId;
-                            socket.send(encodeRequestWithId(id, 'insert_floor_zone', {data: strigified}));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            let stringified = JSON.stringify(data);
 
-                                    if (parsedResponse.result !== 0) {
-                                        $scope.insertZone.resultClass = 'background-green';
-                                        $timeout(function () {
-                                            $mdDialog.hide(addRowDialog);
-                                            $rootScope.$emit('updateZoneTable', {});
-                                        }, 1000);
-                                        $scope.$apply();
-                                    }
+                            newSocketService.getData('insert_floor_zone', {data: stringified}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
+
+                                if (response.result !== 0) {
+                                    $scope.insertZone.resultClass = 'background-green';
+                                    $timeout(function () {
+                                        $mdDialog.hide(addRowDialog);
+                                        $rootScope.$emit('updateZoneTable', {});
+                                    }, 1000);
+                                    $scope.$apply();
                                 }
-                            };
+                            });
                         } else {
                             $scope.insertZone.resultClass = 'background-red';
                         }
@@ -4839,40 +4650,28 @@
                     };
 
                     $scope.changeColor = (zoneId, zoneColor) => {
-                        let id1 = ++requestId;
-                        socket.send(encodeRequestWithId(id1, 'update_zone_color', {
+                        newSocketService.getData('update_zone_color', {
                             zone_id   : zoneId,
                             zone_color: zoneColor,
-                        }));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id1) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
-
-                                console.log(parsedResponse.result);
-                            }
-                        }
+                        }, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
+                        });
                     };
 
                     let updateZoneTable = () => {
-                        let id1 = ++requestId;
-                        socket.send(encodeRequestWithId(id1, 'get_floor_zones', {
+                        newSocketService.getData('get_floor_zones', {
                             floor   : floor.name,
                             location: dataService.location.name,
                             user    : dataService.user.username
-                        }));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id1) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        }, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                $scope.zones          = parsedResponse.result;
-                                $scope.tableEmptyZone = parsedResponse.result.length === 0;
-                                $scope.$apply();
-                            }
-                        };
+                            $scope.zones          = response.result;
+                            $scope.tableEmptyZone = response.result.length === 0;
+                            $scope.$apply();
+                        });
                     };
 
                     updateZoneTable();
@@ -4891,22 +4690,15 @@
                                 save       : function (input) {
                                     input.$invalid = true;
                                     zone[zoneName] = input.$modelValue;
-                                    let id2        = ++requestId;
-                                    socket.send(encodeRequestWithId(id2, 'change_zone_field', {
+
+                                    newSocketService.getData('change_zone_field', {
                                         zone_id    : zone.id,
                                         zone_field : zoneName,
                                         field_value: input.$modelValue
-                                    }));
-                                    socket.onmessage = (response) => {
-                                        let parsedResponse = parseResponse(response);
-                                        if (parsedResponse === id2) {
-                                            if (!parsedResponse.session_state)
-                                                window.location.reload();
-
-                                            if (response.result !== 1)
-                                                console.log(response.result);
-                                        }
-                                    };
+                                    }, (response) => {
+                                        if (!response.session_state)
+                                            window.location.reload();
+                                    });
                                 },
                                 targetEvent: event,
                                 title      : lang.insertValue,
@@ -4930,20 +4722,13 @@
                             .cancel(lang.cancel);
 
                         $mdDialog.show(confirm).then(() => {
-                            let id3 = ++requestId;
-                            socket.send(encodeRequestWithId(id3, 'delete_floor_zone', {
-                                zone_id: zone.id
-                            }));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id3) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            newSocketService.getData('delete_floor_zone', {zone_id: zone.id}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
 
-                                    $scope.zones = $scope.zones.filter(z => z.id !== zone.id);
-                                    $scope.$apply();
-                                }
-                            };
+                                $scope.zones = $scope.zones.filter(z => z.id !== zone.id);
+                                $scope.$apply();
+                            });
                         }, function () {
                             console.log('CANCELLATO!!!!');
                         });
@@ -4958,7 +4743,7 @@
                         $mdDialog.hide();
                     }
                 }],
-                onRemoving         : function (event, removePromise) {
+                onRemoving         : function () {
                     if (dataService.canvasInterval === undefined) {
                         $rootScope.$emit('constantUpdateCanvas', {})
                     }
@@ -4969,8 +4754,8 @@
         };
 
         $scope.zoneOutdoor = () => {
-            $interval.cancel(dataService.updateMapTimer);
-            dataService.updateMapTimer = undefined;
+            dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
+
             let zoneColorModified      = false;
 
             let addRectRowDialog = {
@@ -4991,9 +4776,7 @@
 
                     //insert a zone
                     $scope.insertZone = function (form) {
-                        console.log('insert zone called');
                         form.$submitted = true;
-                        console.log($scope.insertZone.color);
 
                         if (form.$valid) {
                             let data = {
@@ -5006,48 +4789,41 @@
                                 location: dataService.location.name
                             };
 
-                            let strigified = JSON.stringify(data);
-                            let id         = ++requestId;
-                            socket.send(encodeRequestWithId(id, 'insert_outdoor_rect_zone', {data: strigified}));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            let stringified = JSON.stringify(data);
 
-                                    if (parsedResponse.result !== 0) {
-                                        NgMap.getMap('outdoor-map').then((map) => {
-                                            console.log('enabling timer: ', map);
-                                            $rootScope.$emit('constantUpdateMapTags', map, zoneColorModified)
-                                            console.log('square zone inserted');
-                                            dataService.outdoorZones.push({
-                                                id: parsedResponse.result, zone: new google.maps.Rectangle({
-                                                    strokeColor  : $scope.insertZone.color,
-                                                    strokeOpacity: 0.8,
-                                                    strokeWeight : 2,
-                                                    fillColor    : $scope.insertZone.color,
-                                                    fillOpacity  : 0.35,
-                                                    map          : map,
-                                                    bounds       : {
-                                                        north: parseFloat($scope.insertZone.x_leftt),
-                                                        south: parseFloat($scope.insertZone.x_right),
-                                                        east : parseFloat($scope.insertZone.y_up),
-                                                        west : parseFloat($scope.insertZone.y_down)
-                                                    }
-                                                })
-                                            });
+                            newSocketService.getData('insert_outdoor_rect_zone', {data: stringified}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
+
+                                if (response.result !== 0) {
+                                    NgMap.getMap('outdoor-map').then((map) => {
+                                        $rootScope.$emit('constantUpdateMapTags', map, zoneColorModified);
+                                        dataService.outdoorZones.push({
+                                            id: response.result, zone: new google.maps.Rectangle({
+                                                strokeColor  : $scope.insertZone.color,
+                                                strokeOpacity: 0.8,
+                                                strokeWeight : 2,
+                                                fillColor    : $scope.insertZone.color,
+                                                fillOpacity  : 0.35,
+                                                map          : map,
+                                                bounds       : {
+                                                    north: parseFloat($scope.insertZone.x_leftt),
+                                                    south: parseFloat($scope.insertZone.x_right),
+                                                    east : parseFloat($scope.insertZone.y_up),
+                                                    west : parseFloat($scope.insertZone.y_down)
+                                                }
+                                            })
                                         });
+                                    });
 
-                                        console.log('zone inserted: ', dataService.outdoorZones);
-                                        $scope.insertZone.resultClass = 'background-green';
-                                        $timeout(function () {
-                                            $mdDialog.hide(addRectRowDialog);
-                                            $rootScope.$emit('updateZoneOutdoorTable', {});
-                                        }, 1000);
-                                        $scope.$apply();
-                                    }
+                                    $scope.insertZone.resultClass = 'background-green';
+                                    $timeout(function () {
+                                        $mdDialog.hide(addRectRowDialog);
+                                        $rootScope.$emit('updateZoneOutdoorTable', {});
+                                    }, 1000);
+                                    $scope.$apply();
                                 }
-                            };
+                            });
                         } else {
                             $scope.insertZone.resultClass = 'background-red';
                         }
@@ -5076,9 +4852,7 @@
 
                     //insert a zone
                     $scope.insertZone = function (form) {
-                        console.log('insert zone called');
                         form.$submitted = true;
-                        console.log($scope.insertZone.color);
 
                         if (form.$valid) {
                             let data = {
@@ -5090,46 +4864,40 @@
                                 location: dataService.location.name
                             };
 
-                            let strigified = JSON.stringify(data);
-                            let id1        = ++requestId;
-                            socket.send(encodeRequestWithId(id1, 'insert_outdoor_round_zone', {data: strigified}));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id1) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            let stringified = JSON.stringify(data);
 
-                                    if (parsedResponse.result !== 0) {
-                                        NgMap.getMap('outdoor-map').then((map) => {
-                                            console.log('enabling timer: ', map);
-                                            $rootScope.$emit('constantUpdateMapTags', map, zoneColorModified);
-                                            dataService.outdoorZones.push({
-                                                id: parsedResponse.result, zone: new google.maps.Circle({
-                                                    strokeColor  : $scope.insertZone.color,
-                                                    strokeOpacity: 0.8,
-                                                    strokeWeight : 2,
-                                                    fillColor    : $scope.insertZone.color,
-                                                    fillOpacity  : 0.35,
-                                                    map          : map,
-                                                    center       : {
-                                                        lat: parseFloat($scope.insertZone.gpsNorth),
-                                                        lng: parseFloat($scope.insertZone.gpsEast)
-                                                    },
-                                                    radius       : $scope.insertZone.radius / 111000
-                                                })
-                                            });
+                            newSocketService.getData('insert_outdoor_round_zone', {data: stringified}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
+
+                                if (response.result !== 0) {
+                                    NgMap.getMap('outdoor-map').then((map) => {
+                                        $rootScope.$emit('constantUpdateMapTags', map, zoneColorModified);
+                                        dataService.outdoorZones.push({
+                                            id: response.result, zone: new google.maps.Circle({
+                                                strokeColor  : $scope.insertZone.color,
+                                                strokeOpacity: 0.8,
+                                                strokeWeight : 2,
+                                                fillColor    : $scope.insertZone.color,
+                                                fillOpacity  : 0.35,
+                                                map          : map,
+                                                center       : {
+                                                    lat: parseFloat($scope.insertZone.gpsNorth),
+                                                    lng: parseFloat($scope.insertZone.gpsEast)
+                                                },
+                                                radius       : $scope.insertZone.radius / 111000
+                                            })
                                         });
+                                    });
 
-                                        console.log('zone inserted: ', dataService.outdoorZones);
-                                        $scope.insertZone.resultClass = 'background-green';
-                                        $timeout(function () {
-                                            $mdDialog.hide(addRoundRowDialog);
-                                            $rootScope.$emit('updateZoneOutdoorTable', {});
-                                        }, 1000);
-                                        $scope.$apply();
-                                    }
+                                    $scope.insertZone.resultClass = 'background-green';
+                                    $timeout(function () {
+                                        $mdDialog.hide(addRoundRowDialog);
+                                        $rootScope.$emit('updateZoneOutdoorTable', {});
+                                    }, 1000);
+                                    $scope.$apply();
                                 }
-                            };
+                            });
                         } else {
                             $scope.insertZone.resultClass = 'background-red';
                         }
@@ -5164,46 +4932,31 @@
                     };
 
                     $scope.changeColor = (zoneId, zoneColor) => {
-                        console.log(zoneId);
-                        console.log(zoneColor);
-                        let id1 = ++requestId;
-                        socket.send(encodeRequestWithId(id1, 'update_zone_color', {
+                        newSocketService.getData('update_zone_color', {
                             zone_id   : zoneId,
                             zone_color: zoneColor,
-                        }));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id1) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        }, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                console.log(parsedResponse.result);
-                                dataService.outdoorZones.forEach(zone => {
-                                    if (zone.id === zoneId) {
-                                        zone.zone.setOptions({fillColor: zoneColor, strokeColor: zoneColor});
-                                        zoneColorModified = true;
-                                    }
-                                });
-                            }
-                        }
+                            dataService.outdoorZones.forEach(zone => {
+                                if (zone.id === zoneId) {
+                                    zone.zone.setOptions({fillColor: zoneColor, strokeColor: zoneColor});
+                                    zoneColorModified = true;
+                                }
+                            });
+                        });
                     };
 
                     let updateZoneOutdoorTable = () => {
-                        let id1 = ++requestId;
-                        socket.send(encodeRequestWithId(id1, 'get_outdoor_zones', {
-                            location: dataService.location.name,
-                        }));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id1) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        newSocketService.getData('get_outdoor_zones', {locations: dataService.location.name}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                $scope.zones          = parsedResponse.result;
-                                $scope.tableEmptyZone = parsedResponse.result.length === 0;
-                                $scope.$apply();
-                            }
-                        };
+                            $scope.zones          = response.result;
+                            $scope.tableEmptyZone = response.result.length === 0;
+                            $scope.$apply();
+                        })
                     };
 
                     updateZoneOutdoorTable();
@@ -5222,23 +4975,14 @@
                                 save       : function (input) {
                                     input.$invalid = true;
                                     zone[zoneName] = input.$modelValue;
-                                    let id2        = ++requestId;
-                                    socket.send(encodeRequestWithId(id2, 'change_zone_field', {
+                                    newSocketService.getData('change_zone_field', {
                                         zone_id    : zone.id,
                                         zone_field : zoneName,
                                         field_value: input.$modelValue
-                                    }));
-                                    socket.onmessage = (response) => {
-                                        let parsedResponse = parseResponse(response);
-                                        if (parsedResponse === id2) {
-                                            if (!parsedResponse.session_state)
-                                                window.location.reload();
-
-                                            if (response.result !== 1) {
-                                                console.log(response.result);
-                                            }
-                                        }
-                                    };
+                                    }, (response) => {
+                                        if (!response.session_state)
+                                            window.location.reload();
+                                    });
                                 },
                                 targetEvent: event,
                                 title      : lang.insertValue,
@@ -5262,23 +5006,16 @@
                             .cancel(lang.cancel);
 
                         $mdDialog.show(confirm).then(() => {
-                            let id3 = ++requestId;
-                            socket.send(encodeRequestWithId(id3, 'delete_floor_zone', {
-                                zone_id: zone.id
-                            }));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id3) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            newSocketService.getData('delete_floor_zone', {zone_id: zone.id}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
 
-                                    $scope.zones    = $scope.zones.filter(z => z.id !== zone.id);
-                                    let deletedZone = dataService.outdoorZones.filter(z => z.id === zone.id)[0];
-                                    deletedZone.zone.setMap(null);
-                                    dataService.outdoorZones = dataService.outdoorZones.filter(z => z.id !== zone.id);
-                                    $scope.$apply();
-                                }
-                            };
+                                $scope.zones    = $scope.zones.filter(z => z.id !== zone.id);
+                                let deletedZone = dataService.outdoorZones.filter(z => z.id === zone.id)[0];
+                                deletedZone.zone.setMap(null);
+                                dataService.outdoorZones = dataService.outdoorZones.filter(z => z.id !== zone.id);
+                                $scope.$apply();
+                            });
                         }, function () {
                             console.log('CANCELLATO!!!!');
                         });
@@ -5297,13 +5034,9 @@
                         $mdDialog.hide();
                     }
                 }],
-                onRemoving         : function (event, removePromise) {
+                onRemoving         : function () {
                     if (dataService.updateMapTimer === undefined) {
                         window.location.reload();
-                        // NgMap.getMap('outdoor-map').then((map) => {
-                        //     console.log('enabling timer: ', map);
-                        //     $rootScope.$emit('constantUpdateMapTags', map, zoneColorModified)
-                        // });
                     }
                 }
             };
@@ -5313,10 +5046,7 @@
 
         //showing the anchors table
         $scope.showAnchorsTable = function () {
-            if (dataService.canvasInterval !== undefined) {
-                $interval.cancel(dataService.canvasInterval);
-                dataService.canvasInterval = undefined;
-            }
+            dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
 
             let floor = dataService.userFloors.filter(f => f.name === dataService.defaultFloorName)[0];
 
@@ -5344,30 +5074,22 @@
                     $scope.searchString = '';
                     $scope.anchorTypes  = [];
 
-                    let id       = ++requestId;
-                    let id1, id2 = -1;
-
-                    socket.send(encodeRequestWithId(id, 'get_anchors_by_floor_and_location', {
+                    newSocketService.getData('get_anchors_by_floor_and_location', {
                         floor   : floor.name,
                         location: dataService.location.name
-                    }));
-                    socket.onmessage = (response) => {
-                        let parsedResponse = parseResponse(response);
-                        if (parsedResponse.id === id) {
-                            if (!parsedResponse.session_state)
-                                window.location.reload();
+                    }, (response) => {
+                        if (!response.session_state)
+                            window.location.reload();
 
-                            $scope.neighbors = parsedResponse.result;
-                            id1              = ++requestId;
-                            socket.send(encodeRequestWithId(id1, 'get_anchor_types'));
-                        } else if (parsedResponse.id === id1) {
-                            if (!parsedResponse.session_state)
-                                window.location.reload();
+                        $scope.neighbors = response.result;
+                    });
 
-                            $scope.anchorTypes = parsedResponse.result;
+                    newSocketService.getData('get_anchor_types', {}, (response) => {
+                        if (!response.session_state)
+                            window.location.reload();
 
-                        }
-                    };
+                        $scope.anchorTypes = response.result;
+                    });
 
                     $scope.updateSearch = (event) => {
                         event.stopPropagation();
@@ -5392,9 +5114,7 @@
                                     permittedIds.push(t.id);
                                 });
 
-
-                            let id3 = ++requestId;
-                            socket.send(encodeRequestWithId(id3, 'insert_anchor', {
+                            newSocketService.getData('insert_anchor', {
                                 name      : $scope.insertAnchor.name,
                                 mac       : $scope.insertAnchor.mac,
                                 type      : $scope.insertAnchor.selectedType,
@@ -5404,24 +5124,19 @@
                                 permitteds: permittedIds,
                                 neighbors : neighborsString,
                                 floor     : floor.id
-                            }));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id3) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            }, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
 
-                                    if (parsedResponse.result.length === 0) {
-                                        $scope.insertAnchor.resultClass = 'background-green';
-                                        $timeout(function () {
-                                            $mdDialog.hide();
-                                            $rootScope.$emit('updateAnchorsTable', {});
-                                        }, 1000);
-                                        $scope.$apply();
-                                    }
+                                if (response.result.length === 0) {
+                                    $scope.insertAnchor.resultClass = 'background-green';
+                                    $timeout(function () {
+                                        $mdDialog.hide();
+                                        $rootScope.$emit('updateAnchorsTable', {});
+                                    }, 1000);
+                                    $scope.$apply();
                                 }
-                            };
-
+                            });
                         } else {
                             $scope.insertAnchor.resultClass = 'background-red';
                         }
@@ -5464,48 +5179,40 @@
                     };
 
                     let updateAnchorsTable = () => {
-                        console.log('updating table');
                         $scope.anchors = [];
-                        let id4        = ++requestId;
-                        let id5        = -1;
-                        socket.send(encodeRequestWithId(id4, 'get_anchors_by_floor_and_location', {
+
+                        newSocketService.getData('get_anchors_by_floor_and_location', {
                             floor   : (floor.name !== undefined) ? floor.name : '',
                             location: dataService.location.name
-                        }));
+                        }, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id4) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
-
-                                // $scope.anchors = parsedResponse.result;
-                                parsedResponse.result.forEach(anchor => {
-                                    let anchorPermitteds = anchor.permitted_asset.split(',');
-                                    $scope.anchors.push({
-                                        anchor    : anchor,
-                                        permitteds: anchorPermitteds[0] === "" ? [] : anchorPermitteds
-                                    });
+                            // $scope.anchors = parsedResponse.result;
+                            response.result.forEach(anchor => {
+                                let anchorPermitteds = anchor.permitted_asset.split(',');
+                                $scope.anchors.push({
+                                    anchor    : anchor,
+                                    permitteds: anchorPermitteds[0] === "" ? [] : anchorPermitteds
                                 });
+                            });
 
-                                $scope.tableEmpty = parsedResponse.result.length === 0;
-                                $scope.$apply();
+                            $scope.tableEmpty = response.result.length === 0;
+                            $scope.$apply();
+                        });
 
-                                id5 = ++requestId;
-                                socket.send(encodeRequestWithId(id5, 'get_all_tags_macs'));
-                            } else if (parsedResponse.id === id5) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        newSocketService.getData('get_all_tags_macs', {}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                dataService.allTags.forEach(tag => {
-                                    parsedResponse.result.forEach(mac => {
-                                        if (mac.tag_name === tag.name) {
-                                            $scope.anchorTable.permittedAssets.push({tag: tag.name, mac: mac.mac});
-                                        }
-                                    });
+                            dataService.allTags.forEach(tag => {
+                                response.result.forEach(mac => {
+                                    if (mac.tag_name === tag.name) {
+                                        $scope.anchorTable.permittedAssets.push({tag: tag.name, mac: mac.mac});
+                                    }
                                 });
-                            }
-                        };
+                            });
+                        });
                     };
 
                     let isPermittedChanged = (anchor, permitteds) => {
@@ -5519,26 +5226,18 @@
 
                     $scope.updatePermitteds = (anchor, permitteds) => {
                         if (isPermittedChanged(anchor, permitteds)) {
-                            console.log('updating anchor: ', anchor);
                             let permittedsString = '';
                             permitteds.forEach(permitted => {
                                 permittedsString += permitted + ',';
                             });
 
-                            let id6 = ++requestId;
-                            socket.send(encodeRequestWithId(id6, 'update_anchor_permitteds', {
+                            newSocketService.getData('update_anchor_permitteds', {
                                 anchor_id : anchor,
                                 permitteds: permittedsString
-                            }));
-                            socket.onmessage = (response) => {
-                                let persedResponse = parseResponse(response);
-                                if (persedResponse.id === id6) {
-                                    if (!persedResponse.session_state)
-                                        window.location.reload();
-
-                                    console.log("permitteds updated");
-                                }
-                            };
+                            }, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
+                            });
                         }
                     };
 
@@ -5558,22 +5257,14 @@
                                 save       : function (input) {
                                     input.$invalid     = true;
                                     anchor[anchorName] = input.$modelValue;
-                                    let id5            = ++requestId;
-                                    socket.send(encodeRequestWithId(id5, 'change_anchor_field', {
+                                    newSocketService.getData('change_anchor_field', {
                                         anchor_id   : anchor.id,
                                         anchor_field: anchorName,
                                         field_value : input.$modelValue
-                                    }));
-                                    socket.onmessage = (response) => {
-                                        let parsedResponse = parseResponse(response);
-                                        if (parsedResponse.id === id5) {
-                                            if (!parsedResponse.session_state)
-                                                window.location.reload();
-
-                                            if (parsedResponse.result !== 1)
-                                                console.log(parsedResponse.result);
-                                        }
-                                    };
+                                    }, (response) => {
+                                        if (!response.session_state)
+                                            window.location.reload();
+                                    });
                                 },
                                 targetEvent: event,
                                 title      : lang.insertValue,
@@ -5602,21 +5293,13 @@
                             .cancel(lang.cancel);
 
                         $mdDialog.show(confirm).then(function () {
-                            let id6 = ++requestId;
-                            socket.send(encodeRequestWithId(id6, 'delete_anchor', {anchor_id: anchor.id}));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id6) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            newSocketService.getData('delete_anchor', {anchor_id: anchor.id}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
 
-                                    if (parsedResponse.result > 0) {
-                                        $rootScope.$emit('updateAnchorsTable', {});
-                                        // $scope.anchors = $scope.anchors.filter(a => a.id !== anchor.id);
-                                        // $scope.$apply();
-                                    }
-                                }
-                            };
+                                if (response.result > 0)
+                                    $rootScope.$emit('updateAnchorsTable', {});
+                            })
                         }, function () {
                             console.log('CANCELLATO!!!!');
                         });
@@ -5626,7 +5309,7 @@
                         $mdDialog.hide();
                     };
                 }],
-                onRemoving         : function (event, removePromise) {
+                onRemoving         : function () {
                     if (dataService.canvasInterval === undefined) {
                         $rootScope.$emit('constantUpdateCanvas', {})
                     }
@@ -5637,8 +5320,8 @@
 
         //showing floors table
         $scope.floorUpdate = () => {
-            $interval.cancel(dataService.canvasInterval);
-            dataService.canvasInterval = undefined;
+            dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
+
             let floorChanged           = false;
 
             let addRowDialog = {
@@ -5673,83 +5356,75 @@
                                 file     = fileInput.files[0];
                                 fileName = file.name;
                             }
-                            let id       = ++requestId;
-                            let id1, id2 = -1;
 
-                            socket.send(encodeRequestWithId(id, 'get_all_locations'));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            newSocketService.getData('get_all_locations', {}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
 
-                                    currentLocation = parsedResponse.result.filter(l => l.name === dataService.location.name)[0];
+                                currentLocation = response.result.filter(l => l.name === dataService.location.name)[0];
 
-                                    if (file !== null) {
-                                        id1 = ++requestId;
-                                        socket.send(encodeRequestWithId(id1, 'insert_floor', {
-                                            name     : $scope.insertFloor.floorName,
-                                            map_image: (fileName === null) ? '' : fileName,
-                                            map_width: $scope.insertFloor.mapWidth,
-                                            spacing  : $scope.insertFloor.spacing,
-                                            location : currentLocation.id
-                                        }));
-                                    } else {
-                                        $scope.insertFloor.showSuccess = false;
-                                        $scope.insertFloor.showError   = true;
-                                        $scope.insertFloor.message     = lang.selectFloorFile;
-                                        $scope.insertFloor.resultClass = 'background-red';
-                                    }
-                                } else if (parsedResponse.id === id1) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                                if (file !== null) {
+                                    newSocketService.getData('insert_floor', {
+                                        name     : $scope.insertFloor.floorName,
+                                        map_image: (fileName === null) ? '' : fileName,
+                                        map_width: $scope.insertFloor.mapWidth,
+                                        spacing  : $scope.insertFloor.spacing,
+                                        location : currentLocation.id
+                                    }, (insertedFloor) => {
+                                        if (!insertedFloor.session_state)
+                                            window.location.reload();
 
-                                    if (parsedResponse.result !== undefined && parsedResponse.result !== 0) {
-                                        convertImageToBase64(file)
-                                            .then((response) => {
-                                                id2 = ++requestId;
-                                                socket.send(encodeRequestWithId(id2, 'save_floor_image', {
-                                                    imageName: fileName,
-                                                    image    : response
-                                                }));
-                                            });
-                                    } else {
-                                        $scope.insertFloor.showSuccess = false;
-                                        $scope.insertFloor.showError   = true;
-                                        $scope.insertFloor.message     = lang.impossibleInsertFloor;
-                                        $scope.insertFloor.resultClass = 'background-red';
-                                    }
-                                } else if (parsedResponse.id === id2) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                                        if (insertedFloor.result !== undefined && insertedFloor.result !== 0) {
+                                            convertImageToBase64(file)
+                                                .then((base64File) => {
+                                                    newSocketService.getData('save_floor_image', {
+                                                        imageName: fileName,
+                                                        image    : base64File
+                                                    }, (savedImage) => {
+                                                        if (!savedImage.session_state)
+                                                            window.location.reload();
 
-                                    if (parsedResponse.result === false) {
-                                        $scope.insertFloor.showSuccess = false;
-                                        $scope.insertFloor.showError   = true;
-                                        $scope.insertFloor.message     = lang.floorInsertedWithoutImage;
-                                        $scope.insertFloor.resultClass = 'background-orange';
+                                                        if (savedImage.result === false) {
+                                                            $scope.insertFloor.showSuccess = false;
+                                                            $scope.insertFloor.showError   = true;
+                                                            $scope.insertFloor.message     = lang.floorInsertedWithoutImage;
+                                                            $scope.insertFloor.resultClass = 'background-orange';
 
-                                        $scope.$apply();
+                                                            $scope.$apply();
 
-                                        $timeout(function () {
-                                            $mdDialog.hide();
-                                            $rootScope.$emit('updateFloorTable', {});
-                                        }, 1000);
-                                    } else {
-                                        $scope.insertFloor.resultClass = 'background-green';
-                                        $scope.insertFloor.showSuccess = true;
-                                        $scope.insertFloor.showError   = false;
-                                        $scope.insertFloor.message     = lang.floorInserted;
+                                                            $timeout(function () {
+                                                                $mdDialog.hide();
+                                                                $rootScope.$emit('updateFloorTable', {});
+                                                            }, 1000);
+                                                        } else {
+                                                            $scope.insertFloor.resultClass = 'background-green';
+                                                            $scope.insertFloor.showSuccess = true;
+                                                            $scope.insertFloor.showError   = false;
+                                                            $scope.insertFloor.message     = lang.floorInserted;
 
-                                        $scope.$apply();
+                                                            $scope.$apply();
 
-                                        $timeout(function () {
-                                            $mdDialog.hide();
-                                            $rootScope.$emit('updateFloorTable', {});
-                                        }, 1000);
-                                    }
+                                                            $timeout(function () {
+                                                                $mdDialog.hide();
+                                                                $rootScope.$emit('updateFloorTable', {});
+                                                            }, 1000);
+                                                        }
+                                                    });
+                                                });
+                                        } else {
+                                            $scope.insertFloor.showSuccess = false;
+                                            $scope.insertFloor.showError   = true;
+                                            $scope.insertFloor.message     = lang.impossibleInsertFloor;
+                                            $scope.insertFloor.resultClass = 'background-red';
+                                        }
+                                    });
+                                } else {
+                                    $scope.insertFloor.showSuccess = false;
+                                    $scope.insertFloor.showError   = true;
+                                    $scope.insertFloor.message     = lang.selectFloorFile;
+                                    $scope.insertFloor.resultClass = 'background-red';
                                 }
-                            };
+                            });
                         } else {
                             $scope.location.resultClass = 'background-red';
                         }
@@ -5785,18 +5460,13 @@
                     };
 
                     let updateFloorTable = () => {
-                        let id = ++requestId;
-                        socket.send(encodeRequestWithId(id, 'get_floors_by_location', {location: dataService.location.name}));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        newSocketService.getData('get_floors_by_location', {locations: dataService.location,name}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                $scope.floors = parsedResponse.result;
-                                $scope.$apply();
-                            }
-                        };
+                            $scope.floors = response.result;
+                            $scope.$apply();
+                        });
                     };
 
                     updateFloorTable();
@@ -5815,26 +5485,20 @@
                                 save       : function (input) {
                                     input.$invalid   = true;
                                     floor[floorName] = input.$modelValue;
-                                    let id1          = ++requestId;
-                                    socket.send(encodeRequestWithId(id1, 'change_floor_field', {
+                                    newSocketService.getData('change_floor_field', {
                                         floor_id   : floor.id,
                                         floor_field: floorName,
                                         field_value: input.$modelValue
-                                    }));
-                                    socket.onmessage = (response) => {
-                                        let parsedResponse = parseResponse(response);
-                                        if (parsedResponse.id === id1) {
-                                            if (!parsedResponse.session_state)
-                                                window.location.reload();
+                                    }, (response) => {
+                                        if (!response.session_state)
+                                            window.location.reload();
 
-                                            if (parsedResponse.result === 1) {
-                                                if (floorName === 'map_width')
-                                                    floorChanged = true;
-                                                updateFloorTable();
-                                                //TODO handre when not saving field
-                                            }
+                                        if (response.result === 1) {
+                                            if (floorName === 'map_width')
+                                                floorChanged = true;
+                                            updateFloorTable();
                                         }
-                                    };
+                                    });
                                 },
                                 targetEvent: event,
                                 title      : lang.insertValue,
@@ -5863,23 +5527,18 @@
                             .cancel(lang.cancel.toUpperCase());
 
                         $mdDialog.show(confirm).then(function () {
-                            let id = ++requestId;
                             if ($scope.floors.length > 1) {
-                                socket.send(encodeRequestWithId(id, 'delete_floor', {floor_id: floor.id}));
-                                socket.onmessage = (response) => {
-                                    let parsedResponse = parseResponse(response);
-                                    if (parsedResponse.id === id) {
-                                        if (!parsedResponse.session_state)
-                                            window.location.reload();
+                                newSocketService.getData('delete_floor', {floor_id: floor.id}, (response) => {
+                                    if (!response.session_state)
+                                        window.location.reload();
 
-                                        if (parsedResponse.result > 0) {
-                                            $scope.floors = $scope.floors.filter(a => a.id !== floor.id);
-                                            if (floor.name === 'Piano di default')
-                                                dataService.defaultFloorCanceled = true;
-                                            $scope.$apply();
-                                        }
+                                    if (response.result > 0) {
+                                        $scope.floors = $scope.floors.filter(a => a.id !== floor.id);
+                                        if (floor.name === 'Piano di default')
+                                            dataService.defaultFloorCanceled = true;
+                                        $scope.$apply();
                                     }
-                                };
+                                });
                             }
                         }, function () {
                             console.log('CANCELLATO!!!!');
@@ -5907,21 +5566,14 @@
                         if (file != null) {
                             convertImageToBase64(file)
                                 .then((result) => {
-                                    let id = ++requestId;
-                                    socket.send(encodeRequestWithId(id, 'save_floor_image', {
+                                    newSocketService.getData('save_floor_image', {
                                         id   : $scope.floorId,
                                         image: result,
                                         name : fileName
-                                    }));
-                                    socket.onmessage = (response) => {
-                                        let parsedResponse = parseResponse(response);
-                                        if (parsedResponse.id === id) {
-                                            if (!parsedResponse.session_state)
-                                                window.location.reload();
-
-                                            //TODO handle if the image is not saved
-                                        }
-                                    }
+                                    }, (floorImage) => {
+                                        if (!floorImage.session_state)
+                                            window.location.reload();
+                                    });
                                 })
                         }
                     };
@@ -5930,7 +5582,7 @@
                         $mdDialog.hide();
                     }
                 }],
-                onRemoving         : function (event, removePromise) {
+                onRemoving         : function () {
                     if (dataService.canvasInterval === undefined) {
                         if (dataService.defaultFloorCanceled) {
                             window.location.reload();
@@ -5986,26 +5638,17 @@
 
         //function that makes the logout of the user
         $scope.logout = () => {
-            if (dataService.canvasInterval !== undefined) {
-                $interval.cancel(dataService.canvasInterval);
-                dataService.canvasInterval = undefined;
-            }
-            if (dataService.homeTimer !== undefined) {
-                $interval.cancel(dataService.homeTimer);
-                dataService.homeTimer = undefined;
-            }
-            let id = ++requestId;
-            socket.send(encodeRequestWithId(id, 'logout'));
-            socket.onmessage = (response) => {
-                let parsedRespone = parseResponse(response);
-                if (parsedRespone.id === id) {
-                    // if (parsedResponse.session_state)
-                    //     window.location.reload();
+            dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
+            dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
+            dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
 
-                    if (parsedRespone.result === 'logged_out')
-                        $state.go('login');
-                }
-            };
+            newSocketService.getData('logout', {}, (response) => {
+                if (!response.session_state)
+                    window.location.reload();
+
+                if (response.result === 'logged_out')
+                    $state.go('login');
+            });
         };
 
         //handeling search tags functionality
@@ -6024,91 +5667,86 @@
 
                 let newTag = $filter('filter')(dataService.allTags, newValue)[0];
                 if (!dataService.isOutdoor(newTag)) {
-                    let id1 = ++requestId;
-                    socket.send(encodeRequestWithId(id1, 'get_tag_floor', {tag: newTag.id}));
-                    socket.onmessage = (response) => {
-                        let parsedResponse = parseResponse(response);
-                        if (parsedResponse.id === id1) {
-                            if (!parsedResponse.session_state)
-                                window.location.reload();
+                    newSocketService.getData('get_tag_floor', {tag: newTag.id}, (response) => {
+                        if (!response.session_state)
+                            window.location.reload();
 
-                            if (parsedResponse.result.location_name === undefined || parsedResponse.result.name === undefined) {
-                                $mdDialog.show({
-                                    templateUrl        : componentsPath + 'tag-not-found-alert.html',
-                                    parent             : angular.element(document.body),
-                                    targetEvent        : event,
-                                    clickOutsideToClose: true,
-                                    controller         : ['$scope', '$controller', ($scope, $controller) => {
-                                        $controller('languageController', {$scope: $scope});
+                        if (response.result.location_name === undefined || response.result.name === undefined) {
+                            $mdDialog.show({
+                                templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                                parent             : angular.element(document.body),
+                                targetEvent        : event,
+                                clickOutsideToClose: true,
+                                controller         : ['$scope', '$controller', ($scope, $controller) => {
+                                    $controller('languageController', {$scope: $scope});
 
-                                        $scope.title   = $scope.lang.tagNotFound.toUpperCase();
-                                        $scope.message = $scope.lang.tagNotInitialized;
+                                    $scope.title   = $scope.lang.tagNotFound.toUpperCase();
+                                    $scope.message = $scope.lang.tagNotInitialized;
 
 
-                                        $scope.hide = () => {
-                                            $mdDialog.hide();
-                                        }
-                                    }],
-
-
-                                    onRemoving: function () {
-                                        $scope.selectedTag = '';
-                                    },
-                                })
-                            } else {
-                                $mdDialog.show({
-                                    locals             : {tags: parsedResponse.result, outerScope: $scope},
-                                    templateUrl        : componentsPath + 'search-tag-inside.html',
-                                    parent             : angular.element(document.body),
-                                    targetEvent        : event,
-                                    clickOutsideToClose: true,
-                                    controller         : ['$scope', 'tags', 'outerScope', 'socketService', function ($scope, tags, outerScope, socketService) {
-                                        let canvas  = null;
-                                        let context = null;
-
-                                        $scope.floorData = {
-                                            location : '',
-                                            floorName: ''
-                                        };
-
-                                        $timeout(function () {
-                                            canvas  = document.querySelector('#search-canvas-id');
-                                            context = canvas.getContext('2d');
-
-                                            $scope.floorData.location  = parsedResponse.result.location_name;
-                                            $scope.floorData.floorName = parsedResponse.result.name;
-
-                                            let img = new Image();
-
-                                            img.onload = function () {
-                                                canvas.width  = this.naturalWidth;
-                                                canvas.height = this.naturalHeight;
-
-                                                //updating the canvas and drawing border
-                                                updateCanvas(canvas.width, canvas.height, context, img);
-
-                                                let tagImg = new Image();
-                                                tagImg.src = imagePath + 'icons/tags/online_tag_24.png';
-
-                                                tagImg.onload = function () {
-                                                    drawIcon(newTag, context, tagImg, parsedResponse.result.width, canvas.width, canvas.height, true);
-                                                }
-                                            };
-                                            img.src    = imagePath + 'floors/' + parsedResponse.result.image_map;
-                                        }, 0);
-
-                                        $scope.hide = () => {
-                                            outerScope.selectedTag = '';
-                                            $mdDialog.hide();
-                                        }
-                                    }],
-                                    onRemoving         : () => {
-                                        $scope.selectedTag = '';
+                                    $scope.hide = () => {
+                                        $mdDialog.hide();
                                     }
-                                })
-                            }
+                                }],
+
+
+                                onRemoving: function () {
+                                    $scope.selectedTag = '';
+                                },
+                            })
+                        } else {
+                            $mdDialog.show({
+                                locals             : {tags: response.result, outerScope: $scope},
+                                templateUrl        : componentsPath + 'search-tag-inside.html',
+                                parent             : angular.element(document.body),
+                                targetEvent        : event,
+                                clickOutsideToClose: true,
+                                controller         : ['$scope', 'tags', 'outerScope', function ($scope, tags, outerScope) {
+                                    let canvas  = null;
+                                    let context = null;
+
+                                    $scope.floorData = {
+                                        location : '',
+                                        floorName: ''
+                                    };
+
+                                    $timeout(function () {
+                                        canvas  = document.querySelector('#search-canvas-id');
+                                        context = canvas.getContext('2d');
+
+                                        $scope.floorData.location  = response.result.location_name;
+                                        $scope.floorData.floorName = response.result.name;
+
+                                        let img = new Image();
+
+                                        img.onload = function () {
+                                            canvas.width  = this.naturalWidth;
+                                            canvas.height = this.naturalHeight;
+
+                                            //updating the canvas and drawing border
+                                            updateCanvas(canvas.width, canvas.height, context, img);
+
+                                            let tagImg = new Image();
+                                            tagImg.src = imagePath + 'icons/tags/online_tag_24.png';
+
+                                            tagImg.onload = function () {
+                                                drawIcon(newTag, context, tagImg, response.result.width, canvas.width, canvas.height, true);
+                                            }
+                                        };
+                                        img.src    = imagePath + 'floors/' + response.result.image_map;
+                                    }, 0);
+
+                                    $scope.hide = () => {
+                                        outerScope.selectedTag = '';
+                                        $mdDialog.hide();
+                                    }
+                                }],
+                                onRemoving         : () => {
+                                    $scope.selectedTag = '';
+                                }
+                            })
                         }
-                    }
+                    });
                 } else {
                     $mdDialog.show({
                         locals             : {tagName: newValue, outerScope: $scope},
@@ -6116,9 +5754,8 @@
                         parent             : angular.element(document.body),
                         targetEvent        : event,
                         clickOutsideToClose: true,
-                        controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', 'socketService', function ($scope, NgMap, tagName, outerScope, socketService) {
+                        controller         : ['$scope', 'NgMap', 'tagName', 'outerScope', function ($scope, NgMap, tagName, outerScope) {
 
-                            let id2             = ++requestId;
                             $scope.locationName = '';
 
                             $scope.mapConfiguration = {
@@ -6128,23 +5765,19 @@
 
                             let tag = dataService.allTags.filter(t => t.name === tagName)[0];
 
-                            socket.send(encodeRequestWithId(id2, 'get_all_locations'));
-                            socket.onmessage = (response) => {
-                                let parsedResponse = parseResponse(response);
-                                if (parsedResponse.id === id2) {
-                                    if (!parsedResponse.session_state)
-                                        window.location.reload();
+                            newSocketService.getData('get_all_locations', {}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
 
-                                    let locations = parsedResponse.result;
+                                let locations = response.result;
 
 
-                                    locations.forEach((location) => {
-                                        if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
-                                            $scope.locationName = location.name;
-                                        }
-                                    });
-                                }
-                            };
+                                locations.forEach((location) => {
+                                    if ((dataService.getTagDistanceFromLocationOrigin(tag, [location.latitude, location.longitude])) <= location.radius) {
+                                        $scope.locationName = location.name;
+                                    }
+                                });
+                            });
 
                             NgMap.getMap('search-map').then((map) => {
                                 map.set('styles', mapConfiguration);
@@ -6206,7 +5839,6 @@
                     dataService.drawingManagerRect.setMap(map);
 
                     google.maps.event.addListener(dataService.drawingManagerRect, 'rectanglecomplete', function (rectangle) {
-                        let id   = ++requestId;
                         let data = {
                             x_left  : rectangle.getBounds().getNorthEast().lat(),
                             y_up    : rectangle.getBounds().getNorthEast().lng(),
@@ -6216,19 +5848,14 @@
                             location: dataService.location.name
                         };
 
-                        let strigified = JSON.stringify(data);
-                        socket.send(encodeRequestWithId(id, 'insert_outdoor_rect_zone', {
-                            data: strigified
-                        }));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        let stringified = JSON.stringify(data);
 
-                                dataService.outdoorZoneInserted = true;
-                            }
-                        };
+                        newSocketService.getData('insert_outdoor_rect_zone', {data: stringified}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
+
+                            dataService.outdoorZoneInserted = true;
+                        });
                     });
                 });
             } else {
@@ -6237,7 +5864,6 @@
                 if (dataService.outdoorZoneInserted)
                     window.location.reload();
             }
-            console.log('outdoor drawing');
         });
 
         $scope.$watch('switch.showOutdoorRoundDrawing', function (newValue) {
@@ -6247,7 +5873,6 @@
                     dataService.drawingManagerRound.setMap(map);
 
                     google.maps.event.addListener(dataService.drawingManagerRound, 'circlecomplete', function (circle) {
-                        let id   = ++requestId;
                         let data = {
                             x       : circle.getCenter().lat(),
                             y       : circle.getCenter().lng(),
@@ -6256,19 +5881,14 @@
                             location: dataService.location.name
                         };
 
-                        let strigified = JSON.stringify(data);
-                        socket.send(encodeRequestWithId(id, 'insert_outdoor_round_zone', {
-                            data: strigified
-                        }));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        let stringified = JSON.stringify(data);
 
-                                dataService.outdoorZoneInserted = true;
-                            }
-                        };
+                        newSocketService.getData('insert_outdoor_round_zone', {data: stringified}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
+
+                            dataService.outdoorZoneInserted = true;
+                        });
                     });
                 });
             } else {
@@ -6277,7 +5897,6 @@
                 if (dataService.outdoorZoneInserted)
                     window.location.reload();
             }
-            console.log('outdoor drawing');
         });
     }
 

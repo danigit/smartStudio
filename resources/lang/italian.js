@@ -264,7 +264,7 @@ let lang = {
     deleteMac: 'Cancella mac',
     okDeleteMac: 'Sei sicuro di voler cancellare il mac?',
     okDeleteZone: 'Sei sicuro di voler cancellare la zona?',
-    shutdownTags                    : 'WeTags spenti',
+    shutDownTags                    : 'WeTags spenti',
     activeTags: 'Tag attivi',
     disabledTags                    : 'WeTags disabilitati',
     lostTags                        : 'WeTags dispersi',

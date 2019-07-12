@@ -8,14 +8,13 @@
     //SERVICES
     main.service('dataService', dataService);
     main.service('recoverPassService', recoverPassService);
-    main.service('socketService', socketService);
+    // main.service('socketService', socketService);
     main.service('newSocketService', newSocketService);
 
-    dataService.$inject = ['$mdDialog', '$interval', '$state', 'socketService', 'newSocketService'];
+    dataService.$inject = ['$mdDialog', '$interval', '$state', 'newSocketService'];
 
-    function dataService($mdDialog, $interval, $state, socketService, newSocketService) {
+    function dataService($mdDialog, $interval, $state, newSocketService) {
         let service = this;
-        let socket = socketService.getSocket();
 
         service.user             = '';
         service.location             = '';
@@ -50,6 +49,8 @@
         service.outdoorZones = [];
         service.outdoorZoneInserted = false;
         // service.gridSpacing = 0;
+
+
 
         //#####################################################################
         //#                             HOME FUNCTIONS                        #
@@ -144,18 +145,13 @@
         service.updateUserSettings = () => {
             let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, outdoor_tag_on: service.switch.showOutdoorTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};
             let stringifyData = JSON.stringify(data);
-            let id = ++requestId;
 
-            socket.send(encodeRequestWithId(id, 'update_user_settings', {username: service.user.username, data: stringifyData}));
-            socket.onmessage = (response) => {
-                let parsedResponse = parseResponse(response);
-                if (parsedResponse.id === id){
-                    if (!parsedResponse.session_state)
-                        window.location.reload();
+            newSocketService.getData('update_user_settings', {username: service.user.username, data: stringifyData}, (response) => {
+                if (!response.session_state)
+                    window.location.reload();
 
-                    service.loadUserSettings();
-                }
-            };
+                service.loadUserSettings();
+            });
         };
 
 
@@ -495,36 +491,31 @@
 
                     $interval.cancel(service.offlineTagsInterval);
                     service.offlineAnchorsInterval = $interval(function () {
-                        let id = ++requestId;
-                        socket.send(encodeRequestWithId(id, 'get_anchors_by_floor_and_location', {
+                        newSocketService.getData('get_anchors_by_floor_and_location', {
                             floor: dataService.defaultFloorName,
                             location: dataService.location.name
-                        }));
-                        socket.onmessage = (response) => {
-                            let parsedResponse = parseResponse(response);
-                            if (parsedResponse.id === id) {
-                                if (!parsedResponse.session_state)
-                                    window.location.reload();
+                        }, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
 
-                                let tempOfflineAnchors = parsedResponse.result.filter(a => a.is_offline);
+                            let tempOfflineAnchors = response.result.filter(a => a.is_offline);
 
-                                if (!angular.equals(tempOfflineAnchors, $scope.offlineAnchors)) {
-                                    $scope.offlineAnchors = tempOfflineAnchors;
-                                }
-
-                                let tempShutDownAnchors = parsedResponse.result.filter(a => a.battery_status === 1);
-
-                                if (!angular.equals(tempShutDownAnchors, $scope.shutDownAnchors)){
-                                    $scope.shutDownAnchors = tempShutDownAnchors;
-                                }
-
-                                $scope.anchorsState.offline = $scope.offlineAnchors.length;
-                                $scope.anchorsState.online  = parsedResponse.result.length - $scope.offlineAnchors.length;
-                                $scope.anchorsState.shutDown = $scope.shutDownAnchors.length;
-
-                                $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online, $scope.anchorsState.shutDown];
+                            if (!angular.equals(tempOfflineAnchors, $scope.offlineAnchors)) {
+                                $scope.offlineAnchors = tempOfflineAnchors;
                             }
-                        };
+
+                            let tempShutDownAnchors = response.result.filter(a => a.battery_status === 1);
+
+                            if (!angular.equals(tempShutDownAnchors, $scope.shutDownAnchors)){
+                                $scope.shutDownAnchors = tempShutDownAnchors;
+                            }
+
+                            $scope.anchorsState.offline = $scope.offlineAnchors.length;
+                            $scope.anchorsState.online  = response.result.length - $scope.offlineAnchors.length;
+                            $scope.anchorsState.shutDown = $scope.shutDownAnchors.length;
+
+                            $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online, $scope.anchorsState.shutDown];
+                        });
                     }, 1000);
 
 
@@ -533,19 +524,21 @@
                     }
                 }],
                 onRemoving: function(){
-                    if (service.offlineAnchorsInterval !== undefined) {
-                        $interval.cancel(service.offlineAnchorsInterval);
-                        service.offlineAnchorsInterval = undefined;
-                        if (position === 'home') {
+                    service.offlineAnchorsInterval = service.stopTimer(service.offlineAnchorsInterval);
+
+                    switch (position) {
+                        case 'home':
                             if (service.homeTimer === undefined)
                                 constantUpdateNotifications(map);
-                        }else if (position === 'outside') {
+                            break;
+                        case 'outside':
                             if (service.updateMapTimer === undefined)
                                 constantUpdateNotifications(map);
-                        }else if (position === 'canvas') {
+                            break;
+                        case 'canvas':
                             if (service.canvasInterval === undefined)
                                 constantUpdateNotifications();
-                        }
+                            break;
                     }
                 },
             })
@@ -561,10 +554,6 @@
                 image      : image,
                 location: location
             };
-        };
-
-        service.getAllLocations = () => {
-            return socketService.sendRequest('get_all_locations');
         };
 
         service.isTagInLocation = (tag, location) => {
@@ -624,18 +613,18 @@
             return alarms;
         };
 
-        service.getIndoorTagLocation = (tag) => {
-            return new Promise(resolve => {
-                socketService.sendRequest('get_indoor_tag_location', {tag: tag.id})
-                    .then((response) => {
-                        if (response.result.session_state)
-                            window.location.reload();
-
-                        console.log(response);
-                        resolve(response.result);
-                    })
-            })
-        };
+        // service.getIndoorTagLocation = (tag) => {
+        //     return new Promise(resolve => {
+        //         socketService.sendRequest('get_indoor_tag_location', {tag: tag.id})
+        //             .then((response) => {
+        //                 if (response.result.session_state)
+        //                     window.location.reload();
+        //
+        //                 console.log(response);
+        //                 resolve(response.result);
+        //             })
+        //     })
+        // };
 
         //function that controls if the passed alarm is in the array passed as well as parameter
         let controlIfAlarmIsInArray = (alarms, tag, alarmType) => {
@@ -918,42 +907,42 @@
             }
         };
 
-        service.getTagsLocation = async (tags, locations, userLocations) => {
-            console.log(locations);
-            console.log(userLocations);
-            let alarms = [];
-            let tagAlarms = [];
-
-            for (let i = 0; i < tags.length; i++) {
-
-                if (!service.isOutdoor(tags[i])) {
-                    await socketService.sendRequest('get_indoor_tag_location', {tag: tags[i].id})
-                        .then((response) => {
-                            if (response.result.session_state)
-                                window.location.reload();
-
-                            console.log(response);
-                            if (response.result.name !== undefined)
-                                tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, response.result.name);
-                            else
-                                tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, lang.noLocation);
-                        })
-                }else{
-                    let someResult = locations.filter(l => service.getTagDistanceFromLocationOrigin(tags[i], [l.latitude, l.longitude]) <= l.radius);
-                    if (someResult.length !== 0 && userLocations !== undefined && userLocations.some(l => l.name === someResult[0].name)){
-                        console.log('is use location')
-                        tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, someResult[0].name);
-                    } else {
-                        tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, lang.noLocation);
-                    }
-                }
-
-                alarms.push(tagAlarms);
-                tagAlarms = [];
-            }
-
-            return alarms;
-        };
+        // service.getTagsLocation = async (tags, locations, userLocations) => {
+        //     console.log(locations);
+        //     console.log(userLocations);
+        //     let alarms = [];
+        //     let tagAlarms = [];
+        //
+        //     for (let i = 0; i < tags.length; i++) {
+        //
+        //         if (!service.isOutdoor(tags[i])) {
+        //             await socketService.sendRequest('get_indoor_tag_location', {tag: tags[i].id})
+        //                 .then((response) => {
+        //                     if (response.result.session_state)
+        //                         window.location.reload();
+        //
+        //                     console.log(response);
+        //                     if (response.result.name !== undefined)
+        //                         tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, response.result.name);
+        //                     else
+        //                         tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, lang.noLocation);
+        //                 })
+        //         }else{
+        //             let someResult = locations.filter(l => service.getTagDistanceFromLocationOrigin(tags[i], [l.latitude, l.longitude]) <= l.radius);
+        //             if (someResult.length !== 0 && userLocations !== undefined && userLocations.some(l => l.name === someResult[0].name)){
+        //                 console.log('is use location')
+        //                 tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, someResult[0].name);
+        //             } else {
+        //                 tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, lang.noLocation);
+        //             }
+        //         }
+        //
+        //         alarms.push(tagAlarms);
+        //         tagAlarms = [];
+        //     }
+        //
+        //     return alarms;
+        // };
 
         service.getOutdoorTagLocation = (locations, tag) => {
             return locations.filter( l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
@@ -991,85 +980,87 @@
     }
 
     /**
-     * Function thai initialize a websocket chanel
-     * @type {Array}
-     */
-    socketService.$inject = ['$state'];
-
-    function socketService($state) {
-        let service = this;
-        service.socketClosed     = false;
-        let server               = new WebSocket('ws://localhost:8090');
-        let serializedSocket = new WebSocket('ws://localhost:8090');
-
-        service.getSocket = () => {
-            return serializedSocket;
-        };
-
-        let isConstantOpen = false;
-
-        serializedSocket.onopen = function () {
-            isConstantOpen = true;
-        };
-
-        serializedSocket.onerror = function () {
-            console.error('error on connection')
-        };
-
-        serializedSocket.onerror = function() {
-            $state.go('login');
-            service.socketClosed = true;
-        };
-
-        let isOpen = false;
-
-        service.floor = {
-            defaultFloor: 1
-        };
-
-        server.onopen = function () {
-            isOpen = true;
-        };
-
-        server.onclose = () => {
-            $state.go('login');
-            service.socketClosed = true;
-        };
-
-        service.sendRequest = (action, data) => {
-            return new Promise(function (resolve, reject) {
-
-                if (isOpen) {
-                    server.send(encodeRequest(action, data));
-                    server.onmessage = function (message) {
-                        resolve(JSON.parse(message.data));
-                    };
-                }
-
-                server.onopen = function () {
-                    server.send(encodeRequest(action, data));
-                    server.onmessage = function (message) {
-                        resolve(JSON.parse(message.data));
-                        isOpen = true;
-                    };
-                };
-
-                server.onerror = function (error) {
-                    reject(error);
-                }
-            });
-        };
-    }
+    //  * Function thai initialize a websocket chanel
+    //  * @type {Array}
+    //  */
+    // socketService.$inject = ['$state'];
+    //
+    // function socketService($state) {
+    //     let service = this;
+    //     service.socketClosed     = false;
+    //     let server               = new WebSocket('ws://localhost:8090');
+    //     let serializedSocket = new WebSocket('ws://localhost:8090');
+    //
+    //     service.getSocket = () => {
+    //         return serializedSocket;
+    //     };
+    //
+    //     let isConstantOpen = false;
+    //
+    //     serializedSocket.onopen = function () {
+    //         isConstantOpen = true;
+    //     };
+    //
+    //     serializedSocket.onerror = function () {
+    //         console.error('error on connection')
+    //     };
+    //
+    //     serializedSocket.onerror = function() {
+    //         $state.go('login');
+    //         service.socketClosed = true;
+    //     };
+    //
+    //     let isOpen = false;
+    //
+    //     service.floor = {
+    //         defaultFloor: 1
+    //     };
+    //
+    //     server.onopen = function () {
+    //         isOpen = true;
+    //     };
+    //
+    //     server.onclose = () => {
+    //         $state.go('login');
+    //         service.socketClosed = true;
+    //     };
+    //
+    //     service.sendRequest = (action, data) => {
+    //         return new Promise(function (resolve, reject) {
+    //
+    //             if (isOpen) {
+    //                 server.send(encodeRequest(action, data));
+    //                 server.onmessage = function (message) {
+    //                     resolve(JSON.parse(message.data));
+    //                 };
+    //             }
+    //
+    //             server.onopen = function () {
+    //                 server.send(encodeRequest(action, data));
+    //                 server.onmessage = function (message) {
+    //                     resolve(JSON.parse(message.data));
+    //                     isOpen = true;
+    //                 };
+    //             };
+    //
+    //             server.onerror = function (error) {
+    //                 reject(error);
+    //             }
+    //         });
+    //     };
+    // }
 
     newSocketService.$inject = ['$state'];
     function newSocketService($state) {
         let service              = this;
         let id = 0;
         service.server               = socketServer;
+        service.socketClosed = false;
         service.callbacks = [];
 
         service.getData = (action, data, callback) => {
             let stringifyedData = JSON.stringify({action: action, data: data});
+
             if (socketOpened) {
                 service.server.send(stringifyedData);
                 service.callbacks.push({id: id, value: callback});
@@ -1084,6 +1075,10 @@
             service.server.onerror = (error) => {
                 let call = service.callbacks.shift();
                 call.value('error');
+            }
+
+            service.server.onclose = () => {
+                service.socketClosed = true;
             }
         };
     }
