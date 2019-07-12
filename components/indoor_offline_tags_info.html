@@ -24,9 +24,9 @@
 <!--popup content-->
 <md-content class="popup-padding">
     <div layout="row" layout-align="center center" ng-controller="languageController">
-        <div layout="column">
+        <div layout="column" class="width-500-px">
             <md-progress-circular ng-show="data.length === 0" md-diameter="100" md-mode="indeterminate"
-                                  class="margin-left-right-50-px"></md-progress-circular>
+                                  class="margin-auto"></md-progress-circular>
             <canvas ng-show="data.length !== 0" class="chart chart-doughnut"
                     chart-data="data" chart-labels="labels" chart-colors="colors">
             </canvas>
@@ -38,7 +38,7 @@
                          title="{{lang.onlineTags}}">
                     <div class="md-list-item-text" layout="column">
                         <h3>{{lang.onlineTags}}: <b class="color-green">{{tagsStateIndoor.online}}</b></h3>
-                        <h4>{{ tagsStateIndoor.online }} {{lang.areOnlineTags | lowercase}}</h4>
+                        <h4 class="color-green">{{ tagsStateIndoor.online }} {{lang.areOnlineTags | lowercase}}</h4>
                     </div>
                 </md-list-item>
                 <md-list-item class="md-3-line">
@@ -46,11 +46,11 @@
                          title="{{lang.offlineTags}}">
                     <div class="md-list-item-text" layout="column">
                         <h3>{{lang.offlineTags}}: <b class="color-darkgray">{{ offlineTagsIndoor.length }}</b></h3>
-                        <h4>{{ offlineTagsIndoor.length }} {{lang.areOfflineTags | lowercase}}</h4>
+                        <h4 class="color-darkgray">{{ offlineTagsIndoor.length }} {{lang.areOfflineTags | lowercase}}</h4>
                         <md-select ng-if="offlineTagsIndoor.length > 0" ng-model="antani"
                                    placeholder="{{lang.offlineTags}}">
                             <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offlineTagsIndoor">
-                                {{tag.name}}
+                                <img src="img/icons/offline_tags_alert_grey_24.png" class="margin-right-10-px"><span class="font-large vertical-align-super">{{tag.name}}</span>
                             </md-option>
                         </md-select>
                     </div>
@@ -60,10 +60,10 @@
                          title="{{lang.lostTags}}">
                     <div class="md-list-item-text" layout="column">
                         <h3>{{lang.lostTags}}: <b class="color-orange">{{tagsStateIndoor.offGrid}}</b></h3>
-                        <h4>{{ tagsStateIndoor.offgrid }} {{lang.areLostTags | lowercase}}</h4>
+                        <h4 class="color-orange">{{ tagsStateIndoor.offGrid }} {{lang.areLostTags | lowercase}}</h4>
                         <md-select ng-if="offgridTags.length > 0" ng-model="antani" placeholder="{{lang.lostTags}}">
                             <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offgridTags">
-                                {{tag.name}}
+                                <img src="img/icons/offline_tags_alert_24.png" class="margin-right-10-px"><span class="font-large vertical-align-super">{{tag.name}}</span>
                             </md-option>
                         </md-select>
                     </div>
@@ -73,10 +73,11 @@
                          title="{{lang.shutdownTags}}">
                     <div class="md-list-item-text" layout="column">
                         <h3>{{lang.shutdownTags}}: <b class="color-red">{{tagsStateIndoor.offTags}}</b></h3>
-                        <h4>{{ tagsStateIndoor.offTags }} {{lang.areShutdownTags | lowercase}}</h4>
+                        <h4 class="color-red">{{ tagsStateIndoor.offTags }} {{lang.areShutdownTags | lowercase}}</h4>
 
                         <md-select ng-if="offTags.length > 0" ng-model="antani" placeholder="{{lang.shutdownTags}}">
-                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offTags">{{tag.name}}
+                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offTags">
+                                <img src="img/icons/offline_tags_alert_red_24.png" class="margin-right-10-px"><span class="font-large vertical-align-super">{{tag.name}}</span>
                             </md-option>
                         </md-select>
                     </div>

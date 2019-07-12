@@ -2,18 +2,21 @@
     <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
         <!--map container-->
         <div id="map-div">
-            <div layout="column" class="top-corner background-transparent-white">
-                <img ng-show="homeCtrl.showAlarmsIcon" ng-click="homeCtrl.showAlarmsHome()" class="margin-bottom-3"
-                     src="img/icons/alarm-icon.png" alt="{{lang.activeAllarms}}" title="{{lang.activeAllarms}}">
-                <img ng-show="homeCtrl.showOfflineTagsIcon" ng-click="homeCtrl.showOfflineTagsHome()"
-                     class="margin-bottom-5-px" src="img/icons/offline_tags_alert_64.png"
-                     alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}">
-                <img ng-show="homeCtrl.showOfflineAnchorsIcon" ng-click="homeCtrl.showOfflineAnchorsHome()"
-                     src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
-                     title="{{lang.offlineAnchors}}">
-                <img ng-show="homeCtrl.showEngineOffIcon"
-                     src="img/icons/engine_off_64.png" alt="{{lang.engineOff}}"
-                     title="{{lang.engineOff}}">
+            <div layout="column" class="top-corner">
+                <div layout="column" class="background-transparent-gray">
+                    <img ng-show="homeCtrl.showAlarmsIcon" ng-click="homeCtrl.showAlarmsHome()" class="pulse-image margin-bottom-5-px padding-top-bottom-6px"
+                         src="img/icons/alarm-icon.png" alt="{{lang.activeAllarms}}" title="{{lang.activeAllarms}}">
+                    <img ng-show="homeCtrl.showOfflineTagsIcon" ng-click="homeCtrl.showOfflineTagsHome()"
+                         class="margin-bottom-5-px padding-top-bottom-6px border-bottom-3-white border-top-3-white" src="img/icons/offline_tags_alert_64.png"
+                         alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}">
+                    <img ng-show="homeCtrl.showOfflineAnchorsIcon" ng-click="homeCtrl.showOfflineAnchorsHome()" class="margin-bottom-5-px padding-top-bottom-6px border-bottom-3-white"
+                         src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
+                         title="{{lang.offlineAnchors}}">
+                    <img ng-show="homeCtrl.showEngineOffIcon" class="padding-top-bottom-6px border-bottom-3-white"
+                         src="img/icons/engine_off_64.png" alt="{{lang.engineOff}}"
+                         title="{{lang.engineOff}}">
+                </div>
+                <div ng-if="homeCtrl.showAlarmsIcon || homeCtrl.showOfflineTagsIcons || homeCtrl.showOfflineAnchorsIcon || homeCtrl.showEngineOffIcon" class="triangle-transparent-gray-down"></div>
             </div>
             <ng-map id="main-map" ng-init="homeCtrl.markerClicked()" center="{{mapConfiguration.center}}"
                     zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="height-100-vh">

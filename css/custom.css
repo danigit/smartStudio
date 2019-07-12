@@ -21,6 +21,10 @@ DIMENSIONS
     width: 20%;
 }
 
+.width-45{
+    width: 45%;
+}
+
 .width-50{
     width: 50%;
 }
@@ -55,8 +59,12 @@ DIMENSIONS
 
 
 
-
-
+/******************************************************************
+DISPLAY
+*******************************************************************/
+.display-flex{
+    display: flex;
+}
 
 
 
@@ -247,6 +255,10 @@ MARGINS
     margin-right: 50px;
 }
 
+.margin-right-5-px{
+    margin-right: 5px;
+}
+
 .margin-right-10-px{
     margin-right: 10px;
 }
@@ -282,6 +294,10 @@ PADDING
 
 .padding-top-5{
     padding-top: 5%;
+}
+
+.padding-top-bottom-6px{
+    padding: 6px 0;
 }
 
 .padding-bottom-10{
@@ -372,6 +388,13 @@ BORDER
     border-radius: 50%;
 }
 
+.border-bottom-3-white{
+    border-bottom: 3px solid #FFFFFF;
+}
+
+.border-top-3-white{
+    border-top: 3px solid #FFFFFF;
+}
 
 
 
@@ -410,7 +433,7 @@ COLOR
 }
 
 .color-green{
-    color: #4BAE5A;
+    color: #4BAE5A!important;
 }
 
 .color-darkblue{
@@ -505,8 +528,37 @@ OTHER
     display: none;
 }
 
+@keyframes zoomInOut {
+    0% {
+        transform: scale(0.5,0.5);
+    }
+    25% {
+        transform: scale(1,1);
+    }
+    50% {
+        transform: scale(1.2,1.2);
+    }
+    75% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(0.5,0.5);
+    }
+}
 
+.pulse-image{
+    animation: zoomInOut 1s infinite ;
+}
 
+.triangle-transparent-gray-down{
+    border-left: 35px solid transparent;
+    border-right: 29px solid transparent;
+    border-top: 50px solid #0000002e ;
+}
+
+.vertical-align-super{
+    vertical-align: super;
+}
 
 /******************************************************************
 DISPLAY
@@ -544,6 +596,11 @@ BACKGROUND
 .background-transparent-white{
     background-color: #ffffff5c!important;
 }
+
+.background-transparent-gray{
+    background-color: #0000002e!important;
+}
+
 
 .background-lightottanio{
     background-color:rgba(120,144,156,0.2);
@@ -614,7 +671,7 @@ POSITION
 .top-corner{
     position: absolute;
     top: 0;
-    right: 0;
+    right: 10px;
     z-index: 100;
 }
 

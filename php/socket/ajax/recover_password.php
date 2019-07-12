@@ -37,9 +37,9 @@ class recover_password extends communication {
                 $mail->Port = 587; //587; // 465;
                 $mail->SMTPSecure = 'tls';
                 $mail->SMTPAuth = true;
-                $mail->Username = "ds.acconto@gmail.com";
-                $mail->Password = "!ds!acconto88";
-                $mail->setFrom('ds.acconto@gmail.com', 'Smart Studio');
+                $mail->Username = "";
+                $mail->Password = "";
+                $mail->setFrom('', 'Smart Studio');
                 $mail->addAddress($this->email);
                 $mail->Subject = "Recupero password";
                 $mail->msgHTML("Sei stato contattato da Smart Track per un cambio password riguardante l'account Smart Studio<br><br>
