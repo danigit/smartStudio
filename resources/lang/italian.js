@@ -219,6 +219,8 @@ function languageController($scope) {
         color: 'Colore',
         saveConfiguration: 'Salva configurazione',
         manageLocation: 'Gestione siti',
+        muteAlarm: 'Silenzia allarmi',
+        silentiating: 'Silenzio allarmi ...',
     }
 };
 
@@ -284,5 +286,5 @@ let lang = {
     unableToSaveData: 'Impossibile salvare i dati',
     dataSavedSuccessfully: 'I dati sono stati salvati correttamente',
     dataSaved: 'Dati salvati',
-    actionCanceled: 'Operazione cancellata'
+    actionCanceled: 'Operazione cancellata',
 }

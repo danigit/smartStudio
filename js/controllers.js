@@ -178,7 +178,7 @@
             let constantUpdateNotifications = (map) => {
                 dataService.homeTimer = $interval(() => {
 
-                    console.log('home timer start');
+                    console.log('updating home page');
                     newSocketService.getData('get_all_tags', {}, (response) => {
                         if (!response.session_state)
                             window.location.reload();
@@ -251,7 +251,6 @@
                                 let locationTags    = dataService.getIndoorLocationTags(marker, userTags.result);
                                 let locationAnchors = dataService.getLocationAnchors(marker, response.result);
 
-                                console.log(marker);
                                 infoWindow = new google.maps.InfoWindow({
                                     content: '<div class="marker-info-container">' +
                                         '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
@@ -703,6 +702,7 @@
         let controllerMap              = null;
         let insideCircleInfoWindow = null;
         let outsideCircleInfoWindow = null;
+        outdoorCtrl.ctrlDataService = dataService.playAlarm;
 
         dataService.drawingManagerRect = new google.maps.drawing.DrawingManager({
             drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
@@ -1110,7 +1110,7 @@
 
             //updating the elements on the map every seccond
             dataService.updateMapTimer = $interval(() => {
-                console.log('constant update outdoor map');
+                console.log('updating outdoor location');
 
                 newSocketService.getData('get_all_tags', {}, (response) => {
                     tags                            = response.result;
@@ -1175,9 +1175,70 @@
                                 });
 
                                 //controlling if the tag is online and if has to be shown, if yes I show the tags on the map
-                                if ((new Date(Date.now()) - (new Date(tag.gps_time)) < tag.sleep_time_outdoor) && dataService.switch.showOutdoorTags) {
+                                if ((new Date(Date.now()) - (new Date(tag.gps_time)) < tag.sleep_time_outdoor)) {
                                     //showing the tags only for the admin user for the privacy problem
-                                    if (outdoorCtrl.isAdmin) {
+                                    if (outdoorCtrl.isAdmin === 1){
+                                        if (dataService.checkIfTagHasAlarm(tag)) {
+                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                        if (alarmsCounts[index] > tagAlarms.length - 1)
+                                                            alarmsCounts[index] = 0;
+
+                                                        dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
+
+                                                        if (tagAlarms.length !== prevAlarmCounts[index]) {
+                                                            google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
+                                                            dataService.dynamicTags[tagIndex].addListener('click', () => {
+                                                                $mdDialog.show({
+                                                                    locals             : {tag: tag},
+                                                                    templateUrl        : componentsPath + 'tag-info-outdoor.html',
+                                                                    parent             : angular.element(document.body),
+                                                                    targetEvent        : event,
+                                                                    clickOutsideToClose: true,
+                                                                    controller         : ['$scope', 'tag', ($scope, tag) => {
+                                                                        $scope.tag          = tag;
+                                                                        $scope.isTagInAlarm = 'background-red';
+
+                                                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag, null, null);
+
+                                                                        if ($scope.alarms.length === 0) {
+                                                                            ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
+                                                                                ? $scope.isTagInAlarm = 'background-gray'
+                                                                                : $scope.isTagInAlarm = 'background-green';
+                                                                        }
+
+                                                                        $scope.hide = () => {
+                                                                            $mdDialog.hide();
+                                                                        }
+                                                                    }]
+                                                                })
+                                                            })
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                dataService.setIcon(tag, marker);
+                                                dataService.dynamicTags.push(marker);
+                                                marker.setMap(map);
+                                                bounds.extend(marker.getPosition());
+                                            }
+                                        } else {
+                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                dataService.setIcon(tag, marker);
+                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                        dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
+                                                    }
+                                                });
+                                            } else {
+                                                dataService.setIcon(tag, marker);
+                                                dataService.dynamicTags.push(marker);
+                                                marker.setMap(map);
+                                                bounds.extend(marker.getPosition());
+                                            }
+                                        }
+                                    }else if (dataService.switch.showOutdoorTags) {
                                         if (dataService.checkIfTagsHaveAlarmsOutdoor(tags)) {
                                             if (dataService.checkIfTagHasAlarm(tag)) {
                                                 if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
@@ -1246,67 +1307,6 @@
                                                     dataService.dynamicTags.splice(index, 1);
                                                 }
                                             });
-                                        }
-                                    } else {
-                                        if (dataService.checkIfTagHasAlarm(tag)) {
-                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
-                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
-                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
-                                                        if (alarmsCounts[index] > tagAlarms.length - 1)
-                                                            alarmsCounts[index] = 0;
-
-                                                        dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
-
-                                                        if (tagAlarms.length !== prevAlarmCounts[index]) {
-                                                            google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
-                                                            dataService.dynamicTags[tagIndex].addListener('click', () => {
-                                                                $mdDialog.show({
-                                                                    locals             : {tag: tag},
-                                                                    templateUrl        : componentsPath + 'tag-info-outdoor.html',
-                                                                    parent             : angular.element(document.body),
-                                                                    targetEvent        : event,
-                                                                    clickOutsideToClose: true,
-                                                                    controller         : ['$scope', 'tag', ($scope, tag) => {
-                                                                        $scope.tag          = tag;
-                                                                        $scope.isTagInAlarm = 'background-red';
-
-                                                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag, null, null);
-
-                                                                        if ($scope.alarms.length === 0) {
-                                                                            ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
-                                                                                ? $scope.isTagInAlarm = 'background-gray'
-                                                                                : $scope.isTagInAlarm = 'background-green';
-                                                                        }
-
-                                                                        $scope.hide = () => {
-                                                                            $mdDialog.hide();
-                                                                        }
-                                                                    }]
-                                                                })
-                                                            })
-                                                        }
-                                                    }
-                                                });
-                                            } else {
-                                                dataService.setIcon(tag, marker);
-                                                dataService.dynamicTags.push(marker);
-                                                marker.setMap(map);
-                                                bounds.extend(marker.getPosition());
-                                            }
-                                        } else {
-                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
-                                                dataService.setIcon(tag, marker);
-                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
-                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
-                                                        dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
-                                                    }
-                                                });
-                                            } else {
-                                                dataService.setIcon(tag, marker);
-                                                dataService.dynamicTags.push(marker);
-                                                marker.setMap(map);
-                                                bounds.extend(marker.getPosition());
-                                            }
                                         }
                                     }
                                 } else if (dataService.checkIfTagHasAlarm(tag)) {
@@ -1436,6 +1436,7 @@
         let zoneToModify       = null;
         let alpha              = canvasData.alpha;
 
+        canvasCtrl.isAdmin = dataService.isAdmin;
         canvasCtrl.floors                 = dataService.floors;
         canvasCtrl.showAlarmsIcon         = false;
         canvasCtrl.showOfflineTagsIcon    = false;
@@ -1584,9 +1585,9 @@
             } else if (button === 'horizontal') {
                 canvasCtrl.drawingImage = 'horizontal-line.png';
             } else if (button === 'inclined') {
-                canvasCtrl.drawingImage = 'inclined-line.png';
+                canvasCtrl.drawingImage = 'inclined_line.png';
             } else if (button === 'delete') {
-                canvasCtrl.drawingImage = 'erase_24.png';
+                canvasCtrl.drawingImage = 'erase_line.png';
             } else if (button === 'draw_zone') {
                 canvasCtrl.drawingImage = 'draw_zone.png'
             } else if (button === 'delete_zone') {
@@ -1623,7 +1624,7 @@
                 bufferCanvas.width  = canvasImage.naturalWidth;
                 bufferCanvas.height = canvasImage.naturalHeight;
 
-                console.log('constant update canvas');
+                console.log('updating indoor location');
 
                 //updating the canvas and drawing border
                 updateCanvas(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasImage);
@@ -1637,177 +1638,249 @@
 
                 newSocketService.getData('get_all_tags', {}, (response) => {
                     tags = response.result;
-                });
 
-                newSocketService.getData('get_floors_by_user', {user: dataService.user.username}, (response) => {
-                    dataService.userFloors = response.result;
-                });
+                    newSocketService.getData('get_floors_by_user', {user: dataService.user.username}, (floorsByUser) => {
+                        dataService.userFloors = floorsByUser.result;
 
-                newSocketService.getData('get_floors_by_location', {location: canvasCtrl.floorData.location}, (response) => {
-                    if (!response.session_state)
-                        window.location.reload();
+                        newSocketService.getData('get_floors_by_location', {location: canvasCtrl.floorData.location}, (floorsByLocation) => {
+                            if (!floorsByLocation.session_state)
+                                window.location.reload();
 
-                    //controlling if any floor has ben deleted from the database
-                    // if (!angular.equals(canvasCtrl.floors, response.result)) {
-                        // let newFloor = null;
-                        // if (response.result.length > canvasCtrl.floors.length) {
-                        //     newFloor = parsedResponse.result.filter(f => !canvasCtrl.floors.some(cf => f.id === cf.id))[0];
-                        //     dataService.userFloors.push(newFloor);
-                        // } else {
-                        //     newFloor = canvasCtrl.floors.filter(f => !response.result.some(pf => f.id === pf.id))[0];
-                        //     if (newFloor !== undefined)
-                        //         dataService.userFloors = dataService.userFloors.filter(f => f.id !== newFloor.id);
-                        // }
-                        // canvasCtrl.floors = response.result;
-                    // }
-                    canvasCtrl.floors = response.result;
-                });
+                            //controlling if any floor has ben deleted from the database
+                            // if (!angular.equals(canvasCtrl.floors, response.result)) {
+                            // let newFloor = null;
+                            // if (response.result.length > canvasCtrl.floors.length) {
+                            //     newFloor = parsedResponse.result.filter(f => !canvasCtrl.floors.some(cf => f.id === cf.id))[0];
+                            //     dataService.userFloors.push(newFloor);
+                            // } else {
+                            //     newFloor = canvasCtrl.floors.filter(f => !response.result.some(pf => f.id === pf.id))[0];
+                            //     if (newFloor !== undefined)
+                            //         dataService.userFloors = dataService.userFloors.filter(f => f.id !== newFloor.id);
+                            // }
+                            // canvasCtrl.floors = response.result;
+                            // }
+                            canvasCtrl.floors = floorsByLocation.result;
+                            newSocketService.getData('get_drawing', {floor: canvasCtrl.defaultFloor[0].id}, (drawings) => {
+                                if (!drawings.session_state)
+                                    window.location.reload();
 
-                newSocketService.getData('get_drawing', {floor: canvasCtrl.defaultFloor[0].id}, (response) => {
-                    if (!response.session_state)
-                        window.location.reload();
+                                let parsedDraw = JSON.parse(drawings.result);
+                                if (parsedDraw !== null) {
+                                    parsedDraw.forEach((line) => {
+                                        drawLine(line.begin, line.end, line.type, bufferContext, canvasCtrl.switch.showDrawing);
+                                    });
+                                }
 
-                    let parsedDraw = JSON.parse(response.result);
-                    if (parsedDraw !== null) {
-                        parsedDraw.forEach((line) => {
-                            drawLine(line.begin, line.end, line.type, bufferContext, canvasCtrl.switch.showDrawing);
-                        });
-                    }
-                });
+                                newSocketService.getData('get_floor_zones', {
+                                    floor   : canvasCtrl.floorData.defaultFloorName,
+                                    location: canvasCtrl.floorData.location,
+                                    user    : dataService.user.username
+                                }, (floorZones) => {
+                                    if (!floorZones.session_state)
+                                        window.location.reload();
 
-                newSocketService.getData('get_floor_zones', {
-                    floor   : canvasCtrl.floorData.defaultFloorName,
-                    location: canvasCtrl.floorData.location,
-                    user    : dataService.user.username
-                }, (response) => {
-                    if (!response.session_state)
-                        window.location.reload();
-
-                    if (response.result.length > 0 && dataService.switch.showZones) {
-                        canvasCtrl.floorData.floorZones = response.result;
-                        response.result.forEach((zone) => {
-                            drawZoneRect({
-                                x : zone.x_left,
-                                y : zone.y_up,
-                                xx: zone.x_right,
-                                yy: zone.y_down
-                            }, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, zone.color, false, alpha);
-                        });
-                    }
-                });
-
-                newSocketService.getData('get_anchors_by_floor_and_location', {
-                    floor   : canvasCtrl.floorData.defaultFloorName,
-                    location: canvasCtrl.floorData.location
-                }, (response) => {
-                    dataService.anchors = response.result;
-                    if (response.result.length > 0) {
-                        loadAndDrawImagesOnCanvas(response.result, 'anchor', bufferCanvas, bufferContext, dataService.switch.showAnchors);
-                        canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
-                    }
-                });
-
-                newSocketService.getData('get_cameras_by_floor_and_location', {
-                    floor   : canvasCtrl.floorData.defaultFloorName,
-                    location: canvasCtrl.floorData.location
-                }, (response) => {
-                    dataService.cameras = response.result;
-                    if (response.result.length > 0)
-                        loadAndDrawImagesOnCanvas(response.result, 'camera', bufferCanvas, bufferContext, dataService.switch.showCameras);
-                });
-
-                newSocketService.getData('get_tags_by_floor_and_location', {
-                    floor   : canvasCtrl.defaultFloor[0].id,
-                    location: canvasCtrl.floorData.location
-                },  (response) => {
-                    if (!response.session_state)
-                        window.location.reload();
-
-                    dataService.playAlarmsAudio(response.result);
-                    dataService.floorTags = response.result;
-
-                    let tagClouds            = [];
-                    let isolatedTags         = [];
-                    let singleAndGroupedTags = [];
-                    let contextDrawed = false;
-
-                    let temporaryTagsArray = {
-                        singleTags: angular.copy(response.result),
-                    };
-
-                    for (let i = 0; i < temporaryTagsArray.singleTags.length;) {
-                        //getting the near tags of the tag passed as second parameter
-                        if (temporaryTagsArray.singleTags.length > 0) {
-                            let currentTag     = temporaryTagsArray.singleTags[0];
-                            temporaryTagsArray = dataService.groupNearTags(temporaryTagsArray.singleTags, temporaryTagsArray.singleTags[0]);
-
-                            if (temporaryTagsArray.groupTags.length === 1) {
-                                isolatedTags.push(temporaryTagsArray.groupTags[0])
-                            } else if (temporaryTagsArray.groupTags.length > 1) {
-                                singleAndGroupedTags.push(temporaryTagsArray.groupTags);
-                            } else {
-                                isolatedTags.push(currentTag);
-                            }
-                        }
-                    }
-
-                    //getting the tag clouds
-                    tagClouds = singleAndGroupedTags.filter(x => x.length > 1);
-
-                    dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
-                        .then((images) => {
-                            //control if there are clouds to bhe shown
-                            if (images !== null) {
-                                //drawing the clouds on the canvas
-                                images.forEach(function (image, index) {
-                                    drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
-                                });
-                            }
-
-                            return dataService.loadImagesAsynchronouslyWithPromise(isolatedTags, 'tag');
-                        })
-                        .then((images) => {
-                            if (images !== null) {
-                                //drawing the isolated tags
-                                isolatedTags.forEach(function (tag, index) {
-                                    if (!dataService.isOutdoor(tag)) {
-                                        if (tag.tag_type_id === 1 || tag.tag_type_id === 14) {
-                                            if (dataService.checkIfTagHasAlarm(tag)) {
-                                                dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
-                                                    .then((alarmImages) => {
-                                                        if (alarmsCounts[index] > alarmImages.length - 1)
-                                                            alarmsCounts[index] = 0;
-                                                        drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                        context.drawImage(bufferCanvas, 0, 0);
-                                                        contextDrawed = true;
-                                                    });
-                                            } else if (!dataService.isTagOffline(tag)) {
-                                                drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                            }
-                                        } else {
-                                            if (dataService.checkIfTagHasAlarm(tag)) {
-                                                dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
-                                                    .then((alarmImages) => {
-                                                        if (alarmsCounts[index] > alarmImages.length - 1)
-                                                            alarmsCounts[index] = 0;
-
-                                                        drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                        context.drawImage(bufferCanvas, 0, 0);
-                                                        contextDrawed = true;
-                                                    })
-                                            } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor)) {
-                                                drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                            } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor)) {
-                                                drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                            }
-                                        }
+                                    if (floorZones.result.length > 0 && dataService.switch.showZones) {
+                                        canvasCtrl.floorData.floorZones = floorZones.result;
+                                        floorZones.result.forEach((zone) => {
+                                            drawZoneRect({
+                                                x : zone.x_left,
+                                                y : zone.y_up,
+                                                xx: zone.x_right,
+                                                yy: zone.y_down
+                                            }, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, zone.color, false, alpha);
+                                        });
                                     }
-                                })
-                            }
-                            if (!contextDrawed)
-                                context.drawImage(bufferCanvas, 0, 0);
+
+                                    newSocketService.getData('get_anchors_by_floor_and_location', {
+                                        floor   : canvasCtrl.floorData.defaultFloorName,
+                                        location: canvasCtrl.floorData.location
+                                    }, (anchorsByFloorAndLocation) => {
+                                        dataService.anchors = anchorsByFloorAndLocation.result;
+                                        if (anchorsByFloorAndLocation.result.length > 0) {
+                                            loadAndDrawImagesOnCanvas(anchorsByFloorAndLocation.result, 'anchor', bufferCanvas, bufferContext, dataService.switch.showAnchors);
+                                            canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(anchorsByFloorAndLocation.result);
+                                        }
+
+                                        newSocketService.getData('get_cameras_by_floor_and_location', {
+                                            floor   : canvasCtrl.floorData.defaultFloorName,
+                                            location: canvasCtrl.floorData.location
+                                        }, (camerasByFloorAndLocation) => {
+                                            dataService.cameras = camerasByFloorAndLocation.result;
+
+                                            if (camerasByFloorAndLocation.result.length > 0)
+                                                loadAndDrawImagesOnCanvas(camerasByFloorAndLocation.result, 'camera', bufferCanvas, bufferContext, dataService.switch.showCameras);
+
+                                            newSocketService.getData('get_tags_by_floor_and_location', {
+                                                floor   : canvasCtrl.defaultFloor[0].id,
+                                                location: canvasCtrl.floorData.location
+                                            },  (tagsByFloorAndLocation) => {
+                                                if (!tagsByFloorAndLocation.session_state)
+                                                    window.location.reload();
+
+                                                dataService.playAlarmsAudio(tagsByFloorAndLocation.result);
+                                                dataService.floorTags = tagsByFloorAndLocation.result;
+
+                                                if (canvasCtrl.isAdmin !== 0 || canvasCtrl.isUserManager !== 0) {
+                                                    let tagClouds            = [];
+                                                    let isolatedTags         = [];
+                                                    let singleAndGroupedTags = [];
+                                                    let contextDrawed        = false;
+
+                                                    let temporaryTagsArray = {
+                                                        singleTags: angular.copy(tagsByFloorAndLocation.result),
+                                                    };
+
+                                                    for (let i = 0; i < temporaryTagsArray.singleTags.length;) {
+                                                        //getting the near tags of the tag passed as second parameter
+                                                        if (temporaryTagsArray.singleTags.length > 0) {
+                                                            let currentTag     = temporaryTagsArray.singleTags[0];
+                                                            temporaryTagsArray = dataService.groupNearTags(temporaryTagsArray.singleTags, temporaryTagsArray.singleTags[0]);
+
+                                                            if (temporaryTagsArray.groupTags.length === 1) {
+                                                                isolatedTags.push(temporaryTagsArray.groupTags[0])
+                                                            } else if (temporaryTagsArray.groupTags.length > 1) {
+                                                                singleAndGroupedTags.push(temporaryTagsArray.groupTags);
+                                                            } else {
+                                                                isolatedTags.push(currentTag);
+                                                            }
+                                                        }
+                                                    }
+
+                                                    //getting the tag clouds
+                                                    tagClouds = singleAndGroupedTags.filter(x => x.length > 1);
+
+                                                    dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
+                                                        .then((images) => {
+                                                            //control if there are clouds to bhe shown
+                                                            if (images !== null) {
+                                                                if (canvasCtrl.isAdmin === 1) {
+                                                                    //drawing the clouds on the canvas
+                                                                    images.forEach(function (image, index) {
+                                                                        drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
+                                                                    });
+                                                                } else if (dataService.switch.showOutdoorTags) {
+                                                                    if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
+                                                                        images.forEach(function (image, index) {
+                                                                            drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
+                                                                        });
+                                                                    }
+                                                                } else {
+                                                                    if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
+                                                                        images.forEach(function (image, index) {
+                                                                            drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
+                                                                        });
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            return dataService.loadImagesAsynchronouslyWithPromise(isolatedTags, 'tag');
+                                                        })
+                                                        .then((images) => {
+                                                            if (images !== null) {
+                                                                //drawing the isolated tags
+                                                                isolatedTags.forEach(function (tag, index) {
+                                                                    if (!dataService.isOutdoor(tag)) {
+                                                                        if (canvasCtrl.isAdmin === 1) {
+                                                                            if (tag.tag_type_id === 1 || tag.tag_type_id === 14) {
+                                                                                if (dataService.checkIfTagHasAlarm(tag)) {
+                                                                                    dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
+                                                                                        .then((alarmImages) => {
+                                                                                            if (alarmsCounts[index] > alarmImages.length - 1)
+                                                                                                alarmsCounts[index] = 0;
+                                                                                            drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                            context.drawImage(bufferCanvas, 0, 0);
+                                                                                            contextDrawed = true;
+                                                                                        });
+                                                                                } else if (!dataService.isTagOffline(tag)) {
+                                                                                    drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                }
+                                                                            } else {
+                                                                                if (dataService.checkIfTagHasAlarm(tag)) {
+                                                                                    dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
+                                                                                        .then((alarmImages) => {
+                                                                                            if (alarmsCounts[index] > alarmImages.length - 1)
+                                                                                                alarmsCounts[index] = 0;
+
+                                                                                            drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                            context.drawImage(bufferCanvas, 0, 0);
+                                                                                            contextDrawed = true;
+                                                                                        })
+                                                                                } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor)) {
+                                                                                    drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor)) {
+                                                                                    drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                }
+                                                                            }
+                                                                        } else if (dataService.switch.showOutdoorTags) {
+                                                                            if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
+                                                                                if (tag.tag_type_id === 1 || tag.tag_type_id === 14) {
+                                                                                    if (dataService.checkIfTagHasAlarm(tag)) {
+                                                                                        dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
+                                                                                            .then((alarmImages) => {
+                                                                                                if (alarmsCounts[index] > alarmImages.length - 1)
+                                                                                                    alarmsCounts[index] = 0;
+                                                                                                drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                                context.drawImage(bufferCanvas, 0, 0);
+                                                                                                contextDrawed = true;
+                                                                                            });
+                                                                                    } else if (!dataService.isTagOffline(tag)) {
+                                                                                        drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                    }
+                                                                                } else {
+                                                                                    if (dataService.checkIfTagHasAlarm(tag)) {
+                                                                                        dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
+                                                                                            .then((alarmImages) => {
+                                                                                                if (alarmsCounts[index] > alarmImages.length - 1)
+                                                                                                    alarmsCounts[index] = 0;
+
+                                                                                                drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                                context.drawImage(bufferCanvas, 0, 0);
+                                                                                                contextDrawed = true;
+                                                                                            })
+                                                                                    } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor)) {
+                                                                                        drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                    } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor)) {
+                                                                                        drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        } else {
+                                                                            if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
+                                                                                console.log(tag);
+
+                                                                                if (dataService.checkIfTagHasAlarm(tag)) {
+                                                                                    console.log('tags have alarms');
+                                                                                    dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
+                                                                                        .then((alarmImages) => {
+                                                                                            if (alarmsCounts[index] > alarmImages.length - 1)
+                                                                                                alarmsCounts[index] = 0;
+                                                                                            drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                            context.drawImage(bufferCanvas, 0, 0);
+                                                                                            contextDrawed = true;
+                                                                                        });
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                })
+                                                            }
+                                                            if (!contextDrawed)
+                                                                context.drawImage(bufferCanvas, 0, 0);
+                                                        });
+                                                } else{
+                                                    context.drawImage(bufferCanvas, 0, 0);
+                                                }
+                                            });
+                                        });
+
+                                    });
+                                });
+                            });
+
                         });
+                    });
                 });
+
 
                 newSocketService.getData('get_all_tags', {}, (response) => {
                     if (!response.session_state)
@@ -2898,9 +2971,9 @@
      * Function that handle the menu interaction
      * @type {string[]}
      */
-    menuController.$inject = ['$rootScope', '$scope', '$mdDialog', '$mdEditDialog', '$location', '$state', '$filter', '$timeout', '$mdSidenav', '$interval', '$element', 'NgMap', 'dataService'];
+    menuController.$inject = ['$rootScope', '$scope', '$mdDialog', '$mdEditDialog', '$location', '$state', '$filter', '$timeout', '$mdSidenav', '$interval', '$element', 'NgMap', 'dataService', 'newSocketService'];
 
-    function menuController($rootScope, $scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, $interval, $element, NgMap, dataService) {
+    function menuController($rootScope, $scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, $interval, $element, NgMap, dataService, newSocketService) {
 
         $scope.menuTags         = dataService.allTags;
         $scope.isAdmin          = dataService.isAdmin;
@@ -2909,6 +2982,7 @@
         $scope.selectedLocation = '';
         $scope.zoneColor        = '';
         $scope.userRole         = '';
+        $scope.ctrlDataService = dataService;
 
         $scope.switch = {
             mapFullscreen          : false,
@@ -3749,17 +3823,27 @@
                 clickOutsideToClose: true,
                 multiple           : true,
                 controller         : ['$scope', function ($scope) {
+                    let emailList = [];
+
                     $scope.roles    = [lang.genericUser, lang.intermediateUser];
                     $scope.userRole = '';
                     $scope.user     = {
                         username   : '',
                         name       : '',
                         email      : '',
+                        emailForList      : '',
+                        botUrl: '',
+                        chatId: '',
+                        webUrl: '',
                         showSuccess: false,
                         showError  : false,
                         isIndoor   : false,
                         message    : '',
                         resultClass: ''
+                    };
+
+                    $scope.addEmail = () => {
+                        emailList.push($scope.user.emailForList);
                     };
 
                     //insert location dialog
@@ -3771,6 +3855,10 @@
                                 username: $scope.user.username,
                                 name    : $scope.user.name,
                                 email   : $scope.user.email,
+                                emailList   : emailList,
+                                botUrl: $scope.user.botUrl,
+                                chatId: $scope.user.chatId,
+                                webUrl: $scope.user.webUrl,
                                 role    : ($scope.userRole === 'Utente generico') ? 0 : 2
                             }, (response) => {
                                 if (!response.session_state)
@@ -5606,6 +5694,7 @@
                 controller : ['$scope', '$interval', 'dataService', function ($scope, $interval, dataService) {
 
                     $scope.isAdmin = dataService.isAdmin;
+                    $scope.isUserManager = dataService.isUserManager;
 
                     $scope.switch = {
                         showGrid        : dataService.switch.showGrid,
@@ -5898,6 +5987,10 @@
                     window.location.reload();
             }
         });
+
+        $scope.muteAlarms = () => {
+            dataService.playAlarm = false;
+        }
     }
 
     /**

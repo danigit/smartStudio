@@ -52,10 +52,7 @@
                     homeData: ['newSocketService', 'dataService', '$state', '$q', function (newSocketService, dataService, $state, $q) {
                         let promise = $q.defer();
                         let result  = {};
-                        console.log('refreshing home');
-                        console.log(socketOpened);
                         setTimeout(function () {
-                            console.log('delayng');
                             newSocketService.getData('get_user', {}, (response) => {
                                 if (response.result !== 'no_user') {
                                     dataService.user = response.result[0];

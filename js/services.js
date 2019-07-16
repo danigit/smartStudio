@@ -48,6 +48,7 @@
         service.drawingManagerRound = null;
         service.outdoorZones = [];
         service.outdoorZoneInserted = false;
+        service.playedTime = null;
         // service.gridSpacing = 0;
 
 
@@ -78,7 +79,6 @@
 
         //calculating the distance of the tag from the location center to see if the tag is in the location area
         service.getTagDistanceFromLocationOrigin = (tag, origin) => {
-
             if (tag.gps_north_degree !== -1 && tag.gps_east_degree !== -1 && tag.gps_north_degree !== -2 && tag.gps_east_degree !== -2) {
                 let distX = Math.abs(tag.gps_north_degree - origin[0]);
                 let distY = Math.abs(tag.gps_east_degree - origin[1]);
@@ -556,9 +556,9 @@
             };
         };
 
-        service.isTagInLocation = (tag, location) => {
-            return service.getTagDistanceFromLocationOrigin(tag, location.position) <= location.radius;
-        };
+        // service.isTagInLocation = (tag, location) => {
+        //     return service.getTagDistanceFromLocationOrigin(tag, location.position) <= location.radius;
+        // };
 
         //getting all the alarms of the tag passed as parameter and creating the objects to be shown in info window
         service.loadTagAlarmsForInfoWindow = (tag, locations, tagLocation) => {
@@ -657,7 +657,7 @@
         };
 
         service.checkIfTagsHaveAlarmsOutdoor = (tags) => {
-            return tags.some(tag => service.isOutdoor(tag) && (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
+            return tags.some(tag => service.isOutdoor(tag) && service.isTagInLocation(tag, {radius: service.location.radius, position: [service.location.latitude, service.location.longitude]}) && (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
                 || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
                 || tag.call_me_alarm || tag.diagnostic_request));
         };
@@ -672,8 +672,8 @@
             tags.forEach(function (tag) {
                 if (tag.battery_status) {
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'battery')) {
+                        service.playedTime = null;
                         service.alarmsSounds.push({tag: tag.name, alarm: 'battery'});
-                        service.playAlarm = true;
                     }
                 } else {
                     service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.name, 'battery');
@@ -682,7 +682,7 @@
                 if (tag.man_down) {
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'mandown')) {
                         service.alarmsSounds.push({tag: tag.name, alarm: 'mandown'});
-                        service.playAlarm = true;
+                        service.playedTime = null;
                     }
                 } else {
                     service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.name, 'mandown');
@@ -691,32 +691,62 @@
                 if (tag.sos) {
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'sos')) {
                         service.alarmsSounds.push({tag: tag.name, alarm: 'sos'});
-                        service.playAlarm = true;
+                        service.playedTime = null;
                     }
                 } else {
                     service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.name, 'sos');
                 }
+
+                if (service.alarmsSounds.length === 0 ){
+                    service.playAlarm = false;
+                }
             });
 
-            if (service.alarmsSounds.length > 1 && service.playAlarm && (service.switch && service.switch.playAudio)) {
-                audio = new Audio(audioPath + 'sndMultipleAlarm.mp3');
-                audio.play();
-                service.playAlarm = false;
-            } else {
-                if (controlIfArrayHasAlarm(service.alarmsSounds, 'battery') && service.playAlarm && (service.switch && service.switch.playAudio)) {
-                    audio = new Audio(audioPath + 'sndBatteryAlarm.mp3');
+            if (service.playedTime === null) {
+                service.playAlarm = true;
+                if (service.alarmsSounds.length > 1 && (service.switch && service.switch.playAudio)) {
+                    audio = new Audio(audioPath + 'sndMultipleAlarm.mp3');
                     audio.play();
+                    service.playedTime        = new Date();
+                } else {
+                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'battery') && (service.switch && service.switch.playAudio)) {
+                        audio = new Audio(audioPath + 'sndBatteryAlarm.mp3');
+                        audio.play();
+                        service.playedTime = new Date();
+                    }
+                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'mandown') && (service.switch && service.switch.playAudio)) {
+                        audio = new Audio(audioPath + 'sndManDownAlarm.mp3');
+                        audio.play();
+                        service.playedTime = new Date();
+                    }
+                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'sos') && (service.switch && service.switch.playAudio)) {
+                        audio = new Audio(audioPath + 'indila-sos.mp3');
+                        audio.play();
+                        service.playedTime = new Date();
+                    }
                 }
-                if (controlIfArrayHasAlarm(service.alarmsSounds, 'mandown') && service.playAlarm && (service.switch && service.switch.playAudio)) {
-                    audio = new Audio(audioPath + 'sndManDownAlarm.mp3');
+            } else if ((new Date().getTime() - service.playedTime.getTime()) > 5000 && service.playAlarm) {
+                if (service.alarmsSounds.length > 1 && (service.switch && service.switch.playAudio)) {
+                    audio = new Audio(audioPath + 'sndMultipleAlarm.mp3');
                     audio.play();
+                    service.playedTime        = new Date();
+                } else {
+                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'battery') && (service.switch && service.switch.playAudio)) {
+                        audio = new Audio(audioPath + 'sndBatteryAlarm.mp3');
+                        audio.play();
+                        service.playedTime = new Date();
+                    }
+                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'mandown') && (service.switch && service.switch.playAudio)) {
+                        audio = new Audio(audioPath + 'sndManDownAlarm.mp3');
+                        audio.play();
+                        service.playedTime = new Date();
+                    }
+                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'sos') && (service.switch && service.switch.playAudio)) {
+                        audio = new Audio(audioPath + 'indila-sos.mp3');
+                        audio.play();
+                        service.playedTime = new Date();
+                    }
                 }
-                if (controlIfArrayHasAlarm(service.alarmsSounds, 'sos') && service.playAlarm && (service.switch && service.switch.playAudio)) {
-                    audio = new Audio(audioPath + 'indila-sos.mp3');
-                    audio.play();
-                }
-
-                service.playAlarm = false;
             }
         };
 
@@ -769,13 +799,13 @@
         };
 
         //calculating the distance of the tag from the location center
-        service.getTagDistanceFromLocationOrigin = (tag, origin) => {
-
-            let distX = Math.abs(tag.gps_north_degree - origin[0]);
-            let distY = Math.abs(tag.gps_east_degree - origin[1]);
-
-            return Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-        };
+        // service.getTagDistanceFromLocationOrigin = (tag, origin) => {
+        //
+        //     let distX = Math.abs(tag.gps_north_degree - origin[0]);
+        //     let distY = Math.abs(tag.gps_east_degree - origin[1]);
+        //
+        //     return Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
+        // };
 
         //function that control if the tag is indoor
         service.isOutdoor = (tag) => {

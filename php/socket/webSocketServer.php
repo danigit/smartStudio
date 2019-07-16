@@ -1110,7 +1110,8 @@ class webSocketServer implements MessageComponentInterface{
                 $result['session_state'] = $this->isSessionEnded();
 
                 $query = $this->connection->insert_super_user($decoded_message['data']['username'], $decoded_message['data']['name'],
-                    $decoded_message['data']['email'], $decoded_message['data']['role']);
+                    $decoded_message['data']['email'], $decoded_message['data']['emailList'], $decoded_message['data']['botUrl'],
+                    $decoded_message['data']['chatId'], $decoded_message['data']['webUrl'], $decoded_message['data']['role']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

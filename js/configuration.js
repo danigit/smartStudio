@@ -1,4 +1,3 @@
-console.log('configuration called');
 /***************************************************************
  * SOCKET COFIGURATIONS
  ***************************************************************/
@@ -6,7 +5,6 @@ const socketServer               = new WebSocket('ws://localhost:8090');
 let socketOpened = false;
 
 socketServer.onopen = function () {
-    console.log('SOCKET OPENED');
     socketOpened = true;
 };
 

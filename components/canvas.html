@@ -1,16 +1,19 @@
 <div ng-controller="languageController">
-    <div layout="column" class="height-100-vh">
-        <div layout="column" class="top-corner background-transparent-white">
-            <img ng-show="canvasCtrl.showAlarmsIcon" ng-click="showAlarms()" class="margin-bottom-3"
-                 src="img/icons/alarm-icon.png" alt="{{lang.activeAllarms}}" title="{{lang.activeAllarms}}">
-            <img ng-show="canvasCtrl.showOfflineTagsIcon" ng-click="showOfflineTagsIndoor()" class="margin-bottom-5-px"
-                 src="img/icons/offline_tags_alert_64.png" alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}">
-            <img ng-show="canvasCtrl.showOfflineAnchorsIcon" ng-click="showOfflineAnchorsIndoor()"
-                 src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
-                 title="{{lang.offlineAnchors}}">
-            <img ng-show="canvasCtrl.showEngineOffIcon"
-                 src="img/icons/engine_off_64.png" alt="{{lang.engineOff}}"
-                 title="{{lang.engineOff}}">
+    <div layout="column" layout-align="center center" class="height-100-vh">
+        <div layout="column" class="top-corner">
+            <div layout="column" class="background-transparent-gray">
+                <img ng-show="canvasCtrl.showAlarmsIcon" ng-click="showAlarms()" class="pulse-image margin-bottom-5-px padding-top-bottom-6px"
+                     src="img/icons/alarm-icon.png" alt="{{lang.activeAllarms}}" title="{{lang.activeAllarms}}">
+                <img ng-show="canvasCtrl.showOfflineTagsIcon" ng-click="showOfflineTagsIndoor()" class="margin-bottom-5-px padding-top-bottom-6px border-bottom-3-white border-top-3-white"
+                     src="img/icons/offline_tags_alert_64.png" alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}">
+                <img ng-show="canvasCtrl.showOfflineAnchorsIcon" ng-click="showOfflineAnchorsIndoor()" class="margin-bottom-5-px padding-top-bottom-6px border-bottom-3-white"
+                     src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
+                     title="{{lang.offlineAnchors}}">
+                <img ng-show="canvasCtrl.showEngineOffIcon" class="padding-top-bottom-6px border-bottom-3-white"
+                     src="img/icons/engine_off_64.png" alt="{{lang.engineOff}}"
+                     title="{{lang.engineOff}}">
+            </div>
+            <div ng-if="canvasCtrl.showAlarmsIcon || canvasCtrl.showOfflineTagsIcons || canvasCtrl.showOfflineAnchorsIcon || canvasCtrl.showEngineOffIcon" class="triangle-transparent-gray-down"></div>
         </div>
 
         <div class="bottom-corner">
@@ -22,9 +25,9 @@
         <div class="top-corner" ng-show="canvasCtrl.switch.showDrawing">
             <md-fab-speed-dial md-open="canvasCtrl.speedDial.isOpen"
                                md-direction="{{canvasCtrl.speedDial.selectedDirection}}"
-                               ng-class="canvasCtrl.speedDial.mode">
+                               ng-class="canvasCtrl.speedDial.isOpen ? 'background-transparent-gray' : canvasCtrl.speedDial.mode">
                 <md-fab-trigger>
-                    <md-button aria-label="menu" class="md-fab background-transparent-white">
+                    <md-button aria-label="menu" class="md-fab background-transparent-gray border-3-darkblue">
                         <img ng-src="img/icons/{{canvasCtrl.drawingImage}}" class="edit-image"
                              alt="{{lang.modifyPageSettings}}" title="{{lang.modifyPageSettings}}">
                     </md-button>
@@ -32,64 +35,60 @@
 
                 <md-fab-actions>
                     <md-button aria-label="Disegna riga verticale"
-                               class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
+                               class="md-fab md-raised md-mini border-radius-none background-transparent height-60px width-60px margin-none padding-10-px"
                                ng-click="canvasCtrl.speedDialClicked('vertical')">
                         <img src="img/icons/vertical-line.png" class="width-100 height-100"
                              alt="{{lang.drawVerticalLine}}" title="{{lang.drawVerticalLine}}">
                     </md-button>
 
                     <md-button aria-label="Disegna riga orizontale"
-                               class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
+                               class="md-fab md-raised md-mini border-radius-none background-transparent height-60px width-60px margin-none padding-10-px"
                                ng-click="canvasCtrl.speedDialClicked('horizontal')">
                         <img src="img/icons/horizontal-line.png" class="width-100 height-100"
                              alt="{{lang.drawHorizontalLine}}" title="{{lang.drawHorizontalLine}}">
                     </md-button>
 
                     <md-button aria-label="Disegna riga inclinata"
-                               class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
+                               class="md-fab md-raised md-mini border-radius-none background-transparent height-60px width-60px margin-none padding-10-px"
                                ng-click="canvasCtrl.speedDialClicked('inclined')">
-                        <img src="img/icons/inclined-line.png" class="width-100 height-100"
+                        <img src="img/icons/inclined_line.png" class="width-100 height-100"
                              alt="{{lang.drawInclinedLine}}" title="{{lang.drawInclinedLine}}">
                     </md-button>
 
                     <md-button aria-label="Cancella linea"
-                               class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
+                               class="md-fab md-raised md-mini border-radius-none background-transparent height-60px width-60px margin-none padding-10-px"
                                ng-click="canvasCtrl.speedDialClicked('delete')">
-                        <img src="img/icons/erase_24.png" class="width-100 height-100"
+                        <img src="img/icons/erase_line.png" class="width-100 height-100"
                              alt="{{lang.deleteLine}}" title="{{lang.deleteLine}}">
                     </md-button>
-                    <div layout="column" class="width-20">
-                        <md-button aria-label="{{lang.changeAnchorPosition}}"
-                                   class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
-                                   ng-click="canvasCtrl.speedDialClicked('drop_anchor')">
-                            <img src="img/icons/tags/anchor_online_24.png" class="width-100 height-100"
-                                 alt="{{lang.changeAnchorPosition}}" title="{{lang.changeAnchorPosition}}">
-                        </md-button>
-                    </div>
-                    <div layout="column" class="width-20">
-                        <md-button aria-label="{{lang.drawZone}}"
-                                   class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
-                                   ng-click="canvasCtrl.speedDialClicked('draw_zone')">
-                            <img src="img/icons/draw_zone.png" class="width-100 height-100"
-                                 alt="{{lang.drawZone}}" title="{{lang.drawZone}}">
-                        </md-button>
-                    </div>
-                    <div layout="column" class="width-20">
-                        <md-button aria-label="{{lang.deleteZone}}"
-                                   class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
-                                   ng-click="canvasCtrl.speedDialClicked('delete_zone')">
-                            <img src="img/icons/delete_zone.png" class="width-100 height-100"
-                                 alt="{{lang.deleteZone}}" title="{{lang.deleteZone}}">
-                        </md-button>
-                    </div>
-                    <div layout="column" class="width-20">
-                        <md-button aria-label="{{lang.modifyZone}}"
-                                   class="md-fab md-raised md-mini background-ottanio border-3-darkblue"
-                                   ng-click="canvasCtrl.speedDialClicked('modify_zone')">
-                            <img src="img/icons/modify_zone.png" class="width-100 height-100"
-                                 alt="{{lang.modifyZone}}" title="{{lang.modifyZone}}">
-                        </md-button>
-                    </div>
+
+                    <md-button aria-label="{{lang.changeAnchorPosition}}"
+                               class="md-fab md-raised md-mini border-radius-none background-transparent height-60px width-60px margin-none padding-10-px"
+                               ng-click="canvasCtrl.speedDialClicked('drop_anchor')">
+                        <img src="img/icons/move_anchor.png" class="width-100 height-100"
+                             alt="{{lang.changeAnchorPosition}}" title="{{lang.changeAnchorPosition}}">
+                    </md-button>
+
+                    <md-button aria-label="{{lang.drawZone}}"
+                               class="md-fab md-raised md-mini border-radius-none background-transparent height-60px width-60px margin-none padding-10-px"
+                               ng-click="canvasCtrl.speedDialClicked('draw_zone')">
+                        <img src="img/icons/draw_zone.png" class="width-100 height-100"
+                             alt="{{lang.drawZone}}" title="{{lang.drawZone}}">
+                    </md-button>
+
+                    <md-button aria-label="{{lang.deleteZone}}"
+                               class="md-fab md-raised md-mini border-radius-none background-transparent height-60px width-60px margin-none padding-10-px"
+                               ng-click="canvasCtrl.speedDialClicked('delete_zone')">
+                        <img src="img/icons/delete_zone.png" class="width-100 height-100"
+                             alt="{{lang.deleteZone}}" title="{{lang.deleteZone}}">
+                    </md-button>
+
+                    <md-button aria-label="{{lang.modifyZone}}"
+                               class="md-fab md-raised md-mini border-radius-none background-transparent height-60px width-60px margin-none padding-10-px"
+                               ng-click="canvasCtrl.speedDialClicked('modify_zone')">
+                        <img src="img/icons/modify_zone.png" class="width-100 height-100"
+                             alt="{{lang.modifyZone}}" title="{{lang.modifyZone}}">
+                    </md-button>
                 </md-fab-actions>
             </md-fab-speed-dial>
             <md-button ng-click="canvasCtrl.saveDrawing()" class="md-warn md-raised float-right">{{lang.save |
@@ -262,7 +261,10 @@
                     </md-content>
                 </md-sidenav>
             </section>
+            <div ng-if="ctrlDataService.playAlarm && ctrlDataService.switch.playAudio" layout="column" layout-align="center center" class="bottom-left fadeIn">
+                <md-button ng-click="muteAlarms()" class="md-raised background-red color-white"><div><span class="margin-right-10-px text-bold">{{lang.muteAlarm}}</span><img class="vertical-align-middle" src="img/icons/mute_alarms.png" alt=""></div></md-button>
+            </div>
         </div>
         <!--end menu container-->
-    </div>
+    </p>
 </div>

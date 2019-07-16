@@ -13,6 +13,14 @@ DIMENSIONS
     height: 40px!important;
 }
 
+.height-60px{
+    height: 60px!important;
+}
+
+.width-auto{
+    width: auto!important;
+}
+
 .width-30{
     width: 30%;
 }
@@ -39,6 +47,10 @@ DIMENSIONS
 
 .width-5{
     width: 5%;
+}
+
+.width-60px{
+    width: 60px!important;
 }
 
 .width-300-px{
@@ -313,7 +325,7 @@ PADDING
 }
 
 .padding-10-px{
-    padding: 10px;
+    padding: 10px!important;
 }
 
 .padding-right-10-px{
@@ -325,7 +337,7 @@ PADDING
 }
 
 .padding-lr-15-px{
-    padding: 0 15px 0 15px;
+    padding: 0 15px 0 15px!important;
 }
 
 .padding-bottom-10px{
@@ -372,6 +384,10 @@ BORDER
     border: 2px solid #263238;
 }
 
+.border-right-3-white{
+    border-right: 3px solid #FFFFFF!important;
+}
+
 .border-3-darkblue{
     border: 3px solid #0093c4!important;
 }
@@ -380,7 +396,11 @@ BORDER
     border-right: 1px solid #0093c4;
 }
 
-.border-radius-20-px{
+.border-radius-none{
+    border-radius: 0!important;
+}
+
+border-radius-20-px{
     border-radius: 20px;
 }
 
@@ -560,6 +580,10 @@ OTHER
     vertical-align: super;
 }
 
+.vertical-align-middle{
+    vertical-align: middle;
+}
+
 /******************************************************************
 DISPLAY
 *******************************************************************/
@@ -590,7 +614,7 @@ BACKGROUND
 *******************************************************************/
 
 .background-transparent{
-    background-color: transparent;
+    background-color: transparent!important;
 }
 
 .background-transparent-white{
@@ -672,6 +696,13 @@ POSITION
     position: absolute;
     top: 0;
     right: 10px;
+    z-index: 100;
+}
+
+.bottom-left{
+    position: fixed;
+    bottom: 0;
+    left: 0;
     z-index: 100;
 }
 

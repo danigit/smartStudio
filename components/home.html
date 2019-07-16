@@ -140,6 +140,9 @@
                     </md-content>
                 </md-sidenav>
             </section>
+            <div ng-if="ctrlDataService.playAlarm && ctrlDataService.switch.playAudio" layout="column" layout-align="center center" class="bottom-left fadeIn">
+                <md-button ng-click="muteAlarms()" class="md-raised background-red color-white"><div><span class="margin-right-10-px text-bold">{{lang.muteAlarm}}</span><img class="vertical-align-middle" src="img/icons/mute_alarms.png" alt=""></div></md-button>
+            </div>
         </div>
         <!--end menu container-->
     </div>

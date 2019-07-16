@@ -407,7 +407,6 @@ function findZone(coords, zones, floor, canvasWidth, canvasHeight) {
     let findedZones = [];
     let realcoords = scaleSizeFromVirtualToReal(floor, canvasWidth, canvasHeight, coords.x, coords.y);
     zones.forEach((z) => {
-        console.log(z);
         if ((realcoords.x > z.x_left && realcoords.x < z.x_right && realcoords.y > z.y_up && realcoords.y < z.y_down)) {
             findedZones.push(z.id);
         }
@@ -419,7 +418,6 @@ function findZone(coords, zones, floor, canvasWidth, canvasHeight) {
 function findDrawedZone(coords, zones, floor, canvasWidth, canvasHeight) {
     let findedZones = [];
     zones.forEach((z) => {
-        console.log(z);
         if ((coords.x > z.topLeft.x && coords.x < z.bottomRight.x && coords.y > z.topLeft.y && coords.y < z.bottomRight.y)) {
             findedZones.push(z);
         }

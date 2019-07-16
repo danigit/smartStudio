@@ -52,7 +52,7 @@
                     </td>
                     <td md-cell ng-show="isAdmin" class="no-wrap">
                         <md-input-container md-no-float class="md-block">
-                            <md-select ng-model="userRole" ng-change="updateUserRole(user, userRole)">
+                            <md-select ng-model="userRole" ng-change="updateUserRole(user, userRole)" aria-label="Seleziona ruolo">
                                 <md-option ng-selected="{{user.role === '1'}}" ng-value=1>{{lang.adminUser | uppercase}}</md-option>
                                 <md-option ng-selected="{{user.role === '2'}}" ng-value=2>{{lang.intermediateUser | uppercase}}</md-option>
                                 <md-option ng-selected="{{user.role === '0'}}" ng-value=0>{{lang.genericUser | uppercase}}</md-option>

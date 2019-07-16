@@ -54,7 +54,7 @@
                         {{tag.name || lang.insertName}}
                     </td>
                     <td md-cell ng-class="{'md-placeholder': !tag.type_name}">
-                        <md-select ng-model="selectedType" ng-change="updateTagType(tag, selectedType)">
+                        <md-select ng-model="selectedType" ng-change="updateTagType(tag, selectedType)" aria-label="Seleziona tipologia">
                             <md-option><em>{{lang.nothing}}</em></md-option>
                             <md-option ng-selected="{{tagType.id.toString() === tag.type_id.toString()}}" ng-repeat="tagType in tagTypes track by $index" ng-value="tagType.id">
                                 {{tagType.description}}

@@ -27,7 +27,7 @@
             <div layout="column">
                 <md-input-container md-no-float class="margin-bottom-0">
                     <input required type="text" ng-model="user.username" name="userUsername"
-                           placeholder="Username">
+                           placeholder="Username" aria-label="">
                     <div ng-messages="insertUserForm.userUsername.$error || insertUserForm.$submitted"
                          role="alert">
                         <div ng-message=" required">Inserire un nome utente</div>
@@ -36,7 +36,7 @@
 
                 <md-input-container md-no-float class="margin-bottom-0">
                     <input required type="text" ng-model="user.name" name="userName"
-                           placeholder=" Name">
+                           placeholder=" Name" aria-label="">
                     <div ng-messages="insertUserForm.userName.$error || insertUserForm.$submitted"
                          role="alert">
                         <div ng-message=" required">Inserire un nome</div>
@@ -45,11 +45,53 @@
 
                 <md-input-container md-no-float class="margin-bottom-0">
                     <input required type="text" ng-model="user.email" name="userEmail"
-                           placeholder="Email" ng-pattern="/^.+@.+\..+$/">
+                           placeholder="Email" ng-pattern="/^.+@.+\..+$/" aria-label="">
                     <div ng-messages="insertUserForm.userEmail.$error || insertUserForm.$submitted"
                          role="alert">
                         <div ng-message=" required">Inserire email</div>
                         <div ng-message="pattern">Inserire una email valida</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <div layout="row">
+                        <div>
+                            <input required type="text" ng-model="user.emailForList" name="userEmailList"
+                            placeholder="Aggiungere email" ng-pattern="/^.+@.+\..+$/" aria-label="">
+                        </div>
+                        <div class="margin-left-10-px"><img class="cursor-pointer" ng-click="addEmail()" src="img/icons/add_row_24.png"></div>
+                    </div>
+                    <div ng-messages="insertUserForm.userEmailList.$error || insertUserForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire email</div>
+                        <div ng-message="pattern">Inserire una email valida</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input required type="text" ng-model="user.botUrl" name="botUrl"
+                           placeholder="Inserisci l'url del bot" aria-label="">
+                    <div ng-messages="insertUserForm.botUrl.$error || insertUserForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire un valore</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input required type="text" ng-model="user.chatId" name="chatId"
+                           placeholder=" Insert l'id della chat" aria-label="">
+                    <div ng-messages="insertUserForm.chatId.$error || insertUserForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire un valore</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input required type="text" ng-model="user.webUrl" name="webUrl"
+                           placeholder="Inserisci l'url del web service" aria-label="">
+                    <div ng-messages="insertUserForm.webUrl.$error || insertUserForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">Inserire un valore</div>
                     </div>
                 </md-input-container>
 

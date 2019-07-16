@@ -153,6 +153,67 @@
                     </td>
                     <td md-cell>3/05/2019</td>
                 </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="color-orange">2.1.0</td>
+                    <td md-cell>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la tradduzione della fase 2<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la visualizzazione di solo le location dell'utente logato nella cerca lacation<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la possibilita di inserire il campo prossimita' nella taella ancore attraverso una select<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la possibilita di inserire il campo tipologia bluetooth nella tabella mac attraverso una select<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la possibilita' di cancellare lo storico selezionando un intervallo di tempo<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la selezione di default dei permitted all'inserimento di un'ancora<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la possibilita' di visualizzare l'icona degli allarmi anche se c'e' un tag in una zona vietata<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la gestione e visualizzazione dell'engine off<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la possibilita' di inserire la tipologia del tag nella tabella tag attraverso una select<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la gestione dei tag nelle zone vietate<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la visualizzazione nella tabella allarmi dell'alarme relatiovo al tag nella zona vietata<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementato il controllo dello stato della sessione in modo da fare il logout automatico se scade la sessione<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementato l'inserimento del raggio della location in metri<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementato il cambio da is_online a is_offline per quanto riguarda le ancore<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la possibilita' di visualizzare le zone vietate nella home senza pero' la possibilita' di creare una nuova zona<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la possibilita di vedere i tag che non hanno nessuna location di default<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la possibilita di vedere nella history anche i tag che non hanno nessuna location<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la possibilita di spegnere anche i tag diversi da 1 e 14<br>
+                        <span class="color-green text-bold"></span><br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolto il problema delle icone in allarme nella schermata home<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolto il problema per cui l'utente generico poteva modificare le tabelle<br>
+                        <span class="color-red text-bold">BUG FIX</span>: L'inserimento di una location non inseriva il nome giusto dell'icona<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolto il problema dell'aggiornamento dei wetag nella sezione cerca tag<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolto il problema per cui nello storico non visualizzava il giorno corrente<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Riposizionamento ancore cambiava il piano di alcune ancore che non doveva<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolto il problema della visualizzazione dei tag con inside_zone a 0<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolto il problema della visualizzazione dei tag con inside_zone a 0<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolto il problema che l'icona dello stato delle ancore si vedeva sempre<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Aggiustato il problema del pulsante add zone per quanto riguarda l'indoor<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolto il problema dell'eliminazione di un tag con almeno una zona vietata<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolto il problema per cui la tabella ancore faceva vedere righe doppie e non aggiornava su delete e insert<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolto il problema grafico sulle zone vietate<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolti i bug usciti fuori in seguito alla modifica dello spegnimento dei tag diversi da 1 e 14<br>
+                    </td>
+                    <td md-cell>30/06/2019</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="color-orange">2.2.0</td>
+                    <td md-cell>
+                        <span class="color-green text-bold">UPDATES</span>: Implementato il loop dell'audio degli allarmi con la possibilita' di fermarlo con un pulsante aposito<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la visualizzazione dei tag online per l'utente di primo livello e la possibilita' di scegliere di vederli solo se c'e un tag in allarme per l'utente di secondo livello<br>
+                        <span class="color-green text-bold">UPDATES</span>: Inserita la possibilita' di aggiungere una lista di email alla creazione di un utente da parte dell'utente di primo livello<br>
+                        <span class="color-green text-bold">UPDATES</span>: Inserita la possibilita' di aggiungere l'url dei bot alla creazione di un nuovo utente da parte dell'utente di primo livello<br>
+                        <span class="color-green text-bold">UPDATES</span>: Inserita la possibilita' di aggiungere l'id della chat alla creazione di un nuovo utente da parte dell'utente di primo livello<br>
+                        <span class="color-green text-bold">UPDATES</span>: Inserita la possibilita' di aggiungere l'url del web service alla creazione di un nuovo utente da parte dell'utente di primo livello<br>
+                        <span class="color-green text-bold">UPDATES</span>: Inserita la scritta "nessuna location" anche per gli allarmi che sono fuori da ogni location<br>
+                        <span class="color-green text-bold">UPDATES</span>: Eliminato il secondo socket e serializzato tutto su un socket solo creando un pool di richieste<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementato il messaggio di successo/errore quando viene salvato un disegno<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementata la visualizzazione del numero di tag e ancore in una location nella home attraverso icone invece che scritte<br>
+                        <span class="color-green text-bold">UPDATES</span>: Implementato il zoom in/out dell'icona allarmi e migliorata la visualizzazione di tutti i pulsanti in alto a destra<br>
+                        <span class="color-green text-bold">UPDATES</span>: Migliorata la visualizzazione dei grafici e delle informazioni sui tag e ancore in alto a destra<br>
+                        <span class="color-green text-bold"></span><br>
+                        <span class="color-red text-bold">BUG FIX</span>: Quando c'era un allarme in una location alternavo l'icona di default invece di alternare l'icona che la location aveva in quel momento<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Aggiustato il pulsante back che quando veniva sciacciato i una location raggiunta attraverso la finestra degli allarmi, dava errore<br>
+                        <span class="color-red text-bold">BUG FIX</span>: Risolto il problema per cui se clickavi su un tag sopra un alarme ti faceva vedere tutte e due( il problema era che si mone ha cambiato la dimensione dei tag ma non delle ancore)<br>
+                    </td>
+                    <td md-cell>15/07/2019</td>
+                </tr>
                 </tbody>
             </table>
         </md-table-container>
