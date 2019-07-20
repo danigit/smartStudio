@@ -79,13 +79,17 @@
 
         //calculating the distance of the tag from the location center to see if the tag is in the location area
         service.getTagDistanceFromLocationOrigin = (tag, origin) => {
-            if (tag.gps_north_degree !== -1 && tag.gps_east_degree !== -1 && tag.gps_north_degree !== -2 && tag.gps_east_degree !== -2) {
+            if (tag.gps_north_degree !== -2 && tag.gps_east_degree !== -2) {
                 let distX = Math.abs(tag.gps_north_degree - origin[0]);
                 let distY = Math.abs(tag.gps_east_degree - origin[1]);
 
+                // console.log(origin);
+                // console.log(tag.gps_north_degree);
+                // console.log(tag.gps_east_degree);
+
                 return Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
             }else {
-                return Number.MAX_VALUE;
+                return 0;
             }
         };
 
@@ -126,21 +130,40 @@
         };
 
         service.checkIfTagsAreOutOfLocations = (tags) => {
+            return Promise.all(
+                tags.map(function (tag) {
+                    return new Promise(function (resolve) {
+                        if (service.isOutdoor(tag)) {
+                            newSocketService.getData('get_all_locations', {}, (response) => {
+                                resolve(!response.result.some(l => {
+                                    console.log(l.name, l.is_inside);
+                                    if (!l.is_inside) {
+                                        console.log('is_indide');
+                                        console.log(tag.name + ' / ' + l.name + ' / ' +  service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) + '/' + l.radius + '/' + (service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius) );
+                                        return (service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
+                                    }
+                                }))
+                            })
+                        } else {
+                            resolve(false);
+                        }
+                    })
+                })
+            );
+        };
+
+        service.checkIfTagsHavePosition = (tags) => {
             let tagOutOfLocation = false;
             tags.forEach(tag => {
                 if (service.isOutdoor(tag) && (tag.gps_north_degree === -2 && tag.gps_east_degree === -2)){
                     tagOutOfLocation = true;
                 } else if (!service.isOutdoor(tag) && tag.anchor_id === null){
                     tagOutOfLocation = true;
-                } else {
-                    newSocketService.getData('get_user_locations', service.user.id, (response) => {
-                        tagOutOfLocation = response.result.some(l => !service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius)
-                    })
                 }
             });
 
             return tagOutOfLocation;
-        };
+        }
 
         service.updateUserSettings = () => {
             let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, outdoor_tag_on: service.switch.showOutdoorTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};

@@ -287,4 +287,5 @@ let lang = {
     dataSavedSuccessfully: 'I dati sono stati salvati correttamente',
     dataSaved: 'Dati salvati',
     actionCanceled: 'Operazione cancellata',
+    noPosition: 'Nessuna posizione'
 }

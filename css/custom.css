@@ -570,6 +570,17 @@ OTHER
     animation: zoomInOut 1s infinite ;
 }
 
+.rotate-image{
+    border-radius: 50%;
+    -webkit-transition: -webkit-transform .8s ease-in-out;
+    transition:         transform .8s ease-in-out;
+}
+
+.rotate-image:hover{
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+}
+
 .triangle-transparent-gray-down{
     border-left: 35px solid transparent;
     border-right: 29px solid transparent;

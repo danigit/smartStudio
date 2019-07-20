@@ -1156,7 +1156,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT ID, NAME, DESCRIPTION, LATITUDE, LONGITUDE, RADIUS FROM location';
+            $this->query = 'SELECT ID, NAME, DESCRIPTION, LATITUDE, LONGITUDE, RADIUS, IS_INSIDE FROM location';
 
             $this->result = $this->connection->query($this->query);
 
@@ -1167,7 +1167,7 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'description' => $row['DESCRIPTION'], 'latitude' => (double)$row['LATITUDE'],
-                    'longitude' => (double)$row['LONGITUDE'], 'radius' => $row['RADIUS']);
+                    'longitude' => (double)$row['LONGITUDE'], 'radius' => $row['RADIUS'], 'is_inside' => (int)$row['IS_INSIDE']);
             }
 
             return $result_array;
@@ -2910,7 +2910,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT ID, NAME, LONGITUDE, LATITUDE FROM location JOIN user_has_location ON location.ID = user_has_location.LOCATION_ID WHERE user_has_location.USER_ID  = ?";
+            $this->query = "SELECT ID, NAME, LONGITUDE, LATITUDE, RADIUS, IS_INSIDE FROM location JOIN user_has_location ON location.ID = user_has_location.LOCATION_ID WHERE user_has_location.USER_ID  = ?";
 
             $statement = $this->execute_selecting($this->query, 'i', $user);
 
@@ -2924,7 +2924,7 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'longitude' => $row['LONGITUDE'],
-                    'latitude' => $row['LATITUDE']);
+                    'latitude' => $row['LATITUDE'], 'radius' => $row['RADIUS'], 'is_inside' => $row['IS_INSIDE']);
             }
 
             return $result_array;
