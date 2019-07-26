@@ -221,6 +221,7 @@ function languageController($scope) {
         manageLocation: 'Gestione siti',
         muteAlarm: 'Silenzia allarmi',
         silentiating: 'Silenzio allarmi ...',
+        insertUser: 'Inserimento utente'
     }
 };
 

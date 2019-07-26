@@ -26,7 +26,7 @@
 
     <div layout="column" layout-align="center center" ng-controller="languageController">
 
-        <md-table-container>
+        <md-table-container class="margin-bottom-40-px">
 
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
@@ -38,9 +38,9 @@
                     <th md-column md-order-by="type_name"><span class="color-darkcyan">{{lang.type | uppercase}}</span>
                     <th md-column md-order-by="type_name"><span class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span>
                     </th>
-                    <th md-column></th>
-                    <th md-column></th>
-                    <th md-column></th>
+                    <th ng-if="isAdmin" md-column></th>
+                    <th ng-if="isAdmin" md-column></th>
+                    <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
 
@@ -62,17 +62,17 @@
                         </md-select>
                     </td>
                     <td md-cell><img ng-src="{{tag.battery_status ? 'img/icons/battery_empty_24.png' : 'img/icons/battery_full_24.png'}}" alt="{{lang.batteryLevel}}" title="{{lang.batteryLevel}}"></td>
-                    <td md-cell ng-show="isAdmin || isUserManager">
+                    <td md-cell ng-show="isAdmin">
                         <md-button ng-click="tagMacs(tag)" class="md-raised background-darkcyan color-white">
                             {{lang.macsManaging | uppercase}}
                         </md-button>
                     </td>
-                    <td md-cell ng-show="(isAdmin || isUserManager)">
+                    <td md-cell ng-show="(isAdmin)">
                         <md-button ng-click="tagZones(tag)" class="md-raised background-darkcyan color-white">
                             {{lang.zonesManaging | uppercase}}
                         </md-button>
                     </td>
-                    <td md-cell ng-show="isAdmin || isUserManager" ng-click="deleteRow(tag)"><img src="img/icons/delete_trash_24.png"
+                    <td md-cell ng-show="isAdmin" ng-click="deleteRow(tag)"><img src="img/icons/delete_trash_24.png"
                                                                alt="{{lang.deleteTag}}" title="{{lang.deleteTag}}"></td>
                 </tr>
                 <tr md-row ng-show="tableEmpty">
@@ -82,8 +82,8 @@
             </table>
         </md-table-container>
 
-        <md-input-container ng-show="isAdmin || isUserManager" md-no-float class="md-block width-100 margin-top-bottom-25-px">
-            <div layout="row" layout-align="center end" class="margin-bottom-30-px">
+        <md-input-container ng-if="isAdmin" md-no-float class="md-block width-100 margin-bottom-50-px margin-top-0">
+            <div layout="row" layout-align="center end">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="{{lang.addTag}}" title="{{lang.addTag}}">
             </div>

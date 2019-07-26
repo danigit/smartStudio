@@ -136,10 +136,7 @@
                         if (service.isOutdoor(tag)) {
                             newSocketService.getData('get_all_locations', {}, (response) => {
                                 resolve(!response.result.some(l => {
-                                    console.log(l.name, l.is_inside);
                                     if (!l.is_inside) {
-                                        console.log('is_indide');
-                                        console.log(tag.name + ' / ' + l.name + ' / ' +  service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) + '/' + l.radius + '/' + (service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius) );
                                         return (service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
                                     }
                                 }))
@@ -748,6 +745,8 @@
                         service.playedTime = new Date();
                     }
                 }
+                if (service.playedTime === null)
+                    service.playAlarm = false;
             } else if ((new Date().getTime() - service.playedTime.getTime()) > 5000 && service.playAlarm) {
                 if (service.alarmsSounds.length > 1 && (service.switch && service.switch.playAudio)) {
                     audio = new Audio(audioPath + 'sndMultipleAlarm.mp3');
@@ -1128,9 +1127,10 @@
             service.server.onerror = (error) => {
                 let call = service.callbacks.shift();
                 call.value('error');
-            }
+            };
 
             service.server.onclose = () => {
+                $state.go('login');
                 service.socketClosed = true;
             }
         };

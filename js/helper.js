@@ -106,11 +106,11 @@ function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) 
     context.beginPath();
     if (isTag) {
         context.fillStyle = 'red';
-        context.fillText(value.name, virtualTag.width - 5, virtualTag.height - 3);
+        context.fillText(value.name, virtualTag.width - 10, virtualTag.height - 14);
     } else {
         context.fillStyle = '#0093c4';
         id = value.name;
-        context.fillText(id, virtualTag.width - 12, virtualTag.height - 5);
+        context.fillText(id, virtualTag.width - 17, virtualTag.height - 15);
     }
 
     context.drawImage(img, virtualTag.width - 10, virtualTag.height - 10);

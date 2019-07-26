@@ -2850,7 +2850,7 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function insert_super_user($username, $name, $email, $email_list, $bot_url, $chat_id, $web_url, $role)
+    function insert_super_user($username, $name, $email, $phone, $email_list, $bot_url, $chat_id, $web_url, $role)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
@@ -2874,9 +2874,9 @@ class Connection
 
                 $hash_code = password_hash($password, PASSWORD_BCRYPT);
 
-                $this->query = "INSERT INTO user (USERNAME, PASSWORD, NAME, EMAIL_ALERT, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, ROLE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                $this->query = "INSERT INTO user (USERNAME, PASSWORD, NAME, TELEPHONE_NUMBER, EMAIL_ALERT, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, ROLE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                $statement = $this->execute_inserting($this->query, 'sssssssi', $username, $hash_code, $name, $email_list_string, $bot_url, $chat_id, $web_url, $role);
+                $statement = $this->execute_inserting($this->query, 'ssssssssi', $username, $hash_code, $name, $phone, $email_list_string, $bot_url, $chat_id, $web_url, $role);
 
                 if ($statement instanceof db_errors)
                     array_push($errors, 'insert_user_db_error');

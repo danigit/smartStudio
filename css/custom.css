@@ -259,6 +259,10 @@ MARGINS
     margin-bottom: 30px;
 }
 
+.margin-bottom-50-px{
+    margin-bottom: 50px;
+}
+
 .margin-bottom-40-px{
     margin-bottom: 40px!important;
 }

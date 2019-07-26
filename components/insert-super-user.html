@@ -1,22 +1,25 @@
 <!--<div>-->
 <!--popup header-->
-<md-toolbar id="popup-toolbar" ng-class="user.resultClass">
-    <div layout="row" layout-align="end center" class="width-100">
-        <md-button class="md-icon-button margin-none" ng-click="hide()">
-            <img src="img/icons/close-icon.png" aria-label="Close" alt="Close" title="Close"/>
-        </md-button>
-    </div>
-
-    <div layout="row" layout-align="center center" class="margin-top--20-px">
-        <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
-    </div>
-
-    <div layout="column">
-        <div layout="row" layout-align="center center" class="">
-            <h1 class=" font-iceberg font-x-large">INSERIMENTO UTENTE</h1>
+<div ng-controller="languageController">
+    <md-toolbar id="popup-toolbar" ng-class="user.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
+            </md-button>
         </div>
-    </div>
-</md-toolbar>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{lang.insertUser || uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
 <!--end popup header-->
 
 <!--popup content-->
@@ -54,18 +57,23 @@
                 </md-input-container>
 
                 <md-input-container md-no-float class="margin-bottom-0">
+                    <input required type="text" ng-model="user.phone" name="phone"
+                           placeholder="Numero di telefono" aria-label="">
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
                     <div layout="row">
                         <div>
-                            <input required type="text" ng-model="user.emailForList" name="userEmailList"
+                            <input type="text" ng-model="user.emailForList" name="userEmailList"
                             placeholder="Aggiungere email" ng-pattern="/^.+@.+\..+$/" aria-label="">
                         </div>
                         <div class="margin-left-10-px"><img class="cursor-pointer" ng-click="addEmail()" src="img/icons/add_row_24.png"></div>
                     </div>
-                    <div ng-messages="insertUserForm.userEmailList.$error || insertUserForm.$submitted"
-                         role="alert">
-                        <div ng-message=" required">Inserire email</div>
-                        <div ng-message="pattern">Inserire una email valida</div>
-                    </div>
+<!--                    <div ng-messages="insertUserForm.userEmailList.$error || insertUserForm.$submitted"-->
+<!--                         role="alert">-->
+<!--                        <div ng-message=" required">Inserire email</div>-->
+<!--                        <div ng-message="pattern">Inserire una email valida</div>-->
+<!--                    </div>-->
                 </md-input-container>
 
                 <md-input-container md-no-float class="margin-bottom-0">
@@ -87,12 +95,12 @@
                 </md-input-container>
 
                 <md-input-container md-no-float class="margin-bottom-0">
-                    <input required type="text" ng-model="user.webUrl" name="webUrl"
+                    <input type="text" ng-model="user.webUrl" name="webUrl"
                            placeholder="Inserisci l'url del web service" aria-label="">
-                    <div ng-messages="insertUserForm.webUrl.$error || insertUserForm.$submitted"
-                         role="alert">
-                        <div ng-message=" required">Inserire un valore</div>
-                    </div>
+<!--                    <div ng-messages="insertUserForm.webUrl.$error || insertUserForm.$submitted"-->
+<!--                         role="alert">-->
+<!--                        <div ng-message=" required">Inserire un valore</div>-->
+<!--                    </div>-->
                 </md-input-container>
 
                 <md-input-container>

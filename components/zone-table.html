@@ -40,8 +40,8 @@
                     <th ng-show="isOutdoor" md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.radius}}</span></th>
                     <th ng-show="isOutdoor" md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.xCenter}}</span></th>
                     <th ng-show="isOutdoor" md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.yCenter}}</span></th>
-                    <th md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.color}}</span></th>
-                    <th md-column></th>
+                    <th ng-if="isAdmin" md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.color}}</span></th>
+                    <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
 
@@ -72,10 +72,10 @@
                     <td ng-show="isOutdoor" md-cell ng-click="zone.gps_east !== null ? editCell($event, zone, 'gps_east') : null"
                         ng-class="{'md-placeholder': !zone.gps_east}">{{zone.gps_east === null ? "Valore non necessario" :  zone.gps_east|| lang.insertValue}}
                     </td>
-                    <td md-cell><input ng-change="changeColor(zone.id, zone.color)" type="color" value="zone.color" ng-model="zone.color"
+                    <td ng-if="isAdmin" md-cell><input ng-change="changeColor(zone.id, zone.color)" type="color" value="zone.color" ng-model="zone.color"
                                                                           colorpick-eyedropper-active="true">
                     </td>
-                    <td md-cell ng-show="isAdmin || isUserManager" ng-click="deleteRow(zone)"><img src="img/icons/delete_trash_24.png" alt="{{lang.deleteTag}}"
+                    <td md-cell ng-show="isAdmin" ng-click="deleteRow(zone)"><img src="img/icons/delete_trash_24.png" alt="{{lang.deleteTag}}"
                                                                 title="{{lang.deleteTag}}"></td>
                 </tr>
                 <tr md-row ng-show="tableEmptyZone">
@@ -85,8 +85,8 @@
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float ng-show="isAdmin || isUserManager" class="md-block width-100 margin-top-bottom-25-px">
-            <div ng-if="isOutdoor" layout="row" layout-align="center end" class="margin-bottom-30-px">
+        <md-input-container md-no-float ng-show="isAdmin" class="md-block width-100 margin-bottom-50-px margin-top-0">
+            <div ng-if="isOutdoor" layout="row" layout-align="center end">
                 <button ng-click="addNewRectRow()" class="md-button" layout="row" layout-align="center center">
                     <img src="img/icons/add_row_32.png" class="outline-none margin-right-10-px"
                       alt="{{lang.insertTag}}" title="{{lang.insertTag}}">
@@ -98,7 +98,7 @@
                     <span>ROUND ZONE</span>
                 </button>
             </div>
-            <div ng-if="!isOutdoor" layout="row" layout-align="center end" class="margin-bottom-30-px">
+            <div ng-if="!isOutdoor" layout="row" layout-align="center end">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="{{lang.insertTag}}" title="{{lang.insertTag}}">
             </div>

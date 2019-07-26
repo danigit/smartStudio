@@ -26,7 +26,7 @@
 
     <div layout="column" layout-align="center center" ng-controller="languageController">
 
-        <md-table-container>
+        <md-table-container class="margin-bottom-40-px">
 
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
@@ -47,6 +47,7 @@
                     <th md-column md-numeric><span class="color-darkcyan">{{lang.proximity | uppercase}}</span></th>
                     <th md-column><span class="color-darkcyan">{{lang.type}}</span></th>
                     <th md-column><span class="color-darkcyan">{{lang.permittedAssets | uppercase}}</span></th>
+                    <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
 
@@ -123,7 +124,7 @@
                         </md-select>
                     </td>
 
-                    <td md-cell ng-show="isAdmin || isUserManager" class="no-wrap" ng-click="deleteRow(anchor.anchor)"><img
+                    <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="deleteRow(anchor.anchor)"><img
                             src="img/icons/delete_trash_24.png" alt="{{lang.deleteAnchor}}"
                             title="{{lang.deleteAnchor}}"></td>
 
@@ -135,8 +136,8 @@
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float ng-show="isAdmin || isUserManager" class="md-block width-100 margin-bottom-30-px">
-            <div layout="row" layout-align="center end" class="margin-bottom-30-px">
+        <md-input-container md-no-float ng-show="isAdmin" class="md-block width-100 margin-bottom-50-px margin-top-0">
+            <div layout="row" layout-align="center end">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="{{lang.addAnchor}}" title="{{lang.addAnchor}}">
             </div>
