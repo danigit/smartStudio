@@ -57,7 +57,7 @@
                 </md-input-container>
 
                 <md-input-container md-no-float class="margin-bottom-0">
-                    <input required type="text" ng-model="user.phone" name="phone"
+                    <input type="text" ng-model="user.phone" name="phone"
                            placeholder="Numero di telefono" aria-label="">
                 </md-input-container>
 
@@ -77,21 +77,13 @@
                 </md-input-container>
 
                 <md-input-container md-no-float class="margin-bottom-0">
-                    <input required type="text" ng-model="user.botUrl" name="botUrl"
+                    <input type="text" ng-model="user.botUrl" name="botUrl"
                            placeholder="Inserisci l'url del bot" aria-label="">
-                    <div ng-messages="insertUserForm.botUrl.$error || insertUserForm.$submitted"
-                         role="alert">
-                        <div ng-message=" required">Inserire un valore</div>
-                    </div>
                 </md-input-container>
 
                 <md-input-container md-no-float class="margin-bottom-0">
-                    <input required type="text" ng-model="user.chatId" name="chatId"
+                    <input type="text" ng-model="user.chatId" name="chatId"
                            placeholder=" Insert l'id della chat" aria-label="">
-                    <div ng-messages="insertUserForm.chatId.$error || insertUserForm.$submitted"
-                         role="alert">
-                        <div ng-message=" required">Inserire un valore</div>
-                    </div>
                 </md-input-container>
 
                 <md-input-container md-no-float class="margin-bottom-0">

@@ -93,7 +93,6 @@
 
                 markers.forEach((marker) => {
                     let tags = dataService.getOutdoorLocationTags(marker, allTags);
-
                     let markerObject = new google.maps.Marker({
                         position: new google.maps.LatLng(marker.position[0], marker.position[1]),
                     });
@@ -182,6 +181,8 @@
                     newSocketService.getData('get_all_tags', {}, (response) => {
                         if (!response.session_state)
                             window.location.reload();
+
+                        dataService.allTags = response.result;
 
                         tags                         = response.result;
                         dataService.checkIfTagsAreOutOfLocations(response.result).then(result => {
@@ -362,6 +363,8 @@
                         $scope.outlocationTags = dataService.switch.showOutrangeTags;
                         let locations          = [];
                         let indoorLocationTags = [];
+                        let localAlarms = [];
+                        let allTags = [];
 
                         $scope.query = {
                             limitOptions: [5, 10, 15],
@@ -370,89 +373,145 @@
                             page        : 1
                         };
 
-                        newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
-                            if (!userTags.session_state)
-                                window.location.reload();
-
-                            newSocketService.getData('get_user_locations', {user: dataService.user.id}, (userLocations) => {
-                                if (!userLocations.session_state)
-                                    window.location.reload();
-
-                                newSocketService.getData('get_all_locations', {}, (response) => {
-                                    if (!response.session_state)
+                        dataService.alarmsInterval = $interval(() => {
+                            console.log('alarm timer');
+                            newSocketService.getData('get_all_tags', {}, (allTagsResult) => {
+                                allTags = allTagsResult.result;
+                                newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
+                                    if (!userTags.session_state)
                                         window.location.reload();
 
-                                    locations = response.result;
+                                    newSocketService.getData('get_user_locations', {user: dataService.user.id}, (userLocations) => {
+                                        if (!userLocations.session_state)
+                                            window.location.reload();
 
-                                    indoorLocationTags   = userTags.result;
-                                    let indoorNoLocationTags = tags.filter(t => !dataService.isOutdoor(t) && t.anchor_id === null);
-                                    let outdoorLocationTags  = tags.filter(t => dataService.isOutdoor(t) && t.gps_north_degree !== -2 && t.gps_east_degree !== -2);
-                                    let outdoorNoSiteTags = tags.filter(t => (dataService.isOutdoor(t) && t.gps_north_degree === -2 && t.gps_east_degree === -2));
-                                    let outdoorNoLocationTags = [];
+                                        newSocketService.getData('get_all_locations', {}, (response) => {
+                                            if (!response.session_state)
+                                                window.location.reload();
 
-                                    outdoorLocationTags.forEach(tag => {
-                                        if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius)) {
-                                            outdoorNoLocationTags.push(tag);
-                                        }
-                                    });
+                                            locations = response.result;
 
-                                    //removing the tags that are out of location
-                                    outdoorLocationTags = outdoorLocationTags.filter(t => !outdoorNoLocationTags.some(ot => ot.id === t.id));
+                                            indoorLocationTags        = userTags.result;
+                                            let indoorNoLocationTags  = allTags.filter(t => !dataService.isOutdoor(t) && t.anchor_id === null);
+                                            let outdoorLocationTags   = allTags.filter(t => dataService.isOutdoor(t) && t.gps_north_degree !== -2 && t.gps_east_degree !== -2);
+                                            let outdoorNoSiteTags     = allTags.filter(t => (dataService.isOutdoor(t) && t.gps_north_degree === -2 && t.gps_east_degree === -2));
+                                            let outdoorNoLocationTags = [];
 
-                                    indoorLocationTags.forEach(tag => {
-                                        let tagLocation = userLocations.result.filter(l => l.latitude === tag.location_latitude && l.longitude === tag.location_longitude);
-                                        if (tagLocation !== undefined) {
-                                            dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name).forEach(alarm => {
-                                                $scope.alarms.push(alarm);
+                                            outdoorLocationTags.forEach(tag => {
+                                                if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius)) {
+                                                    if (!dataService.tagsArrayNotContainsTag(outdoorNoLocationTags, tag))
+                                                        outdoorNoLocationTags.push(tag);
+                                                }
                                             });
-                                        }
-                                    });
 
-                                    // indoorNoLocationTags.forEach(tag => {
-                                    //     //inserting outside site alarm
-                                    //     $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag senza posizione', "Il tag non ha una posizione definita", tagsIconPath + 'tag_withouth_position_24.png', lang.noPosition));
-                                    //
-                                    //     //inserting tag alarms
-                                    //     dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation).forEach(alarm => {
-                                    //         $scope.alarms.push(alarm);
-                                    //     })
-                                    // });
+                                            //removing the tags that are out of location
+                                            outdoorLocationTags = outdoorLocationTags.filter(t => !outdoorNoLocationTags.some(ot => ot.id === t.id));
 
-                                    outdoorLocationTags.forEach(tag => {
-                                        if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius))
-                                            $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
+                                            indoorLocationTags.forEach(tag => {
+                                                let tagLocation = userLocations.result.filter(l => l.latitude === tag.location_latitude && l.longitude === tag.location_longitude);
+                                                if (tagLocation !== undefined) {
+                                                    let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name);
 
-                                        let tagLocation = locations.filter(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
-                                        if (tagLocation.length > 0) {
-                                            dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name).forEach(alarm => {
-                                                $scope.alarms.push(alarm);
-                                            })
-                                        }
-                                    });
+                                                    if (tagAlarms.length === 0){
+                                                        $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
+                                                    }
 
-                                    outdoorNoLocationTags.forEach(tag => {
-                                        //inserting outsite site alarm
-                                        $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
+                                                    let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+                                                    $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
 
-                                        //inserting tag alarms
-                                        dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation).forEach(alarm => {
-                                            $scope.alarms.push(alarm);
-                                        })
-                                    });
+                                                    tagAlarms.forEach(alarm => {
+                                                        if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                            $scope.alarms.push(alarm);
+                                                    });
+                                                }
+                                            });
 
-                                    outdoorNoSiteTags.forEach(tag => {
-                                        dataService.loadTagAlarmsForInfoWindow(tag, null, 'Tag senza posizione').forEach(alarm => {
-                                            $scope.alarms.push(alarm);
-                                        })
+                                            indoorNoLocationTags.forEach(tag => {
+                                                //inserting outside site alarm
+                                                // $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag senza posizione', "Il tag non ha una posizione definita", tagsIconPath + 'tag_withouth_position_24.png', lang.noPosition));
+
+                                                //inserting tag alarms
+                                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation);
+
+                                                if (tagAlarms.length === 0){
+                                                    $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
+                                                }
+
+                                                let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+
+                                                tagAlarms.forEach(alarm => {
+                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                        $scope.alarms.push(alarm);
+                                                })
+                                            });
+
+                                            outdoorLocationTags.forEach(tag => {
+                                                if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius))
+                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                        $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
+
+                                                let tagLocation = locations.filter(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
+                                                if (tagLocation.length > 0) {
+                                                    let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name);
+
+                                                    if (tagAlarms.length === 0){
+                                                        $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
+                                                    }
+
+                                                    let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+                                                    $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+
+                                                    tagAlarms.forEach(alarm => {
+                                                        if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                            $scope.alarms.push(alarm);
+                                                    })
+                                                }
+                                            });
+
+                                            outdoorNoLocationTags.forEach(tag => {
+                                                //inserting outsite site alarm
+                                                let alarmOut = dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation);
+                                                if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarmOut))
+                                                    $scope.alarms.push(alarmOut);
+
+                                                //inserting tag alarms
+                                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation);
+
+                                                let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+
+                                                localTagAlarms = localTagAlarms.filter(lta => !(lta.tagId === alarmOut.tagId && lta.name === alarmOut.name))
+
+                                                if (localTagAlarms.length === 0)
+                                                    $scope.alarms = $scope.alarms.filter(a => !(a.tagId === alarmOut.tagId && a.name !== alarmOut.name));
+
+                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+
+                                                tagAlarms.forEach(alarm => {
+                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                        $scope.alarms.push(alarm);
+                                                })
+                                            });
+
+                                            outdoorNoSiteTags.forEach(tag => {
+                                                dataService.loadTagAlarmsForInfoWindow(tag, null, 'Tag senza posizione').forEach(alarm => {
+                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                        $scope.alarms.push(alarm);
+                                                })
+                                            });
+
+                                            // console.log($scope.alarms);
+                                            $scope.$apply();
+                                        });
+
                                     });
                                 });
-
                             });
-                        });
+                        }, 1000);
 
                         //opening the location where the alarm is
                         $scope.loadLocation = (alarm) => {
-                            let tag = tags.filter(t => t.id === alarm.tagId)[0];
+                            let tag = allTags.filter(t => t.id === alarm.tagId)[0];
 
                             if (dataService.isOutdoor(tag)) {
                                 //if the tag is outdoor and has no position i show tag not found message
@@ -507,7 +566,7 @@
                                                     map_type: mapType,
                                                 };
 
-                                                let tag = tags.filter(t => t.name === tagName.tag)[0];
+                                                let tag = allTags.filter(t => t.name === tagName.tag)[0];
 
                                                 newSocketService.getData('get_tag_outside_location_zoom', {}, (response) => {
                                                     if (!response.session_state)
@@ -605,6 +664,8 @@
                         }
                     }],
                     onRemoving         : function () {
+                        dataService.alarmsInterval = dataService.stopTimer(dataService.alarmsInterval);
+
                         //TODO locationSelected has to be removed (terminate the home timer when enter location)
                         if (dataService.homeTimer === undefined && !locationSelected) {
                             NgMap.getMap('main-map').then((map) => {
@@ -761,6 +822,7 @@
                     $scope.outlocationTags = dataService.switch.showOutrangeTags;
                     let locations          = [];
                     let indoorLocationTags = [];
+                    let allTags = [];
 
                     $scope.query = {
                         limitOptions: [5, 10, 15],
@@ -769,83 +831,141 @@
                         page        : 1
                     };
 
-                    newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
-                        if (!userTags.session_state)
-                            window.location.reload();
-
-                        newSocketService.getData('get_user_locations', {user: dataService.user.id}, (userLocations) => {
-                            if (!userLocations.session_state)
-                                window.location.reload();
-
-                            newSocketService.getData('get_all_locations', {}, (response) => {
-                                if (!response.session_state)
+                    dataService.alarmsInterval = $interval(() => {
+                        console.log('alarm timer');
+                        newSocketService.getData('get_all_tags', {}, (allTagsResult) => {
+                            allTags = allTagsResult.result;
+                            newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
+                                if (!userTags.session_state)
                                     window.location.reload();
 
-                                locations = response.result;
+                                newSocketService.getData('get_user_locations', {user: dataService.user.id}, (userLocations) => {
+                                    if (!userLocations.session_state)
+                                        window.location.reload();
 
-                                indoorLocationTags   = userTags.result;
-                                let indoorNoLocationTags = tags.filter(t => !dataService.isOutdoor(t) && t.anchor_id === null);
-                                let outdoorLocationTags  = tags.filter(t => dataService.isOutdoor(t) && t.gps_north_degree !== -2 && t.gps_east_degree !== -2);
-                                let outdoorNoSiteTags = tags.filter(t => (dataService.isOutdoor(t) && t.gps_north_degree === -2 && t.gps_east_degree === -2));
-                                let outdoorNoLocationTags = [];
+                                    newSocketService.getData('get_all_locations', {}, (response) => {
+                                        if (!response.session_state)
+                                            window.location.reload();
 
-                                outdoorLocationTags.forEach(tag => {
-                                    if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius)) {
-                                        outdoorNoLocationTags.push(tag);
-                                    }
-                                });
+                                        locations = response.result;
 
-                                //removing the tags that are out of location
-                                outdoorLocationTags = outdoorLocationTags.filter(t => !outdoorNoLocationTags.some(ot => ot.id === t.id));
+                                        indoorLocationTags        = userTags.result;
+                                        let indoorNoLocationTags  = allTags.filter(t => !dataService.isOutdoor(t) && t.anchor_id === null);
+                                        let outdoorLocationTags   = allTags.filter(t => dataService.isOutdoor(t) && t.gps_north_degree !== -2 && t.gps_east_degree !== -2);
+                                        let outdoorNoSiteTags     = allTags.filter(t => (dataService.isOutdoor(t) && t.gps_north_degree === -2 && t.gps_east_degree === -2));
+                                        let outdoorNoLocationTags = [];
 
-                                indoorLocationTags.forEach(tag => {
-                                    let tagLocation = userLocations.result.filter(l => l.latitude === tag.location_latitude && l.longitude === tag.location_longitude);
-                                    if (tagLocation !== undefined) {
-                                        dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name).forEach(alarm => {
-                                            $scope.alarms.push(alarm);
+                                        outdoorLocationTags.forEach(tag => {
+                                            if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius)) {
+                                                if (!dataService.tagsArrayNotContainsTag(outdoorNoLocationTags, tag))
+                                                    outdoorNoLocationTags.push(tag);
+                                            }
                                         });
-                                    }
+
+                                        //removing the tags that are out of location
+                                        outdoorLocationTags = outdoorLocationTags.filter(t => !outdoorNoLocationTags.some(ot => ot.id === t.id));
+
+                                        indoorLocationTags.forEach(tag => {
+                                            let tagLocation = userLocations.result.filter(l => l.latitude === tag.location_latitude && l.longitude === tag.location_longitude);
+                                            if (tagLocation !== undefined) {
+                                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name);
+
+                                                if (tagAlarms.length === 0){
+                                                    $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
+                                                }
+
+                                                let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+
+                                                tagAlarms.forEach(alarm => {
+                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                        $scope.alarms.push(alarm);
+                                                });
+                                            }
+                                        });
+
+                                        indoorNoLocationTags.forEach(tag => {
+                                            //inserting outside site alarm
+                                            // $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag senza posizione', "Il tag non ha una posizione definita", tagsIconPath + 'tag_withouth_position_24.png', lang.noPosition));
+
+                                            //inserting tag alarms
+                                            let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation);
+
+                                            if (tagAlarms.length === 0){
+                                                $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
+                                            }
+
+                                            let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+                                            $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+
+                                            tagAlarms.forEach(alarm => {
+                                                if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                    $scope.alarms.push(alarm);
+                                            })
+                                        });
+
+                                        outdoorLocationTags.forEach(tag => {
+                                            if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius))
+                                                if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                    $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
+
+                                            let tagLocation = locations.filter(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
+                                            if (tagLocation.length > 0) {
+                                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name);
+
+                                                if (tagAlarms.length === 0){
+                                                    $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
+                                                }
+
+                                                let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+
+                                                tagAlarms.forEach(alarm => {
+                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                        $scope.alarms.push(alarm);
+                                                })
+                                            }
+                                        });
+
+                                        outdoorNoLocationTags.forEach(tag => {
+                                            //inserting outsite site alarm
+                                            let alarmOut = dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation);
+                                            if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarmOut))
+                                                $scope.alarms.push(alarmOut);
+
+                                            //inserting tag alarms
+                                            let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation);
+
+                                            let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+
+                                            localTagAlarms = localTagAlarms.filter(lta => !(lta.tagId === alarmOut.tagId && lta.name === alarmOut.name))
+
+                                            if (localTagAlarms.length === 0)
+                                                $scope.alarms = $scope.alarms.filter(a => !(a.tagId === alarmOut.tagId && a.name !== alarmOut.name));
+
+                                            $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+
+                                            tagAlarms.forEach(alarm => {
+                                                if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                    $scope.alarms.push(alarm);
+                                            })
+                                        });
+
+                                        outdoorNoSiteTags.forEach(tag => {
+                                            dataService.loadTagAlarmsForInfoWindow(tag, null, 'Tag senza posizione').forEach(alarm => {
+                                                if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                    $scope.alarms.push(alarm);
+                                            })
+                                        });
+
+                                        // console.log($scope.alarms);
+                                        $scope.$apply();
+                                    });
+
                                 });
-
-                                indoorNoLocationTags.forEach(tag => {
-                                    //inserting outside site alarm
-                                    $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag senza posizione', "Il tag non ha una posizione definita", tagsIconPath + 'tag_withouth_position_24.png', lang.noPosition));
-
-                                    //inserting tag alarms
-                                    dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation).forEach(alarm => {
-                                        $scope.alarms.push(alarm);
-                                    })
-                                });
-
-                                outdoorLocationTags.forEach(tag => {
-                                    if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius))
-                                        $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
-
-                                    let tagLocation = locations.filter(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
-                                    if (tagLocation.length > 0) {
-                                        dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name).forEach(alarm => {
-                                            $scope.alarms.push(alarm);
-                                        })
-                                    }
-                                });
-
-                                outdoorNoLocationTags.forEach(tag => {
-                                    //inserting outsite site alarm
-                                    $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
-
-                                    //inserting tag alarms
-                                    dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation).forEach(alarm => {
-                                        $scope.alarms.push(alarm);
-                                    })
-                                });
-
-                                outdoorNoSiteTags.forEach(tag => {
-                                    $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag senza posizione', 'Il tag non ha una posizione definita', tagsIconPath + 'tag_withouth_position_24.png', lang.noPosition))
-                                })
                             });
-
                         });
-                    });
+                    }, 1000);
 
                     //opening the location where the alarm is
                     $scope.loadLocation = (alarm) => {
@@ -1005,6 +1125,8 @@
                     }
                 }],
                 onRemoving         : function () {
+                    dataService.alarmsInterval = dataService.stopTimer(dataService.alarmsInterval);
+
                     if (dataService.updateMapTimer === undefined && !locationSelected)
                         constantUpdateMapTags(controllerMap);
                 }
@@ -1130,9 +1252,11 @@
                 console.log('updating outdoor location');
 
                 newSocketService.getData('get_all_tags', {}, (response) => {
+                    dataService.allTags = response.result;
+
                     tags                            = response.result;
                     dataService.checkIfTagsAreOutOfLocations(response.result).then(result => {
-                        if(dataService.switch.showOutrangeTags && result.some(r => r === false))
+                        if(dataService.switch.showOutrangeTags && result.some(r => r === true))
                             outdoorCtrl.showAlarmsIcon = true;
                     });
 
@@ -1162,6 +1286,7 @@
                     tags.forEach((tag, index) => {
                         if (dataService.isOutdoor(tag)) {
                             if ((dataService.getTagDistanceFromLocationOrigin(tag, [locationInfo.latitude, locationInfo.longitude])) <= locationInfo.radius) {
+                                // console.log(tag);
                                 tagAlarms = dataService.getTagAlarms(tag);
 
                                 let marker = new google.maps.Marker({
@@ -1245,7 +1370,7 @@
                                                 marker.setMap(map);
                                                 bounds.extend(marker.getPosition());
                                             }
-                                        } else {
+                                        } else if(!tag.radio_switched_off) {
                                             if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
                                                 dataService.setIcon(tag, marker);
                                                 dataService.dynamicTags.forEach((insideTag, tagIndex) => {
@@ -1255,6 +1380,214 @@
                                                 });
                                             } else {
                                                 dataService.setIcon(tag, marker);
+                                                dataService.dynamicTags.push(marker);
+                                                marker.setMap(map);
+                                                bounds.extend(marker.getPosition());
+                                            }
+                                        } else {
+                                            dataService.dynamicTags.forEach((tag, index) => {
+                                                if (tag.getPosition().equals(marker.getPosition())) {
+                                                    dataService.dynamicTags[index].setMap(null);
+                                                    dataService.dynamicTags.splice(index, 1);
+                                                }
+                                            });
+                                        }
+                                    }else if (outdoorCtrl.isUserManager && dataService.switch.showOutdoorTags) {
+                                        if (dataService.checkIfTagsHaveAlarmsOutdoor(tags)) {
+                                            if (dataService.checkIfTagHasAlarm(tag)) {
+                                                if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                    dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                        if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                            if (alarmsCounts[index] > tagAlarms.length - 1)
+                                                                alarmsCounts[index] = 0;
+
+                                                            dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
+
+                                                            if (tagAlarms.length !== prevAlarmCounts[index]) {
+                                                                google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
+                                                                dataService.dynamicTags[tagIndex].addListener('click', () => {
+                                                                    $mdDialog.show({
+                                                                        locals             : {tag: tag},
+                                                                        templateUrl        : componentsPath + 'tag-info-outdoor.html',
+                                                                        parent             : angular.element(document.body),
+                                                                        targetEvent        : event,
+                                                                        clickOutsideToClose: true,
+                                                                        controller         : ['$scope', 'tag', ($scope, tag) => {
+                                                                            $scope.tag          = tag;
+                                                                            $scope.isTagInAlarm = 'background-red';
+
+                                                                            $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag, null, null);
+
+                                                                            if ($scope.alarms.length === 0) {
+                                                                                ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
+                                                                                    ? $scope.isTagInAlarm = 'background-gray'
+                                                                                    : $scope.isTagInAlarm = 'background-green';
+                                                                            }
+
+                                                                            $scope.hide = () => {
+                                                                                $mdDialog.hide();
+                                                                            }
+                                                                        }]
+                                                                    })
+                                                                })
+                                                            }
+                                                        }
+                                                    });
+                                                } else {
+                                                    dataService.setIcon(tag, marker);
+                                                    dataService.dynamicTags.push(marker);
+                                                    marker.setMap(map);
+                                                    bounds.extend(marker.getPosition());
+                                                }
+                                            } else if(!tag.radio_switched_off) {
+                                                if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                    dataService.setIcon(tag, marker);
+                                                    dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                        if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                            dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
+                                                        }
+                                                    });
+                                                } else {
+                                                    dataService.setIcon(tag, marker);
+                                                    dataService.dynamicTags.push(marker);
+                                                    marker.setMap(map);
+                                                    bounds.extend(marker.getPosition());
+                                                }
+                                            }else {
+                                                dataService.dynamicTags.forEach((tag, index) => {
+                                                    if (tag.getPosition().equals(marker.getPosition())) {
+                                                        dataService.dynamicTags[index].setMap(null);
+                                                        dataService.dynamicTags.splice(index, 1);
+                                                    }
+                                                });
+                                            }
+                                        } else {
+                                            dataService.dynamicTags.forEach((tag, index) => {
+                                                if (tag.getPosition().equals(marker.getPosition())) {
+                                                    dataService.dynamicTags[index].setMap(null);
+                                                    dataService.dynamicTags.splice(index, 1);
+                                                }
+                                            });
+                                        }
+                                    } else{
+                                        if (dataService.checkIfTagHasAlarm(tag)) {
+                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                        if (alarmsCounts[index] > tagAlarms.length - 1)
+                                                            alarmsCounts[index] = 0;
+
+                                                        dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
+
+                                                        if (tagAlarms.length !== prevAlarmCounts[index]) {
+                                                            google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
+                                                            dataService.dynamicTags[tagIndex].addListener('click', () => {
+                                                                $mdDialog.show({
+                                                                    locals             : {tag: tag},
+                                                                    templateUrl        : componentsPath + 'tag-info-outdoor.html',
+                                                                    parent             : angular.element(document.body),
+                                                                    targetEvent        : event,
+                                                                    clickOutsideToClose: true,
+                                                                    controller         : ['$scope', 'tag', ($scope, tag) => {
+                                                                        $scope.tag          = tag;
+                                                                        $scope.isTagInAlarm = 'background-red';
+
+                                                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag, null, null);
+
+                                                                        if ($scope.alarms.length === 0) {
+                                                                            ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
+                                                                                ? $scope.isTagInAlarm = 'background-gray'
+                                                                                : $scope.isTagInAlarm = 'background-green';
+                                                                        }
+
+                                                                        $scope.hide = () => {
+                                                                            $mdDialog.hide();
+                                                                        }
+                                                                    }]
+                                                                })
+                                                            })
+                                                        }
+                                                    }
+                                                });
+                                            } else{
+                                                dataService.setIcon(tag, marker);
+                                                dataService.dynamicTags.push(marker);
+                                                marker.setMap(map);
+                                                bounds.extend(marker.getPosition());
+                                            }
+                                        }else if(!tag.radio_switched_off) {
+                                            dataService.dynamicTags.forEach((tag, index) => {
+                                                if (tag.getPosition().equals(marker.getPosition())) {
+                                                    dataService.dynamicTags[index].setMap(null);
+                                                    dataService.dynamicTags.splice(index, 1);
+                                                }
+                                            });
+                                        } else {
+                                            dataService.dynamicTags.forEach((tag, index) => {
+                                                if (tag.getPosition().equals(marker.getPosition())) {
+                                                    dataService.dynamicTags[index].setMap(null);
+                                                    dataService.dynamicTags.splice(index, 1);
+                                                }
+                                            });
+                                        }
+                                    }
+                                } else if(!tag.radio_switched_off){
+                                    if (outdoorCtrl.isAdmin) {
+                                        if (dataService.checkIfTagHasAlarm(tag)) {
+                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                        if (alarmsCounts[index] > tagAlarms.length - 1)
+                                                            alarmsCounts[index] = 0;
+
+                                                        dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
+
+                                                        if (tagAlarms.length !== prevAlarmCounts[index]) {
+                                                            google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
+                                                            dataService.dynamicTags[tagIndex].addListener('click', () => {
+                                                                $mdDialog.show({
+                                                                    locals             : {tag: tag},
+                                                                    templateUrl        : componentsPath + 'tag-info-outdoor.html',
+                                                                    parent             : angular.element(document.body),
+                                                                    targetEvent        : event,
+                                                                    clickOutsideToClose: true,
+                                                                    controller         : ['$scope', 'tag', ($scope, tag) => {
+                                                                        $scope.tag          = tag;
+                                                                        $scope.isTagInAlarm = 'background-red';
+
+                                                                        $scope.alarms = dataService.loadTagAlarmsForInfoWindow(tag, null, null);
+
+                                                                        if ($scope.alarms.length === 0) {
+                                                                            ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
+                                                                                ? $scope.isTagInAlarm = 'background-gray'
+                                                                                : $scope.isTagInAlarm = 'background-green';
+                                                                        }
+
+                                                                        $scope.hide = () => {
+                                                                            $mdDialog.hide();
+                                                                        }
+                                                                    }]
+                                                                })
+                                                            })
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                dataService.setIcon(tag, marker);
+                                                dataService.dynamicTags.push(marker);
+                                                marker.setMap(map);
+                                                bounds.extend(marker.getPosition());
+                                            }
+                                        } else {
+                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                marker.setIcon(tagsIconPath + 'offline_tag_24.png')
+                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                        dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
+                                                    }
+                                                });
+                                            } else {
+                                                marker.setIcon(tagsIconPath + 'offline_tag_24.png');
                                                 dataService.dynamicTags.push(marker);
                                                 marker.setMap(map);
                                                 bounds.extend(marker.getPosition());
@@ -1309,14 +1642,14 @@
                                                 }
                                             } else {
                                                 if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
-                                                    dataService.setIcon(tag, marker);
+                                                    marker.setIcon(tagsIconPath + 'offline_tag_24.png')
                                                     dataService.dynamicTags.forEach((insideTag, tagIndex) => {
                                                         if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
                                                             dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
                                                         }
                                                     });
                                                 } else {
-                                                    dataService.setIcon(tag, marker);
+                                                    marker.setIcon(tagsIconPath + 'offline_tag_24.png')
                                                     dataService.dynamicTags.push(marker);
                                                     marker.setMap(map);
                                                     bounds.extend(marker.getPosition());
@@ -1331,22 +1664,79 @@
                                             });
                                         }
                                     } else{
-                                        dataService.dynamicTags.forEach((tag, index) => {
-                                            if (!dataService.checkIfTagHasAlarm(tag)) {
+                                        if (dataService.checkIfTagHasAlarm(tag)) {
+                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                        if (alarmsCounts[index] > tagAlarms.length - 1)
+                                                            alarmsCounts[index] = 0;
+
+                                                        dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
+
+                                                        if (tagAlarms.length !== prevAlarmCounts[index]) {
+                                                            google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
+                                                            dataService.dynamicTags[tagIndex].addListener('click', () => {
+                                                                $mdDialog.show({
+                                                                    locals             : {tag: tag},
+                                                                    templateUrl        : componentsPath + 'tag-info-outdoor.html',
+                                                                    parent             : angular.element(document.body),
+                                                                    targetEvent        : event,
+                                                                    clickOutsideToClose: true,
+                                                                    controller         : ['$scope', 'tag', ($scope, tag) => {
+                                                                        $scope.tag          = tag;
+                                                                        $scope.isTagInAlarm = 'background-red';
+
+                                                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag, null, null);
+
+                                                                        if ($scope.alarms.length === 0) {
+                                                                            ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
+                                                                                ? $scope.isTagInAlarm = 'background-gray'
+                                                                                : $scope.isTagInAlarm = 'background-green';
+                                                                        }
+
+                                                                        $scope.hide = () => {
+                                                                            $mdDialog.hide();
+                                                                        }
+                                                                    }]
+                                                                })
+                                                            })
+                                                        }
+                                                    }
+                                                });
+                                            } else{
+                                                marker.setIcon(tagsIconPath + 'offline_tag_24.png')
+                                                dataService.dynamicTags.push(marker);
+                                                marker.setMap(map);
+                                                bounds.extend(marker.getPosition());
+                                            }
+                                        }else{
+                                            dataService.dynamicTags.forEach((tag, index) => {
                                                 if (tag.getPosition().equals(marker.getPosition())) {
                                                     dataService.dynamicTags[index].setMap(null);
                                                     dataService.dynamicTags.splice(index, 1);
                                                 }
-                                            }
-                                        });
+                                            });
+                                        }
+                                        // console.log('empty tags, tags have no alarm', dataService.dynamicTags);
+                                        // dataService.dynamicTags.forEach((tag, index) => {
+                                        //     if (!dataService.checkIfTagHasAlarm(tag)) {
+                                        //         if (tag.getPosition().equals(marker.getPosition())) {
+                                        //             dataService.dynamicTags[index].setMap(null);
+                                        //             dataService.dynamicTags.splice(index, 1);
+                                        //         }
+                                        //     }
+                                        // });
                                     }
-                                } else if (dataService.checkIfTagHasAlarm(tag)) {
+                                }else if (dataService.checkIfTagHasAlarm(tag)) {
                                     if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
                                         dataService.dynamicTags.forEach((insideTag, tagIndex) => {
                                             if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+
                                                 if (alarmsCounts[index] > tagAlarms.length - 1)
                                                     alarmsCounts[index] = 0;
+
                                                 dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
+
 
                                                 if (tagAlarms.length !== prevAlarmCounts[index]) {
                                                     google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
@@ -1380,8 +1770,8 @@
                                         });
                                     } else {
                                         dataService.setIcon(tag, marker);
-                                        dataService.dynamicTags.push(marker);
                                         marker.setMap(map);
+                                        dataService.dynamicTags.push(marker);
                                         bounds.extend(marker.getPosition());
                                     }
                                 } else {
@@ -1680,20 +2070,9 @@
                             if (!floorsByLocation.session_state)
                                 window.location.reload();
 
-                            //controlling if any floor has ben deleted from the database
-                            // if (!angular.equals(canvasCtrl.floors, response.result)) {
-                            // let newFloor = null;
-                            // if (response.result.length > canvasCtrl.floors.length) {
-                            //     newFloor = parsedResponse.result.filter(f => !canvasCtrl.floors.some(cf => f.id === cf.id))[0];
-                            //     dataService.userFloors.push(newFloor);
-                            // } else {
-                            //     newFloor = canvasCtrl.floors.filter(f => !response.result.some(pf => f.id === pf.id))[0];
-                            //     if (newFloor !== undefined)
-                            //         dataService.userFloors = dataService.userFloors.filter(f => f.id !== newFloor.id);
-                            // }
-                            // canvasCtrl.floors = response.result;
-                            // }
-                            canvasCtrl.floors = floorsByLocation.result;
+                            let tempFloors = floorsByLocation.result;
+                            if (!angular.equals(canvasCtrl.floors, tempFloors))
+                                canvasCtrl.floors = floorsByLocation.result;
                             newSocketService.getData('get_drawing', {floor: canvasCtrl.defaultFloor[0].id}, (drawings) => {
                                 if (!drawings.session_state)
                                     window.location.reload();
@@ -2039,7 +2418,7 @@
                 if (!response.session_state)
                     window.location.reload();
 
-                if (response.result .length > 0) {
+                if (response.result.length > 0) {
                     $mdDialog.show({
                         templateUrl        : componentsPath + 'tag-not-found-alert.html',
                         parent             : angular.element(document.body),
@@ -2049,7 +2428,7 @@
                             $controller('languageController', {$scope: $scope});
 
 
-                            $scope.title   = lang.tagNotFound.toUpperCase();
+                            $scope.title   = lang.drawingNotSaved.toUpperCase();
                             $scope.message = lang.unableToSaveData;
 
                             $scope.hide = () => {
@@ -2084,7 +2463,7 @@
                                     $controller('languageController', {$scope: $scope});
 
 
-                                    $scope.title   = lang.tagNotFound.toUpperCase();
+                                    $scope.title   = lang.drawingSaved.toUpperCase();
                                     $scope.message = lang.dataSavedSuccessfully;
 
                                     $scope.hide = () => {
@@ -2579,14 +2958,37 @@
                                     clickOutsideToClose: true,
                                     controller         : ['$scope', 'tags', function ($scope, tags) {
                                         $scope.tags         = tags;
-                                        $scope.isTagInAlarm = 'background-red';
+                                        $scope.isTagInAlarm = (dataService.checkIfTagsHaveAlarms(tags)) ? 'background-red' : 'background-green';
                                         let tempAlarmTag    = [];
 
                                         $scope.tags.forEach(function (tagElem) {
-                                            let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem);
-                                            tagAlarms.forEach(function (ta) {
-                                                tempAlarmTag.push(ta);
-                                            })
+                                            if (canvasCtrl.isAdmin) {
+                                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem);
+                                                tagAlarms.forEach(function (ta) {
+                                                    tempAlarmTag.push(ta);
+                                                })
+                                            } else if (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags){
+                                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem);
+                                                tagAlarms.forEach(function (ta) {
+                                                    tempAlarmTag.push(ta);
+                                                })
+                                            } else if (canvasCtrl.isUserManager && !dataService.switch.showOutdoorTags){
+                                                if (dataService.checkIfTagHasAlarm(tagElem)){
+                                                    let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem, null, '');
+                                                    tagAlarms.forEach(function (ta) {
+                                                        tempAlarmTag.push(ta);
+                                                    })
+                                                }
+                                                $scope.tags = $scope.tags.filter(t => dataService.checkIfTagHasAlarm(t));
+                                            } else{
+                                                if (dataService.checkIfTagHasAlarm(tagElem)){
+                                                    let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem);
+                                                    tagAlarms.forEach(function (ta) {
+                                                        tempAlarmTag.push(ta);
+                                                    })
+                                                }
+                                                $scope.tags = $scope.tags.filter(t => dataService.checkIfTagHasAlarm(t));
+                                            }
                                         });
 
                                         $scope.alarms = tempAlarmTag;
@@ -2609,7 +3011,7 @@
                                         clickOutsideToClose: true,
                                         controller         : ['$scope', 'tag', function ($scope, tag) {
                                             $scope.tag          = tag;
-                                            $scope.isTagInAlarm = 'background-red';
+                                            $scope.isTagInAlarm = (dataService.checkIfTagsHaveAlarms(tags)) ? 'background-red' : 'background-green';
                                             $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
 
                                             $scope.hide = () => {
@@ -2740,6 +3142,7 @@
                     $scope.outlocationTags = dataService.switch.showOutrangeTags;
                     let locations          = [];
                     let indoorLocationTags = [];
+                    let allTags = [];
 
                     $scope.query = {
                         limitOptions: [5, 10, 15],
@@ -2748,83 +3151,141 @@
                         page        : 1
                     };
 
-                    newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
-                        if (!userTags.session_state)
-                            window.location.reload();
-
-                        newSocketService.getData('get_user_locations', {user: dataService.user.id}, (userLocations) => {
-                            if (!userLocations.session_state)
-                                window.location.reload();
-
-                            newSocketService.getData('get_all_locations', {}, (response) => {
-                                if (!response.session_state)
+                    dataService.alarmsInterval = $interval(() => {
+                        console.log('alarm timer');
+                        newSocketService.getData('get_all_tags', {}, (allTagsResult) => {
+                            allTags = allTagsResult.result;
+                            newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
+                                if (!userTags.session_state)
                                     window.location.reload();
 
-                                locations = response.result;
+                                newSocketService.getData('get_user_locations', {user: dataService.user.id}, (userLocations) => {
+                                    if (!userLocations.session_state)
+                                        window.location.reload();
 
-                                indoorLocationTags   = userTags.result;
-                                let indoorNoLocationTags = tags.filter(t => !dataService.isOutdoor(t) && t.anchor_id === null);
-                                let outdoorLocationTags  = tags.filter(t => dataService.isOutdoor(t) && t.gps_north_degree !== -2 && t.gps_east_degree !== -2);
-                                let outdoorNoSiteTags = tags.filter(t => (dataService.isOutdoor(t) && t.gps_north_degree === -2 && t.gps_east_degree === -2));
-                                let outdoorNoLocationTags = [];
+                                    newSocketService.getData('get_all_locations', {}, (response) => {
+                                        if (!response.session_state)
+                                            window.location.reload();
 
-                                outdoorLocationTags.forEach(tag => {
-                                    if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius)) {
-                                        outdoorNoLocationTags.push(tag);
-                                    }
-                                });
+                                        locations = response.result;
 
-                                //removing the tags that are out of location
-                                outdoorLocationTags = outdoorLocationTags.filter(t => !outdoorNoLocationTags.some(ot => ot.id === t.id));
+                                        indoorLocationTags        = userTags.result;
+                                        let indoorNoLocationTags  = allTags.filter(t => !dataService.isOutdoor(t) && t.anchor_id === null);
+                                        let outdoorLocationTags   = allTags.filter(t => dataService.isOutdoor(t) && t.gps_north_degree !== -2 && t.gps_east_degree !== -2);
+                                        let outdoorNoSiteTags     = allTags.filter(t => (dataService.isOutdoor(t) && t.gps_north_degree === -2 && t.gps_east_degree === -2));
+                                        let outdoorNoLocationTags = [];
 
-                                indoorLocationTags.forEach(tag => {
-                                    let tagLocation = userLocations.result.filter(l => l.latitude === tag.location_latitude && l.longitude === tag.location_longitude);
-                                    if (tagLocation !== undefined) {
-                                        dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name).forEach(alarm => {
-                                            $scope.alarms.push(alarm);
+                                        outdoorLocationTags.forEach(tag => {
+                                            if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius)) {
+                                                if (!dataService.tagsArrayNotContainsTag(outdoorNoLocationTags, tag))
+                                                    outdoorNoLocationTags.push(tag);
+                                            }
                                         });
-                                    }
+
+                                        //removing the tags that are out of location
+                                        outdoorLocationTags = outdoorLocationTags.filter(t => !outdoorNoLocationTags.some(ot => ot.id === t.id));
+
+                                        indoorLocationTags.forEach(tag => {
+                                            let tagLocation = userLocations.result.filter(l => l.latitude === tag.location_latitude && l.longitude === tag.location_longitude);
+                                            if (tagLocation !== undefined) {
+                                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name);
+
+                                                if (tagAlarms.length === 0){
+                                                    $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
+                                                }
+
+                                                let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+
+                                                tagAlarms.forEach(alarm => {
+                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                        $scope.alarms.push(alarm);
+                                                });
+                                            }
+                                        });
+
+                                        indoorNoLocationTags.forEach(tag => {
+                                            //inserting outside site alarm
+                                            // $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag senza posizione', "Il tag non ha una posizione definita", tagsIconPath + 'tag_withouth_position_24.png', lang.noPosition));
+
+                                            //inserting tag alarms
+                                            let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation);
+
+                                            if (tagAlarms.length === 0){
+                                                $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
+                                            }
+
+                                            let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+                                            $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+
+                                            tagAlarms.forEach(alarm => {
+                                                if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                    $scope.alarms.push(alarm);
+                                            })
+                                        });
+
+                                        outdoorLocationTags.forEach(tag => {
+                                            if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius))
+                                                if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                    $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
+
+                                            let tagLocation = locations.filter(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
+                                            if (tagLocation.length > 0) {
+                                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name);
+
+                                                if (tagAlarms.length === 0){
+                                                    $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
+                                                }
+
+                                                let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+
+                                                tagAlarms.forEach(alarm => {
+                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                        $scope.alarms.push(alarm);
+                                                })
+                                            }
+                                        });
+
+                                        outdoorNoLocationTags.forEach(tag => {
+                                            //inserting outsite site alarm
+                                            let alarmOut = dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation);
+                                            if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarmOut))
+                                                $scope.alarms.push(alarmOut);
+
+                                            //inserting tag alarms
+                                            let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation);
+
+                                            let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
+
+                                            localTagAlarms = localTagAlarms.filter(lta => !(lta.tagId === alarmOut.tagId && lta.name === alarmOut.name))
+
+                                            if (localTagAlarms.length === 0)
+                                                $scope.alarms = $scope.alarms.filter(a => !(a.tagId === alarmOut.tagId && a.name !== alarmOut.name));
+
+                                            $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+
+                                            tagAlarms.forEach(alarm => {
+                                                if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                    $scope.alarms.push(alarm);
+                                            })
+                                        });
+
+                                        outdoorNoSiteTags.forEach(tag => {
+                                            dataService.loadTagAlarmsForInfoWindow(tag, null, 'Tag senza posizione').forEach(alarm => {
+                                                if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
+                                                    $scope.alarms.push(alarm);
+                                            })
+                                        });
+
+                                        // console.log($scope.alarms);
+                                        $scope.$apply();
+                                    });
+
                                 });
-
-                                indoorNoLocationTags.forEach(tag => {
-                                    //inserting outside site alarm
-                                    $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag senza posizione', "Il tag non ha una posizione definita", tagsIconPath + 'tag_withouth_position_24.png', lang.noPosition));
-
-                                    //inserting tag alarms
-                                    dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation).forEach(alarm => {
-                                        $scope.alarms.push(alarm);
-                                    })
-                                });
-
-                                outdoorLocationTags.forEach(tag => {
-                                    if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius))
-                                        $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
-
-                                    let tagLocation = locations.filter(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
-                                    if (tagLocation.length > 0) {
-                                        dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name).forEach(alarm => {
-                                            $scope.alarms.push(alarm);
-                                        })
-                                    }
-                                });
-
-                                outdoorNoLocationTags.forEach(tag => {
-                                    //inserting outsite site alarm
-                                    $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
-
-                                    //inserting tag alarms
-                                    dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation).forEach(alarm => {
-                                        $scope.alarms.push(alarm);
-                                    })
-                                });
-
-                                outdoorNoSiteTags.forEach(tag => {
-                                    $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag senza posizione', 'Il tag non ha una posizione definita', tagsIconPath + 'tag_withouth_position_24.png', lang.noPosition))
-                                })
                             });
-
                         });
-                    });
+                    }, 1000);
 
                     //opening the location where the alarm is
                     $scope.loadLocation = (alarm) => {
@@ -4589,7 +5050,6 @@
                             locals             : {tag: tag},
                             templateUrl        : componentsPath + 'manage-zones.html',
                             parent             : angular.element(document.body),
-                            targetEvent        : event,
                             clickOutsideToClose: true,
                             multiple           : true,
                             controller         : ['$scope', 'tag', function ($scope, tag) {
@@ -4723,6 +5183,115 @@
                         $mdDialog.show(tagZonesDialog);
                     };
 
+                    $scope.tagParameters = (tag) => {
+                        newSocketService.getData('get_tag_parameters', {tag: tag.id}, (response) => {
+
+                            let tagParameters = {
+                                locals             : {tag: tag, parameters: response.result},
+                                templateUrl        : componentsPath + 'manage-parameters.html',
+                                parent             : angular.element(document.body),
+                                clickOutsideToClose: true,
+                                multiple           : true,
+                                controller         : ['$scope', 'tag', 'parameters', function ($scope, tag, parameters) {
+                                    $scope.resultClass = '';
+                                    $scope.tag = tag;
+                                    $scope.tagParameters = parameters[0];
+                                    $scope.sendedValues = {
+                                        tag_id: tag.id,
+                                        adv_rate: $scope.tagParameters.adv_rate,
+                                        power_level: $scope.tagParameters.power_level,
+                                        disable_timing: $scope.tagParameters.disable_timing,
+                                        alarm_timing: $scope.tagParameters.alarm_timing,
+                                        no_mov_timing: $scope.tagParameters.no_mov_timing,
+                                        md_mode: $scope.tagParameters.md_mode,
+                                        ka: $scope.tagParameters.ka,
+                                        scanning_rate: $scope.tagParameters.scanning_rate,
+                                        lnd_prt_timing: $scope.tagParameters.lnd_prt_timing,
+                                        scanning_pkt: $scope.tagParameters.scanning_pkt,
+                                        freefall_thd: $scope.tagParameters.freefall_thd,
+                                        sim_is_here: $scope.tagParameters.sim_is_here,
+                                        wifi_is_here: $scope.tagParameters.wifi_is_here,
+                                        advertise_is_here: $scope.tagParameters.advertise_is_here,
+                                        mac_filter: $scope.tagParameters.mac_filter,
+                                        apn_name: $scope.tagParameters.apn_name,
+                                        apn_code: $scope.tagParameters.apn_code,
+                                        rest_name: $scope.tagParameters.rest_name,
+                                        server_ip: $scope.tagParameters.server_ip,
+                                        ssid_wifi: $scope.tagParameters.ssid_wifi,
+                                        pwd_wifi: $scope.tagParameters.pwd_wifi,
+                                        ip_gateway_wifi: $scope.tagParameters.ip_gateway_wifi,
+                                        ip_wetag_wifi: $scope.tagParameters.ip_wetag_wifi,
+                                        geofence_thd: $scope.tagParameters.geofence_thd,
+                                        mac_uwb: $scope.tagParameters.mac_uwb,
+                                        udp_port_uwb: $scope.tagParameters.udp_port_uwb
+                                    };
+
+                                    $scope.selectValues = {
+                                        adv_rate: [{label: "1 s", value: 1}, {label: "2 s", value: 2}, {label: "3 s", value: 3}, {label: "4 s", value: 4}, {label: "5 s", value: 5}],
+                                        power_level: [{label: "0 dBm", value: 0}, {label: "1 dBm", value: 1}, {label: "2 dBm", value: 2}, {label: "3 dBm", value: 3}, {label: "4 dBm", value: 4},
+                                            {label: "5 dBm", value: 5}, {label: "6 dBm", value: 6}, {label: "7 dBm", value: 7}, {label: "8 dBm", value: 8}],
+                                        disable_timing: [{label: "1 min", value: 1}, {label: "2 min", value: 2}, {label: "3 min", value: 3}, {label: "4 min", value: 4}, {label: "5 min", value: 5},
+                                            {label: "6 min", value: 6}, {label: "7 min", value: 7}, {label: "8 min", value: 8}, {label: "9 min", value: 9}, {label: "10 min", value: 10}],
+                                        alarm_timing: [{label: "10 s", value: 10}, {label: "15 s", value: 15}, {label: "20 s", value: 20}, {label: "25 s", value: 25}, {label: "30 s", value: 30}],
+                                        no_mov_timing: [{label: "1 min", value: 1}, {label: "2 min", value: 2}, {label: "3 min", value: 3}, {label: "4 min", value: 4}, {label: "5 min", value: 5},
+                                                         {label: "6 min", value: 6}, {label: "7 min", value: 7}, {label: "8 min", value: 8}, {label: "9 min", value: 9}],
+                                        md_mode: [{label: "LND/PRT", value: 0}, {label: "MOV", value: 1}, {label: "LND/PRT/MOV", value: 2}, {label: "LND/PRT L", value: 3}, {label: "LND/PRT/MOV L", value: 4},
+                                            {label: "FREEFALL", value: 5}, {label: "LND/PRT/FREEFALL L", value: 6}, {label: "LND/PRT/MOV/FREEFALL L", value: 7}],
+                                        ka: [{label: "10 min", value: 1}, {label: "15 min", value: 2}, {label: "30 min", value: 3}, {label: "60 min", value: 4}, {label: "90 min", value: 5}, {label: "120 min", value: 6}],
+                                        scanning_rate: [{label: "1 s", value: 1}, {label: "5 s", value: 2}, {label: "10 s", value: 3}, {label: "20 s", value: 4}, {label: "30 s", value: 5}, {label: "60 s", value: 6}],
+                                        lnd_prt_timing: [{label: "10 s", value: 1}, {label: "20 s", value: 2}, {label: "30 s", value: 3}, {label: "40 s", value: 4}, {label: "50 s", value: 5},
+                                            {label: "60 s", value: 6}, {label: "70 s", value: 7}, {label: "80 s", value: 8}, {label: "90 s", value: 9}, {label: "120 s", value: 10}],
+                                        scanning_pkt: [{label: "5 pkt", value: 1}, {label: "10 pkt", value: 2}, {label: "20 pkt", value: 3}, {label: "40 pkt", value: 4}, {label: "60 pkt", value: 5}, {label: "80 pkt", value: 6}],
+                                        freefall_thd: [{label: "40 cm", value: 1}, {label: "60 cm", value: 2}, {label: "80 cm", value: 3}, {label: "100 cm", value: 4}, {label: "120 cm", value: 5}, {label: "140 cm", value: 6},
+                                            {label: "160 cm", value: 7}, {label: "180 cm", value: 8}, {label: "200 cm", value: 9}],
+                                        sim_is_here: [{label: "NO", value: 0}, {label: "SI", value: 1}],
+                                        wifi_is_here: [{label: "NO", value: 0}, {label: "SI", value: 1}],
+                                        advertise_is_here: [{label: "NO", value: 0}, {label: "SI", value: 1}],
+                                        mac_filter: '',
+                                        apn_name: [{label: "VODAFONE", value: 'ep.inetd.gdsp'}, {label: "TIM", value: 'ibox.tim.it'}, {label: "FASTWEB", value: 'apn.fastweb.it'}, {label: "EMNIFY", value: 'em'}, {label: "JERSEY", value: 'JTFIXEDPUBLIC'}],
+                                        apn_code: [{label: "VODAFONE", value: '22210'}, {label: "TIM", value: '00001'}, {label: "FASTWEB", value: '00002'}, {label: "EMNIFY", value: '00003'}, {label: "JERSEY", value: '00004'}],
+                                        rest_name: '',
+                                        server_ip: '',
+                                        ssid_wifi: '',
+                                        pwd_wifi: '',
+                                        ip_gateway_wifi: '',
+                                        ip_wetag_wifi: '',
+                                        geofence_thd: [{label: "0 m", value: 1}, {label: "1 m", value: 2}, {label: "2 m", value: 3}, {label: "3 m", value: 4}, {label: "4 m", value: 5}, {label: "5 m", value: 6},
+                                                       {label: "6 m", value: 7}, {label: "7 m", value: 8}, {label: "8 m", value: 9}, {label: "9 m", value: 10}, {label: "10 m", value: 11}, {label: "11 m", value: 12}, {label: "12 m", value: 13},
+                                            {label: "13 m", value: 14}, {label: "14 m", value: 15}, {label: "15 m", value: 16}, {label: "17 m", value: 18}, {label: "18 m", value: 19}, {label: "19 m", value: 20}],
+                                        mac_uwb: '',
+                                        udp_port_uwb: '',
+                                    };
+
+                                    $scope.insertConfigurations = (form) => {
+                                        form.$submitted = true;
+
+                                        console.log($scope.sendedValues);
+                                        if (form.$valid) {
+                                            newSocketService.getData('update_parameters', {data: $scope.sendedValues}, (response) => {
+                                                console.log(response);
+                                                $scope.resultClass = 'background-green';
+                                                $timeout(function () {
+                                                    $mdDialog.hide();
+                                                }, 1500);
+                                            })
+                                        } else {
+                                            $scope.resultClass = 'background-red';
+                                        }
+                                    };
+
+                                    $scope.hide = () => {
+                                        $mdDialog.hide();
+                                    }
+                                }]
+                            };
+
+                            console.log(response.result);
+
+                            $mdDialog.show(tagParameters);
+                        })
+                    };
+
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
@@ -4833,7 +5402,7 @@
                     $scope.tableEmptyZone = false;
                     $scope.isUserManager  = dataService.isUserManager;
 
-                    $scope.zones = [];
+                    $scope.zonesTable = [];
                     $scope.query = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
@@ -4860,7 +5429,7 @@
                             if (!response.session_state)
                                 window.location.reload();
 
-                            $scope.zones          = response.result;
+                            $scope.zonesTable          = response.result;
                             $scope.tableEmptyZone = response.result.length === 0;
                             $scope.$apply();
                         });
@@ -4918,7 +5487,7 @@
                                 if (!response.session_state)
                                     window.location.reload();
 
-                                $scope.zones = $scope.zones.filter(z => z.id !== zone.id);
+                                $scope.zonesTable = $scope.zonesTable.filter(z => z.id !== zone.id);
                                 $scope.$apply();
                             });
                         }, function () {
@@ -5115,7 +5684,7 @@
                     $scope.tableEmptyZone = false;
                     $scope.isUserManager  = dataService.isUserManager;
 
-                    $scope.zones = [];
+                    $scope.zonesTable = [];
                     $scope.query = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
@@ -5141,11 +5710,12 @@
                     };
 
                     let updateZoneOutdoorTable = () => {
-                        newSocketService.getData('get_outdoor_zones', {locations: dataService.location.name}, (response) => {
+                        newSocketService.getData('get_outdoor_zones', {location: dataService.location.name}, (response) => {
                             if (!response.session_state)
                                 window.location.reload();
 
-                            $scope.zones          = response.result;
+                            $scope.zonesTable          = response.result;
+                            console.log($scope.zonesTable);
                             $scope.tableEmptyZone = response.result.length === 0;
                             $scope.$apply();
                         })
@@ -5202,7 +5772,7 @@
                                 if (!response.session_state)
                                     window.location.reload();
 
-                                $scope.zones    = $scope.zones.filter(z => z.id !== zone.id);
+                                $scope.zonesTable    = $scope.zonesTable.filter(z => z.id !== zone.id);
                                 let deletedZone = dataService.outdoorZones.filter(z => z.id === zone.id)[0];
                                 deletedZone.zone.setMap(null);
                                 dataService.outdoorZones = dataService.outdoorZones.filter(z => z.id !== zone.id);
@@ -5846,10 +6416,12 @@
 
         //handeling search tags functionality
         $scope.$watch('selectedLocation', function (newValue) {
-            let latlng = new google.maps.LatLng(newValue.latitude, newValue.longitude);
-            if (dataService.homeMap !== null) {
-                dataService.homeMap.setCenter(latlng);
-                dataService.homeMap.setZoom(15);
+            if (newValue.latitude !== undefined && newValue.longitude !== undefined) {
+                let latlng = new google.maps.LatLng(newValue.latitude, newValue.longitude);
+                if (dataService.homeMap !== null) {
+                    dataService.homeMap.setCenter(latlng);
+                    dataService.homeMap.setZoom(15);
+                }
             }
         });
 

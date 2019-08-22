@@ -49,7 +49,7 @@
         service.outdoorZones = [];
         service.outdoorZoneInserted = false;
         service.playedTime = null;
-        // service.gridSpacing = 0;
+        service.alarmsInterval = undefined;
 
 
 
@@ -67,9 +67,17 @@
             return alarms.some(l => l.position[0] === location.position[0] && l.position[1] === location.position[1])
         };
 
+        service.tagsArrayNotContainsTag = (tags, tag) => {
+            return tags.some(t => t.id === tag.id);
+        };
+
+        service.alarmsArrayContainAlarm = (alarms, alarm) => {
+            return alarms.some(a => a.tagId === alarm.tagId && a.name === alarm.name);
+        };
+
         //getting the tags in the outdoor location passed as parameter
         service.getOutdoorLocationTags = (location, tags) => {
-            return tags.filter(t => service.isTagInLocation(t, location));
+            return tags.filter(t => !location.is_inside && service.isTagInLocation(t, location));
         };
 
         //controlling if the tag passed as parameter is in the location passed as parameter as well
@@ -83,13 +91,9 @@
                 let distX = Math.abs(tag.gps_north_degree - origin[0]);
                 let distY = Math.abs(tag.gps_east_degree - origin[1]);
 
-                // console.log(origin);
-                // console.log(tag.gps_north_degree);
-                // console.log(tag.gps_east_degree);
-
                 return Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
             }else {
-                return 0;
+                return Number.MAX_VALUE;
             }
         };
 
@@ -831,7 +835,7 @@
 
         //function that control if the tag is indoor
         service.isOutdoor = (tag) => {
-            return tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0;
+            return tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0 && tag.pps_north_degree !== -2 && tag.gps_east_degree !== -2;
         };
 
         //function that control if the tag is indoor

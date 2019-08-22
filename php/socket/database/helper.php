@@ -50,9 +50,9 @@ function sendEmail($email, $code){
         $mail->Port = 587; //587; // 465;
         $mail->SMTPSecure = 'tls';
         $mail->SMTPAuth = true;
-        $mail->Username = "ds.acconto@gmail.com";
-        $mail->Password = "!ds!acconto88";
-        $mail->setFrom('ds.acconto@gmail.com', 'Smart Studio');
+        $mail->Username = "";
+        $mail->Password = "";
+        $mail->setFrom('', 'Smart Studio');
         $mail->addAddress($email);
         $mail->Subject = "Recupero password";
         $mail->msgHTML("Sei stato contattato da Smart Track per la creazione di un nuovo account riguardante Smart Studio<br><br>

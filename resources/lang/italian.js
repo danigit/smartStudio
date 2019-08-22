@@ -221,7 +221,34 @@ function languageController($scope) {
         manageLocation: 'Gestione siti',
         muteAlarm: 'Silenzia allarmi',
         silentiating: 'Silenzio allarmi ...',
-        insertUser: 'Inserimento utente'
+        insertUser: 'Inserimento utente',
+        parameters: 'parametri',
+        advertisementRate: 'Intervallo avvertimento',
+        powerLevel: 'Livello potenza', 
+        disableTiming: 'Tempo disabilitazione',
+        alarmTiming: 'Tempo allarme',
+        noMovTiming: 'Tempo senza movimento',
+        manDownMode: 'Modalita uomo a terra',
+        keepAliveTimer: 'Tempo attivo',
+        scanningTimer: 'Tempo scansione',
+        lndPrtTimer: "Tempo lnt/prt",
+        scanningBeacons: 'Scansione beacons',
+        freefallRate: 'Intervallo caduta',
+        simOn: 'Sim presente',
+        wifiOn: 'WiFi presente',
+        advSatOn: 'Adv/Sat presente',
+        macFilter: 'Filtro mac',
+        apnOperator: 'Operatore apn',
+        apnCode: 'Codice apn',
+        restName: 'Nome server',
+        serverIp: 'Ip server',
+        ssidWiFi: 'WiFi ssid',
+        pwdWiFi: 'Password WiFi',
+        ipGatewayWiFi: 'Ip gateway WiFi',
+        ipWetagWiFi: 'Ip wetag WiFi',
+        geofenceThd: 'Geofence thd',
+        macUwb: 'Mac uwb',
+        geofencePort: 'Porta geofence'
     }
 };
 
@@ -288,5 +315,7 @@ let lang = {
     dataSavedSuccessfully: 'I dati sono stati salvati correttamente',
     dataSaved: 'Dati salvati',
     actionCanceled: 'Operazione cancellata',
-    noPosition: 'Nessuna posizione'
+    noPosition: 'Nessuna posizione',
+    drawingSaved: 'Disegno salvato',
+    drawingNotSaved: 'Disegno non salvato'
 }

@@ -59,7 +59,7 @@
                     <!--class="ng-hide" id="floor-image-{{floor.id}}"></label>SELEZIONA IMMAGINE-->
                     <!--</md-button>-->
                     <!--</td>-->
-                    <td md-cell ng-show="isAdmin || isUserManager" ng-click="deleteRow(floor)"><img src="img/icons/delete_trash_24.png"
+                    <td md-cell ng-show="isAdmin" ng-click="deleteRow(floor)"><img src="img/icons/delete_trash_24.png"
                                                                  alt="Cancella piano" title="Cancella piano">
                     </td>
                 </tr>
@@ -67,7 +67,7 @@
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float ng-show="isAdmin || isUserManager" class="md-block width-100 margin-top-bottom-25-px">
+        <md-input-container md-no-float ng-show="isAdmin" class="md-block width-100 margin-top-bottom-25-px">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="{{lang.addFloor}}" title="{{lang.addFloor}}">

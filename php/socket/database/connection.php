@@ -561,6 +561,39 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    function get_tag_parameters($tag)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'SELECT ADV_RATE, POWER_LEVEL, DISABLE_TIMING, ALARM_TIMING, NO_MOV_TIMING, MD_MODE, MAC_FILTER, PERIODIC_SOUND,
+                                   KA, SCANNING_RATE, LND_PRT_TIMING, SCANNING_PKT, FREEFALL_THD, SIM_IS_HERE, WIFI_IS_HERE, 
+                                   ADVERTISE_IS_HERE, REST_NAME, SERVER_IP, SSID_WIFI, PWD_WIFI, IP_GATEWAY_WIFI, IP_WETAG_WIFI, APN_NAME, APN_CODE, 
+                                   MAC_UWB, UDP_PORT_UWB, GEOFENCE_THD FROM wetag_settings WHERE TAG_ID = ?';
+
+            $statement = $this->execute_selecting($this->query, 'i', $tag);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_GETTING_TAG_MACS);
+
+            $this->result = $statement->get_result();
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('adv_rate' => $row['ADV_RATE'], 'power_level' => $row['POWER_LEVEL'], 'disable_timing' => $row['DISABLE_TIMING'], 'alarm_timing' => $row['ALARM_TIMING'], 'no_mov_timing' => $row['NO_MOV_TIMING'], 'md_mode' => $row['MD_MODE'],
+                    'mac_filter' => $row['MAC_FILTER'], 'periodic_sound' => $row['PERIODIC_SOUND'], 'ka' => $row['KA'], 'scanning_rate' => $row['SCANNING_RATE'], 'lnd_prt_timing' => $row['LND_PRT_TIMING'], 'scanning_pkt' => $row['SCANNING_PKT'], 'freefall_thd' => $row['FREEFALL_THD'], 'sim_is_here' => $row['SIM_IS_HERE'],
+                    'wifi_is_here' => $row['WIFI_IS_HERE'], 'advertise_is_here' => $row['ADVERTISE_IS_HERE'], 'rest_name' => $row['REST_NAME'], 'server_ip' => $row['SERVER_IP'], 'ssid_wifi' => $row['SSID_WIFI'], 'pwd_wifi' => $row['PWD_WIFI'],
+                    'ip_gateway_wifi' => $row['IP_GATEWAY_WIFI'], 'ip_wetag_wifi' => $row['IP_WETAG_WIFI'], 'apn_name' => $row['APN_NAME'], 'apn_code' => $row['APN_CODE'], 'mac_uwb' => $row['MAC_UWB'], 'udp_port_uwb' => $row['UDP_PORT_UWB'], 'geofence_thd' => $row['GEOFENCE_THD']);
+            }
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
     /**
      * Funzione che recupera tutti i tag di un mac
      * @param $tag
@@ -734,9 +767,9 @@ class Connection
                     else if ($statement == false)
                         array_push($errors, 'tag_mac_false');
 
-                    $this->query = "INSERT INTO wetag_settings (TAG_ID) VALUES (?)";
+                    $this->query = "INSERT INTO wetag_settings (TAG_ID, TYPE) VALUES (?, ?)";
 
-                    $statement = $this->execute_inserting($this->query, 'i', $this->result);
+                    $statement = $this->execute_inserting($this->query, 'ii', $this->result, $res_id);
 
                     if ($statement instanceof db_errors)
                         array_push($errors, 'insert_tag_mac_execute');
@@ -2088,27 +2121,40 @@ class Connection
      * Function that change the value of a tag field
      * @param $tag_id
      * @param $type
-     * @return db_errors|int|mysqli_stmt
+     * @return array
      */
     function update_tag_type($tag_id, $type)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
+            $this->connection->autocommit(false);
+            $errors = array();
+
             $this->query = "UPDATE tag SET TYPE = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'ii', $type, $tag_id);
 
             if ($statement instanceof db_errors)
-                return $statement;
+                array_push($errors, 'update_tag_type_db_error');
             else if ($statement == false)
-                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+                array_push($errors, 'update_tag_type_error');
 
-            $this->result = $this->connection->affected_rows;
+            $this->query = 'UPDATE wetag_settings SET TYPE = ? WHERE TAG_ID = ?';
+            $statement = $this->execute_inserting($this->query, 'ii', $type, $tag_id);
 
-            return $this->result;
+            if ($statement instanceof db_errors)
+                array_push($errors, 'update_tag_settings_db_error');
+            else if ($statement == false)
+                array_push($errors, 'update_tag_settings_error');
+
+            if (!empty($errors)) {
+                $this->connection->rollback();
+            }
+
+            $this->connection->commit();
+
+            return $errors;
         }
-
-        return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
     /**
@@ -2871,6 +2917,16 @@ class Connection
             $password = generateRandomCode();
 
             if (!sendEmail($email, $password) instanceof db_errors) {
+                if ($phone == '')
+                    $phone = null;
+                if ($email_list_string === '')
+                    $email_list_string = null;
+                if ($bot_url == '')
+                    $bot_url = null;
+                if ($chat_id == '')
+                    $chat_id = null;
+                if ($web_url == '')
+                    $web_url = null;
 
                 $hash_code = password_hash($password, PASSWORD_BCRYPT);
 
@@ -3038,6 +3094,35 @@ class Connection
             }
 
             return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function update_parameters($parameters)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+
+            $this->query = "UPDATE wetag_settings SET ADV_RATE = ?, ADVERTISE_IS_HERE = ?, ALARM_TIMING = ?, APN_CODE = ?, APN_NAME = ?, 
+                                DISABLE_TIMING = ?, FREEFALL_THD = ?, GEOFENCE_THD = ?, IP_GATEWAY_WIFI = ?, IP_WETAG_WIFI = ?, KA = ?, LND_PRT_TIMING = ?, 
+                                MAC_FILTER = ?, MAC_UWB = ?, MD_MODE = ?, NO_MOV_TIMING = ?, POWER_LEVEL = ?, PWD_WIFI = ?, REST_NAME = ?,
+                                SCANNING_PKT = ?, SCANNING_RATE = ?, SERVER_IP = ?, SIM_IS_HERE = ?, SSID_WIFI = ?, UDP_PORT_UWB = ?, WIFI_IS_HERE = ? WHERE TAG_ID = ?";
+            
+            $statement = $this->execute_selecting($this->query, 'iiissiiissiissiiissiisisiii', $parameters['adv_rate'], $parameters['advertise_is_here']
+                , $parameters['alarm_timing'], $parameters['apn_code'], $parameters['apn_name'], $parameters['disable_timing'], $parameters['freefall_thd']
+                , $parameters['geofence_thd'], $parameters['ip_gateway_wifi'], $parameters['ip_wetag_wifi'], $parameters['ka'], $parameters['lnd_prt_timing'], $parameters['mac_filter']
+                , $parameters['mac_uwb'], $parameters['md_mode'], $parameters['no_mov_timing'], $parameters['power_level'], $parameters['pwd_wifi']
+                , $parameters['rest_name'], $parameters['scanning_pkt'], $parameters['scanning_rate'], $parameters['server_ip'], $parameters['sim_is_here']
+                , $parameters['ssid_wifi'], $parameters['udp_port_uwb'], $parameters['wifi_is_here'], $parameters['tag_id']);
+
+            if ($statement instanceof db_errors)
+                return $statement;
+            else if ($statement == false)
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+
+            return $this->connection->affected_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);

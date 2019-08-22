@@ -528,6 +528,18 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'get_tag_parameters':{
+                $result['id'] = $decoded_message['id'];
+                $result['action'] = 'get_tag_parameterss';
+                $result['session_state'] = $this->isSessionEnded();
+
+                $query = $this->connection->get_tag_parameters($decoded_message['data']['tag']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             case 'get_all_tags_macs':{
                 $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_all_tags_macs';
@@ -1216,6 +1228,18 @@ class webSocketServer implements MessageComponentInterface{
                 $result['session_state'] = $this->isSessionEnded();
 
                 $query = $this->connection->get_engine_on();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'update_parameters':{
+                $result['action'] = 'update_parameters';
+                $result['session_state'] = $this->isSessionEnded();
+
+                $query = $this->connection->update_parameters($decoded_message['data']['data']);
+                var_dump($decoded_message['data']['data']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

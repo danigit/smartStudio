@@ -53,6 +53,10 @@ DIMENSIONS
     width: 60px!important;
 }
 
+.width-200-px{
+    width: 200px!important;
+}
+
 .width-300-px{
     width: 300px;
 }
@@ -231,6 +235,10 @@ MARGINS
     margin-top: -20px!important;
 }
 
+.margin-top-40-px{
+    margin-top: 40px!important;
+}
+
 .margin-top-10-px{
     margin-top: 10px!important;
 }
@@ -281,6 +289,10 @@ MARGINS
 
 .margin-left-10-px{
     margin-left: 10px;
+}
+
+.margin-left-20-px{
+    margin-left: 20px!important;
 }
 
 .margin-left--8-px{
@@ -338,6 +350,10 @@ PADDING
 
 .padding-left-10-px{
     padding-left: 10px;
+}
+
+.padding-left-20-px{
+    padding-left: 20px;
 }
 
 .padding-lr-15-px{
@@ -599,6 +615,15 @@ OTHER
     vertical-align: middle;
 }
 
+.parameter-type{
+    width:100%; text-align:center; border-bottom: 1px solid #0093c4; line-height:0.1em; margin:10px 0 20px;
+}
+
+.parameter-span{
+    background:#fff;
+    color: #0093c4;
+    padding:0 10px;
+}
 /******************************************************************
 DISPLAY
 *******************************************************************/

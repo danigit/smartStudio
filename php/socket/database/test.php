@@ -82,10 +82,12 @@ class Test{
                 break;
             case 'get_history': var_dump($this->conn->get_history("2019-01-15", "2019-06-22", null, null));
                 break;
+            case 'update_parameters': var_dump($this->conn->update_parameters("{\"adv_rate\":4,\"advertise_is_here\":0,\"alarm_timing\":0,\"apn_code\":\"\",\"apn_name\":\"\",\"disable_timing\":0,\"freefall_thd\":0,\"ip_gateway_wifi\":\"\",\"ip_wetag_wifi\":\"\",\"ka\":0,\"lnd_prt_timing\":0,\"mac_filter\":\"\",\"mac_uwb\":0,\"md_mode\":0,\"no_mov_timing\":0,\"power_level\":0,\"pwd_wifi\":\"\",\"rest_name\":\"\",\"scanning_pkt\":0,\"scanning_rate\":0,\"server_ip\":\"\",\"sim_is_here\":0,\"tag_id\":4,\"udp_port_uwb\":0,\"wifi_is_here\":0}"));
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('get_history');
+$test->test_function('update_parameters');

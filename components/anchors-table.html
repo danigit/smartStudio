@@ -114,7 +114,7 @@
                     </td>
 
                     <td md-cell class="no-wrap" ng-class="{'md-placeholder': !anchor.permitted_asset}">
-                        <md-select ng-model="anchor.permitteds" placeholder="{{lang.permitted}}" ng-change="updatePermitteds(anchor.anchor.id, anchor.permitteds)"
+                        <md-select ng-model="anchor.permitteds" placeholder="{{lang.permitted}}" ng-disabled="!isAdmin" ng-change="updatePermitteds(anchor.anchor.id, anchor.permitteds)"
                                    multiple>
                             <md-optgroup label="{{tag.name}}" ng-repeat="tag in anchorTable.tags">
                                 <md-option ng-value="permitted.mac" ng-repeat="permitted in anchorTable.permittedAssets | filter: {tag: tag.name}">

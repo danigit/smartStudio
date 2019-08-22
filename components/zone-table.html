@@ -25,7 +25,7 @@
 
     <div layout="column" layout-align="center center" ng-controller="languageController">
 
-        <md-table-container>
+        <md-table-container class="margin-bottom-40-px">
 
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
@@ -37,17 +37,17 @@
                     <th md-column md-order-by="x_right"><span class="color-darkcyan">{{lang.xRight}}</span></th>
                     <th md-column md-order-by="y_up"><span class="color-darkcyan">{{lang.yUp}}</span></th>
                     <th md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.yDown}}</span></th>
-                    <th ng-show="isOutdoor" md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.radius}}</span></th>
-                    <th ng-show="isOutdoor" md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.xCenter}}</span></th>
-                    <th ng-show="isOutdoor" md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.yCenter}}</span></th>
-                    <th ng-if="isAdmin" md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.color}}</span></th>
+                    <th ng-show="isOutdoor" md-column md-order-by="radius"><span class="color-darkcyan">{{lang.radius}}</span></th>
+                    <th ng-show="isOutdoor" md-column md-order-by="gps_north"><span class="color-darkcyan">{{lang.xCenter}}</span></th>
+                    <th ng-show="isOutdoor" md-column md-order-by="gps_east"><span class="color-darkcyan">{{lang.yCenter}}</span></th>
+                    <th ng-if="isAdmin" md-column md-order-by="color"><span class="color-darkcyan">{{lang.color}}</span></th>
                     <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
 
                 <tbody md-body>
                 <tr md-row md-select="tag" md-on-select="logItem" md-auto-select="true"
-                    ng-repeat="zone in zones | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
+                    ng-repeat="zone in zonesTable | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell ng-click="editCell($event, zone, 'name')" ng-class="{'md-placeholder': !zone.name}">
                         {{zone.name || lang.insertName}}
                     </td>
@@ -106,7 +106,7 @@
 
         <md-table-pagination class="color-red background-white position-fixed width-100 bottom-0" md-limit="query.limit" md-limit-options="query.limitOptions"
                              md-page="query.page"
-                             md-total="{{zones.length}}" md-on-paginate="">
+                             md-total="{{zonesTable.length}}" md-on-paginate="">
         </md-table-pagination>
     </div>
 </md-content>
