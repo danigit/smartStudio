@@ -790,6 +790,7 @@
 
         outdoorCtrl.isAdmin = dataService.isAdmin;
         outdoorCtrl.isUserManager = dataService.isUserManager;
+        outdoorCtrl.isTracker = dataService.isTracker;
 
         outdoorCtrl.mapConfiguration = {
             zoom    : outdoorLocationZoom,
@@ -1469,7 +1470,76 @@
                                                 }
                                             });
                                         }
-                                    } else{
+                                    } else if (outdoorCtrl.isTracker) {
+                                        console.log('isTracker');
+                                        if (dataService.checkIfTagHasAlarm(tag)) {
+                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                        if (alarmsCounts[index] > tagAlarms.length - 1)
+                                                            alarmsCounts[index] = 0;
+
+                                                        dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
+
+                                                        if (tagAlarms.length !== prevAlarmCounts[index]) {
+                                                            google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
+                                                            dataService.dynamicTags[tagIndex].addListener('click', () => {
+                                                                $mdDialog.show({
+                                                                    locals             : {tag: tag},
+                                                                    templateUrl        : componentsPath + 'tag-info-outdoor.html',
+                                                                    parent             : angular.element(document.body),
+                                                                    targetEvent        : event,
+                                                                    clickOutsideToClose: true,
+                                                                    controller         : ['$scope', 'tag', ($scope, tag) => {
+                                                                        $scope.tag          = tag;
+                                                                        $scope.isTagInAlarm = 'background-red';
+
+                                                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag, null, null);
+
+                                                                        if ($scope.alarms.length === 0) {
+                                                                            ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
+                                                                                ? $scope.isTagInAlarm = 'background-gray'
+                                                                                : $scope.isTagInAlarm = 'background-green';
+                                                                        }
+
+                                                                        $scope.hide = () => {
+                                                                            $mdDialog.hide();
+                                                                        }
+                                                                    }]
+                                                                })
+                                                            })
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                dataService.setIcon(tag, marker);
+                                                dataService.dynamicTags.push(marker);
+                                                marker.setMap(map);
+                                                bounds.extend(marker.getPosition());
+                                            }
+                                        } else if(!tag.radio_switched_off) {
+                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                dataService.setIcon(tag, marker);
+                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                        dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
+                                                    }
+                                                });
+                                            } else {
+                                                dataService.setIcon(tag, marker);
+                                                dataService.dynamicTags.push(marker);
+                                                marker.setMap(map);
+                                                bounds.extend(marker.getPosition());
+                                            }
+                                        } else {
+                                            dataService.dynamicTags.forEach((tag, index) => {
+                                                if (tag.getPosition().equals(marker.getPosition())) {
+                                                    dataService.dynamicTags[index].setMap(null);
+                                                    dataService.dynamicTags.splice(index, 1);
+                                                }
+                                            });
+                                        }
+                                    }else{
                                         if (dataService.checkIfTagHasAlarm(tag)) {
                                             if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
                                                 dataService.dynamicTags.forEach((insideTag, tagIndex) => {
@@ -1663,7 +1733,69 @@
                                                 }
                                             });
                                         }
-                                    } else{
+                                    } else if( outdoorCtrl.isTracker) {
+                                        console.log('istracker');
+                                        if (dataService.checkIfTagHasAlarm(tag)) {
+                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                        if (alarmsCounts[index] > tagAlarms.length - 1)
+                                                            alarmsCounts[index] = 0;
+
+                                                        dataService.dynamicTags[tagIndex].setIcon(tagAlarms[alarmsCounts[index]++]);
+
+                                                        if (tagAlarms.length !== prevAlarmCounts[index]) {
+                                                            google.maps.event.clearListeners(dataService.dynamicTags[tagIndex], 'click');
+                                                            dataService.dynamicTags[tagIndex].addListener('click', () => {
+                                                                $mdDialog.show({
+                                                                    locals             : {tag: tag},
+                                                                    templateUrl        : componentsPath + 'tag-info-outdoor.html',
+                                                                    parent             : angular.element(document.body),
+                                                                    targetEvent        : event,
+                                                                    clickOutsideToClose: true,
+                                                                    controller         : ['$scope', 'tag', ($scope, tag) => {
+                                                                        $scope.tag          = tag;
+                                                                        $scope.isTagInAlarm = 'background-red';
+
+                                                                        $scope.alarms = dataService.loadTagAlarmsForInfoWindow(tag, null, null);
+
+                                                                        if ($scope.alarms.length === 0) {
+                                                                            ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
+                                                                                ? $scope.isTagInAlarm = 'background-gray'
+                                                                                : $scope.isTagInAlarm = 'background-green';
+                                                                        }
+
+                                                                        $scope.hide = () => {
+                                                                            $mdDialog.hide();
+                                                                        }
+                                                                    }]
+                                                                })
+                                                            })
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                dataService.setIcon(tag, marker);
+                                                dataService.dynamicTags.push(marker);
+                                                marker.setMap(map);
+                                                bounds.extend(marker.getPosition());
+                                            }
+                                        } else {
+                                            if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
+                                                marker.setIcon(tagsIconPath + 'offline_tag_24.png')
+                                                dataService.dynamicTags.forEach((insideTag, tagIndex) => {
+                                                    if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
+                                                        dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
+                                                    }
+                                                });
+                                            } else {
+                                                marker.setIcon(tagsIconPath + 'offline_tag_24.png');
+                                                dataService.dynamicTags.push(marker);
+                                                marker.setMap(map);
+                                                bounds.extend(marker.getPosition());
+                                            }
+                                        }
+                                    }else{
                                         if (dataService.checkIfTagHasAlarm(tag)) {
                                             if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
                                                 dataService.dynamicTags.forEach((insideTag, tagIndex) => {
@@ -1859,6 +1991,8 @@
 
         canvasCtrl.isAdmin = dataService.isAdmin;
         canvasCtrl.isUserManager = dataService.isUserManager;
+        canvasCtrl.isTracker = dataService.isTracker;
+        console.log(canvasCtrl.isTracker);
         canvasCtrl.floors                 = dataService.floors;
         canvasCtrl.showAlarmsIcon         = false;
         canvasCtrl.showOfflineTagsIcon    = false;
@@ -2160,13 +2294,13 @@
                                                     //getting the tag clouds
                                                     tagClouds = singleAndGroupedTags.filter(x => x.length > 1);
 
-                                                    if (canvasCtrl.isAdmin !== 0 || canvasCtrl.isUserManager !== 0) {
+                                                    if (canvasCtrl.isAdmin !== 0 || canvasCtrl.isUserManager !== 0 || canvasCtrl.isTracker !== 0) {
 
                                                         dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
                                                             .then((images) => {
                                                                 //control if there are clouds to bhe shown
                                                                 if (images !== null) {
-                                                                    if (canvasCtrl.isAdmin === 1) {
+                                                                    if (canvasCtrl.isAdmin === 1 || canvasCtrl.isTracker === 1) {
                                                                         //drawing the clouds on the canvas
                                                                         images.forEach(function (image, index) {
                                                                             drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
@@ -2193,7 +2327,7 @@
                                                                     //drawing the isolated tags
                                                                     isolatedTags.forEach(function (tag, index) {
                                                                         if (!dataService.isOutdoor(tag)) {
-                                                                            if (canvasCtrl.isAdmin === 1) {
+                                                                            if (canvasCtrl.isAdmin === 1 || canvasCtrl.isTracker === 1) {
                                                                                 if (tag.tag_type_id === 1 || tag.tag_type_id === 14) {
                                                                                     if (dataService.checkIfTagHasAlarm(tag)) {
                                                                                         dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
@@ -2962,7 +3096,8 @@
                                         let tempAlarmTag    = [];
 
                                         $scope.tags.forEach(function (tagElem) {
-                                            if (canvasCtrl.isAdmin) {
+                                            console.log(canvasCtrl.isTracker);
+                                            if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
                                                 let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem);
                                                 tagAlarms.forEach(function (ta) {
                                                     tempAlarmTag.push(ta);

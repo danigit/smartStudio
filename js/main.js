@@ -59,14 +59,22 @@
                                     if (response.result[0].role === 1) {
                                         dataService.isAdmin = response.result[0].role;
                                         dataService.isUserManager = 0;
+                                        dataService.isTracker = 0;
                                         result.password_changed = response.result[0].password_changed;
                                     }else if (response.result[0].role === 2){
                                         dataService.isAdmin = 0;
+                                        dataService.isTracker = 0;
                                         dataService.isUserManager      = response.result[0].role;
                                         result.password_changed = response.result[0].password_changed;
                                     }else if (response.result[0].role === 0){
                                         dataService.isAdmin = 0;
                                         dataService.isUserManager = 0;
+                                        dataService.isTracker = 0;
+                                        result.password_changed = response.result[0].password_changed;
+                                    } else if (response.result[0].role === 3){
+                                        dataService.isAdmin = 0;
+                                        dataService.isUserManager = 0;
+                                        dataService.isTracker = 1;
                                         result.password_changed = response.result[0].password_changed;
                                     }
                                     newSocketService.getData('get_markers', {username: response.result[0].username}, (markers) => {
@@ -128,13 +136,20 @@
 
                                         if (user.result[0].role === 1) {
                                             dataService.isAdmin       = user.result[0].role;
-                                            dataService.isUserManager = user.result[0].role;
+                                            dataService.isUserManager = 0;
+                                            dataService.isTracker = 0;
                                         } else if (user.result[0].role === 2) {
                                             dataService.isAdmin       = 0;
                                             dataService.isUserManager = user.result[0].role;
+                                            dataService.isTracker = 0;
                                         } else if (user.result[0].role === 0) {
                                             dataService.isAdmin       = 0;
                                             dataService.isUserManager = 0;
+                                            dataService.isTracker = 0;
+                                        } else if (user.result[0].role === 3){
+                                            dataService.isAdmin = 0;
+                                            dataService.isUserManager = 0;
+                                            dataService.isTracker = 1;
                                         }
 
                                         newSocketService.getData('get_tag_by_user', {user: dataService.user.username}, (userTags) => {
@@ -175,12 +190,19 @@
                                     if (response.result[0].role === 1) {
                                         dataService.isAdmin       = response.result[0].role;
                                         dataService.isUserManager = 0;
+                                        dataService.isTracker = 0;
                                     } else if (response.result[0].role === 2) {
                                         dataService.isAdmin       = 0;
                                         dataService.isUserManager = response.result[0].role;
+                                        dataService.isTracker = 0;
                                     } else if (response.result[0].role === 0) {
                                         dataService.isAdmin       = 0;
                                         dataService.isUserManager = 0;
+                                        dataService.isTracker = 0;
+                                    } else if (response.result[0].role === 3){
+                                        dataService.isAdmin = 0;
+                                        dataService.isUserManager = 0;
+                                        dataService.isTracker = 1;
                                     }
 
                                     newSocketService.getData('get_location_info', {}, (locationInfo) => {

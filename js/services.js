@@ -20,6 +20,8 @@
         service.location             = '';
         service.locationFromClick    = '';
         service.isAdmin              = '';
+        service.isUserManager              = '';
+        service.isTracker              = '';
         service.defaultFloorName     = '';
         service.tags                 = [];
         service.userTags                 = [];
