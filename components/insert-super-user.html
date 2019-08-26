@@ -15,7 +15,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">{{lang.insertUser || uppercase}}</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.insertUser | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -24,7 +24,7 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <form id="insertUserForm" name="insertUserForm">
             <div layout="column">
@@ -98,8 +98,8 @@
                 <md-input-container>
                     <label>Ruolo</label>
                     <md-select ng-model="userRole">
-                        <md-option ng-repeat="role in roles" ng-value="role">
-                            {{role}}
+                        <md-option ng-repeat="role in roles" ng-value="role.userValue">
+                            {{role.userName}}
                         </md-option>
                     </md-select>
                 </md-input-container>
@@ -117,7 +117,7 @@
 
             <div layout="row" layout-align="center center" class="margin-top-15-px">
                 <md-button ng-click="insertUser(insertUserForm)"
-                           class="md-raised background-darkcyan color-white">INSERISCI UTENTE
+                           class="md-raised background-darkcyan color-white">{{lang.insertUser | uppercase}}
                 </md-button>
             </div>
         </form>

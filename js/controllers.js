@@ -1992,7 +1992,6 @@
         canvasCtrl.isAdmin = dataService.isAdmin;
         canvasCtrl.isUserManager = dataService.isUserManager;
         canvasCtrl.isTracker = dataService.isTracker;
-        console.log(canvasCtrl.isTracker);
         canvasCtrl.floors                 = dataService.floors;
         canvasCtrl.showAlarmsIcon         = false;
         canvasCtrl.showOfflineTagsIcon    = false;
@@ -4289,6 +4288,7 @@
                     };
 
                     $scope.updateUserRole = (user, userRole) => {
+                        console.log(userRole);
                         if (user.role !== userRole.toString()) {
                             newSocketService.getData('update_user_role', {user: user.id, role: userRole}, (response) => {
                                 if (!response.session_state)
@@ -4523,7 +4523,7 @@
                 controller         : ['$scope', function ($scope) {
                     let emailList = [];
 
-                    $scope.roles    = [lang.genericUser, lang.intermediateUser];
+                    $scope.roles    = [lang.genericUser, lang.intermediateUser, lang.trackerUser];
                     $scope.userRole = '';
                     $scope.user     = {
                         username   : '',
@@ -4559,7 +4559,7 @@
                                 botUrl: $scope.user.botUrl,
                                 chatId: $scope.user.chatId,
                                 webUrl: $scope.user.webUrl,
-                                role    : ($scope.userRole === 'Utente generico') ? 0 : 2
+                                role    : $scope.userRole
                             }, (response) => {
                                 if (!response.session_state)
                                     window.location.reload();
@@ -6361,6 +6361,7 @@
                             if (!response.session_state)
                                 window.location.reload();
 
+                            console.log(response.result);
                             $scope.floors = response.result;
                             $scope.$apply();
                         });
