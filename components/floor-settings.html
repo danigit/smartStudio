@@ -53,14 +53,8 @@
                     <td md-cell ng-click="editCell($event, floor, 'map_spacing')"
                         ng-class="{'md-placeholder': !floor.map_spacing}">{{floor.map_spacing || lang.insertSpacing}}
                     </td>
-                    <!--<td md-cell ng-show="isAdmin" ng-click="uploadFloorImage(floor.id)">-->
-                    <!--<md-button class="color-orange"><label><input-->
-                    <!--onchange="angular.element(this).scope().fileNameChanged()" type="file"-->
-                    <!--class="ng-hide" id="floor-image-{{floor.id}}"></label>SELEZIONA IMMAGINE-->
-                    <!--</md-button>-->
-                    <!--</td>-->
                     <td md-cell ng-if="isAdmin" ng-click="deleteRow(floor)"><img src="img/icons/delete_trash_24.png"
-                                                                 alt="Cancella piano" title="Cancella piano">
+                                                                 alt="{{lang.deleteFloor}}" title="{{lang.deleteFloor}}">
                     </td>
                 </tr>
                 </tbody>

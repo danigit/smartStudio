@@ -1,4 +1,4 @@
-<div>
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar" ng-class="insertZone.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
@@ -13,7 +13,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">INSERIMENTO ZONE</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.insertZone | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -22,45 +22,45 @@
 
 <!--popup content-->
 <md-content class="popup-padding">
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <form id="insertZoneForm" name="insertZoneForm">
             <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
                 <input required type="text" ng-model="insertZone.zoneName" name="insertZoneName"
-                       placeholder="Nome">
+                       placeholder="{{lang.insertZoneName}}">
                 <div ng-messages="insertZoneForm.insertZoneName.$error || insertZoneForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire un nome</div>
+                    <div ng-message=" required">{{lang.insertZoneName}}</div>
                 </div>
             </md-input-container>
 
             <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
                 <input required type="number" ng-model="insertZone.gpsNorth" name="insertZoneGpsNorht"
-                       placeholder="Center Y">
+                       placeholder="{{lang.insertZoneXLeft}}">
                 <div ng-messages="insertZoneForm.insertZoneXLeft.$error || insertZoneForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire valore</div>
+                    <div ng-message=" required">{{lang.insertZoneXLeft}}</div>
                 </div>
             </md-input-container>
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
                 <input required type="number" ng-model="insertZone.gpsEast" name="insertZoneGpsEast"
-                       placeholder="Center Y">
+                       placeholder="{{lang.insertZoneXRight}}">
                 <div ng-messages="insertZoneForm.insertZoneXRight.$error || insertZoneForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire valore</div>
+                    <div ng-message=" required">{{lang.insertZoneXRight}}</div>
                 </div>
             </md-input-container>
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
                 <input required type="number" ng-model="insertZone.radius" name="insertZoneRadius"
-                       placeholder="Radius">
-                <div ng-messages="insertZoneForm.insertZoneYUp.$error || insertZoneForm.$submitted"
+                       placeholder="{{lang.insertZoneRadius}}">
+                <div ng-messages="insertZoneForm.insertZoneRadius.$error || insertZoneForm.$submitted"
                      role="alert">
-                    <div ng-message=" required">Inserire valore</div>
+                    <div ng-message=" required">{{lang.insertZoneRadius}}</div>
                 </div>
             </md-input-container>
 
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                <p class="margin-top-0 text-center color-lightgray">Seleziona colore</p>
+                <p class="margin-top-0 text-center color-lightgray">{{lang.insertZoneColor}}</p>
                 <input type="color" value="#ff0000" ng-model="insertZone.color"
                        colorpick-eyedropper-active="true" class="height-40px">
             </md-input-container>
@@ -77,7 +77,7 @@
 
             <div layout="row" layout-align="center end" class="margin-top-15-px">
                 <md-button ng-click="insertZone(insertZoneForm)" class="md-raised  background-darkcyan color-white">
-                    INSERISCI ZONA
+                    {{lang.insertZone | uppercase}}
                 </md-button>
             </div>
         </form>

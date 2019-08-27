@@ -65,10 +65,10 @@
                         </md-button>
                     </td>
                     <td md-cell ng-show="isAdmin || isUserManager" class="no-wrap" ng-click="deleteRow(user)"><img
-                            src="img/icons/delete_trash_24.png" alt="Cancella utente" title="Cancella utente"></td>
+                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteUser}}" title="{{lang.delteUser}}"></td>
                 </tr>
                 <tr md-row ng-show="tableEmpty">
-                    <td md-cell colspan="8" class="text-center color-red">Nessun risultato trovato</td>
+                    <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -77,7 +77,7 @@
         <md-input-container ng-show="isAdmin || isUserManager" md-no-float class="md-block width-100 margin-top-bottom-25-px">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
-                     ng-click="addNewRow()" alt="Aggiungi sito" title="Aggiungi sito">
+                     ng-click="addNewRow()" alt="{{lang.addSite}}" title="{{lang.addSite}}">
             </div>
         </md-input-container>
 

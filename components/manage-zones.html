@@ -23,7 +23,7 @@
 
 <md-content class="popup-padding width-300-px">
 
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
         <md-table-container>
 
@@ -32,7 +32,7 @@
 
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column><span class="color-darkcyan">NOME</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.name}}</span></th>
                 </tr>
                 </thead>
 
@@ -45,10 +45,10 @@
                     </td>
 
                     <td md-cell ng-click="deleteManagedZone(zone)"><img
-                            src="img/icons/delete_trash_24.png" alt="Cancella zona" title="Cancella zona"></td>
+                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteZone}}" title="{{lang.deleteZone}}"></td>
                 </tr>
                 <tr md-row ng-show="zones.length === 0">
-                    <td md-cell colspan="8" class="text-center color-red">Nessun risultato trovato</td>
+                    <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -59,7 +59,7 @@
         <md-input-container ng-if="!position" md-no-float class="md-block width-100 margin-top-bottom-25-px">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
-                     ng-click="manageNewZone()" alt="Aggiungi zona" title="Aggiungi zona">
+                     ng-click="manageNewZone()" alt="{{lang.addZone}}" title="{{lang.addZone}}">
             </div>
         </md-input-container>
 

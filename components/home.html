@@ -38,7 +38,7 @@
         <div flex="100" ng-controller="menuController">
 
             <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
-                <img id="open-menu-icon" src="img/icons/menu-arrow.png" alt="">
+                <img id="open-menu-icon" src="img/icons/menu-arrow.png" alt="{{lang.openMenu}}" title="{{lang.openMenu}}">
             </div>
             <section layout="row" flex>
 
@@ -123,9 +123,9 @@
                                      layout-align="center center">
 
                                     <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="switch.mapFullscreen">Fullscreen:
+                                        <md-subheader class="padding-0" ng-show="switch.mapFullscreen">{{lang.fullscreen}}:
                                             <b class="color-green">ON</b></md-subheader>
-                                        <md-subheader class="padding-0"ng-show="!switch.mapFullscreen">Fullscreen:
+                                        <md-subheader class="padding-0"ng-show="!switch.mapFullscreen">{{lang.fullscreen}}:
                                             <b class="color-red">OFF</b>
                                         </md-subheader>
                                     </div>

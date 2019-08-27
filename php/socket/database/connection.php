@@ -2877,7 +2877,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT ID, USERNAME, NAME, ROLE FROM user WHERE ROLE = 0 OR ROLE = 2";
+            $this->query = "SELECT ID, USERNAME, NAME, ROLE FROM user WHERE ROLE = 0 OR ROLE = 2 OR ROLE = 3";
 
             $this->result = $this->connection->query($this->query);
 

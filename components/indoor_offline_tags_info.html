@@ -50,7 +50,7 @@
                         <md-select ng-if="offlineTagsIndoor.length > 0" ng-model="antani"
                                    placeholder="{{lang.offlineTags}}">
                             <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offlineTagsIndoor">
-                                <img src="img/icons/offline_tags_alert_grey_24.png" class="margin-right-10-px"><span class="font-large vertical-align-super">{{tag.name}}</span>
+                                <img src="img/icons/offline_tags_alert_grey_24.png" class="margin-right-10-px" alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}"><span class="font-large vertical-align-super">{{tag.name}}</span>
                             </md-option>
                         </md-select>
                     </div>
@@ -77,7 +77,7 @@
 
                         <md-select ng-if="offTags.length > 0" ng-model="antani" placeholder="{{lang.shutdownTags}}">
                             <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offTags">
-                                <img src="img/icons/offline_tags_alert_red_24.png" class="margin-right-10-px"><span class="font-large vertical-align-super">{{tag.name}}</span>
+                                <img src="img/icons/offline_tags_alert_red_24.png" class="margin-right-10-px" alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}"><span class="font-large vertical-align-super">{{tag.name}}</span>
                             </md-option>
                         </md-select>
                     </div>

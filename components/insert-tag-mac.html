@@ -50,7 +50,7 @@
                         {{'' + mac.type || lang.insertType}}
                     </td>
                     <td md-cell ng-click="deleteMac($event, mac)"><img
-                            src="img/icons/delete_trash_24.png" alt="Cancella mac" title="Aggiungi mac"></td>
+                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteMac}}" title="{{lang.deleteMac}}"></td>
                 </tr>
                 <tr md-row ng-show="macs.length === 0">
                     <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>

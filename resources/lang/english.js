@@ -216,6 +216,7 @@ function languageController($scope) {
         insertZoneXRight: 'X Right',
         insertZoneYUp: 'Y Up',
         insertZoneYDown: 'Y Down',
+        insertZoneRadius: 'Radius',
         insertZoneColor: 'Select color',
 		noZoneAvailable: 'Zones not available',
         engineOff: 'Location Engine off',
@@ -255,7 +256,17 @@ function languageController($scope) {
         ipWetagWiFi: 'IP WeTAG WiFi',
         geofenceThd: 'Geofence thd',
         macUwb: 'MAC UWB',
-        geofencePort: 'UWB UDP port'
+        geofencePort: 'UWB UDP port',
+        openMenu: 'Open menu',
+        phoneNumber: 'Numero di telefono',
+        addEmail: 'Aggiungi email',
+        insertBootUrl: 'Inserisci l\'url del boot',
+        insertChatId: 'Inserisci l\'id dellla chat',
+        insertWebUrl: 'Inserisci l\'url del web',
+        addLocation: 'Add location',
+        deleteLocation: 'Delete location',
+        addZone: 'Add zone',
+        deleteUser: 'Delete user',
     }
 };
 
