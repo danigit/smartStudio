@@ -267,7 +267,13 @@ function languageController($scope) {
         deleteLocation: 'Cancella sito',
         addZone: 'Aggiungi zona',
         deleteUser: 'Cancella utente',
-
+        centerMap: 'Centra mappa',
+        role: 'Ruolo',
+        phone: 'Telefono',
+        urlBot: 'URL Bot',
+        botId: 'ID Bot',
+        emailAlert: 'Email di allerta',
+        webserviceUrl: 'URL del webservice',
     }
 };
 

@@ -1920,14 +1920,15 @@
                         }
                     });
 
-                    if (dataService.dynamicTags.length === 1) {
-                        map.setCenter(bounds.getCenter());
-                    } else if (dataService.dynamicTags.length > 1) {
-                        map.setCenter(bounds.getCenter());
-                    } else {
-                        let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
-                        map.setCenter(latLng);
-                    }
+                    //Setting automatically the center of the map
+                    // if (dataService.dynamicTags.length === 1) {
+                        // map.setCenter(bounds.getCenter());
+                    // } else if (dataService.dynamicTags.length > 1) {
+                        // map.setCenter(bounds.getCenter());
+                    // } else {
+                        // let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
+                        // map.setCenter(latLng);
+                    // }
                 });
 
                 newSocketService.getData('get_anchors_by_user', {user: dataService.user.username}, (response) => {
@@ -1938,6 +1939,15 @@
                     outdoorCtrl.showEngineOffIcon = response.result === 0;
                 });
             }, 1000)
+
+            let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
+            map.setCenter(latLng);
+        };
+
+        $scope.centerMap = () => {
+            console.log('centering the map');
+            let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
+            controllerMap.setCenter(latLng);
         };
 
         $rootScope.$on('constantUpdateMapTags', function (event, map) {
@@ -4020,6 +4030,11 @@
 
                                 $scope.locations  = [];
                                 $scope.tableEmpty = false;
+                                $scope.query      = {
+                                    limitOptions: [5, 10, 15],
+                                    limit       : 5,
+                                    page        : 1
+                                };
 
                                 newSocketService.getData('get_user_locations', {user: user.id}, (response) => {
                                     if (!response.session_state)

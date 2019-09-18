@@ -33,9 +33,14 @@
                 <thead md-head md-order="query.order">
                 <tr md-row>
                     <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.username | uppercase}}</span></th>
-                    <th md-column md-order-by="latitude"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
-                    <th md-column md-order-by="longitude" ng-show="isAdmin"><span class="color-darkcyan">{{lang.role | uppercase}}</span></th>
-                    <th md-column md-order-by="longitude" ng-show="isAdmin || isUserManager"><span class="color-darkcyan">{{lang.manageLocation | uppercase}}</span></th>
+                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column md-order-by="role" ng-show="isAdmin"><span class="color-darkcyan">{{lang.role | uppercase}}</span></th>
+                    <th md-column md-order-by="telephone_number" ng-show="isAdmin"><span class="color-darkcyan">{{lang.phone | uppercase}}</span></th>
+                    <th md-column md-order-by="bot_url" ng-show="isAdmin"><span class="color-darkcyan">{{lang.urlBot | uppercase}}</span></th>
+                    <th md-column md-order-by="bot_chat_id" ng-show="isAdmin"><span class="color-darkcyan">{{lang.botId | uppercase}}</span></th>
+                    <th md-column md-order-by="email_alert" ng-show="isAdmin"><span class="color-darkcyan">{{lang.emailAlert | uppercase}}</span></th>
+                    <th md-column md-order-by="web_service_url" ng-show="isAdmin"><span class="color-darkcyan">{{lang.webserviceUrl | uppercase}}</span></th>
+                    <th md-column md-order-by="manage_locations" ng-show="isAdmin || isUserManager"><span class="color-darkcyan">{{lang.manageLocation | uppercase}}</span></th>
                     <th md-column ng-show="isAdmin || isUserManager"></th>
                 </tr>
                 </thead>
@@ -58,13 +63,29 @@
                                 <md-option ng-selected="{{user.role === '0'}}" ng-value=0>{{lang.genericUser | uppercase}}</md-option>
                                 <md-option ng-selected="{{user.role === '3'}}" ng-value=3>{{lang.trackerUser | uppercase}}</md-option>
                             </md-select>
-                        </md-input-container></td>
+                        </md-input-container>
+                    </td>
+                    <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'telephone_number')"
+                        ng-class="{'md-placeholder': !user.telephone_number}">{{user.telephone_number || 'Inserire telefono'}}
+                    </td>
+                    <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'bot_url')"
+                        ng-class="{'md-placeholder': !user.bot_url}">{{user.bot_url || 'Inserire url bot'}}
+                    </td>
+                    <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'bot_chat_id')"
+                        ng-class="{'md-placeholder': !user.bot_chat_id}">{{user.bot_chat_id || 'Inserire bot chat id'}}
+                    </td>
+                    <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'email_alert')"
+                        ng-class="{'md-placeholder': !user.email_alert}">{{user.email_alert || 'Inserire email di alerta'}}
+                    </td>
+                    <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'web_service_url')"
+                        ng-class="{'md-placeholder': !user.web_service_url}">{{user.web_service_url || 'Inserire url del webservice'}}
+                    </td>
                     <td md-cell>
                         <md-button ng-click="manageLocations(user)" class="md-raised background-darkcyan color-white">
                             GESTIONE LOCATIONS
                         </md-button>
                     </td>
-                    <td md-cell ng-show="isAdmin || isUserManager" class="no-wrap" ng-click="deleteRow(user)"><img
+                    <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="deleteRow(user)"><img
                             src="img/icons/delete_trash_24.png" alt="{{lang.deleteUser}}" title="{{lang.delteUser}}"></td>
                 </tr>
                 <tr md-row ng-show="tableEmpty">

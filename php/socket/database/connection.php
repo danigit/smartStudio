@@ -56,7 +56,11 @@ class Connection
             elseif ($this->result == false)
                 return new db_errors(db_errors::$ERROR_ON_REGISTER_USER);
 
-            return $this->connection->insert_id;
+            $id = $this->connection->insert_id;
+
+            mysqli_close($this->connection);
+
+            return $id;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -77,19 +81,25 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $username);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_LOGIN);
+            }
 
             $statement->bind_result($res_id, $res_pass, $res_role);
             $fetch = $statement->fetch();
+
+            mysqli_close($this->connection);
 
             if ($fetch && password_verify($password, $res_pass))
                 return array('id' => $res_id, 'role' => $res_role);
 
             return new db_errors(db_errors::$ERROR_ON_LOGIN);
         }
+
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
@@ -133,13 +143,17 @@ class Connection
 
             if (!empty($errors)) {
                 $this->connection->rollback();
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
             }
 
             $this->connection->commit();
 
+            mysqli_close($this->connection);
+
             return $this->result;
         }
+
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
@@ -195,6 +209,7 @@ class Connection
 
             if (!empty($errors)) {
                 $this->connection->rollback();
+                mysqli_close($this->connection);
                 if ($errors['fetch'])
                     return new db_errors(db_errors::$ERROR_CODE_NOT_FOUND);
                 else if ($errors['update'])
@@ -208,6 +223,8 @@ class Connection
 
 
             $this->connection->commit();
+
+            mysqli_close($this->connection);
 
             return $this->result;
         }
@@ -234,16 +251,21 @@ class Connection
             $this->query = 'SELECT PASSWORD FROM user WHERE USERNAME = ?';
             $statement = $this->execute_selecting($this->query, 's', $username);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+            }
 
             $statement->bind_result($res_pass);
             $fetch = $statement->fetch();
 
-            if (!($fetch && password_verify($old_password, $res_pass)))
+            if (!($fetch && password_verify($old_password, $res_pass))) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD_WRONG_OLD);
+            }
 
             $statement->close();
 
@@ -258,7 +280,11 @@ class Connection
             else if ($statement == false)
                 return new db_errors(db_errors::$ERROR_ON_UPDATING_PASSWORD);
 
-            return $this->connection->affected_rows;
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -280,10 +306,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $username);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
+            }
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -297,6 +326,7 @@ class Connection
                     "icon" => $row['ICON'], 'is_inside' => $row['IS_INSIDE'], 'one_location' => $row['ONE_LOCATION']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -317,12 +347,19 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $mac);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+            }
 
-            return $statement->affected_rows;
+            $aff_rows = $statement->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -342,12 +379,19 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $anchor);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors){
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_ANCHOR);
+            }
 
-            return $statement->affected_rows;
+            $aff_rows = $statement->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -367,12 +411,19 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $floor_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_FLOOR);
+            }
 
-            return $statement->affected_rows;
+            $aff_rows = $statement->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -395,10 +446,11 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $tag);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
                 $errors['db_error'] = 1;
-            else if ($statement == false)
+            }else if ($statement == false) {
                 $errors['return_false'] = 1;
+            }
 
             $statement->close();
 
@@ -406,11 +458,11 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $tag);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
                 $errors['db_error'] = 1;
-            else if ($statement == false)
+            }else if ($statement == false) {
                 $errors['return_false'] = 1;
-
+            }
             $statement->close();
 
             $this->query = 'DELETE FROM tag_rangings WHERE TAG_ID = ?';
@@ -450,6 +502,9 @@ class Connection
             }
 
             $this->connection->commit();
+
+            mysqli_close($this->connection);
+
             return $errors;
         }
 
@@ -495,6 +550,8 @@ class Connection
 
             $this->connection->commit();
 
+            mysqli_close($this->connection);
+
             return $errors;
         }
 
@@ -514,14 +571,18 @@ class Connection
 
             $this->result = $this->connection->query($this->query);
 
-            if ($this->result == false)
+            if ($this->result == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_MAC_TYPES);
+            }
 
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'description' => $row['DESCRIPTION']);
             }
+
+            mysqli_close($this->connection);
 
             return $result_array;
         }
@@ -543,10 +604,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $tag);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAG_MACS);
+            }
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -554,6 +618,8 @@ class Connection
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'mac' => $row['MAC'], 'type' => $row['TYPE']);
             }
+
+            mysqli_close($this->connection);
 
             return $result_array;
         }
@@ -573,10 +639,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $tag);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAG_MACS);
+            }
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -588,6 +657,7 @@ class Connection
                     'ip_gateway_wifi' => $row['IP_GATEWAY_WIFI'], 'ip_wetag_wifi' => $row['IP_WETAG_WIFI'], 'apn_name' => $row['APN_NAME'], 'apn_code' => $row['APN_CODE'], 'mac_uwb' => $row['MAC_UWB'], 'udp_port_uwb' => $row['UDP_PORT_UWB'], 'geofence_thd' => $row['GEOFENCE_THD']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -606,11 +676,12 @@ class Connection
         if ($this->connection) {
             $this->query = 'SELECT tag_mac.ID, MAC, tag_mac.TYPE, NAME FROM tag_mac JOIN tag ON tag.ID = TAG_ID';
 
-
             $this->result = $this->connection->query($this->query);
 
-            if ($this->result == false)
+            if ($this->result == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_MAC_TYPES);
+            }
 
             $result_array = array();
 
@@ -619,6 +690,7 @@ class Connection
                     'tag_name' => $row['NAME']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -641,12 +713,20 @@ class Connection
 
             $statement = $this->execute_inserting($this->query, 'sss', $name, $type, $tag_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
+            }
 
-            return $this->connection->insert_id;
+
+            $id = $this->connection->insert_id;
+
+            mysqli_close($this->connection);
+
+            return $id;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -782,11 +862,11 @@ class Connection
 
             if (!empty($errors)) {
                 $this->connection->rollback();
-
-                var_dump('roling back');
-                var_dump($errors);
             }
+
             $this->connection->commit();
+
+            mysqli_close($this->connection);
 
             return $errors;
         }
@@ -834,11 +914,11 @@ class Connection
 
             if (!empty($errors)) {
                 $this->connection->rollback();
-
-                var_dump('roling back');
-                var_dump($errors);
             }
+
             $this->connection->commit();
+
+            mysqli_close($this->connection);
 
             return $errors;
         }
@@ -861,16 +941,23 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $floor);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_DRAWING);
+            }
 
             $statement->bind_result($res_draw);
             $fetch = $statement->fetch();
 
-            if ($fetch)
+            if ($fetch) {
+                mysqli_close($this->connection);
                 return $res_draw;
+            }
+
+            mysqli_close($this->connection);
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -956,6 +1043,8 @@ class Connection
 
             $this->connection->commit();
 
+            mysqli_close($this->connection);
+
             return $errors;
         }
 
@@ -1009,7 +1098,10 @@ class Connection
             if (!empty($errors)){
                 $this->connection->rollback();
             }
+
             $this->connection->commit();
+
+            mysqli_close($this->connection);
 
             return $errors;
         }
@@ -1078,6 +1170,8 @@ class Connection
 
             $this->connection->commit();
 
+            mysqli_close($this->connection);
+
             return $errors;
         }
 
@@ -1102,12 +1196,19 @@ class Connection
             $this->query = "INSERT INTO floor (NAME, IMAGE_MAP, MAP_WIDTH, MAP_SPACING, LOCATION_ID) VALUES (?, ?, ?, ?, ?)";
             $statement = $this->execute_inserting($this->query, 'ssiii', $name, $map_image, $map_width, $spacing, $location);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_INSERTING_FLOOR);
+            }
 
-            return $this->connection->insert_id;
+            $id =  $this->connection->insert_id;
+
+            mysqli_close($this->connection);
+
+            return $id;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -1127,10 +1228,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $location);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATION_INFO);
+            }
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -1141,6 +1245,7 @@ class Connection
                     "icon" => $row['ICON'], 'radius' => $row['RADIUS'], 'meter_radius' => $row['METER_RADIUS'], 'is_inside' => $row['IS_INSIDE']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1161,10 +1266,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $location);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATION_INFO);
+            }
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -1174,6 +1282,7 @@ class Connection
                 $result_array[] = array('name' => $row['NAME']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1193,8 +1302,10 @@ class Connection
 
             $this->result = $this->connection->query($this->query);
 
-            if ($this->result == false)
+            if ($this->result == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATIONS);
+            }
 
             $result_array = array();
 
@@ -1203,6 +1314,7 @@ class Connection
                     'longitude' => (double)$row['LONGITUDE'], 'radius' => $row['RADIUS'], 'is_inside' => (int)$row['IS_INSIDE']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1223,10 +1335,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $user);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATION_BY_USER);
+            }
 
             $this->result = $statement->get_result();
             $result_array = array();
@@ -1236,6 +1351,7 @@ class Connection
                     'longitude' => (double)$row['LONGITUDE'], 'radius' => (double)$row['RADIUS'], 'meter_radius' => $row['METER_RADIUS']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1268,11 +1384,13 @@ class Connection
                             WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
 
-                if ($statement instanceof db_errors)
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $statement;
-                else if ($statement == false)
+                }                else if ($statement == false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1288,11 +1406,13 @@ class Connection
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ss', $fromDate, $toDate);
 
-                if ($anchorNullStatement instanceof db_errors)
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $anchorNullStatement;
-                else if ($anchorNullStatement === false)
+                }                else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1307,11 +1427,13 @@ class Connection
                             WHERE tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'sss', $tag, $fromDate, $toDate);
 
-                if ($statement instanceof db_errors)
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $statement;
-                else if ($statement == false)
+                }                else if ($statement == false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1327,11 +1449,13 @@ class Connection
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $tag, $fromDate, $toDate);
 
-                if ($anchorNullStatement instanceof db_errors)
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $anchorNullStatement;
-                else if ($anchorNullStatement === false)
+                }                else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1346,11 +1470,13 @@ class Connection
                             WHERE event.DESCRIPTION = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'sss', $event, $fromDate, $toDate);
 
-                if ($statement instanceof db_errors)
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $statement;
-                else if ($statement == false)
+                }                else if ($statement == false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1366,11 +1492,13 @@ class Connection
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $event, $fromDate, $toDate);
 
-                if ($anchorNullStatement instanceof db_errors)
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $anchorNullStatement;
-                else if ($anchorNullStatement === false)
+                }                else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1385,11 +1513,13 @@ class Connection
                             WHERE tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'sss', $tag, $fromDate, $toDate);
 
-                if ($statement instanceof db_errors)
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $statement;
-                else if ($statement == false)
+                }                else if ($statement == false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1405,11 +1535,13 @@ class Connection
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $tag, $fromDate, $toDate);
 
-                if ($anchorNullStatement instanceof db_errors)
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $anchorNullStatement;
-                else if ($anchorNullStatement === false)
+                }                else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1424,11 +1556,13 @@ class Connection
                             WHERE event.DESCRIPTION = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'sss', $event, $fromDate, $toDate);
 
-                if ($statement instanceof db_errors)
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $statement;
-                else if ($statement == false)
+                }                else if ($statement == false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1444,11 +1578,13 @@ class Connection
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $event, $fromDate, $toDate);
 
-                if ($anchorNullStatement instanceof db_errors)
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $anchorNullStatement;
-                else if ($anchorNullStatement === false)
+                }                else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1463,11 +1599,13 @@ class Connection
                             WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'ssss', $event, $tag, $fromDate, $toDate);
 
-                if ($statement instanceof db_errors)
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $statement;
-                else if ($statement == false)
+                }                else if ($statement == false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1483,11 +1621,13 @@ class Connection
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ssss', $event, $tag, $fromDate, $toDate);
 
-                if ($anchorNullStatement instanceof db_errors)
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $anchorNullStatement;
-                else if ($anchorNullStatement === false)
+                }                else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1502,11 +1642,13 @@ class Connection
                             WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
                 $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
 
-                if ($statement instanceof db_errors)
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $statement;
-                else if ($statement == false)
+                }                else if ($statement == false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1522,11 +1664,13 @@ class Connection
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ss', $fromDate, $toDate);
 
-                if ($anchorNullStatement instanceof db_errors)
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $anchorNullStatement;
-                else if ($anchorNullStatement === false)
+                }                else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
-
+                }
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
@@ -1537,7 +1681,7 @@ class Connection
             }
 
 
-
+            mysqli_close($this->connection);
             return $array_result;
         }
 
@@ -1557,12 +1701,19 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+            }
 
-            return $statement->affected_rows;
+            $aff_rows = $statement->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -1581,11 +1732,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $location);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_INFO);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -1593,6 +1746,7 @@ class Connection
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'width' => $row['MAP_WIDTH'], 'spacing' => $row['MAP_SPACING']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1614,11 +1768,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $tag);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -1627,6 +1783,7 @@ class Connection
                     'location_name' => $row['location_name']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1650,11 +1807,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'ss', $floor, $location);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_ANCHORS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -1665,6 +1824,7 @@ class Connection
                     'neighbors' => $row['NEIGHBORS'], 'battery_status' => $row['BATTERY_STATUS'], 'floor_id' => $row['FLOOR_ID'], 'floor_name' => $row['FLOOR_NAME'], 'location_name' => $row['LOCATION_NAME']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1687,20 +1847,24 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $location);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_ANCHORS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'mac' => $row['MAC'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'], 'is_offline' => $row['IS_OFFLINE'], 'floor_name' => $row['FLOOR_NAME'],
-                    'z_pos' => $row['Z_POS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'], 'battery_status' => $row['BATTERY_STATUS'], 'floor_id' => $row['FLOOR_ID'],
+                    'z_pos' => $row['Z_POS'], 'r
+                    adius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'], 'battery_status' => $row['BATTERY_STATUS'], 'floor_id' => $row['FLOOR_ID'],
                     'type' => $row['DESCRIPTION'], 'permitted_asset' => $row['PERMITTED_ASSET'], 'emergency_zone' => $row['EMERGENCY_ZONE'], 'neighbors' => $row['NEIGHBORS'], 'location_name' => $location);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1724,11 +1888,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $user);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_ANCHORS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -1739,6 +1905,7 @@ class Connection
                     'location_name' => $row['LOCATION_NAME'], 'location_longitude' => $row['LOCATION_LONGITUDE'], 'location_latitude' => $row['LOCATION_LATITUDE']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1761,11 +1928,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'ss', $floor, $location);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_CAMERAS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -1774,6 +1943,7 @@ class Connection
                     'password' => $row['PASSWORD'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'], 'radius' => $row['RADIUS']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1800,11 +1970,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $user);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -1821,6 +1993,7 @@ class Connection
                     'helmet_dpi' => $row['HELMET_DPI'], 'belt_dpi' => $row['BELT_DPI'], 'glove_dpi' => $row['GLOVE_DPI'], 'shoe_dpi' => $row['SHOE_DPI']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1844,8 +2017,10 @@ class Connection
 
             $this->result = $this->connection->query($this->query);
 
-            if ($this->result == false)
+            if ($this->result == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+            }
 
             $result_array = array();
 
@@ -1861,6 +2036,7 @@ class Connection
                     'helmet_dpi' => (int)$row['HELMET_DPI'], 'belt_dpi' => (int)$row['BELT_DPI'], 'glove_dpi' => (int)$row['GLOVE_DPI'], 'shoe_dpi' => (int)$row['SHOE_DPI']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1880,15 +2056,17 @@ class Connection
 
             $this->result = $this->connection->query($this->query);
 
-            if ($this->result == false)
+            if ($this->result == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_ANCHOR_TYPES);
-
+            }
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => (int)$row['ID'], 'description' => $row['DESCRIPTION']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1916,11 +2094,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'ss', $floor, $location);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -1935,6 +2115,7 @@ class Connection
                     'helmet_dpi' => $row['HELMET_DPI'], 'belt_dpi' => $row['BELT_DPI'], 'glove_dpi' => $row['GLOVE_DPI'], 'shoe_dpi' => $row['SHOE_DPI']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -1954,15 +2135,17 @@ class Connection
 
             $this->result = $this->connection->query($this->query);
 
-            if ($this->result == false)
+            if ($this->result == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_EVENTS);
-
+            }
             $array_result = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $array_result[] = array('id' => $row['ID'], 'description' => $row['DESCRIPTION'], 'icon_name' => $row['ICON_NAME']);
             }
 
+            mysqli_close($this->connection);
             return $array_result;
         }
 
@@ -1983,11 +2166,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $location);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_FLOORS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -1995,6 +2180,7 @@ class Connection
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'image_map' => $row['IMAGE_MAP'], 'width' => $row['MAP_WIDTH'], 'map_spacing' => $row['MAP_SPACING']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -2017,11 +2203,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $user);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_FLOORS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -2029,6 +2217,7 @@ class Connection
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'image_map' => $row['IMAGE_MAP'], 'width' => $row['MAP_WIDTH'], 'map_spacing' => $row['MAP_SPACING']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -2050,12 +2239,19 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'ss', $name, $id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_UPDATING_FLOOR_IMAGE);
+            }
 
-            return $this->connection->affected_rows;
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2076,12 +2272,16 @@ class Connection
             $this->query = "UPDATE tag_mac SET " . strtoupper($mac_field) . " = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'ss', $field_value, $mac_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
-
+            }
             $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
 
             return $this->result;
         }
@@ -2104,12 +2304,16 @@ class Connection
             $this->query = "UPDATE tag SET " . strtoupper($tag_field) . " = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'ss', $field_value, $tag_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
-
+            }
             $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
 
             return $this->result;
         }
@@ -2153,6 +2357,8 @@ class Connection
 
             $this->connection->commit();
 
+            mysqli_close($this->connection);
+
             return $errors;
         }
     }
@@ -2172,12 +2378,19 @@ class Connection
             $this->query = "UPDATE location SET " . strtoupper($location_field) . " = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'ss', $field_value, $location_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
 
-            return $this->connection->affected_rows;
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2198,12 +2411,16 @@ class Connection
             $this->query = "UPDATE anchor SET " . strtoupper($anchor_field) . " = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'si', $field_value, $anchor_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
-
+            }
             $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
 
             return $this->result;
         }
@@ -2231,12 +2448,16 @@ class Connection
             $this->query = "UPDATE anchor SET anchor.PERMITTED_ASSET = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'si', $permittedString, $anchor_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
-
+            }
             $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
 
             return $this->result;
         }
@@ -2259,12 +2480,16 @@ class Connection
             $this->query = "UPDATE floor SET " . strtoupper($floor_field) . " = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'si', $field_value, $floor_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
-
+            }
             $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
 
             return $this->result;
         }
@@ -2288,17 +2513,21 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'ss', $location, $floor);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_EMERGENCY);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('tag_name' => $row['TAG_NAME'], 'anchor_name' => $row['ANCHOR_NAME']);
             }
+
+            mysqli_close($this->connection);
 
             return $result_array;
         }
@@ -2314,16 +2543,22 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', 1);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAG_OUTDOOR_LOCATION_ZOOM);
-
+            }
             $statement->bind_result($res_zoom);
             $fetch = $statement->fetch();
 
-            if ($fetch)
+            if ($fetch) {
+                mysqli_close($this->connection);
                 return $res_zoom;
+            }
+
+            mysqli_close($this->connection);
         }
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
@@ -2336,11 +2571,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $user);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -2349,6 +2586,7 @@ class Connection
                     'password_changed' => $row['PASSWORD_CHANGED']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -2363,11 +2601,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $user);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -2377,6 +2617,7 @@ class Connection
                     'outdoor_tag_on' => $row['outdoor_tag_on']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -2394,12 +2635,19 @@ class Connection
             $statement = $this->execute_selecting($this->query, 'iiiiiiis', $decoded['grid_on'], $decoded['anchors_on'],
                 $decoded['cameras_on'], $decoded['outag_on'], $decoded['zones_on'], $decoded['sound_on'], $decoded['outdoor_tag_on'], $user);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+            }
 
-            return $this->connection->affected_rows;
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2413,12 +2661,19 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'ii', $role, $user);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+            }
 
-            return $this->connection->affected_rows;
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2443,11 +2698,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'sss', $floor, $location, $user);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -2457,6 +2714,7 @@ class Connection
                     'color' => $row['COLOR'], 'floor_id' => $row['FLOOR_ID']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -2478,11 +2736,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 's', $location);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -2493,6 +2753,7 @@ class Connection
                     'floor' => $row['FLOOR_ID'], 'color' => $row['COLOR'], 'location' => $row['LOCATION']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -2516,12 +2777,19 @@ class Connection
             $statement = $this->execute_inserting($this->query, 'siiiisi', $decoded['name'], $decoded['x_left'], $decoded['x_right'],
                 $decoded['y_up'], $decoded['y_down'], $decoded['color'], $decoded['floor']);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
+            }
 
-            return $this->connection->insert_id;
+            $id = $this->connection->insert_id;
+
+            mysqli_close($this->connection);
+
+            return $id;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2544,12 +2812,18 @@ class Connection
             $statement = $this->execute_inserting($this->query, 'sddddss', $decoded['name'], $decoded['x_left'], $decoded['x_right'],
                 $decoded['y_up'], $decoded['y_down'], $decoded['color'], $decoded['location']);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
+            }
+            $id = $this->connection->insert_id;
 
-            return $this->connection->insert_id;
+            mysqli_close($this->connection);
+
+            return $id;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2572,12 +2846,19 @@ class Connection
             $statement = $this->execute_inserting($this->query, 'sdddss', $decoded['name'], $decoded['radius'], $decoded['x'], $decoded['y'],
                 $decoded['color'], $decoded['location']);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
+            }
 
-            return $this->connection->insert_id;
+            $id = $this->connection->insert_id;
+
+            mysqli_close($this->connection);
+
+            return $id;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2598,12 +2879,16 @@ class Connection
             $this->query = "UPDATE zone SET " . strtoupper($zone_field) . " = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'ss', $field_value, $zone_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
-
+            }
             $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
 
             return $this->result;
         }
@@ -2625,12 +2910,17 @@ class Connection
             $this->query = "UPDATE zone SET COLOR = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'ss', $zone_color, $zone_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
 
             $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
 
             return $this->result;
         }
@@ -2655,12 +2945,16 @@ class Connection
             $this->query = "UPDATE zone SET X_LEFT = ?, X_RIGHT = ?, Y_UP = ?, Y_DOWN = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'iiiii', $x_left, $x_right, $y_up, $y_down, $zone_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
-
+            }
             $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
 
             return $this->result;
         }
@@ -2681,12 +2975,19 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $zone_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+            }
 
-            return $statement->affected_rows;
+            $aff_rows = $statement->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2705,11 +3006,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $tag_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -2717,6 +3020,7 @@ class Connection
                 $result_array[] = array('zone_id' => $row['ZONE_ID'], 'name' => $row['NAME']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -2733,13 +3037,19 @@ class Connection
 
                 $statement = $this->execute_inserting($this->query, 'ii', $tag_id, $zones[$i]);
 
-                if ($statement instanceof db_errors)
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $statement;
-                else if ($statement == false)
+                }                else if ($statement == false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_INSERTING_USER_HAS_LOCATION);
-            }
+                }            }
 
-            return $this->connection->insert_id;
+            $id = $this->connection->insert_id;
+
+            mysqli_close($this->connection);
+
+            return $id;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2753,12 +3063,19 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'ii', $tag_id, $zone_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_USER_LOCATION);
+            }
 
-            return $statement->affected_rows;
+            $aff_rows = $statement->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2772,8 +3089,10 @@ class Connection
 
             $this->result = $this->connection->query($this->query);
 
-            if ($this->result == false)
+            if ($this->result == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATIONS);
+            }
 
             $result_array = array();
 
@@ -2781,6 +3100,7 @@ class Connection
                 $result_array[] = array('id' => $row['ID'], 'username' => $row['USERNAME'], 'name' => $row['NAME'], 'role' => $row['ROLE']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -2821,14 +3141,18 @@ class Connection
 
                 if (!empty($errors)) {
                     $this->connection->rollback();
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
                 }
 
                 $this->connection->commit();
+                mysqli_close($this->connection);
 
                 return $errors;
-            }else
+            }else {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
+            }
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2843,12 +3167,19 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $user);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+            }
 
-            return $statement->affected_rows;
+            $aff_rows = $statement->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2862,12 +3193,19 @@ class Connection
             $this->query = "UPDATE user SET " . strtoupper($user_field) . " = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'ss', $field_value, $user_id);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
 
-            return $this->connection->affected_rows;
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -2877,19 +3215,22 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT ID, USERNAME, NAME, ROLE FROM user WHERE ROLE = 0 OR ROLE = 2 OR ROLE = 3";
+            $this->query = "SELECT ID, USERNAME, NAME, ROLE, EMAIL_ALERT, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, TELEPHONE_NUMBER FROM user WHERE ROLE = 0 OR ROLE = 2 OR ROLE = 3";
 
             $this->result = $this->connection->query($this->query);
 
-            if ($this->result == false)
+            if ($this->result == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_USERS);
-
+            }
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
-                $result_array[] = array('id' => $row['ID'], 'username' => $row['USERNAME'], 'name' => $row['NAME'], 'role' => $row['ROLE']);
+                $result_array[] = array('id' => $row['ID'], 'username' => $row['USERNAME'], 'name' => $row['NAME'], 'role' => $row['ROLE'], 'email_alert' => $row['EMAIL_ALERT'],
+                    'bot_url' => $row['BOT_URL'], 'bot_chat_id' => $row['BOT_CHAT_ID'], 'web_service_url' => $row['WEB_SERVICE_URL'], 'telephone_number' => $row['TELEPHONE_NUMBER']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -2948,13 +3289,16 @@ class Connection
 
                 if (!empty($errors)) {
                     $this->connection->rollback();
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
                 }
 
                 $this->connection->commit();
 
+                mysqli_close($this->connection);
                 return $errors;
             }else{
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
             }
         }
@@ -2970,11 +3314,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $user);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_USERS);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -2983,6 +3329,7 @@ class Connection
                     'latitude' => $row['LATITUDE'], 'radius' => $row['RADIUS'], 'is_inside' => $row['IS_INSIDE']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -2999,13 +3346,19 @@ class Connection
 
                 $statement = $this->execute_inserting($this->query, 'ii', $user, $locations[$i]);
 
-                if ($statement instanceof db_errors)
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
                     return $statement;
-                else if ($statement == false)
+                }                else if ($statement == false) {
+                    mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_INSERTING_USER_HAS_LOCATION);
-            }
+                }            }
 
-            return $this->connection->insert_id;
+            $id = $this->connection->insert_id;
+
+            mysqli_close($this->connection);
+
+            return $id;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -3019,12 +3372,19 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'ii', $user, $locations);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_USER_LOCATION);
+            }
 
-            return $statement->affected_rows;
+            $aff_rows = $statement->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -3039,14 +3399,18 @@ class Connection
 
             $this->result = $this->connection->query($this->query);
 
-            if ($this->result == false)
+            if ($this->result == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_MAC_TYPES);
+            }
 
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array = array('alpha' => $row['ZONE_ALPHA']);
             }
+
+            mysqli_close($this->connection);
 
             return $result_array;
         }
@@ -3062,11 +3426,16 @@ class Connection
 
             $this->result = $this->connection->query($this->query);
 
-            if ($this->result == false)
+            if ($this->result == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_MAC_TYPES);
+            }
 
+            $rows = mysqli_num_rows($this->result);
 
-            return mysqli_num_rows($this->result);
+            mysqli_close($this->connection);
+
+            return $rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -3081,11 +3450,13 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $tag);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATION_BY_USER);
-
+            }
             $this->result = $statement->get_result();
             $result_array = array();
 
@@ -3093,6 +3464,7 @@ class Connection
                 $result_array = array('name' => $row['NAME']);
             }
 
+            mysqli_close($this->connection);
             return $result_array;
         }
 
@@ -3117,12 +3489,19 @@ class Connection
                 , $parameters['rest_name'], $parameters['scanning_pkt'], $parameters['scanning_rate'], $parameters['server_ip'], $parameters['sim_is_here']
                 , $parameters['ssid_wifi'], $parameters['udp_port_uwb'], $parameters['wifi_is_here'], $parameters['tag_id']);
 
-            if ($statement instanceof db_errors)
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
                 return $statement;
-            else if ($statement == false)
+            }            else if ($statement == false) {
+                mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
 
-            return $this->connection->affected_rows;
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);

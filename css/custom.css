@@ -746,6 +746,13 @@ POSITION
     z-index: 100;
 }
 
+.bottom-right{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    z-index: 100;
+}
+
 .bottom-corner{
     position: fixed;
     bottom: 10px;

@@ -267,6 +267,8 @@ function languageController($scope) {
         deleteLocation: 'Delete location',
         addZone: 'Add zone',
         deleteUser: 'Delete user',
+        centerMap: 'Center the map',
+        role: 'Role',
     }
 };
 
