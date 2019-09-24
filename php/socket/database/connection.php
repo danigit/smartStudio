@@ -84,7 +84,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_LOGIN);
             }
@@ -309,7 +309,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_MARKERS);
             }
@@ -379,10 +379,10 @@ class Connection
 
             $statement = $this->execute_selecting($this->query, 'i', $anchor);
 
-            if ($statement instanceof db_errors){
+            if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_ANCHOR);
             }
@@ -414,7 +414,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_FLOOR);
             }
@@ -448,7 +448,7 @@ class Connection
 
             if ($statement instanceof db_errors) {
                 $errors['db_error'] = 1;
-            }else if ($statement == false) {
+            } else if ($statement == false) {
                 $errors['return_false'] = 1;
             }
 
@@ -460,7 +460,7 @@ class Connection
 
             if ($statement instanceof db_errors) {
                 $errors['db_error'] = 1;
-            }else if ($statement == false) {
+            } else if ($statement == false) {
                 $errors['return_false'] = 1;
             }
             $statement->close();
@@ -607,7 +607,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAG_MACS);
             }
@@ -642,7 +642,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAG_MACS);
             }
@@ -716,7 +716,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
             }
@@ -901,7 +901,7 @@ class Connection
 
             $statement->close();
 
-            for ($i = 0; $i < count($zones); $i++){
+            for ($i = 0; $i < count($zones); $i++) {
                 $this->query = "INSERT INTO zone (X_LEFT, X_RIGHT, Y_UP, Y_DOWN, FLOOR_ID) VALUES (?, ?, ?, ?, ?)";
                 $statement = $this->execute_inserting($this->query, 'ddddi', $zones[$i]['topLeft']['x'], $zones[$i]['bottomRight']['x'],
                     $zones[$i]['topLeft']['y'], $zones[$i]['bottomRight']['y'], $floor);
@@ -944,7 +944,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_DRAWING);
             }
@@ -1095,7 +1095,7 @@ class Connection
 
                 }
             }
-            if (!empty($errors)){
+            if (!empty($errors)) {
                 $this->connection->rollback();
             }
 
@@ -1199,12 +1199,12 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_INSERTING_FLOOR);
             }
 
-            $id =  $this->connection->insert_id;
+            $id = $this->connection->insert_id;
 
             mysqli_close($this->connection);
 
@@ -1269,7 +1269,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATION_INFO);
             }
@@ -1338,7 +1338,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATION_BY_USER);
             }
@@ -1387,7 +1387,7 @@ class Connection
                 if ($statement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $statement;
-                }                else if ($statement == false) {
+                } else if ($statement == false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1409,7 +1409,7 @@ class Connection
                 if ($anchorNullStatement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $anchorNullStatement;
-                }                else if ($anchorNullStatement === false) {
+                } else if ($anchorNullStatement === false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1430,7 +1430,7 @@ class Connection
                 if ($statement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $statement;
-                }                else if ($statement == false) {
+                } else if ($statement == false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1452,7 +1452,7 @@ class Connection
                 if ($anchorNullStatement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $anchorNullStatement;
-                }                else if ($anchorNullStatement === false) {
+                } else if ($anchorNullStatement === false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1473,7 +1473,7 @@ class Connection
                 if ($statement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $statement;
-                }                else if ($statement == false) {
+                } else if ($statement == false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1495,7 +1495,7 @@ class Connection
                 if ($anchorNullStatement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $anchorNullStatement;
-                }                else if ($anchorNullStatement === false) {
+                } else if ($anchorNullStatement === false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1516,7 +1516,7 @@ class Connection
                 if ($statement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $statement;
-                }                else if ($statement == false) {
+                } else if ($statement == false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1538,7 +1538,7 @@ class Connection
                 if ($anchorNullStatement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $anchorNullStatement;
-                }                else if ($anchorNullStatement === false) {
+                } else if ($anchorNullStatement === false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1559,7 +1559,7 @@ class Connection
                 if ($statement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $statement;
-                }                else if ($statement == false) {
+                } else if ($statement == false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1581,7 +1581,7 @@ class Connection
                 if ($anchorNullStatement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $anchorNullStatement;
-                }                else if ($anchorNullStatement === false) {
+                } else if ($anchorNullStatement === false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1602,7 +1602,7 @@ class Connection
                 if ($statement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $statement;
-                }                else if ($statement == false) {
+                } else if ($statement == false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1624,7 +1624,7 @@ class Connection
                 if ($anchorNullStatement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $anchorNullStatement;
-                }                else if ($anchorNullStatement === false) {
+                } else if ($anchorNullStatement === false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1645,7 +1645,7 @@ class Connection
                 if ($statement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $statement;
-                }                else if ($statement == false) {
+                } else if ($statement == false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1667,7 +1667,7 @@ class Connection
                 if ($anchorNullStatement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $anchorNullStatement;
-                }                else if ($anchorNullStatement === false) {
+                } else if ($anchorNullStatement === false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
                 }
@@ -1693,7 +1693,8 @@ class Connection
      * @param $toDate
      * @return db_errors|int|mysqli_stmt
      */
-    function delete_history( $fromDate, $toDate ){
+    function delete_history($fromDate, $toDate)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -1704,7 +1705,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
             }
@@ -1718,6 +1719,7 @@ class Connection
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
+
     /**
      * Function that retrieve the image of the floor passed as the parameter on the location passed as parameter
      * @param $location - the location where the floor is
@@ -1735,7 +1737,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_FLOOR_INFO);
             }
@@ -1771,7 +1773,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
             }
@@ -1810,7 +1812,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_ANCHORS);
             }
@@ -1850,7 +1852,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_ANCHORS);
             }
@@ -1891,7 +1893,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_ANCHORS);
             }
@@ -1931,7 +1933,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_CAMERAS);
             }
@@ -1973,7 +1975,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
             }
@@ -2097,7 +2099,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
             }
@@ -2169,7 +2171,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_FLOORS);
             }
@@ -2206,7 +2208,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_FLOORS);
             }
@@ -2242,7 +2244,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_UPDATING_FLOOR_IMAGE);
             }
@@ -2275,7 +2277,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
@@ -2307,7 +2309,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
@@ -2381,7 +2383,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
@@ -2414,7 +2416,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
@@ -2451,7 +2453,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
@@ -2483,7 +2485,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
@@ -2516,7 +2518,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_EMERGENCY);
             }
@@ -2535,7 +2537,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function get_tag_outside_location_zoom(){
+    function get_tag_outside_location_zoom()
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -2546,7 +2549,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_TAG_OUTDOOR_LOCATION_ZOOM);
             }
@@ -2563,7 +2566,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function get_user($user){
+    function get_user($user)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -2574,7 +2578,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
             }
@@ -2593,7 +2597,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function get_user_settings($user){
+    function get_user_settings($user)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -2604,7 +2609,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
             }
@@ -2624,7 +2629,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function update_user_settings($user, $data){
+    function update_user_settings($user, $data)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -2638,7 +2644,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
             }
@@ -2653,7 +2659,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function update_user_role($user, $role){
+    function update_user_role($user, $role)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -2664,7 +2671,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
             }
@@ -2701,7 +2708,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
             }
@@ -2739,7 +2746,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_USER_SETTINGS);
             }
@@ -2780,7 +2787,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
             }
@@ -2815,7 +2822,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
             }
@@ -2829,7 +2836,7 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-     /**
+    /**
      * Funzione che recupera tutti i tipi di un tag
      * @param $data
      * @return array|db_errors
@@ -2849,7 +2856,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
             }
@@ -2882,7 +2889,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
@@ -2913,7 +2920,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
@@ -2948,7 +2955,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
@@ -2978,7 +2985,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
             }
@@ -3009,7 +3016,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
             }
@@ -3027,7 +3034,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function insert_managed_zones($tag_id, $zones){
+    function insert_managed_zones($tag_id, $zones)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -3040,10 +3048,11 @@ class Connection
                 if ($statement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $statement;
-                }                else if ($statement == false) {
+                } else if ($statement == false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_INSERTING_USER_HAS_LOCATION);
-                }            }
+                }
+            }
 
             $id = $this->connection->insert_id;
 
@@ -3055,7 +3064,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function delete_managed_zone($tag_id, $zone_id){
+    function delete_managed_zone($tag_id, $zone_id)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -3066,7 +3076,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_USER_LOCATION);
             }
@@ -3081,7 +3091,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function get_generic_users(){
+    function get_generic_users()
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -3149,7 +3160,7 @@ class Connection
                 mysqli_close($this->connection);
 
                 return $errors;
-            }else {
+            } else {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
             }
@@ -3170,7 +3181,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
             }
@@ -3196,7 +3207,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
@@ -3211,7 +3222,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function get_all_users(){
+    function get_all_users()
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -3246,7 +3258,7 @@ class Connection
 
             $email_list_string = '';
 
-            for ($i = 0; $i < count($email_list); $i++){
+            for ($i = 0; $i < count($email_list); $i++) {
                 $email_list_string .= $email_list[$i] . ',';
             }
 
@@ -3297,7 +3309,7 @@ class Connection
 
                 mysqli_close($this->connection);
                 return $errors;
-            }else{
+            } else {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
             }
@@ -3306,7 +3318,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function get_user_locations($user){
+    function get_user_locations($user)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -3317,7 +3330,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_USERS);
             }
@@ -3336,7 +3349,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function insert_managed_location($user, $locations){
+    function insert_managed_location($user, $locations)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -3349,10 +3363,11 @@ class Connection
                 if ($statement instanceof db_errors) {
                     mysqli_close($this->connection);
                     return $statement;
-                }                else if ($statement == false) {
+                } else if ($statement == false) {
                     mysqli_close($this->connection);
                     return new db_errors(db_errors::$ERROR_ON_INSERTING_USER_HAS_LOCATION);
-                }            }
+                }
+            }
 
             $id = $this->connection->insert_id;
 
@@ -3364,7 +3379,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function delete_managed_location($user, $locations){
+    function delete_managed_location($user, $locations)
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -3375,7 +3391,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_DELETING_USER_LOCATION);
             }
@@ -3418,7 +3434,8 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function get_engine_on(){
+    function get_engine_on()
+    {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -3453,7 +3470,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATION_BY_USER);
             }
@@ -3477,11 +3494,17 @@ class Connection
 
         if ($this->connection) {
 
+            foreach($parameters as $key => $value){
+                if ($value == ""){
+                    $parameters[$key] = null;
+                }
+            }
+
             $this->query = "UPDATE wetag_settings SET ADV_RATE = ?, ADVERTISE_IS_HERE = ?, ALARM_TIMING = ?, APN_CODE = ?, APN_NAME = ?, 
                                 DISABLE_TIMING = ?, FREEFALL_THD = ?, GEOFENCE_THD = ?, IP_GATEWAY_WIFI = ?, IP_WETAG_WIFI = ?, KA = ?, LND_PRT_TIMING = ?, 
                                 MAC_FILTER = ?, MAC_UWB = ?, MD_MODE = ?, NO_MOV_TIMING = ?, POWER_LEVEL = ?, PWD_WIFI = ?, REST_NAME = ?,
                                 SCANNING_PKT = ?, SCANNING_RATE = ?, SERVER_IP = ?, SIM_IS_HERE = ?, SSID_WIFI = ?, UDP_PORT_UWB = ?, WIFI_IS_HERE = ? WHERE TAG_ID = ?";
-            
+
             $statement = $this->execute_selecting($this->query, 'iiissiiissiissiiissiisisiii', $parameters['adv_rate'], $parameters['advertise_is_here']
                 , $parameters['alarm_timing'], $parameters['apn_code'], $parameters['apn_name'], $parameters['disable_timing'], $parameters['freefall_thd']
                 , $parameters['geofence_thd'], $parameters['ip_gateway_wifi'], $parameters['ip_wetag_wifi'], $parameters['ka'], $parameters['lnd_prt_timing'], $parameters['mac_filter']
@@ -3492,7 +3515,7 @@ class Connection
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
                 return $statement;
-            }            else if ($statement == false) {
+            } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
@@ -3506,6 +3529,7 @@ class Connection
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
+
     /**
      * Function that uses the execute statement to execute a query with the prepare statement
      * @param $query - the query to be executed

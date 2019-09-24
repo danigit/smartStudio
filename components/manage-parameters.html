@@ -125,7 +125,7 @@
                 <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
                     <label>{{lang.freefallRate}}</label>
                     <md-select ng-model="sendedValues.freefall_thd">
-                        <md-option ng-selected="{{freefall_thd.value.toString() === tagParameters.ka.toString()}}" ng-repeat="freefall_thd in selectValues.freefall_thd" ng-value="freefall_thd.value">
+                        <md-option ng-selected="{{freefall_thd.value.toString() === tagParameters.freefall_thd.toString()}}" ng-repeat="freefall_thd in selectValues.freefall_thd" ng-value="freefall_thd.value">
                             {{freefall_thd.label}}
                         </md-option>
                     </md-select>

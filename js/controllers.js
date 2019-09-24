@@ -3568,18 +3568,61 @@
                                 }, 100);
                             } //if the tag has a location then I go in the location
                             else {
-                                newSocketService.getData('save_location', {location: indoorTag.location_name}, (response) => {
-                                    if (!response.session_state)
-                                        window.location.reload();
+                                console.log(dataService.locationFromClick);
+                                if (dataService.location.name === indoorTag.location_name){
+                                    if (indoorTag.floor_name !== canvasCtrl.floorData.defaultFloorName) {
+                                        newSocketService.getData('get_floors_by_location', {location: indoorTag.location_name}, (response) => {
+                                            if (!response.session_state) {
+                                                window.location.reload();
+                                            }
 
-                                    if (response.result === 'location_saved') {
-                                        dataService.defaultFloorName  = indoorTag.floor_name;
-                                        dataService.locationFromClick = indoorTag.location_name;
+                                            $mdDialog.hide();
+                                            locationSelected = true;
+
+                                            let selectedFloor                     = response.result.filter(f => f.name === indoorTag.floor_name)[0];
+                                            canvasCtrl.floorData.defaultFloorName = selectedFloor.name;
+                                            dataService.defaultFloorName          = selectedFloor.name;
+                                            canvasCtrl.floorData.gridSpacing      = selectedFloor.map_spacing;
+                                            canvasCtrl.floorData.floor_image_map  = selectedFloor.image_map;
+                                            canvasImage.src                       = floorPath + selectedFloor.image_map;
+                                            context.clearRect(0, 0, canvas.width, canvas.height);
+                                        })
+                                    } else{
                                         $mdDialog.hide();
-                                        locationSelected = true;
-                                        $state.go('canvas');
                                     }
-                                });
+                                }else{
+                                    console.log('saving location');
+                                    newSocketService.getData('save_location', {location: indoorTag.location_name}, (response) => {
+                                        if (!response.session_state)
+                                            window.location.reload();
+
+                                        if (response.result === 'location_saved') {
+                                            newSocketService.getData('get_location_info', {}, (response) => {
+                                                dataService.location = response.result;
+                                                newSocketService.getData('get_floors_by_location', {location: indoorTag.location_name}, (response) => {
+                                                    if (!response.session_state) {
+                                                        window.location.reload();
+                                                    }
+
+                                                    $mdDialog.hide();
+                                                    locationSelected = true;
+
+                                                    let selectedFloor                     = response.result.filter(f => f.name === indoorTag.floor_name)[0];
+                                                    canvasCtrl.floorData.defaultFloorName = selectedFloor.name;
+                                                    canvasCtrl.floorData.location = dataService.location.name;
+                                                    dataService.defaultFloorName          = selectedFloor.name;
+                                                    canvasCtrl.floorData.gridSpacing      = selectedFloor.map_spacing;
+                                                    canvasCtrl.floorData.floor_image_map  = selectedFloor.image_map;
+                                                    canvasImage.src                       = floorPath + selectedFloor.image_map;
+                                                    context.clearRect(0, 0, canvas.width, canvas.height);
+                                                    locationSelected = true;
+                                                });
+                                            });
+                                        }
+                                    });
+
+                                }
+
                             }
                         }
                     };
@@ -3590,6 +3633,7 @@
                 }],
                 onRemoving         : function () {
                     //if there is no location selected from alarm window then I rund the interval
+                    dataService.alarmsInterval = dataService.stopTimer(dataService.alarmsInterval);
                     if (dataService.canvasInterval === undefined && !locationSelected)
                         constantUpdateCanvas();
                 }
@@ -5418,6 +5462,7 @@
 
                                         console.log($scope.sendedValues);
                                         if (form.$valid) {
+                                            console.log($scope.sendedValues);
                                             newSocketService.getData('update_parameters', {data: $scope.sendedValues}, (response) => {
                                                 console.log(response);
                                                 $scope.resultClass = 'background-green';
