@@ -1071,6 +1071,10 @@ class webSocketServer implements MessageComponentInterface{
                 $result['action'] = 'change_super_user_field';
                 $result['session_state'] = $this->isSessionEnded();
 
+                if($decoded_message['data']['field_value'] === '') {
+                    $decoded_message['data']['field_value'] = null;
+                }
+
                 $query = $this->connection->change_user_field($decoded_message['data']['super_user_id'], $decoded_message['data']['super_user_field'],
                     $decoded_message['data']['field_value']);
 

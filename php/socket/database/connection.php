@@ -3494,11 +3494,11 @@ class Connection
 
         if ($this->connection) {
 
-            foreach($parameters as $key => $value){
-                if ($value == ""){
-                    $parameters[$key] = null;
-                }
-            }
+//            foreach($parameters as $key => $value){
+//                if ($value == ""){
+//                    $parameters[$key] = null;
+//                }
+//            }
 
             $this->query = "UPDATE wetag_settings SET ADV_RATE = ?, ADVERTISE_IS_HERE = ?, ALARM_TIMING = ?, APN_CODE = ?, APN_NAME = ?, 
                                 DISABLE_TIMING = ?, FREEFALL_THD = ?, GEOFENCE_THD = ?, IP_GATEWAY_WIFI = ?, IP_WETAG_WIFI = ?, KA = ?, LND_PRT_TIMING = ?, 
