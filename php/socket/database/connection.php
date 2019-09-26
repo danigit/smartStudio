@@ -2950,7 +2950,7 @@ class Connection
 
         if ($this->connection) {
             $this->query = "UPDATE zone SET X_LEFT = ?, X_RIGHT = ?, Y_UP = ?, Y_DOWN = ? WHERE ID = ?";
-            $statement = $this->execute_selecting($this->query, 'iiiii', $x_left, $x_right, $y_up, $y_down, $zone_id);
+            $statement = $this->execute_selecting($this->query, 'ddddd', $x_left, $x_right, $y_up, $y_down, $zone_id);
 
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);

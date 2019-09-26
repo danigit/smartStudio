@@ -3024,7 +3024,7 @@
                                 y_up   : topLeftScaled.y,
                                 y_down : bottomDownScalled.y
                             }, (response) => {
-                                if (!response.result.session_state)
+                                if (!response.session_state)
                                     window.location.reload();
                             });
                         } else {
