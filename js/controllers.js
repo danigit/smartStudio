@@ -17,9 +17,9 @@
      * Function that manage the user login with email and password
      * @type {string[]}
      */
-    loginController.$inject = ['$scope', '$state', '$timeout', 'newSocketService'];
+    loginController.$inject = ['$scope', '$state', '$timeout', 'newSocketService', 'dataService'];
 
-    function loginController($scope, $state, $timeout, newSocketService) {
+    function loginController($scope, $state, $timeout, newSocketService, dataService) {
         $scope.user           = {username: '', password: ''};
         $scope.errorHandeling = {noConnection: false, wrongData: false, socketClosed: newSocketService.socketClosed};
 
@@ -31,11 +31,13 @@
                     username: $scope.user.username,
                     password: $scope.user.password
                 }, (response) => {
+                    console.log(response);
                     if (response === 'error') {
                         $scope.errorHandeling.wrongData    = false;
                         $scope.errorHandeling.noConnection = true;
                     } else if (response.result.id !== undefined) {
-                        document.cookie = "username=" + $scope.user.username;
+                        dataService.user.username = $scope.user.username;
+                        sessionStorage.user = $scope.user.username;
                         $state.go('home');
                     } else {
                         $scope.errorHandeling.noConnection = false;
@@ -182,6 +184,7 @@
                         if (!response.session_state)
                             window.location.reload();
 
+                        console.log(response);
                         dataService.allTags = response.result;
 
                         tags                         = response.result;
@@ -5442,8 +5445,8 @@
                                         wifi_is_here: [{label: "NO", value: 0}, {label: "SI", value: 1}],
                                         advertise_is_here: [{label: "NO", value: 0}, {label: "SI", value: 1}],
                                         mac_filter: '',
-                                        apn_name: [{label: "VODAFONE", value: 'ep.inetd.gdsp'}, {label: "TIM", value: 'ibox.tim.it'}, {label: "FASTWEB", value: 'apn.fastweb.it'}, {label: "EMNIFY", value: 'em'}, {label: "JERSEY", value: 'JTFIXEDPUBLIC'}],
-                                        apn_code: [{label: "VODAFONE", value: '22210'}, {label: "TIM", value: '00001'}, {label: "FASTWEB", value: '00002'}, {label: "EMNIFY", value: '00003'}, {label: "JERSEY", value: '00004'}],
+                                        apn_name: [{label: "VODAFONE", value: 'ep.inetd.gdsp'}, {label: "TIM", value: 'ibox.tim.it'}, {label: "FASTWEB", value: 'apn.fastweb.it'}, {label: "EMNIFY", value: 'em'}, {label: "JERSEY", value: 'JTFIXEDPUBLIC'}, {label: 'JERSEY NEW', value: 'JTM2M'}],
+                                        apn_code: [{label: "VODAFONE", value: '22210'}, {label: "TIM", value: '00001'}, {label: "FASTWEB", value: '00002'}, {label: "EMNIFY", value: '00003'}, {label: "JERSEY", value: '00004'}, {label: 'JERSEY NEW', value: '00005'}],
                                         rest_name: '',
                                         server_ip: '',
                                         ssid_wifi: '',
@@ -6600,8 +6603,9 @@
             dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
             dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
             dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
+            console.log(dataService.user);
 
-            newSocketService.getData('logout', {}, (response) => {
+            newSocketService.getData('logout', {username: dataService.user.username}, (response) => {
                 if (!response.session_state)
                     window.location.reload();
 
@@ -6643,6 +6647,7 @@
 
                                     $scope.title   = $scope.lang.tagNotFound.toUpperCase();
                                     $scope.message = $scope.lang.tagNotInitialized;
+
 
 
                                     $scope.hide = () => {

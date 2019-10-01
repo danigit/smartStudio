@@ -16,7 +16,7 @@
     function dataService($mdDialog, $interval, $state, newSocketService) {
         let service = this;
 
-        service.user             = '';
+        service.user             = {};
         service.location             = '';
         service.locationFromClick    = '';
         service.isAdmin              = '';
@@ -1117,7 +1117,13 @@
         service.callbacks = [];
 
         service.getData = (action, data, callback) => {
-            let stringifyedData = JSON.stringify({action: action, data: data});
+            console.log(action);
+            console.log(data);
+            let userData = {};
+            data.username = sessionStorage.user;
+            userData = data;
+            // console.log('after data: ' + userData);
+            let stringifyedData = JSON.stringify({action: action, data: userData});
 
             if (socketOpened) {
                 service.server.send(stringifyedData);

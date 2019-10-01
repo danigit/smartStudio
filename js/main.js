@@ -20,8 +20,8 @@
                 templateUrl: componentsPath + 'login.html',
                 controller : 'loginController as loginCtr',
                 resolve    : {
-                    goToHomeIfLoggedIn: ['$state', 'newSocketService', function ($state, newSocketService) {
-                        newSocketService.getData('get_user', {}, (response) => {
+                    goToHomeIfLoggedIn: ['$state', 'newSocketService', 'dataService', function ($state, newSocketService, dataService) {
+                        newSocketService.getData('get_user', {username: sessionStorage.user}, (response) => {
                             if (response.result !== 'no_user')
                                 $state.go('home');
                         });
@@ -53,7 +53,8 @@
                         let promise = $q.defer();
                         let result  = {};
                         setTimeout(function () {
-                            newSocketService.getData('get_user', {}, (response) => {
+                            newSocketService.getData('get_user', {username: sessionStorage.user}, (response) => {
+                                console.log(response);
                                 if (response.result !== 'no_user') {
                                     dataService.user = response.result[0];
                                     if (response.result[0].role === 1) {
@@ -129,7 +130,7 @@
                                 } else {
                                     $state.go('home');
                                 }
-                                newSocketService.getData('get_user', {}, (user) => {
+                                newSocketService.getData('get_user', {username: sessionStorage.usere}, (user) => {
                                     if (user.result[0].username !== undefined) {
 
                                         dataService.user = user.result[0];
@@ -184,7 +185,7 @@
                         let result  = {};
 
                         setTimeout(function () {
-                            newSocketService.getData('get_user', {}, (response) => {
+                            newSocketService.getData('get_user', {username: sessionStorage.user}, (response) => {
                                 if (response.result[0].username !== undefined) {
                                     dataService.user = response.result[0];
                                     if (response.result[0].role === 1) {
