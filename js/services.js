@@ -1120,7 +1120,9 @@
             console.log(action);
             console.log(data);
             let userData = {};
-            data.username = sessionStorage.user;
+            if (action !== 'login') {
+                data.username = sessionStorage.user;
+            }
             userData = data;
             // console.log('after data: ' + userData);
             let stringifyedData = JSON.stringify({action: action, data: userData});

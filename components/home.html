@@ -83,6 +83,9 @@
                                 <md-list-item ng-click="quickActions()"><p>{{lang.quickActions | uppercase}}</p><img
                                         src="img/icons/menu/quick_action_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
+                                <md-list-item ng-click="showLegend()"><p>{{lang.legend | uppercase}}</p><img
+                                        src="img/icons/menu/legend_icon.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
                                 <md-list-item ng-click="changePassword()"><p>{{lang.changePassword | uppercase}}</p><img
                                         src="img/icons/menu/password_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
@@ -91,7 +94,7 @@
                                         alt=""></md-list-item>
                             </md-list>
 
-                            <div id="change-floor-container" layout="column" class="padding-10-px"
+                            <div ng-if="isAdmin" id="change-floor-container" layout="column" class="padding-10-px"
                                  layout-align="center center">
 
                                 <md-input-container class="margin-bottom-0 margin-top-10">

@@ -238,7 +238,7 @@ class Connection
      * @param $new_password
      * @return db_errors|int|mysqli_stmt
      */
-    function change_password($old_password, $new_password)
+    function change_password($old_password, $new_password, $username)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
@@ -246,7 +246,7 @@ class Connection
             if (!isset($_SESSION))
                 session_start();
 
-            $username = $_SESSION['username'];
+//            $username = $_SESSION['username_' . $user_name];
 
             $this->query = 'SELECT PASSWORD FROM user WHERE USERNAME = ?';
             $statement = $this->execute_selecting($this->query, 's', $username);

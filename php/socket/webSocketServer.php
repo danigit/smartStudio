@@ -172,8 +172,8 @@ class webSocketServer implements MessageComponentInterface{
                 $result['action'] = 'save_location';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
-                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'])) {
-                    $_SESSION['location'] = $decoded_message['data']['location'];
+                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username_' . $decoded_message['data']['username']])) {
+                    $_SESSION['location_' . $decoded_message['data']['username']] = $decoded_message['data']['location'];
                     $result['result'] = 'location_saved';
                 } else
                     $result['result'] = 'location_not_saved';
@@ -199,8 +199,8 @@ class webSocketServer implements MessageComponentInterface{
                 $result['action'] = 'get_location_info';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
-                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username'], $_SESSION['location'])) {
-                    $result['result'] = $_SESSION['location'];
+                if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username_' . $decoded_message['data']['username']], $_SESSION['location_' . $decoded_message['data']['username']])) {
+                    $result['result'] = $_SESSION['location_' . $decoded_message['data']['username']];
                     $query = $this->connection->get_location_info($result['result']);
 
                     ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
@@ -728,7 +728,7 @@ class webSocketServer implements MessageComponentInterface{
                 $result['action'] = 'change_password';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
-                $query = $this->connection->change_password($decoded_message['data']['oldPassword'], $decoded_message['data']['newPassword']);
+                $query = $this->connection->change_password($decoded_message['data']['oldPassword'], $decoded_message['data']['newPassword'], $decoded_message['data']['username']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -1046,7 +1046,7 @@ class webSocketServer implements MessageComponentInterface{
                 $result['action'] = 'insert_super_user';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
-                $query = $this->connection->insert_super_user($decoded_message['data']['username'], $decoded_message['data']['name'],
+                $query = $this->connection->insert_super_user($decoded_message['data']['username_reg'], $decoded_message['data']['name'],
                     $decoded_message['data']['email'], $decoded_message['data']['phone'], $decoded_message['data']['emailList'], $decoded_message['data']['botUrl'],
                     $decoded_message['data']['chatId'], $decoded_message['data']['webUrl'], $decoded_message['data']['role']);
 

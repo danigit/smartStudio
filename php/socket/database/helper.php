@@ -57,8 +57,8 @@ function sendEmail($email, $code){
         $mail->Subject = "Recupero password";
         $mail->msgHTML("Sei stato contattato da Smart Track per la creazione di un nuovo account riguardante Smart Studio<br><br>
                                   La tua password provisoria e' : <b class='color-ottanio'>" . $code . "</b><br><br>");
-        if (!$mail->send()) //telnet smtp.aruba.it 587
-            return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
+//        if (!$mail->send()) //telnet smtp.aruba.it 587
+//            return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
     }catch (Exception $e){
         return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
     }

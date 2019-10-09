@@ -193,6 +193,7 @@
                                 homeCtrl.showAlarmsIcon = true;
                         });
 
+                        console.log(response);
                         homeCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarms(response.result);
                         homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
 
@@ -210,13 +211,16 @@
                             findTagLocation(tags, userTags.result, response.result, map);
 
                             //setting the zoom of the map to see all the locations if there are no locations with alarms
-                            if (alarmLocations.length === 0 && zoomSetted === 0) {
+                            console.log('MARKERS LENGTH: ' + homeCtrl.dynamicMarkers.length);
+                            if (alarmLocations.length === 0 && zoomSetted === 0 && homeCtrl.dynamicMarkers.length === 0) {
                                 alarmLocationsLength = 0;
                                 map.setCenter(bounds.getCenter());
                                 map.fitBounds(bounds);
                                 zoomSetted = 1
-                            } else if (alarmLocations.length > 0) {
+                            } else if (alarmLocations.length > 0 ) {
                                 zoomSetted = 0;
+                            } else if (homeCtrl.dynamicMarkers.length === 0){
+                                map.setCenter(new google.maps.LatLng(44.44, 8.88));
                             }
 
                             homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
@@ -4586,7 +4590,7 @@
                     let emailList = [];
 
                     $scope.roles    = [lang.genericUser, lang.intermediateUser, lang.trackerUser];
-                    $scope.userRole = '';
+                    $scope.userRoleRegister = {registerRole: ''};
                     $scope.user     = {
                         username   : '',
                         name       : '',
@@ -4613,7 +4617,7 @@
 
                         if (form.$valid) {
                             newSocketService.getData('insert_super_user', {
-                                username: $scope.user.username,
+                                username_reg: $scope.user.username,
                                 name    : $scope.user.name,
                                 email   : $scope.user.email,
                                 phone: $scope.user.phone,
@@ -4621,7 +4625,7 @@
                                 botUrl: $scope.user.botUrl,
                                 chatId: $scope.user.chatId,
                                 webUrl: $scope.user.webUrl,
-                                role    : $scope.userRole
+                                role    : $scope.userRoleRegister.registerRole
                             }, (response) => {
                                 if (!response.session_state)
                                     window.location.reload();
@@ -6557,6 +6561,20 @@
             };
 
             $mdDialog.show(floorDialog);
+        };
+
+        $scope.showLegend = () => {
+            $mdDialog.show({
+                templateUrl: componentsPath + 'legend-dialog.html',
+                parent     : angular.element(document.body),
+                targetEvent: event,
+                controller : ['$scope', 'dataService', function ($scope, dataService) {
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    };
+                }],
+            });
         };
 
         $scope.quickActions = () => {
