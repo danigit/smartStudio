@@ -336,7 +336,9 @@ function languageController($scope) {
         wetag_alarm_meanig: 'Avvisi WeTAG',
         wetag_alarm_description: 'Possibile malfunzionamento WeTAG (dispersi o offline)',
         alarm_tags_home_meaning: 'blalblaljb',
-        alarm_tags_home_description: 'dkajshfkahfiuafdshi'
+        alarm_tags_home_description: 'dkajshfkahfiuafdshi',
+        loopSound: 'Suono perpetuo',
+        tacitation_mode: 'Tacitazione'
     }
 };
 

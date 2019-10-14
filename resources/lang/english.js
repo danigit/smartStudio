@@ -331,8 +331,9 @@ function languageController($scope) {
         wetag_alarm_meanig: '',
         wetag_alarm_description: '',
         alarm_tags_home_meaning: '',
-        alarm_tags_home_description: ''
-
+        alarm_tags_home_description: '',
+        loopSound: 'Suono perpetuo',
+        tacitation_mode: 'Tacitazione'
     }
 };
 

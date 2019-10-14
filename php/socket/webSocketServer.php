@@ -1160,7 +1160,6 @@ class webSocketServer implements MessageComponentInterface{
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
                 $query = $this->connection->update_parameters($decoded_message['data']['data']);
-                var_dump($decoded_message['data']['data']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

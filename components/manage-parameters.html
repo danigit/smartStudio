@@ -165,6 +165,25 @@
                            placeholder="{{lang.macFilter}}">
                 </md-input-container>
 
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.loopSound}}</label>
+                    <md-select ng-model="sendedValues.periodic_sound">
+                        <md-option ng-selected="{{periodic_sound.value.toString() === tagParameters.periodic_sound.toString()}}" ng-repeat="periodic_sound in selectValues.periodic_sound" ng-value="periodic_sound.value">
+                            {{periodic_sound.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.tacitation_mode}}</label>
+                    <md-select ng-model="sendedValues.tacitation_mode">
+                        <md-option ng-selected="{{tacitation_mode.value.toString() === tagParameters.tacitation_mode.toString()}}" ng-repeat="tacitation_mode in selectValues.tacitation_mode" ng-value="tacitation_mode.value">
+                            {{tacitation_mode.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
             </div>
 
             <h4 class="parameter-type margin-top-20-px"><span class="parameter-span">Rete</span></h4>

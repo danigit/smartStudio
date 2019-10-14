@@ -5424,7 +5424,9 @@
                                         ip_wetag_wifi: $scope.tagParameters.ip_wetag_wifi,
                                         geofence_thd: $scope.tagParameters.geofence_thd,
                                         mac_uwb: $scope.tagParameters.mac_uwb,
-                                        udp_port_uwb: $scope.tagParameters.udp_port_uwb
+                                        udp_port_uwb: $scope.tagParameters.udp_port_uwb,
+                                        periodic_sound: $scope.tagParameters.periodic_sound,
+                                        tacitation_mode: $scope.tagParameters.tacitation_mode
                                     };
 
                                     $scope.selectValues = {
@@ -5462,6 +5464,8 @@
                                             {label: "13 m", value: 14}, {label: "14 m", value: 15}, {label: "15 m", value: 16}, {label: "17 m", value: 18}, {label: "18 m", value: 19}, {label: "19 m", value: 20}],
                                         mac_uwb: '',
                                         udp_port_uwb: '',
+                                        periodic_sound: [{label: 'SI', value: 1}, {label: 'NO', value: 0}],
+                                        tacitation_mode: [{label: 'PRESSIONE PROLUNGATA', value: 0}, {label: 'TRIPLO CLICK', value: 1}]
                                     };
 
                                     $scope.insertConfigurations = (form) => {
@@ -5469,13 +5473,16 @@
 
                                         console.log($scope.sendedValues);
                                         if (form.$valid) {
-                                            console.log($scope.sendedValues);
                                             newSocketService.getData('update_parameters', {data: $scope.sendedValues}, (response) => {
-                                                console.log(response);
-                                                $scope.resultClass = 'background-green';
-                                                $timeout(function () {
-                                                    $mdDialog.hide();
-                                                }, 1500);
+                                                if (response.result === 1) {
+                                                    $scope.resultClass = 'background-green';
+                                                    $scope.$apply();
+                                                    $timeout(function () {
+                                                        $mdDialog.hide();
+                                                    }, 1500);
+                                                }else{
+                                                    $scope.resultClass = 'background-red';
+                                                }
                                             })
                                         } else {
                                             $scope.resultClass = 'background-red';
