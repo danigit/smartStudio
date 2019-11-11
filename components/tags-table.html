@@ -48,9 +48,13 @@
                 <tbody md-body>
                 <tr md-row md-select="tag" md-on-select="logItem" md-auto-select="true"
                     ng-repeat="tag in tags | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
-                    <td md-cell><img
-                            ng-src="{{!tagsContainTag(tagsOnline, tag) ? 'img/icons/tags/offline_tag_24.png' : 'img/icons/tags/online_tag_24.png'}}"
-                            alt="{{lang.tagState}}" title="{{lang.tagState}}"></td>
+                    <td md-cell>
+<!--                        <img-->
+<!--                            ng-src="{{!tagsContainTag(tagsOnline, tag) ? 'img/icons/tags/offline_tag_24.png' : 'img/icons/tags/online_tag_24.png'}}"-->
+<!--                            alt="{{lang.tagState}}" title="{{lang.tagState}}"></td>-->
+                        <img ng-if="!tagHasAlarm(tag) && tagsContainTag(tagsOnline, tag)" ng-src="img/icons/tags/online_tag_24.png">
+                        <img ng-if="!tagHasAlarm(tag) && !tagsContainTag(tagsOnline, tag)" ng-src="img/icons/tags/offline_tag_24.png">
+                        <img ng-if="tagHasAlarm(tag)" ng-src="img/icons/tags/unknown_alarm.png">
                     <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">
                         {{tag.name || lang.insertName}}
                     </td>

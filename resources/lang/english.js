@@ -333,7 +333,19 @@ function languageController($scope) {
         alarm_tags_home_meaning: '',
         alarm_tags_home_description: '',
         loopSound: 'Suono perpetuo',
-        tacitation_mode: 'Tacitazione'
+        tacitation_mode: 'Tacitazione',
+        time: '',
+        gpsTime: '',
+        alarmTime: '',
+        lnd_prt_angle: '',
+        tagCategory: '',
+        addTagCategory: '',
+        tagCategories: '',
+        insertingTagCategory: '',
+        insertTagCategory: '',
+        alertImage: '',
+        noAlertImage: '',
+        deleteCategory: ''
     }
 };
 
@@ -403,5 +415,9 @@ let lang = {
     actionCanceled: 'Operation aborted',
     noPosition: 'No position',
     drawingSaved: 'Drawing saved',
-    drawingNotSaved: 'Drawing not saved'
+    drawingNotSaved: 'Drawing not saved',
+    tagCategorySelectImage: '',
+    cannotConvertImage: '',
+    cannotSaveImage: '',
+    deleteCategory: ''
 }

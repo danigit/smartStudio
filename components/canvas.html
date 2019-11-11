@@ -178,16 +178,31 @@
                                             alt=""></md-list-item>
                             </md-list>
 
-                            <div ng-if="isAdmin" id="search-tag-container" layout="column" class="padding-10-px"
+                            <div ng-show="isAdmin" id="search-tag-container" layout="column" class="padding-10-px"
                                  layout-align="center center">
 
                                 <md-input-container class="margin-bottom-0 margin-top-10 width-100">
 
-                                    <label>{{lang.searchWetag}}</label>
+                                    <label>{{lang.searchTag}}</label>
 
                                     <md-select ng-model="selectedTag" md-on-open="getAllWetags()">
                                         <md-option ng-repeat="tag in menuTags" ng-value="tag.name">
                                             {{tag.name}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+
+                            <div ng-show="isAdmin" id="search-anchor-container" layout="column" class="padding-10-px"
+                                 layout-align="center center">
+
+                                <md-input-container class="margin-bottom-0 margin-top-10 width-100">
+
+                                    <label>{{lang.searchAnchor}}</label>
+
+                                    <md-select ng-model="selectedAnchor" md-on-open="getLocationAnchors()">
+                                        <md-option ng-repeat="anchor in menuAnchors" ng-value="anchor.name">
+                                            {{anchor.name}}
                                         </md-option>
                                     </md-select>
                                 </md-input-container>

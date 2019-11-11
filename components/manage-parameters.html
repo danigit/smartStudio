@@ -184,6 +184,15 @@
                     </md-select>
                 </md-input-container>
 
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.lnd_prt_angle}}</label>
+                    <md-select ng-model="sendedValues.lnd_prt_angle">
+                        <md-option ng-selected="{{lnd_prt_angle.value.toString() === tagParameters.lnd_prt_angle.toString()}}" ng-repeat="lnd_prt_angle in selectValues.lnd_prt_angle" ng-value="lnd_prt_angle.value">
+                            {{lnd_prt_angle.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
             </div>
 
             <h4 class="parameter-type margin-top-20-px"><span class="parameter-span">Rete</span></h4>

@@ -260,6 +260,20 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //saving marker image
+            case 'save_tag_category_alarm_image':{
+                $result['action'] = 'save_tag_category_alarm_image';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                if (array_key_exists('image', $decoded_message['data'])) {
+                    $decodedFile = explode('data:image/png;base64,', $decoded_message['data']['image']);
+                    $decodedFile = base64_decode($decodedFile[1]);
+                    $result['result'] = file_put_contents(TAG_CATEGORY_IMAGES_PATH . $decoded_message['data']['imageName'], $decodedFile);
+                }
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //getting the locations
             case 'get_markers':{
                 $result['action'] = 'get_markers';
@@ -426,6 +440,29 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'insert_tag_category':{
+                $result['action'] = 'insert_tag_category';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->insert_tag_category($decoded_message['data']['name'], $decoded_message['data']['alarm_name'], $decoded_message['data']['no_alarm_name']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //getting all the tags
+            case 'get_tag_categories':{
+                $result['action'] = 'get_tag_categories';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->get_tag_categories();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //changeng the tag field
             case 'change_tag_field':{
                 $result['action'] = 'change_tag_field';
@@ -568,12 +605,36 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'delete_tag_category':{
+                $result['action'] = 'delete_tag_category';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->delete_tag_category($decoded_message['data']['category_id']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //changing the mac field
             case 'change_mac_field':{
                 $result['action'] = 'change_mac_field';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
                 $query = $this->connection->change_mac_field($decoded_message['data']['mac_id'], $decoded_message['data']['mac_field'],
+                    $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the mac field
+            case 'change_tag_category_field':{
+                $result['action'] = 'change_tag_category_field';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->change_tag_category_field($decoded_message['data']['category_id'], $decoded_message['data']['category_field'],
                     $decoded_message['data']['field_value']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;

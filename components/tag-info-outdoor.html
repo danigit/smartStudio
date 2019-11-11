@@ -24,20 +24,31 @@
     <md-content class="popup-padding">
         <div layout="column" layout-align="center center">
             <md-list>
-                <md-list-item class="width-300-px">
+                <md-list-item class="width-500-px">
                     <p class="float-left">{{lang.wetagType}}:</p>
                     <p class="float-right text-right">{{tag.type_name}}</p>
                 </md-list-item>
-                <md-list-item class="width-300-px">
+                <md-list-item class="width-500-px">
                     <p class="float-left">{{lang.latitude}}:</p>
                     <p class="float-right text-right">{{tag.gps_north_degree}}</p>
                 </md-list-item>
-                <md-list-item class="width-300-px">
+                <md-list-item class="width-500-px">
                     <p class="float-left">{{lang.longitude}}:</p>
                     <p class="float-right text-right">{{tag.gps_east_degree}}</p>
                 </md-list-item>
-
-                <md-list-item class="width-300-px">
+                <md-list-item class="width-500-px">
+                    <p class="float-left">{{lang.time}}:</p>
+                    <p class="float-right text-right">{{tag.time}}</p>
+                </md-list-item>
+                <md-list-item class="width-500-px">
+                    <p class="float-left">{{lang.gpsTime}}:</p>
+                    <p class="float-right text-right">{{tag.gps_time}}</p>
+                </md-list-item>
+                <md-list-item class="width-500-px">
+                    <p class="float-left">{{lang.alarmTime}}:</p>
+                    <p class="float-right text-right">{{tag.alarm_time}}</p>
+                </md-list-item>
+                <md-list-item class="width-500-px">
                     <p class="float-left">{{lang.batteryLevel}}:</p>
                     <p class="float-right text-right"><img alt="{{lang.batteryStatus}}" title="{{lang.batteryStatus}}"
                                                            aria-label="{{lang.batteryStatus}}"

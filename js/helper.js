@@ -209,6 +209,7 @@ function openFullScreen(elem) {
  * @returns {Promise<any>}
  */
 function convertImageToBase64(img) {
+    console.log(img);
     if (img == null)
         return Promise.resolve(null);
 

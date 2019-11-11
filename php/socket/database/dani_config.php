@@ -13,4 +13,4 @@
 define('DB_SERVER', 'localhost');
 define('DB_USERNAME', 'root');
 define('DB_PASSWORD', 'password');
-define('DB_DATABASE', 'cloud_safety_3');
+define('DB_DATABASE', 'cloud_safety_1');

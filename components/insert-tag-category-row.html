@@ -1,0 +1,83 @@
+<div ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="insertTagCategory.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{lang.insertingTagCategory | uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding width-500-px">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+
+        <form id="insertTagRowForm" name="insertTagCategoryForm">
+            <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <input required type="text" ng-model="insertTagCategory.name" name="insertTagCategoryName"
+                       placeholder="{{lang.name}}">
+                <div ng-messages="insertTagCategoryForm.insertTagCategoryName.$error || insertTagCategoryForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">{{lang.insertName}}</div>
+                </div>
+            </md-input-container>
+
+            <div class="background-transparent-white text-center color-green font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                 ng-show="insertTagCategory.showSuccess">
+                {{insertTagCategory.message}}
+            </div>
+
+            <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                 ng-show="insertTagCategory.showError">
+                {{insertTagCategory.message}}
+            </div>
+
+            <div layout='row'>
+                <div layout="row" layout-align="start center" class="margin-top-15-px">
+                    <div layout="column" layout-align="end start" class="">
+                        <md-button ng-click="uploadTagCategoryAlarmImage()" class="md-raised background-orange color-white">
+                            <label>
+                                <input type="file"
+                                       class="ng-hide"
+                                       id="alarm-image">
+                            </label>
+                            {{lang.alertImage | uppercase}}
+                        </md-button>
+                    </div>
+                </div>
+
+                <div layout="row" layout-align="center end" class="margin-top-15-px">
+                    <div layout="column" layout-align="end center" class="">
+                        <md-button ng-click="uploadTagCategoryNoAlarmImage()" class="md-raised background-orange color-white">
+                            <label>
+                                <input type="file"
+                                       class="ng-hide"
+                                       id="no-alarm-image">
+                            </label>
+                            {{lang.noAlertImage | uppercase}}
+                        </md-button>
+                    </div>
+                </div>
+            </div>
+            <div layout="row" layout-align="center end" class="width-100">
+                <md-button ng-click="submitTagCategory(insertTagCategoryForm)" class="md-raised background-darkcyan color-white">
+                    {{lang.insertTagCategory}}
+                </md-button>
+            </div>
+        </form>
+    </div>
+</md-content>
+<!--end popup content-->

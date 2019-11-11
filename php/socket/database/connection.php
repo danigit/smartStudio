@@ -366,6 +366,38 @@ class Connection
     }
 
     /**
+     * Function that deletes a marker from database
+     * @param $category
+     * @return db_errors|int|mysqli_stmt
+     */
+    function delete_tag_category($category)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'DELETE FROM category WHERE ID = ?';
+
+            $statement = $this->execute_selecting($this->query, 'i', $category);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+            }
+
+            $aff_rows = $statement->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
      * Funzione che cancella un'ancora
      * @param $anchor
      * @return db_errors|int|mysqli_stmt
@@ -635,7 +667,7 @@ class Connection
             $this->query = 'SELECT ADV_RATE, POWER_LEVEL, DISABLE_TIMING, ALARM_TIMING, NO_MOV_TIMING, MD_MODE, MAC_FILTER, PERIODIC_SOUND,
                                    KA, SCANNING_RATE, LND_PRT_TIMING, SCANNING_PKT, FREEFALL_THD, SIM_IS_HERE, WIFI_IS_HERE, PERIODIC_SOUND
                                    ADVERTISE_IS_HERE, REST_NAME, SERVER_IP, SSID_WIFI, PWD_WIFI, IP_GATEWAY_WIFI, IP_WETAG_WIFI, APN_NAME, APN_CODE, 
-                                   MAC_UWB, UDP_PORT_UWB, GEOFENCE_THD, TACITATION_MODE FROM wetag_settings WHERE TAG_ID = ?';
+                                   MAC_UWB, UDP_PORT_UWB, GEOFENCE_THD, TACITATION_MODE, LND_PRT_ANGLE FROM wetag_settings WHERE TAG_ID = ?';
 
             $statement = $this->execute_selecting($this->query, 'i', $tag);
 
@@ -654,7 +686,8 @@ class Connection
                 $result_array[] = array('adv_rate' => $row['ADV_RATE'], 'power_level' => $row['POWER_LEVEL'], 'disable_timing' => $row['DISABLE_TIMING'], 'alarm_timing' => $row['ALARM_TIMING'], 'no_mov_timing' => $row['NO_MOV_TIMING'], 'md_mode' => $row['MD_MODE'],
                     'mac_filter' => $row['MAC_FILTER'], 'periodic_sound' => $row['PERIODIC_SOUND'], 'ka' => $row['KA'], 'scanning_rate' => $row['SCANNING_RATE'], 'lnd_prt_timing' => $row['LND_PRT_TIMING'], 'scanning_pkt' => $row['SCANNING_PKT'], 'freefall_thd' => $row['FREEFALL_THD'], 'sim_is_here' => $row['SIM_IS_HERE'],
                     'wifi_is_here' => $row['WIFI_IS_HERE'], 'advertise_is_here' => $row['ADVERTISE_IS_HERE'], 'rest_name' => $row['REST_NAME'], 'server_ip' => $row['SERVER_IP'], 'ssid_wifi' => $row['SSID_WIFI'], 'pwd_wifi' => $row['PWD_WIFI'],
-                    'ip_gateway_wifi' => $row['IP_GATEWAY_WIFI'], 'ip_wetag_wifi' => $row['IP_WETAG_WIFI'], 'apn_name' => $row['APN_NAME'], 'apn_code' => $row['APN_CODE'], 'mac_uwb' => $row['MAC_UWB'], 'udp_port_uwb' => $row['UDP_PORT_UWB'], 'geofence_thd' => $row['GEOFENCE_THD'], 'tacitation_mode' => $row['TACITATION_MODE']);
+                    'ip_gateway_wifi' => $row['IP_GATEWAY_WIFI'], 'ip_wetag_wifi' => $row['IP_WETAG_WIFI'], 'apn_name' => $row['APN_NAME'], 'apn_code' => $row['APN_CODE'], 'mac_uwb' => $row['MAC_UWB'], 'udp_port_uwb' => $row['UDP_PORT_UWB'], 'geofence_thd' => $row['GEOFENCE_THD'], 'tacitation_mode' => $row['TACITATION_MODE'],
+                    'lnd_prt_angle' => $row['LND_PRT_ANGLE']);
             }
 
             mysqli_close($this->connection);
@@ -874,6 +907,40 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Funzione che inserisce una nuova categoria per i tag
+     * @param $name
+     * @param $alarm_name
+     * @param $no_alarm_name
+     * @return bool|db_errors|mixed
+     */
+    function insert_tag_category($name, $alarm_name, $no_alarm_name)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "INSERT INTO category (DESCRIPTION, ICON_NAME_ALARM, ICON_NAME_NO_ALARM) VALUES (?, ?, ?)";
+
+            $statement = $this->execute_inserting($this->query, 'sss', $name, $alarm_name, $no_alarm_name);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
+            }
+
+
+            $id = $this->connection->insert_id;
+
+            mysqli_close($this->connection);
+
+            return $id;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
     /**
      * Funzione che salva un disegno sul canvas
      * @param $lines
@@ -1725,14 +1792,15 @@ class Connection
      * @param $location - the location where the floor is
      * @return db_errors|array
      */
-    function get_floor_info($location)
+    function get_floor_info($location, $floor_name)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT floor.ID, floor.NAME, floor.MAP_WIDTH, floor.MAP_SPACING FROM floor JOIN location ON floor.LOCATION_ID = location.ID WHERE location.NAME = ?';
+            $this->query = 'SELECT floor.ID, floor.NAME, floor.MAP_WIDTH, floor.MAP_SPACING, floor.IMAGE_MAP FROM floor JOIN location ON floor.LOCATION_ID = location.ID WHERE location.NAME = ? 
+                            AND floor.NAME = ?';
 
-            $statement = $this->execute_selecting($this->query, 's', $location);
+            $statement = $this->execute_selecting($this->query, 'ss', $location, $floor_name);
 
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
@@ -1745,7 +1813,7 @@ class Connection
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
-                $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'width' => $row['MAP_WIDTH'], 'spacing' => $row['MAP_SPACING']);
+                $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'width' => $row['MAP_WIDTH'], 'spacing' => $row['MAP_SPACING'], 'image_map' => $row['IMAGE_MAP']);
             }
 
             mysqli_close($this->connection);
@@ -2012,7 +2080,7 @@ class Connection
 
         if ($this->connection) {
             $this->query = 'SELECT t.ID, t.NAME, tt.DESCRIPTION AS TYPE, t.X_POS, t.Y_POS, t.TIME, t.BATTERY_STATUS, t.GPS_NORTH_DEGREE, t.MAN_DOWN, t.GPS_EAST_DEGREE,
-                        t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.GPS_TIME, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, 
+                        t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.GPS_TIME, t.ALARM_TIME, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, 
                         t.INSIDE_ZONE, t.IS_EXIT, t.ANCHOR_ID, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
                         dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
                         FROM tag AS t JOIN tag_types AS tt ON t.TYPE = tt.ID JOIN dress_alarm ON t.ID = dress_alarm.TAG_ID';
@@ -2034,8 +2102,39 @@ class Connection
                     'sos' => (int)$row['SOS'], 'man_in_quote' => (int)$row['MAN_IN_QUOTE'], 'call_me_alarm' => (int)$row['CALL_ME_ALARM'],
                     'diagnostic_request' => (int)$row['DIAGNOSTIC_REQUEST'], 'gps_time' => $row['GPS_TIME'],
                     'sleep_time_outdoor' => (int)$row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => (int)$row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON_NAME'],
-                    'time' => $row['TIME'], 'inside_zone' => (int)$row['INSIDE_ZONE'], 'is_exit' => (int)$row['IS_EXIT'], 'anchor_id' => $row['ANCHOR_ID'], 'type_id' => (int)$row['TYPE_ID'],
+                    'time' => $row['TIME'], 'alarm_time' => $row['ALARM_TIME'], 'inside_zone' => (int)$row['INSIDE_ZONE'], 'is_exit' => (int)$row['IS_EXIT'], 'anchor_id' => $row['ANCHOR_ID'], 'type_id' => (int)$row['TYPE_ID'],
                     'helmet_dpi' => (int)$row['HELMET_DPI'], 'belt_dpi' => (int)$row['BELT_DPI'], 'glove_dpi' => (int)$row['GLOVE_DPI'], 'shoe_dpi' => (int)$row['SHOE_DPI']);
+            }
+
+            mysqli_close($this->connection);
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Function that gets all the tags
+     * @return array|db_errors
+     */
+    function get_tag_categories()
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'SELECT ID, DESCRIPTION, ICON_NAME_ALARM, ICON_NAME_NO_ALARM FROM category';
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+            }
+
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('id' => (int)$row['ID'], 'name' => $row['DESCRIPTION'], 'alarm_image' => $row['ICON_NAME_ALARM'], 'no_alarm_image' => $row['ICON_NAME_NO_ALARM']);
             }
 
             mysqli_close($this->connection);
@@ -2086,7 +2185,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT tag.ID, tag.NAME, tag.X_POS, tag.Y_POS, tag.TIME, tag.BATTERY_STATUS, tag.GPS_NORTH_DEGREE, tag.MAN_DOWN, tag.GPS_EAST_DEGREE,
+            $this->query = 'SELECT tag.ID, tag.NAME, tag.X_POS, tag.Y_POS, tag.TIME, tag.GPS_TIME, tag.ALARM_TIME, tag.BATTERY_STATUS, tag.GPS_NORTH_DEGREE, tag.MAN_DOWN, tag.GPS_EAST_DEGREE,
                         tag.MAN_DOWN_DISABLED, tag.MAN_DOWN_DISABLED_ALERTED, tag.MAN_DOWN_TACITATED, tag.SOS, tag.SOS_ALERTED, tag.MAN_IN_QUOTE, tag.MAN_IN_QUOTE_ALERTED,
                         tag.CALL_ME_ALARM, tag.EVACUATION_ALARM, tag.RADIO_SWITCHED_OFF, tag.DIAGNOSTIC_REQUEST, tag.INSIDE_ZONE, tag.IS_EXIT, floor.NAME AS FLOOR_NAME, a.NAME AS ANCHOR_NAME, 
                         tag_types.ID AS TYPE_ID, tag_types.DESCRIPTION AS TAG_TYPE_NAME, tag_types.SLEEP_TIME_INDOOR, dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
@@ -2107,7 +2206,7 @@ class Connection
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
-                $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], 'y_pos' => $row['Y_POS'], 'time' => $row['TIME'], 'battery_status' => $row['BATTERY_STATUS'],
+                $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], 'y_pos' => $row['Y_POS'], 'time' => $row['TIME'], 'gps_time' => $row['GPS_TIME'], 'alarm_time' => $row['ALARM_TIME'], 'battery_status' => $row['BATTERY_STATUS'],
                     'gps_north_degree' => $row['GPS_NORTH_DEGREE'], 'man_down' => $row['MAN_DOWN'], 'gps_east_degree' => $row['GPS_EAST_DEGREE'],
                     'man_down_disabled' => $row['MAN_DOWN_DISABLED'], 'man_down_disabled_alerted' => $row['MAN_DOWN_DISABLED_ALERTED'], 'man_down_tacitated' => $row['MAN_DOWN_TACITATED'],
                     'sos' => $row['SOS'], 'sos_alerted' => $row['SOS_ALERTED'], 'man_in_quote' => $row['MAN_IN_QUOTE'], 'man_in_quote_alerted' => $row['MAN_IN_QUOTE_ALERTED'],
@@ -2273,6 +2372,38 @@ class Connection
         if ($this->connection) {
             $this->query = "UPDATE tag_mac SET " . strtoupper($mac_field) . " = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'ss', $field_value, $mac_id);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
+            $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Function that change the value of a mac field
+     * @param $category_id
+     * @param $category_field
+     * @param $field_value
+     * @return db_errors|int|mysqli_stmt
+     */
+    function change_tag_category_field($category_id, $category_field, $field_value)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE category SET " . strtoupper($category_field) . " = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'ss', $field_value, $category_id);
 
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
@@ -3503,14 +3634,14 @@ class Connection
             $this->query = "UPDATE wetag_settings SET ADV_RATE = ?, ADVERTISE_IS_HERE = ?, ALARM_TIMING = ?, APN_CODE = ?, APN_NAME = ?, 
                                 DISABLE_TIMING = ?, FREEFALL_THD = ?, GEOFENCE_THD = ?, IP_GATEWAY_WIFI = ?, IP_WETAG_WIFI = ?, KA = ?, LND_PRT_TIMING = ?, 
                                 MAC_FILTER = ?, MAC_UWB = ?, MD_MODE = ?, NO_MOV_TIMING = ?, POWER_LEVEL = ?, PWD_WIFI = ?, REST_NAME = ?,
-                                SCANNING_PKT = ?, SCANNING_RATE = ?, SERVER_IP = ?, SIM_IS_HERE = ?, SSID_WIFI = ?, UDP_PORT_UWB = ?, WIFI_IS_HERE = ?, PERIODIC_SOUND = ?, TACITATION_MODE = ? WHERE TAG_ID = ?";
+                                SCANNING_PKT = ?, SCANNING_RATE = ?, SERVER_IP = ?, SIM_IS_HERE = ?, SSID_WIFI = ?, UDP_PORT_UWB = ?, WIFI_IS_HERE = ?, PERIODIC_SOUND = ?, TACITATION_MODE = ?, LND_PRT_ANGLE = ? WHERE TAG_ID = ?";
 
-            $statement = $this->execute_selecting($this->query, 'iiissiiissiissiiissiisisiiiii', $parameters['adv_rate'], $parameters['advertise_is_here']
+            $statement = $this->execute_selecting($this->query, 'iiissiiissiissiiissiisisiiiiii', $parameters['adv_rate'], $parameters['advertise_is_here']
                 , $parameters['alarm_timing'], $parameters['apn_code'], $parameters['apn_name'], $parameters['disable_timing'], $parameters['freefall_thd']
                 , $parameters['geofence_thd'], $parameters['ip_gateway_wifi'], $parameters['ip_wetag_wifi'], $parameters['ka'], $parameters['lnd_prt_timing'], $parameters['mac_filter']
                 , $parameters['mac_uwb'], $parameters['md_mode'], $parameters['no_mov_timing'], $parameters['power_level'], $parameters['pwd_wifi']
                 , $parameters['rest_name'], $parameters['scanning_pkt'], $parameters['scanning_rate'], $parameters['server_ip'], $parameters['sim_is_here']
-                , $parameters['ssid_wifi'], $parameters['udp_port_uwb'], $parameters['wifi_is_here'], $parameters['periodic_sound'], $parameters['tacitation_mode'], $parameters['tag_id']);
+                , $parameters['ssid_wifi'], $parameters['udp_port_uwb'], $parameters['wifi_is_here'], $parameters['periodic_sound'], $parameters['tacitation_mode'], $parameters['lnd_prt_angle'], $parameters['tag_id']);
 
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);

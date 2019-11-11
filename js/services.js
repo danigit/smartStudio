@@ -682,6 +682,14 @@
             })
         };
 
+        service.checkIfTagsHaveAlarmsInfo = (tags) => {
+            return tags.some(function (tag) {
+                return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
+                    || tag.battery_status || tag.man_in_quote
+                    || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone;
+            })
+        };
+
         service.checkIfTagsHaveAlarmsOutdoor = (tags) => {
             return tags.some(tag => service.isOutdoor(tag) && service.isTagInLocation(tag, {radius: service.location.radius, position: [service.location.latitude, service.location.longitude]}) && (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
                 || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
@@ -859,7 +867,7 @@
 
             tags.forEach(function (tag) {
                 if (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                    || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
+                    || tag.battery_status || tag.man_in_quote
                     || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone) {
                     tagState.withAlarm = true;
                 } else if (((tag.tag_type_id === 1 || tag.tag_type_id === 14) && tag.is_exit && !tag.radio_switched_off) || (tag.tag_type_id !== 1 && tag.tag_type_id !== 14 && !tag.radio_switched_off && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor))) {
@@ -870,6 +878,10 @@
             });
 
             return tagState;
+        };
+
+        service.checkIfTagOutOfLocationHasAlarm = function(tags) {
+            return tags.some(t => t.gps_north_degree === -1 && t.gps_east_degree && service.checkIfTagHasAlarm(t));
         };
 
         //controlling the alarms and setting the alarm icon
@@ -1117,8 +1129,6 @@
         service.callbacks = [];
 
         service.getData = (action, data, callback) => {
-            console.log(action);
-            console.log(data);
             let userData = {};
             if (action !== 'login') {
                 data.username = sessionStorage.user;

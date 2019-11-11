@@ -338,7 +338,19 @@ function languageController($scope) {
         alarm_tags_home_meaning: 'blalblaljb',
         alarm_tags_home_description: 'dkajshfkahfiuafdshi',
         loopSound: 'Suono perpetuo',
-        tacitation_mode: 'Tacitazione'
+        tacitation_mode: 'Tacitazione',
+        time: 'Tempo ultimo ka indoor',
+        gpsTime: 'Tempo ultimo ka outdoor',
+        alarmTime: 'Tempo ultimo evento',
+        lnd_prt_angle: 'LND/PRT Angolo',
+        tagCategory: 'Gestione categorie tag',
+        addTagCategory: 'Aggiungi categoria tag',
+        tagCategories: 'Categorie tag',
+        insertingTagCategory: 'Inserimento categoria tag',
+        insertTagCategory: 'Inserisci categoria tag',
+        alertImage: 'Immagine allarme',
+        noAlertImage: 'Immagine no allarme',
+        deleteCategory: 'Cancella Categoria'
     }
 };
 
@@ -408,5 +420,10 @@ let lang = {
     actionCanceled: 'Operazione cancellata',
     noPosition: 'Nessuna posizione',
     drawingSaved: 'Disegno salvato',
-    drawingNotSaved: 'Disegno non salvato'
+    drawingNotSaved: 'Disegno non salvato',
+    tagCategorySelectImage: 'Selezionare le immagini per la categoria',
+    cannotConvertImage: 'Impossibile comprimere l\'imagine per la transmissione',
+    cannotSaveImage: 'Impossibile salvare immagine',
+    deleteCategory: 'Cancella Categoria'
+
 }

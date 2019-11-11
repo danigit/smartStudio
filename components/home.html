@@ -74,6 +74,9 @@
                                 <md-list-item ng-click="registry('home')"><p>{{lang.weTagTable | uppercase}}</p><img
                                         src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
                                         alt=""></md-list-item>
+                                <md-list-item ng-click="tagCategories('home')"><p>{{lang.tagCategory | uppercase}}</p><img
+                                        src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
                                 <md-list-item ng-click="viewHistory('home')"><p>{{lang.history | uppercase}}</p><img
                                         src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
@@ -94,7 +97,7 @@
                                         alt=""></md-list-item>
                             </md-list>
 
-                            <div ng-if="isAdmin" id="change-floor-container" layout="column" class="padding-10-px"
+                            <div ng-show="isAdmin" id="change-floor-container" layout="column" class="padding-10-px"
                                  layout-align="center center">
 
                                 <md-input-container class="margin-bottom-0 margin-top-10">

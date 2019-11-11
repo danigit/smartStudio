@@ -4,7 +4,7 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="50">
+          <list size="51">
             <item index="0" class="java.lang.String" itemvalue="layout" />
             <item index="1" class="java.lang.String" itemvalue="layout-align" />
             <item index="2" class="java.lang.String" itemvalue="md-numeric" />
@@ -55,6 +55,7 @@
             <item index="47" class="java.lang.String" itemvalue="flex-sm" />
             <item index="48" class="java.lang.String" itemvalue="flex-xs" />
             <item index="49" class="java.lang.String" itemvalue="colorpick-eyedropper-active" />
+            <item index="50" class="java.lang.String" itemvalue="md-on-open" />
           </list>
         </value>
       </option>
