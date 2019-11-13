@@ -345,7 +345,8 @@ function languageController($scope) {
         insertTagCategory: '',
         alertImage: '',
         noAlertImage: '',
-        deleteCategory: ''
+        deleteCategory: '',
+        categoryTags: ''
     }
 };
 

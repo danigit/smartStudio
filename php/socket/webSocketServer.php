@@ -463,6 +463,19 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+
+            //getting all the tags
+            case 'get_categorie_tags':{
+                $result['action'] = 'get_categorie_tags';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->get_categorie_tags();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //changeng the tag field
             case 'change_tag_field':{
                 $result['action'] = 'change_tag_field';
@@ -615,6 +628,17 @@ class webSocketServer implements MessageComponentInterface{
 
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
+            }
+            case 'save_category_tags':{
+                    $result['action'] = 'save_category_tags';
+                    $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                    $query = $this->connection->update_tag_category($decoded_message['data']['data']);
+
+                    ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                    $this->clients[$from->resourceId]->send(json_encode($result));
+                    break;
             }
             //changing the mac field
             case 'change_mac_field':{

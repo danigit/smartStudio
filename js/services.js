@@ -793,42 +793,98 @@
                 || tag.call_me_alarm || tag.diagnostic_request;
         };
 
+        let isCategoryAndImageNotNull = (tag) => {
+            return tag.category_id !== null && tag.icon_name_alarm && tag.icon_name_no_alarm !== null;
+        };
+
         //function that returs the images of the alarms of the tags passed as parameter
         service.getTagAlarms = (tag) => {
             let tagAlarmsImages = [];
 
+            console.log(tag);
+            let category_name_alarm = '';
+            let category_name_no_alarm = '';
+            if(isCategoryAndImageNotNull(tag)){
+                category_name_alarm = tag.icon_name_alarm.split('.').slice(0, -1).join('.');
+                category_name_no_alarm = tag.icon_name_no_alarm.split('.').slice(0, -1).join('.');
+            }
+
             if (tag.sos) {
-                tagAlarmsImages.push(tagsIconPath + 'sos_24.png');
+                if (isCategoryAndImageNotNull(tag)){
+                    tagAlarmsImages.push(tagsIconPath + category_name_alarm + '_sos.jpg');
+                }else {
+                    tagAlarmsImages.push(tagsIconPath + 'sos_24.png');
+                }
             }
             if (tag.man_down) {
-                tagAlarmsImages.push(tagsIconPath + 'man_down_24.png');
+                if (isCategoryAndImageNotNull(tag)){
+                    tagAlarmsImages.push(tagsIconPath + category_name_alarm + '_man_down.jpg')
+                } else {
+                    tagAlarmsImages.push(tagsIconPath + 'man_down_24.png');
+                }
             }
             if (tag.battery_status) {
-                tagAlarmsImages.push(tagsIconPath + 'battery_low_24.png');
+                if (isCategoryAndImageNotNull(tag)){
+                    tagAlarmsImages.push(tagsIconPath + category_name_alarm + '_battery_low.jpg')
+                } else {
+                    tagAlarmsImages.push(tagsIconPath + 'battery_low_24.png');
+                }
             }
             if (tag.helmet_dpi) {
-                tagAlarmsImages.push(tagsIconPath + 'helmet_dpi_24.png');
+                if (isCategoryAndImageNotNull(tag)){
+                    tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'helmet_dpi.jpg')
+                } else {
+                    tagAlarmsImages.push(tagsIconPath + 'helmet_dpi_24.png');
+                }
             }
             if (tag.belt_dpi) {
-                tagAlarmsImages.push(tagsIconPath + 'belt_dpi_24.png');
+                if (isCategoryAndImageNotNull(tag)){
+                    tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'belt_dpi.jpg')
+                } else {
+                    tagAlarmsImages.push(tagsIconPath + 'belt_dpi_24.png');
+                }
             }
             if (tag.glove_dpi) {
-                tagAlarmsImages.push(tagsIconPath + 'glove_dpi_24.png');
+                if (isCategoryAndImageNotNull(tag)){
+                    tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'glove_dpi.jpg')
+                } else {
+                    tagAlarmsImages.push(tagsIconPath + 'glove_dpi_24.png');
+                }
             }
             if (tag.shoe_dpi) {
-                tagAlarmsImages.push(tagsIconPath + 'shoe_dpi_24.png');
+                if (isCategoryAndImageNotNull(tag)){
+                    tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'shoe_dpi.jpg')
+                } else {
+                    tagAlarmsImages.push(tagsIconPath + 'shoe_dpi_24.png');
+                }
             }
             if (tag.man_down_disabled) {
-                tagAlarmsImages.push(tagsIconPath + 'man-down-disabled_24.png');
+                if (isCategoryAndImageNotNull(tag)){
+                    tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'man_down_dpi.jpg')
+                } else {
+                    tagAlarmsImages.push(tagsIconPath + 'man-down-disabled_24.png');
+                }
             }
             if (tag.man_down_tacitated) {
-                tagAlarmsImages.push(tagsIconPath + 'man-down-tacitated_24.png');
+                if (isCategoryAndImageNotNull(tag)){
+                    tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'man_down_tacitated.jpg')
+                } else {
+                    tagAlarmsImages.push(tagsIconPath + 'man-down-tacitated_24.png');
+                }
             }
             if (tag.man_in_quote) {
-                tagAlarmsImages.push(tagsIconPath + 'man_in_quote_24.png');
+                if (isCategoryAndImageNotNull(tag)){
+                    tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'man_in_quote.jpg')
+                } else {
+                    tagAlarmsImages.push(tagsIconPath + 'man_in_quote_24.png');
+                }
             }
             if (tag.call_me_alarm) {
-                tagAlarmsImages.push(tagsIconPath + 'call_me_alarm_24.png');
+                if (isCategoryAndImageNotNull(tag)){
+                    tagAlarmsImages.push(tagsIconPath + category_name_no_alarm + 'call_me_alarm.jpg')
+                } else {
+                    tagAlarmsImages.push(tagsIconPath + 'call_me_alarm_24.png');
+                }
             }
 
             return tagAlarmsImages;
@@ -886,30 +942,86 @@
 
         //controlling the alarms and setting the alarm icon
         service.assigningTagImage = (tag, image) => {
+            let category_name_alarm = '';
+            let category_name_no_alarm = '';
+
+            if(isCategoryAndImageNotNull(tag)){
+                category_name_alarm = tag.icon_name_alarm.split('.').slice(0, -1).join('.');
+                category_name_no_alarm = tag.icon_name_no_alarm.split('.').slice(0, -1).join('.');
+            }
+
             if (tag.sos) {
-                image.src = tagsIconPath + 'sos_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_alarm + '_sos.jpg';
+                } else {
+                    image.src = tagsIconPath + 'sos_24.png';
+                }
             } else if (tag.man_down) {
-                image.src = tagsIconPath + 'man_down_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_alarm + '.jpg';
+                } else {
+                    image.src = tagsIconPath + 'man_down_24.png';
+                }
             } else if (tag.battery_status) {
-                image.src = tagsIconPath + 'battery_low_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_alarm + '.jpg';
+                } else {
+                    image.src = tagsIconPath + 'battery_low_24.png';
+                }
             } else if (tag.helmet_dpi) {
-                image.src = tagsIconPath + 'helmet_dpi_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_alarm + '.jpg';
+                } else {
+                    image.src = tagsIconPath + 'helmet_dpi_24.png';
+                }
             } else if (tag.belt_dpi) {
-                image.src = tagsIconPath + 'belt_dpi_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_alarm + '.jpg';
+                } else {
+                    image.src = tagsIconPath + 'belt_dpi_24.png';
+                }
             } else if (tag.glove_dpi) {
-                image.src = tagsIconPath + 'glove_dpi_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_alarm + '.jpg';
+                } else {
+                    image.src = tagsIconPath + 'glove_dpi_24.png';
+                }
             } else if (tag.shoe_dpi) {
-                image.src = tagsIconPath + 'shoe_dpi_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_alarm + '.jpg';
+                } else {
+                    image.src = tagsIconPath + 'shoe_dpi_24.png';
+                }
             } else if (tag.man_down_disabled) {
-                image.src = tagsIconPath + 'man_down_disabled_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_alarm + '.jpg';
+                } else {
+                    image.src = tagsIconPath + 'man_down_disabled_24.png';
+                }
             } else if (tag.man_down_tacitated) {
-                image.src = tagsIconPath + 'man_down_tacitated_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_alarm + '.jpg';
+                } else {
+                    image.src = tagsIconPath + 'man_down_tacitated_24.png';
+                }
             } else if (tag.man_in_quote) {
-                image.src = tagsIconPath + 'man_in_quote_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_alarm + '.jpg';
+                } else {
+                    image.src = tagsIconPath + 'man_in_quote_24.png';
+                }
             } else if (tag.call_me_alarm) {
-                image.src = tagsIconPath + 'call_me_alarm_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_alarm + '.jpg';
+                } else {
+                    image.src = tagsIconPath + 'call_me_alarm_24.png';
+                }
             } else {
-                image.src = tagsIconPath + 'online_tag_24.png';
+                if (isCategoryAndImageNotNull(tag)){
+                    image.src = tagsIconPath + category_name_no_alarm + '.jpg';
+                } else {
+                    image.src = tagsIconPath + 'online_tag_24.png';
+                }
             }
         };
 

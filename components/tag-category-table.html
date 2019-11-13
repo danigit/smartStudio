@@ -34,6 +34,7 @@
                 <thead md-head md-order="query.order">
                 <tr md-row>
                     <th md-column><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.categoryTags | uppercase}}</span></th>
                 </tr>
                 </thead>
 
@@ -43,6 +44,14 @@
 
                     <td md-cell ng-click="editCell($event, category, 'description')" ng-class="{'md-placeholder': !category.name}">
                         {{category.name || lang.insertName}}
+                    </td>
+                    <td md-cell class="no-wrap" >
+                        <md-select ng-model="category.tags" placeholder="{{lang.selectTags}}" md-on-close="sendTags()"
+                                   multiple>
+                            <md-option ng-selected="{{isTagInCategory(category, tag.id)}}" ng-value="tag.id" ng-repeat="tag in type_tags">
+                                {{tag.name}}
+                            </md-option>
+                        </md-select>
                     </td>
                     <td md-cell ng-click="deleteTagCategory($event, category)"><img
                             src="img/icons/delete_trash_24.png" alt="{{lang.deleteCategory}}" title="{{lang.deleteCategory}}"></td>

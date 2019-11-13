@@ -1407,6 +1407,7 @@
                                     // console.log(tag);
                                     tagAlarms = dataService.getTagAlarms(tag);
 
+                                    console.log(tagAlarms);
                                     let marker = new google.maps.Marker({
                                         position: new google.maps.LatLng(tag.gps_north_degree, tag.gps_east_degree),
                                     });
@@ -5662,7 +5663,24 @@
                 multiple           : true,
                 controller         : ['$scope', 'admin', 'userManager', function ($scope, admin, userManager) {
 
-                    $scope.tagCategories = [];
+                    $scope.tagCategories = {};
+                    $scope.type_tags = dataService.allTags;
+
+                    $scope.sendTags = () => {
+                        console.log($scope.tagCategories);
+                        let category_tags = [];
+
+                        $scope.tagCategories.forEach(function(category) {
+                            let cat = {}
+                            cat.category = category.id;
+                            cat.tags = category.tags;
+                            category_tags.push(cat)
+                        });
+
+                        newSocketService.getData('save_category_tags', {data: category_tags}, (response) => {
+                        });
+
+                    };
 
                     $scope.query = {
                         limitOptions: [5, 10, 15],
@@ -5671,10 +5689,28 @@
                         page        : 1
                     };
 
-                    newSocketService.getData('get_tag_categories', {}, (response) => {
-                        console.log(response);
-                        $scope.tagCategories = response.result;
-                    });
+                    $scope.isTagInCategory = (category, tag) => {
+                        if (category.tags !== undefined) {
+                            return category.tags.some(c => c == tag)
+                        }
+                    };
+
+                    let updateCategoriesTable = () => {
+                        newSocketService.getData('get_tag_categories', {}, (response) => {
+                            newSocketService.getData('get_categorie_tags', {}, (cat_tag) => {
+                                $scope.tagCategories = response.result;
+                                $scope.tagCategories.forEach(category => {
+                                    Object.entries(cat_tag.result).forEach(tag => {
+                                        if (tag[0] === "" + category.id) {
+                                            category.tags = tag[1]['0']
+                                        }
+                                    })
+                                });
+                            })
+                        });
+                    };
+
+                    updateCategoriesTable();
 
                     $scope.addTagCategory = () => {
                         $mdDialog.show({
@@ -5755,10 +5791,10 @@
 
                                                                                         if (response.result !== 0) {
                                                                                             $scope.insertTagCategory.resultClass = 'background-green';
+                                                                                            updateCategoriesTable();
                                                                                             $timeout(function () {
                                                                                                 $mdDialog.hide();
                                                                                             }, 1000);
-                                                                                            $scope.$apply();
                                                                                         } else {
                                                                                             $scope.insertTag.resultClass = 'background-red';
                                                                                             $scope.insertTagCategory.showError = true;
@@ -5867,6 +5903,10 @@
                             console.log('CANCELLATO!!!!');
                         });
                     };
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    }
                 }]
             })
         }

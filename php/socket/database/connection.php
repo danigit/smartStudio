@@ -398,6 +398,59 @@ class Connection
     }
 
     /**
+     * Function that deletes a marker from database
+     * @param $tags_categories
+     * @return db_errors|array|mysqli_stmt
+     */
+    function update_tag_category($tags_categories)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $decoded = $tags_categories;
+            $this->connection->autocommit(false);
+            $errors = array();
+
+            $this->query = 'UPDATE tag SET CATEGORY_ID = NULL';
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false) {
+                mysqli_close($this->connection);
+                array_push($errors, 'error_on_setting_null');
+            }
+
+            foreach ($decoded as $category){
+                $cat = (array) $category;
+                foreach ($cat['tags'] as $tag){
+                    $this->query = 'UPDATE tag SET CATEGORY_ID = ? WHERE ID = ?';
+
+                    $statement = $this->execute_selecting($this->query, 'ii', $cat['category'], $tag);
+
+                    if ($statement instanceof db_errors) {
+                        array_push($errors, 'db_error_on_updating_categories');
+                    } else if ($statement == false) {
+                        array_push($errors, 'error_on_updating_categories');
+                    }
+                }
+            }
+
+            if (!empty($errors)) {
+                $this->connection->rollback();
+            }
+
+            $this->connection->commit();
+
+            mysqli_close($this->connection);
+
+            return $errors;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+
+    /**
      * Funzione che cancella un'ancora
      * @param $anchor
      * @return db_errors|int|mysqli_stmt
@@ -2082,8 +2135,9 @@ class Connection
             $this->query = 'SELECT t.ID, t.NAME, tt.DESCRIPTION AS TYPE, t.X_POS, t.Y_POS, t.TIME, t.BATTERY_STATUS, t.GPS_NORTH_DEGREE, t.MAN_DOWN, t.GPS_EAST_DEGREE,
                         t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.GPS_TIME, t.ALARM_TIME, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, 
                         t.INSIDE_ZONE, t.IS_EXIT, t.ANCHOR_ID, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
-                        dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
-                        FROM tag AS t JOIN tag_types AS tt ON t.TYPE = tt.ID JOIN dress_alarm ON t.ID = dress_alarm.TAG_ID';
+                        dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI, c.ID AS CATEGORY_ID, c.DESCRIPTION AS CATEGORY_DESCRIPTION, 
+                        c.ICON_NAME_ALARM AS ICON_NAME_ALARM, c.ICON_NAME_NO_ALARM AS ICON_NAME_NO_ALARM
+                        FROM tag AS t JOIN tag_types AS tt ON t.TYPE = tt.ID JOIN dress_alarm ON t.ID = dress_alarm.TAG_ID LEFT JOIN category c on t.CATEGORY_ID = c.ID';
 
             $this->result = $this->connection->query($this->query);
 
@@ -2103,7 +2157,9 @@ class Connection
                     'diagnostic_request' => (int)$row['DIAGNOSTIC_REQUEST'], 'gps_time' => $row['GPS_TIME'],
                     'sleep_time_outdoor' => (int)$row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => (int)$row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON_NAME'],
                     'time' => $row['TIME'], 'alarm_time' => $row['ALARM_TIME'], 'inside_zone' => (int)$row['INSIDE_ZONE'], 'is_exit' => (int)$row['IS_EXIT'], 'anchor_id' => $row['ANCHOR_ID'], 'type_id' => (int)$row['TYPE_ID'],
-                    'helmet_dpi' => (int)$row['HELMET_DPI'], 'belt_dpi' => (int)$row['BELT_DPI'], 'glove_dpi' => (int)$row['GLOVE_DPI'], 'shoe_dpi' => (int)$row['SHOE_DPI']);
+                    'helmet_dpi' => (int)$row['HELMET_DPI'], 'belt_dpi' => (int)$row['BELT_DPI'], 'glove_dpi' => (int)$row['GLOVE_DPI'], 'shoe_dpi' => (int)$row['SHOE_DPI'],
+                    'category_id' => $row['CATEGORY_ID'], 'category_description' => $row['CATEGORY_DESCRIPTION'], 'icon_name_alarm' => $row['ICON_NAME_ALARM'],
+                    'icon_name_no_alarm' => $row['ICON_NAME_NO_ALARM']);
             }
 
             mysqli_close($this->connection);
@@ -2122,7 +2178,65 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT ID, DESCRIPTION, ICON_NAME_ALARM, ICON_NAME_NO_ALARM FROM category';
+            $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+            if ($this->connection) {
+                $this->query = 'SELECT ID, DESCRIPTION, ICON_NAME_ALARM, ICON_NAME_NO_ALARM FROM category';
+
+                $this->result = $this->connection->query($this->query);
+
+                if ($this->result == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+                }
+
+                $result_array = array();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $result_array[] = array('id' => (int)$row['ID'], 'name' => $row['DESCRIPTION'], 'alarm_image' => $row['ICON_NAME_ALARM'], 'no_alarm_image' => $row['ICON_NAME_NO_ALARM']);
+                }
+                mysqli_close($this->connection);
+                return $result_array;
+            }
+
+//            $this->query = 'SELECT c.ID, t.ID as t_id, DESCRIPTION, ICON_NAME_ALARM, ICON_NAME_NO_ALARM FROM tag as t JOIN category as c ON t.CATEGORY_ID = c.ID';
+//
+//            $this->result = $this->connection->query($this->query);
+//
+//            if ($this->result == false) {
+//                mysqli_close($this->connection);
+//                return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+//            }
+//
+//            $result_array = array();
+//            $temp_array = array();
+//            while ($row = mysqli_fetch_assoc($this->result)) {
+//                $temp_array[$row['ID']][] = $row['t_id'];
+//                $result_array[$row['ID']] = array('id' => (int)$row['ID'], 'name' => $row['DESCRIPTION'], 'alarm_image' => $row['ICON_NAME_ALARM'], 'no_alarm_image' => $row['ICON_NAME_NO_ALARM']);
+//            }
+//
+//            foreach ($temp_array as $key => $value){
+//                array_push($result_array[$key], $value);
+//            }
+//
+//            mysqli_close($this->connection);
+//            return $result_array;
+//            return $temp_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Function that gets all the tags
+     * @return array|db_errors
+     */
+    function get_categorie_tags()
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'SELECT c.ID, t.ID as t_id, DESCRIPTION, ICON_NAME_ALARM, ICON_NAME_NO_ALARM FROM tag as t JOIN category as c ON t.CATEGORY_ID = c.ID';
 
             $this->result = $this->connection->query($this->query);
 
@@ -2132,9 +2246,14 @@ class Connection
             }
 
             $result_array = array();
-
+            $temp_array = array();
             while ($row = mysqli_fetch_assoc($this->result)) {
-                $result_array[] = array('id' => (int)$row['ID'], 'name' => $row['DESCRIPTION'], 'alarm_image' => $row['ICON_NAME_ALARM'], 'no_alarm_image' => $row['ICON_NAME_NO_ALARM']);
+                $temp_array[$row['ID']][] = $row['t_id'];
+                $result_array[$row['ID']] = array('id' => (int)$row['ID']);
+            }
+
+            foreach ($temp_array as $key => $value){
+                array_push($result_array[$key], $value);
             }
 
             mysqli_close($this->connection);
@@ -2188,9 +2307,9 @@ class Connection
             $this->query = 'SELECT tag.ID, tag.NAME, tag.X_POS, tag.Y_POS, tag.TIME, tag.GPS_TIME, tag.ALARM_TIME, tag.BATTERY_STATUS, tag.GPS_NORTH_DEGREE, tag.MAN_DOWN, tag.GPS_EAST_DEGREE,
                         tag.MAN_DOWN_DISABLED, tag.MAN_DOWN_DISABLED_ALERTED, tag.MAN_DOWN_TACITATED, tag.SOS, tag.SOS_ALERTED, tag.MAN_IN_QUOTE, tag.MAN_IN_QUOTE_ALERTED,
                         tag.CALL_ME_ALARM, tag.EVACUATION_ALARM, tag.RADIO_SWITCHED_OFF, tag.DIAGNOSTIC_REQUEST, tag.INSIDE_ZONE, tag.IS_EXIT, floor.NAME AS FLOOR_NAME, a.NAME AS ANCHOR_NAME, 
-                        tag_types.ID AS TYPE_ID, tag_types.DESCRIPTION AS TAG_TYPE_NAME, tag_types.SLEEP_TIME_INDOOR, dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
+                        tag_types.ID AS TYPE_ID, c.ID AS CATEGORY_ID, c.DESCRIPTION AS CATEGORY_DESCRIPTION, c.ICON_NAME_ALARM, c.ICON_NAME_NO_ALARM, tag_types.DESCRIPTION AS TAG_TYPE_NAME, tag_types.SLEEP_TIME_INDOOR, dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
                         FROM tag JOIN anchor a ON tag.ANCHOR_ID = a.ID JOIN floor ON a.FLOOR_ID = floor.ID JOIN tag_types ON tag. TYPE = tag_types.ID 
-                        JOIN location l ON floor.LOCATION_ID = l.ID JOIN dress_alarm ON tag.ID = dress_alarm.TAG_ID
+                        JOIN location l ON floor.LOCATION_ID = l.ID JOIN dress_alarm ON tag.ID = dress_alarm.TAG_ID LEFT JOIN category c on tag.CATEGORY_ID = c.ID
                         WHERE floor.ID = ? AND l.NAME = ? AND tag.GPS_NORTH_DEGREE = 0 AND tag.GPS_EAST_DEGREE = 0';
 
             $statement = $this->execute_selecting($this->query, 'ss', $floor, $location);
@@ -2213,7 +2332,8 @@ class Connection
                     'call_me_alarm' => $row['CALL_ME_ALARM'], 'evacuation_alarm' => $row['EVACUATION_ALARM'], 'radio_switched_off' => $row['RADIO_SWITCHED_OFF'],
                     'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'inside_zone' => $row['INSIDE_ZONE'], 'is_exit' => $row['IS_EXIT'], 'floor_name' => $row['FLOOR_NAME'], 'anchor_name' => $row['ANCHOR_NAME'],
                     'tag_type_id' => $row['TYPE_ID'], 'tag_type_name' => $row['TAG_TYPE_NAME'], 'sleep_time_indoor' => $row['SLEEP_TIME_INDOOR'],
-                    'helmet_dpi' => $row['HELMET_DPI'], 'belt_dpi' => $row['BELT_DPI'], 'glove_dpi' => $row['GLOVE_DPI'], 'shoe_dpi' => $row['SHOE_DPI']);
+                    'helmet_dpi' => $row['HELMET_DPI'], 'belt_dpi' => $row['BELT_DPI'], 'glove_dpi' => $row['GLOVE_DPI'], 'shoe_dpi' => $row['SHOE_DPI'], 'category_id' => $row['CATEGORY_ID'],
+                    'category_description' => $row['CATEGORY_DESCRIPTION'], 'icon_name_alarm' => $row['ICON_NAME_ALARM'], 'icon_name_no_alarm' => $row['ICON_NAME_NO_ALARM']);
             }
 
             mysqli_close($this->connection);

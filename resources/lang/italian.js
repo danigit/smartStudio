@@ -350,7 +350,9 @@ function languageController($scope) {
         insertTagCategory: 'Inserisci categoria tag',
         alertImage: 'Immagine allarme',
         noAlertImage: 'Immagine no allarme',
-        deleteCategory: 'Cancella Categoria'
+        deleteCategory: 'Cancella Categoria',
+        categoryTags: 'Tag per categorie',
+        selectTags: 'Seleziona tags'
     }
 };
 
