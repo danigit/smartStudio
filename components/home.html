@@ -74,7 +74,10 @@
                                 <md-list-item ng-click="registry('home')"><p>{{lang.weTagTable | uppercase}}</p><img
                                         src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="tagCategories('home')"><p>{{lang.tagCategory | uppercase}}</p><img
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="tagCategories('home')"><p>{{lang.tagCategory | uppercase}}</p><img
+                                        src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="safetyBox('home')"><p>{{lang.safetyBox | uppercase}}</p><img
                                         src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="viewHistory('home')"><p>{{lang.history | uppercase}}</p><img

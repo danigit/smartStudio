@@ -399,6 +399,38 @@ class Connection
 
     /**
      * Function that deletes a marker from database
+     * @param $safety_box
+     * @return db_errors|int|mysqli_stmt
+     */
+    function delete_safety_box($safety_box)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'DELETE FROM safety_box WHERE ID = ?';
+
+            $statement = $this->execute_selecting($this->query, 'i', $safety_box);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+            }
+
+            $aff_rows = $statement->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Function that deletes a marker from database
      * @param $tags_categories
      * @return db_errors|array|mysqli_stmt
      */
@@ -982,6 +1014,40 @@ class Connection
             } else if ($statement == false) {
                 mysqli_close($this->connection);
                 return new db_errors(db_errors::$ERROR_ON_INSERTING_MAC);
+            }
+
+
+            $id = $this->connection->insert_id;
+
+            mysqli_close($this->connection);
+
+            return $id;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Funzione che inserisce una nuova categoria per i tag
+     * @param $name
+     * @param $imei
+     * @return bool|db_errors|mixed
+     */
+    function insert_safety_box($name, $imei)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "INSERT INTO safety_box (NAME, IMEI) VALUES (?, ?)";
+
+            $statement = $this->execute_inserting($this->query, 'ss', $name, $imei);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_INSERTING_SAFETY_BOX);
             }
 
 
@@ -2264,6 +2330,36 @@ class Connection
     }
 
     /**
+     * Function that gets all the tags
+     * @return array|db_errors
+     */
+    function get_safety_box()
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'SELECT ID, NAME, IMEI FROM safety_box';
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_TAGS);
+            }
+
+            $result_array = array();
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('id' => (int)$row['ID'], 'name' => $row['NAME'], 'imei' => $row['IMEI']);
+            }
+
+            mysqli_close($this->connection);
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
      * Function that gets all the anchors types
      * @return array|db_errors
      */
@@ -2524,6 +2620,38 @@ class Connection
         if ($this->connection) {
             $this->query = "UPDATE category SET " . strtoupper($category_field) . " = ? WHERE ID = ?";
             $statement = $this->execute_selecting($this->query, 'ss', $field_value, $category_id);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
+            $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Function that change the value of a mac field
+     * @param $safety_box_ic
+     * @param $safety_box_field
+     * @param $field_value
+     * @return db_errors|int|mysqli_stmt
+     */
+    function change_safety_box_field($safety_box_id,  $safety_box_field, $field_value)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE safety_box SET " . strtoupper($safety_box_field) . " = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'ss', $field_value, $safety_box_id);
 
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);

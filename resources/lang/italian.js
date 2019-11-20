@@ -352,7 +352,16 @@ function languageController($scope) {
         noAlertImage: 'Immagine no allarme',
         deleteCategory: 'Cancella Categoria',
         categoryTags: 'Tag per categorie',
-        selectTags: 'Seleziona tags'
+        selectTags: 'Seleziona tags',
+        safetyBox: 'Gestione safety box',
+        safetyBoxTable: 'Safety box',
+        imei: 'Imei',
+        insertImei: 'Inserire imei',
+        addSafetyBox: 'Aggiungi safety box',
+        deleteSafetyBox: 'Cancella safety box',
+        deleteSafetyBoxText: 'Sei sicuro di voler cancellare la safety box?',
+        insertSafetyBoxTitle: 'Inserimento safety box',
+        insertSafetyBox: 'Inserire safety box'
     }
 };
 
@@ -426,6 +435,8 @@ let lang = {
     tagCategorySelectImage: 'Selezionare le immagini per la categoria',
     cannotConvertImage: 'Impossibile comprimere l\'imagine per la transmissione',
     cannotSaveImage: 'Impossibile salvare immagine',
-    deleteCategory: 'Cancella Categoria'
+    deleteCategory: 'Cancella Categoria',
+    deleteSafetyBox: 'Cancella safety box',
+    deleteSafetyBoxText: 'Sei sicuro di voler cancellare la safety box?',
 
 }

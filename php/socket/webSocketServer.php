@@ -451,6 +451,17 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'insert_safety_box':{
+                $result['action'] = 'insert_safety_box';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->insert_safety_box($decoded_message['data']['name'], $decoded_message['data']['imei']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //getting all the tags
             case 'get_tag_categories':{
                 $result['action'] = 'get_tag_categories';
@@ -470,6 +481,17 @@ class webSocketServer implements MessageComponentInterface{
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
                 $query = $this->connection->get_categorie_tags();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'get_safety_box':{
+                $result['action'] = 'get_safety_box';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->get_safety_box();
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -629,6 +651,17 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'delete_safety_box':{
+                $result['action'] = 'delete_safety_box';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->delete_safety_box($decoded_message['data']['safety_box_id']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             case 'save_category_tags':{
                     $result['action'] = 'save_category_tags';
                     $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
@@ -659,6 +692,19 @@ class webSocketServer implements MessageComponentInterface{
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
                 $query = $this->connection->change_tag_category_field($decoded_message['data']['category_id'], $decoded_message['data']['category_field'],
+                    $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the mac field
+            case 'change_safety_box_field':{
+                $result['action'] = 'change_safety_box_field';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->change_safety_box_field($decoded_message['data']['safety_box_id'], $decoded_message['data']['safety_box_field'],
                     $decoded_message['data']['field_value']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;

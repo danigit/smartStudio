@@ -55,6 +55,7 @@ class db_errors
     public static $ERROR_ON_INSERTING_USER_HAS_LOCATION = 44;
     public static $ERROR_ON_DELETING_USER_LOCATION = 45;
     public static $ERROR_ON_UPDATIDN_PASSWORD = 46;
+    public static $ERROR_ON_INSERTING_SAFETY_BOX = 47;
 
     private $error;
 
@@ -177,6 +178,8 @@ class db_errors
                 return '$ERROR_ON_DELETING_USER_LOCATION';
             case 46:
                 return '$ERROR_ON_DUPDATING_PASSWORD';
+            case 47:
+                return '$ERROR_ON_DINSERTING_SAFETY_BOX';
             default:
                 return 'UNKNOWN_ERROR';
         }

@@ -346,7 +346,15 @@ function languageController($scope) {
         alertImage: '',
         noAlertImage: '',
         deleteCategory: '',
-        categoryTags: ''
+        categoryTags: '',
+        safetyBox: '',
+        safetyBoxTable: '',
+        imei: '',
+        insertImei: '',
+        addSafetyBox: '',
+        deleteSafetyBox: '',
+        insertSafetyBoxTitle: '',
+        insertSafetyBox: ''
     }
 };
 
@@ -420,5 +428,7 @@ let lang = {
     tagCategorySelectImage: '',
     cannotConvertImage: '',
     cannotSaveImage: '',
-    deleteCategory: ''
+    deleteCategory: '',
+    deleteSafetyBox: '',
+    deleteSafetyBoxText: '',
 }

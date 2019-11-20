@@ -5911,6 +5911,145 @@
             })
         }
 
+        $scope.safetyBox = () => {
+            $mdDialog.show({
+                locals             : {admin: $scope.isAdmin, userManager: $scope.isUserManager},
+                templateUrl        : componentsPath + 'safety-box-table.html',
+                parent             : angular.element(document.body),
+                clickOutsideToClose: true,
+                multiple           : true,
+                controller         : ['$scope', 'admin', 'userManager', function ($scope, admin, userManager) {
+
+                    $scope.safety_boxes = {};
+                    $scope.type_tags = dataService.allTags;
+
+                    $scope.query = {
+                        limitOptions: [5, 10, 15],
+                        order       : 'name',
+                        limit       : 5,
+                        page        : 1
+                    };
+
+                    let updateSafetyBoxTable = () => {
+                        newSocketService.getData('get_safety_box', {}, (response) => {
+                            $scope.safety_boxes = response.result;
+                            console.log(response);
+                        });
+                    };
+
+                    updateSafetyBoxTable();
+
+                    $scope.addSafetyBox = () => {
+                        $mdDialog.show({
+                            templateUrl        : componentsPath + 'insert-safety-box-row.html',
+                            parent             : angular.element(document.body),
+                            targetEvent        : event,
+                            clickOutsideToClose: true,
+                            multiple           : true,
+                            controller         : ['$scope', function ($scope) {
+
+                                $scope.insertSafetyBox = {
+                                    name       : '',
+                                    imei: '',
+                                    resultClass: '',
+                                    showSuccess: false,
+                                    showError: false,
+                                    message: ''
+                                };
+
+                                let alarm_image = null;
+                                let no_alarm_image = null;
+
+                                $scope.submitSafetyBox = (form) => {
+                                    form.$submitted = true;
+
+                                    if (form.$valid) {
+                                        newSocketService.getData('insert_safety_box', {name: $scope.insertSafetyBox.name, imei: $scope.insertSafetyBox.imei}, (response) => {
+                                            if (!response.session_state)
+                                                window.location.reload();
+
+                                            if (response.result !== 'ERROR_ON_INSERTING_SAFETY_BOX'){
+                                                $scope.insertSafetyBox.resultClass = 'background-green';
+                                                $scope.$apply();
+                                                $timeout(function () {
+                                                    $mdDialog.hide();
+                                                    updateSafetyBoxTable();
+                                                }, 1500);
+                                            }
+                                        });
+                                    } else {
+                                        $scope.insertSafetyBox.resultClass = 'background-red';
+                                    }
+                                };
+
+                                $scope.hide = () => {
+                                    $mdDialog.hide();
+                                }
+                            }]
+                        });
+                    };
+
+                    $scope.editCell = (event, safety_box, safety_box_name) => {
+
+                        event.stopPropagation();
+
+                        if (admin) {
+                            let editCell = {
+                                modelValue : safety_box[safety_box_name],
+                                save       : function (input) {
+                                    input.$invalid = true;
+                                    safety_box[safety_box_name]   = input.$modelValue;
+                                    newSocketService.getData('change_safety_box_field', {
+                                        safety_box_id     : safety_box.id,
+                                        safety_box_field  : safety_box_name,
+                                        field_value: input.$modelValue
+                                    }, (response) => {
+                                        if (!response.session_state)
+                                            window.location.reload();
+                                    });
+                                },
+                                targetEvent: event,
+                                title      : lang.insertValue,
+                                validators : {
+                                    'md-maxlength': 30
+                                }
+                            };
+
+                            $mdEditDialog.large(editCell);
+                        }
+                    };
+
+                    //deleting tag
+                    $scope.deleteSafetyBox = ($event, safety_box) => {
+                        let confirm = $mdDialog.confirm()
+                            .title(lang.deleteSafetyBox.toUpperCase())
+                            .textContent(lang.deleteSafetyBoxText)
+                            .targetEvent(event)
+                            .multiple(true)
+                            .ok(lang.deleteSafetyBox)
+                            .cancel(lang.cancel);
+
+                        $mdDialog.show(confirm).then(() => {
+                            newSocketService.getData('delete_safety_box', {safety_box_id : safety_box.id}, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
+
+                                if (response.result === 1) {
+                                    updateSafetyBoxTable();
+                                }
+                            });
+                        }, function () {
+                            console.log('CANCELLATO!!!!');
+                        });
+                    };
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    }
+                }]
+            })
+        }
+
         $scope.zone = () => {
             $interval.cancel(dataService.canvasInterval);
             dataService.canvasInterval = undefined;

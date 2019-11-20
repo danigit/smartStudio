@@ -1,9 +1,10 @@
-<div class="width-325-px">
+<div ng-controller="languageController">
     <!--popup header-->
     <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -13,7 +14,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">{{user.name}} ZONES</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.safetyBoxTable | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -32,41 +33,44 @@
 
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column><span class="color-darkcyan">{{lang.name}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.imei | uppercase}}</span></th>
                 </tr>
                 </thead>
 
                 <tbody md-body>
                 <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
-                    ng-repeat="zone in zones | limitTo: query.limit: (query.page -1 ) * query.limit">
+                    ng-repeat="safety_box in safety_boxes | limitTo: query.limit: (query.page -1 ) * query.limit">
 
-                    <td md-cell ng-class="{'md-placeholder': !zone.name}">
-                        {{zone.name || 'Inserire nome'}}
+                    <td md-cell ng-click="editCell($event, safety_box, 'name')" ng-class="{'md-placeholder': !safety_box.name}">
+                        {{safety_box.name || lang.insertName}}
+                    </td>
+                    <td md-cell ng-click="editCell($event, safety_box, 'imei')" ng-class="{'md-placeholder': !safety_box.imei}">
+                        {{safety_box.imei || lang.insertImei}}
                     </td>
 
-                    <td md-cell ng-click="deleteManagedZone(zone)"><img
-                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteZone}}" title="{{lang.deleteZone}}"></td>
+                    <td md-cell ng-click="deleteSafetyBox($event, safety_box)"><img
+                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteSafetyBox}}" title="{{lang.deleteSafetyBox}}"></td>
                 </tr>
-                <tr md-row ng-show="zones.length === 0">
+                <tr md-row ng-show="safety_boxex.length === 0">
                     <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
                 </tr>
                 </tbody>
             </table>
         </md-table-container>
 
-        <div ng-if="position" class="margin-bottom-40-px"></div>
-
-        <md-input-container ng-if="!position" md-no-float class="md-block width-100 margin-top-bottom-25-px">
+        <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
-                     ng-click="manageNewZone()" alt="{{lang.addZone}}" title="{{lang.addZone}}">
+                     ng-click="addSafetyBox()" alt="{{lang.addSafetyBox}}" title="{{lang.addSafetyBox}}">
             </div>
         </md-input-container>
 
-        <md-table-pagination class="color-red background-white position-fixed bottom-0 width-100" md-limit="query.limit" md-limit-options="query.limitOptions"
+        <md-table-pagination class="color-red" md-limit="query.limit" md-limit-options="query.limitOptions"
                              md-page="query.page"
-                             md-total="{{zones.length}}" md-on-paginate="">
+                             md-total="{{safety_boxes.length}}" md-on-paginate="">
         </md-table-pagination>
     </div>
 </md-content>
 <!--end popup content-->
+
