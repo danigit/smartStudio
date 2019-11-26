@@ -327,6 +327,9 @@ PADDING
 .padding-top-bottom-6px{
     padding: 6px 0;
 }
+.padding-top-bottom-35px{
+    padding: 35px 0;
+}
 
 .padding-bottom-10{
     padding-bottom: 10%;
