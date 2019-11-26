@@ -65,12 +65,17 @@
                     </md-input-container>
                 </div>
             </div>
-            <div layout="row" class="width-100" ng-show="isAdmin">
-                <md-button ng-click="deleteHistory()" class="md-raised background-red color-white margin-auto margin-top-20-px">{{lang.deleteHistory}}</md-button>
+            <div layout="row" layout-align="center center">
+                <div ng-show="isAdmin">
+                    <md-button ng-click="deleteHistory()" class="md-raised background-red color-white margin-auto margin-top-20-px">{{lang.deleteHistory}}</md-button>
+                </div>
+                <div class="margin-left-20-px">
+                    <md-button ng-click="saveHistory()" class="md-raised background-green color-white margin-auto margin-top-20-px">{{lang.saveHistory}}</md-button>
+                </div>
             </div>
         </div>
         <div layout="column" layout-align="center center">
-            <md-table-container class="margin-bottom-40-px">
+            <md-table-container class="margin-bottom-40-px" id="his-table">
 
                 <table md-table>
 

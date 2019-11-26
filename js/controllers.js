@@ -2537,8 +2537,10 @@
                                                                         }
                                                                     })
                                                                 }
-                                                                if (!contextDrawed)
+                                                                if (!contextDrawed) {
                                                                     context.drawImage(bufferCanvas, 0, 0);
+                                                                    contextDrawed = false;
+                                                                }
                                                             });
                                                     } else {
                                                         dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
@@ -2578,8 +2580,10 @@
                                                                     })
                                                                 }
                                                             });
-                                                        if (!contextDrawed)
+                                                        if (!contextDrawed) {
                                                             context.drawImage(bufferCanvas, 0, 0);
+                                                            contextDrawed = false;
+                                                        }
                                                     }
                                             });
                                         });
@@ -4884,7 +4888,17 @@
                         });
                     });
 
+                    $scope.saveHistory = () => {
+                        let blob = new Blob([document.getElementById('his-table').innerHTML], {
+                            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                        });
+
+                        let date = new Date();
+                        saveAs(blob, "Smart_Studio_history_" + date.getDate() + "_" + (date.getMonth() + 1) + "_" + date.getFullYear() + ".xls");
+                    }
+
                     $scope.hide = () => {
+
                         $mdDialog.hide();
                     }
                 }],

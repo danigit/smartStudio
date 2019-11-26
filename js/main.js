@@ -2,7 +2,7 @@
     'use strict';
 
     //loading the angular framework and the dependencies
-    let main = angular.module('main', ['ngMaterial', 'ui.router', 'ngMessages', 'ngMap', 'md.data.table', 'chart.js']);
+    let main = angular.module('main', ['ngMaterial', 'ui.router', 'ngMessages', 'ngMap', 'md.data.table', 'chart.js', 'ngFileSaver']);
 
     //Configuring the router and the angular initial data
     main.config(RoutesConfig);

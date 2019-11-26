@@ -354,7 +354,8 @@ function languageController($scope) {
         addSafetyBox: '',
         deleteSafetyBox: '',
         insertSafetyBoxTitle: '',
-        insertSafetyBox: ''
+        insertSafetyBox: '',
+        saveHistory: ''
     }
 };
 

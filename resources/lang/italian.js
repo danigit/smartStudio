@@ -361,7 +361,8 @@ function languageController($scope) {
         deleteSafetyBox: 'Cancella safety box',
         deleteSafetyBoxText: 'Sei sicuro di voler cancellare la safety box?',
         insertSafetyBoxTitle: 'Inserimento safety box',
-        insertSafetyBox: 'Inserire safety box'
+        insertSafetyBox: 'Inserire safety box',
+        saveHistory: 'Salva storico'
     }
 };
 
