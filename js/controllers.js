@@ -3962,7 +3962,7 @@
                                 targetEvent: event,
                                 title      : lang.insertValue,
                                 validators : {
-                                    'md-maxlength': 30
+                                    'md-maxlength': 500
                                 }
                             };
 
@@ -4330,7 +4330,7 @@
                                 targetEvent: event,
                                 title      : lang.insertValue,
                                 validators : {
-                                    'md-maxlength': 30
+                                    'md-maxlength': 500
                                 }
                             };
 
@@ -4646,7 +4646,7 @@
                                 targetEvent: event,
                                 title      : lang.insertValue,
                                 validators : {
-                                    'md-maxlength': 30
+                                    'md-maxlength': 500
                                 }
                             };
 
@@ -5224,7 +5224,7 @@
                                 targetEvent: event,
                                 title      : lang.insertValue,
                                 validators : {
-                                    'md-maxlength': 30
+                                    'md-maxlength': 500
                                 }
                             };
 
@@ -5391,7 +5391,7 @@
                                             targetEvent: event,
                                             title      : lang.insertValue,
                                             validators : {
-                                                'md-maxlength': 30
+                                                'md-maxlength': 500
                                             }
                                         };
 
@@ -5916,7 +5916,7 @@
                                 targetEvent: event,
                                 title      : lang.insertValue,
                                 validators : {
-                                    'md-maxlength': 30
+                                    'md-maxlength': 500
                                 }
                             };
 
@@ -6057,7 +6057,7 @@
                                 targetEvent: event,
                                 title      : lang.insertValue,
                                 validators : {
-                                    'md-maxlength': 30
+                                    'md-maxlength': 500
                                 }
                             };
 
@@ -6236,7 +6236,7 @@
                                 targetEvent: event,
                                 title      : lang.insertValue,
                                 validators : {
-                                    'md-maxlength': 30
+                                    'md-maxlength': 500
                                 }
                             };
 
@@ -6521,7 +6521,7 @@
                                 targetEvent: event,
                                 title      : lang.insertValue,
                                 validators : {
-                                    'md-maxlength': 30
+                                    'md-maxlength': 500
                                 }
                             };
 
@@ -6803,7 +6803,7 @@
                                 targetEvent: event,
                                 title      : lang.insertValue,
                                 validators : {
-                                    'md-maxlength': 30
+                                    'md-maxlength': 500
                                 }
                             };
 
@@ -7038,7 +7038,7 @@
                                 targetEvent: event,
                                 title      : lang.insertValue,
                                 validators : {
-                                    'md-maxlength': 30
+                                    'md-maxlength': 500
                                 }
                             };
 
