@@ -72,7 +72,9 @@ class webSocketServer implements MessageComponentInterface{
     }
 
     function isSessionEnded($username){
-        return isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username_' . $username]);
+        $session_ended = isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username_' . $username]);
+        if(!$session_ended)
+            error_log('SESSIONE SCADUTA: ' . date("Y-m-d H:i:s"));
     }
 
     /**
