@@ -96,6 +96,7 @@
                         <th md-column md-order-by="tag_x_pos" md-numeric><span class="color-darkcyan">{{lang.xPos | uppercase}}</span>
                         </th>
                         <th md-column md-order-by="tag_y_pos" md-numeric><span class="color-darkcyan">{{lang.yPos | uppercase}}</span>
+                        <th md-column md-order-by="protocol" md-numeric><span class="color-darkcyan">{{lang.protocol | uppercase}}</span>
                         </th>
 
                     </tr>
@@ -120,6 +121,9 @@
                         </td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag_y_pos.toString()}">
                             {{row.tag_y_pos.toString() || lang.noData}}
+                        </td>
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.protocol.toString()}">
+                            {{row.protocol.toString() || lang.noData}}
                         </td>
                     </tr>
                     <tr md-row ng-show="tableEmpty">

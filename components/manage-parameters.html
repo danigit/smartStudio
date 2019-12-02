@@ -193,6 +193,14 @@
                     </md-select>
                 </md-input-container>
 
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.beaconType}}</label>
+                    <md-select ng-model="sendedValues.beacon_type">
+                        <md-option ng-selected="{{beacon_type.value.toString() === tagParameters.beacon_type.toString()}}" ng-repeat="beacon_type in selectValues.beacon_type" ng-value="beacon_type.value">
+                            {{beacon_type.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
             </div>
 
             <h4 class="parameter-type margin-top-20-px"><span class="parameter-span">Rete</span></h4>

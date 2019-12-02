@@ -362,7 +362,9 @@ function languageController($scope) {
         deleteSafetyBoxText: 'Sei sicuro di voler cancellare la safety box?',
         insertSafetyBoxTitle: 'Inserimento safety box',
         insertSafetyBox: 'Inserire safety box',
-        saveHistory: 'Salva storico'
+        saveHistory: 'Salva storico',
+        protocol: 'Protocollo',
+        beaconType: 'Tipo beacon'
     }
 };
 

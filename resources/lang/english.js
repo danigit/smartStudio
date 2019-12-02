@@ -355,7 +355,9 @@ function languageController($scope) {
         deleteSafetyBox: '',
         insertSafetyBoxTitle: '',
         insertSafetyBox: '',
-        saveHistory: ''
+        saveHistory: '',
+        protocol: '',
+        beaconType: ''
     }
 };
 

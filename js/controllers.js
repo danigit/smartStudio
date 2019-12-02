@@ -4811,13 +4811,42 @@
                     };
 
                     $scope.query = {
-                        limitOptions: [5, 10, 15],
+                        limitOptions: [5, 10, 20, 50, 100],
                         order       : 'Data',
                         limit       : 5,
                         page        : 1
                     };
 
                     $scope.historyRows   = [];
+
+                    let getProtocol = (history_rows) => {
+                        let historyRows = [];
+
+                        history_rows.forEach(function (his) {
+                            let hisRow = his;
+                            switch (his.protocol) {
+                                case 0: {
+                                    hisRow.protocol = 'BLE';
+                                    break;
+                                }
+                                case 1: {
+                                    hisRow.protocol = 'WIFI';
+                                    break;
+                                }
+                                case 2: {
+                                    hisRow.protocol = 'GPRS';
+                                    break;
+                                }
+                                case 3: {
+                                    hisRow.protocol = 'SafetyBox';
+                                    break;
+                                }
+                            }
+                            historyRows.push(hisRow)
+                        });
+                        return historyRows;
+                    };
+
                     $scope.deleteHistory = () => {
                         let fromDate = $filter('date')($scope.history.fromDate, 'yyyy-MM-dd');
                         let toDate   = $filter('date')($scope.history.toDate, 'yyyy-MM-dd');
@@ -4836,7 +4865,8 @@
                                     if (!history.session_state)
                                         window.location.reload();
 
-                                    $scope.historyRows = history.result;
+
+                                    $scope.historyRows = getProtocol(history.result);
                                     $scope.tableEmpty  = $scope.historyRows.length === 0;
                                     $scope.$apply();
                                 });
@@ -4865,7 +4895,8 @@
                             if (!response.session_state)
                                 window.location.reload();
 
-                            $scope.historyRows = response.result;
+                            $scope.historyRows = getProtocol(response.result);
+                            console.log($scope.historyRows);
 
                             newSocketService.getData('get_all_locations', {}, (locations) =>{
                                 $scope.historyRows.forEach((event, index) => {
@@ -5146,7 +5177,6 @@
                     };
 
                     $scope.tagHasAlarm = (tag) => {
-                        console.log(tag);
                         return dataService.checkIfTagHasAlarm(tag);
                     };
 
@@ -5559,7 +5589,8 @@
                                         udp_port_uwb: $scope.tagParameters.udp_port_uwb,
                                         periodic_sound: $scope.tagParameters.periodic_sound,
                                         tacitation_mode: $scope.tagParameters.tacitation_mode,
-                                        lnd_prt_angle: $scope.tagParameters.lnd_prt_angle
+                                        lnd_prt_angle: $scope.tagParameters.lnd_prt_angle,
+                                        beacon_type: $scope.tagParameters.beacon_type
                                     };
 
                                     $scope.selectValues = {
@@ -5601,6 +5632,7 @@
                                         tacitation_mode: [{label: 'PRESSIONE PROLUNGATA', value: 0}, {label: 'TRIPLO CLICK', value: 1}],
                                         lnd_prt_angle: [{label: "15 °", value: 1}, {label: "20 °", value: 2}, {label: "30 °", value: 3}, {label: "35 °", value: 4}, {label: "40 °", value: 5}, {label: "45 °", value: 6},
                                                        {label: "55 °", value: 7}, {label: "60 °", value: 8}, {label: "70 °", value: 9}, {label: "75 °", value: 10}],
+                                        beacon_type: [{label: "EMBC-02", value: 0}, {label: "EMBC-22", value: 1}]
                                     };
 
                                     $scope.insertConfigurations = (form) => {
