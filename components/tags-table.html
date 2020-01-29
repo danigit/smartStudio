@@ -36,8 +36,8 @@
                     <th md-column></th>
                     <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
                     <th md-column md-order-by="type_name"><span class="color-darkcyan">{{lang.type | uppercase}}</span>
-                    <th md-column md-order-by="type_name"><span class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span>
-                    </th>
+                    <th md-column md-order-by="type_name"><span class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span></th>
+                    <th ng-if="isAdmin" md-column></th>
                     <th ng-if="isAdmin" md-column></th>
                     <th ng-if="isAdmin" md-column></th>
                     <th ng-if="isAdmin" md-column></th>
@@ -84,6 +84,8 @@
                     </td>
                     <td md-cell ng-show="isAdmin" ng-click="deleteRow(tag)"><img src="img/icons/delete_trash_24.png"
                                                                alt="{{lang.deleteTag}}" title="{{lang.deleteTag}}"></td>
+                    <td md-cell ng-show="isAdmin" ng-click="callMe(tag)"><md-button ng-class="tagsCallMe[tag.id]['background']" class="md-raised color-white">{{tagsCallMe[tag.id]['value']}}</md-button>
+                    </td>
                 </tr>
                 <tr md-row ng-show="tableEmpty">
                     <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>

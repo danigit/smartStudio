@@ -41,6 +41,9 @@
                     <th ng-show="isOutdoor" md-column md-order-by="gps_north"><span class="color-darkcyan">{{lang.xCenter}}</span></th>
                     <th ng-show="isOutdoor" md-column md-order-by="gps_east"><span class="color-darkcyan">{{lang.yCenter}}</span></th>
                     <th ng-if="isAdmin" md-column md-order-by="color"><span class="color-darkcyan">{{lang.color}}</span></th>
+                    <th ng-if="isAdmin" md-column md-order-by="priority"><span class="color-darkcyan">{{lang.priority}}</span></th>
+                    <th ng-if="isAdmin" md-column md-order-by="header_order"><span class="color-darkcyan">{{lang.headerOrder}}</span></th>
+                    <th ng-if="isAdmin" md-column md-order-by="header_left_side"><span class="color-darkcyan">{{lang.headerLeftSide}}</span></th>
                     <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
@@ -74,6 +77,15 @@
                     </td>
                     <td ng-if="isAdmin" md-cell><input ng-change="changeColor(zone.id, zone.color)" type="color" value="zone.color" ng-model="zone.color"
                                                                           colorpick-eyedropper-active="true">
+                    </td>
+                    <td md-cell ng-click="editCell($event, zone, 'priority')" ng-class="{'md-placeholder': !zone.priority}">
+                        {{zone.priority || lang.insertName}}
+                    </td>
+                    <td md-cell ng-click="editCell($event, zone, 'header_order')" ng-class="{'md-placeholder': !zone.header_order}">
+                        {{zone.header_order || lang.insertName}}
+                    </td>
+                    <td md-cell ng-click="editCell($event, zone, 'header_left_side')" ng-class="{'md-placeholder': !zone.header_left_side}">
+                        {{zone.header_left_side || lang.insertName}}
                     </td>
                     <td md-cell ng-show="isAdmin" ng-click="deleteRow(zone)"><img src="img/icons/delete_trash_24.png" alt="{{lang.deleteTag}}"
                                                                 title="{{lang.deleteTag}}"></td>

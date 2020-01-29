@@ -211,10 +211,16 @@
                             if (!response.session_state)
                                 window.location.reload();
 
-                            let offGridTagsIndoor  = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14) && !t.radio_switched_off && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
-                            let offGridTagsOutdoor = response.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+                            //tags indorr of type 2 offgrid(dispersi)
+                            let offGridTagsIndoor  = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14 && t.tag_type_id !== 5 && t.tag_type_id !== 9 && t.tag_type_id !== 17 && t.tag_type_id !== 19)
+                                && !t.radio_switched_off && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
 
-                            let tempOffTags = response.result.filter(t => ((t.type_id === 1 || t.type_id === 14) && (t.is_exit && t.radio_switched_off) || (t.type_id !== 1 && t.type_id !== 14 && t.radio_switched_off)));
+                            //tags outdoor of type 2 offgrid(dispersi
+                            let offGridTagsOutdoor = response.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && (t.type_id !== 1 && t.type_id !== 14 && t.tag_type_id !== 5 && t.tag_type_id !== 9 && t.tag_type_id !== 17 && t.tag_type_id !== 19)
+                                && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+
+                            //tags off
+                            let tempOffTags = response.result.filter(t => t.radio_switched_off);
 
                             if (!angular.equals(tempOffTags, $scope.offTags)){
                                 $scope.offTags = tempOffTags;
@@ -235,14 +241,16 @@
                             if (!angular.equals(tempOffGrid, $scope.offgridTags)){
                                 $scope.offgridTags             = tempOffGrid;
                             }
-                            let tempOfflineTagsIndoor = response.result.filter(t => (t.is_exit && !t.radio_switched_off));
+
+                            //tags type 1 offline
+                            let tempOfflineTagsIndoor = response.result.filter(t => (t.type_id === 1 || t.type_id === 14 || t.tag_type_id === 5 || t.tag_type_id === 9 || t.tag_type_id === 17 || t.tag_type_id === 19) && (t.is_exit && !t.radio_switched_off));
                             if (!angular.equals(tempOfflineTagsIndoor, $scope.offlineTagsIndoor)){
                                 $scope.offlineTagsIndoor       = tempOfflineTagsIndoor;
                             }
 
                             $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
-                            $scope.tagsStateIndoor.online  = response.result.length - $scope.offlineTagsIndoor.length - (offGridTagsIndoor.length + offGridTagsOutdoor.length) - $scope.offTags.length;
                             $scope.tagsStateIndoor.offGrid = offGridTagsIndoor.length + offGridTagsOutdoor.length;
+                            $scope.tagsStateIndoor.online  = response.result.length - $scope.tagsStateIndoor.offGrid - $scope.tagsStateIndoor.offline - $scope.offTags.length;
 
                             $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online, $scope.tagsStateIndoor.offTags, $scope.tagsStateIndoor.offGrid];
 
@@ -392,21 +400,21 @@
                     if ((tagElement.x_pos - 0.5 < tag.x_pos && tag.x_pos < tagElement.x_pos + 0.5
                         && (tagElement.y_pos - 0.5 < tag.y_pos && tag.y_pos < tagElement.y_pos + 0.5))) {
                         if ((service.checkIfTagHasAlarm(tag)
-                            || ((tag.tag_type_id !== 1 && tag.tag_type_id !== 14) && !tag.radio_switched_off)
-                            || ((tag.tag_type_id === 1 || tag.tag_type_id === 14) && !(tag.is_exit && tag.radio_switched_off)))) {
+                            || ((tag.tag_type_id !== 1 && tag.tag_type_id !== 14 && tag.tag_type_id !== 5 && tag.tag_type_id !== 9 && tag.tag_type_id !== 17 && tag.tag_type_id !== 19) && !tag.radio_switched_off)
+                            || ((tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19) && !(tag.is_exit && tag.radio_switched_off)))) {
 
                             if (!tagsGrouping.groupTags.some(t => t.id === tag.id)) {
                                 tagsGrouping.groupTags.push(tag);
                             }
                         }
 
-                        if (tagElement.tag_type_id !== 1 && tagElement.tag_type_id !== 14) {
+                        if (tagElement.tag_type_id !== 1 && tagElement.tag_type_id !== 14 && tagElement.tag_type_id !== 5 && tagElement.tag_type_id !== 9 && tagElement.tag_type_id !== 17 && tagElement.tag_type_id !== 19) {
                             if (service.checkIfTagHasAlarm(tagElement)) {
                                 tagsGrouping.groupTags.push(tagElement)
                             } else if (!tagElement.radio_switched_off) {
                                 tagsGrouping.groupTags.push(tagElement)
                             }
-                        } else if ((tagElement.tag_type_id === 1 || tagElement.tag_type_id === 14)) {
+                        } else if ((tagElement.tag_type_id === 1 || tagElement.tag_type_id === 14 || tagElement.tag_type_id === 5 || tagElement.tag_type_id === 9 || tagElement.tag_type_id === 17 || tagElement.tag_type_id === 19)) {
                             if (service.checkIfTagHasAlarm(tagElement)) {
                                 tagsGrouping.groupTags.push(tagElement);
                             } else if (!(tagElement.is_exit && tagElement.radio_switched_off)) {
@@ -801,7 +809,6 @@
         service.getTagAlarms = (tag) => {
             let tagAlarmsImages = [];
 
-            console.log(tag);
             let category_name_alarm = '';
             let category_name_no_alarm = '';
             if(isCategoryAndImageNotNull(tag)){
@@ -926,7 +933,9 @@
                     || tag.battery_status || tag.man_in_quote
                     || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone) {
                     tagState.withAlarm = true;
-                } else if (((tag.tag_type_id === 1 || tag.tag_type_id === 14) && tag.is_exit && !tag.radio_switched_off) || (tag.tag_type_id !== 1 && tag.tag_type_id !== 14 && !tag.radio_switched_off && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor))) {
+                } else if (((tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19)
+                    && tag.is_exit && !tag.radio_switched_off) || (tag.tag_type_id !== 1 && tag.tag_type_id !== 14 && tag.tag_type_id !== 5 && tag.tag_type_id !== 9
+                    && tag.tag_type_id !== 17 && tag.tag_type_id !== 19 && tag.radio_switched_off && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor))) {
                     tagState.offline = true;
                 } else {
                     tagState.withoutAlarm = true;
@@ -1068,9 +1077,9 @@
                                 } else {
                                     if (service.checkIfTagHasAlarm(value)) {
                                         service.assigningTagImage(value, img);
-                                    } else if ((value.tag_type_id === 1 || value.tag_type_id === 14) && value.is_exit && !value.radio_switched_off) {
+                                    } else if ((value.tag_type_id === 1 || value.tag_type_id === 14 || value.tag_type_id === 5 || value.tag_type_id === 9 || value.tag_type_id === 17 || value.tag_type_id === 19) && value.is_exit && !value.radio_switched_off) {
                                         img.src = tagsIconPath + 'offline_tag_24.png';
-                                    } else if (value.tag_type_id !== 1 && value.tag_type_id !== 14 && !value.radio_switched_0ff && (new Date(Date.now()) - (new Date(value.time)) > value.sleep_time_indoor)) {
+                                    } else if (value.tag_type_id !== 1 && value.tag_type_id !== 14 && value.tag_type_id !== 5 && value.tag_type_id !== 9 && value.tag_type_id !== 17 && value.tag_type_id !== 19 && !value.radio_switched_0ff && (new Date(Date.now()) - (new Date(value.time)) > value.sleep_time_indoor)) {
                                         img.src = tagsIconPath + 'offline_tag_24.png';
                                     } else if (!(value.is_exit && value.radio_switched_off)) {
                                         service.assigningTagImage(value, img);
@@ -1155,7 +1164,8 @@
         };
 
         service.isTagOffline = (tag) => {
-            return (tag.is_exit && tag.radio_switched_off);
+            return (tag.is_exit && !tag.radio_switched_off);
+
         };
 
         service.showAlarms = () => {}

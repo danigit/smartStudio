@@ -14,7 +14,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">{{lang.history | uppercase}}</h1>
+                <h1 class=" font-iceberg font-x-large">{{lang.trackingTable | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -31,10 +31,10 @@
 
             <div layout="row">
                 <md-subheader>{{lang.from}}:</md-subheader>
-                <md-datepicker ng-model="history.fromDate" md-placeholder="{{lang.selectDate}}"
+                <md-datepicker ng-model="tracking.fromDate" md-placeholder="{{lang.selectDate}}"
                                md-open-on-focus></md-datepicker>
                 <md-subheader>{{lang.to}}:</md-subheader>
-                <md-datepicker ng-model="history.toDate" md-placeholder="{{lang.selectDate}}"
+                <md-datepicker ng-model="tracking.toDate" md-placeholder="{{lang.selectDate}}"
                                md-open-on-focus></md-datepicker>
             </div>
             <div layout="row" class="width-100">
@@ -43,9 +43,9 @@
 
                         <label>{{lang.name}}</label>
 
-                        <md-select ng-model="history.selectedTag">
+                        <md-select ng-model="tracking.selectedTag">
                             <md-option ng-value="QUALSIASI">{{lang.anything | uppercase}}</md-option>
-                            <md-option ng-repeat="tag in history.tags" ng-value="tag.name">
+                            <md-option ng-repeat="tag in tracking.tags" ng-value="tag.name">
                                 {{tag.name}}
                             </md-option>
                         </md-select>
@@ -56,21 +56,13 @@
 
                         <label>{{lang.eventType}}</label>
 
-                        <md-select ng-model="history.selectedEvent">
+                        <md-select ng-model="tracking.selectedEvent">
                             <md-option ng-value="QUALSIASI">{{lang.anything | uppercase}}</md-option>
-                            <md-option ng-repeat="event in history.events" ng-value="event.description">
+                            <md-option ng-repeat="event in tracking.events" ng-value="event.description">
                                 {{event.description}}
                             </md-option>
                         </md-select>
                     </md-input-container>
-                </div>
-            </div>
-            <div layout="row" layout-align="center center">
-                <div ng-show="isAdmin">
-                    <md-button ng-click="deleteHistory()" class="md-raised background-red color-white margin-auto margin-top-20-px">{{lang.deleteHistory}}</md-button>
-                </div>
-                <div class="margin-left-20-px">
-                    <md-button ng-click="saveHistory()" class="md-raised background-green color-white margin-auto margin-top-20-px">{{lang.saveHistory}}</md-button>
                 </div>
             </div>
         </div>
@@ -88,10 +80,6 @@
                         </th>
                         <th md-column md-order-by="anchor"><span
                                 class="color-darkcyan">{{lang.anchor | uppercase}}</span></th>
-                        <th md-column md-order-by="location"><span
-                                class="color-darkcyan">{{lang.site | uppercase}}</span></th>
-                        <th md-column md-order-by="floor"><span class="color-darkcyan">{{lang.floor | uppercase}}</span>
-                        </th>
                         <th md-column md-order-by="tag_x_pos" md-numeric><span class="color-darkcyan">{{lang.xPos | uppercase}}</span>
                         </th>
                         <th md-column md-order-by="tag_y_pos" md-numeric><span class="color-darkcyan">{{lang.yPos | uppercase}}</span>
@@ -102,17 +90,13 @@
 
                     <tbody md-body>
                     <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
-                        ng-repeat="row in historyRows | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit track by $index">
+                        ng-repeat="row in trackingRows | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit track by $index">
                         <td md-cell class="no-wrap">{{row.time}}</td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.event}">{{row.event || lang.noData}}
                         </td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag}">{{row.tag || lang.noData}}
                         </td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.anchor}">{{row.anchor || lang.noData}}
-                        </td>
-                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.location}">{{row.location || lang.noData}}
-                        </td>
-                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.floor}">{{row.floor || lang.noData}}
                         </td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag_x_pos.toString()}">
                             {{row.tag_x_pos.toString() || lang.noData}}
@@ -132,7 +116,7 @@
             </md-table-container>
             <md-table-pagination class="color-red background-white position-fixed bottom-0 width-100" md-limit="query.limit" md-limit-options="query.limitOptions"
                                  md-page="query.page"
-                                 md-total="{{historyRows.length}}" md-on-paginate="">
+                                 md-total="{{trackingRows.length}}" md-on-paginate="">
             </md-table-pagination>
         </div>
     </div>

@@ -357,7 +357,12 @@ function languageController($scope) {
         insertSafetyBox: '',
         saveHistory: '',
         protocol: '',
-        beaconType: ''
+        beaconType: '',
+        tracking: '',
+        trackingTable: '',
+        priority: '',
+        headerOrder: '',
+        headerLeftSide: '',
     }
 };
 
@@ -434,4 +439,8 @@ let lang = {
     deleteCategory: '',
     deleteSafetyBox: '',
     deleteSafetyBoxText: '',
+    initEvacuation: '',
+    reset: '',
+    callMe: '',
+    stopCallMe: '',
 }

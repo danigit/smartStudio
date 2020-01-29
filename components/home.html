@@ -75,15 +75,18 @@
                                         src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-show="homeCtrl.isAdmin" ng-click="tagCategories('home')"><p>{{lang.tagCategory | uppercase}}</p><img
-                                        src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
+                                        src="img/icons/menu/tag_category.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-show="homeCtrl.isAdmin" ng-click="safetyBox('home')"><p>{{lang.safetyBox | uppercase}}</p><img
-                                        src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
+                                        src="img/icons/menu/safety_box.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="viewHistory('home')"><p>{{lang.history | uppercase}}</p><img
                                         src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="viewVersions()"><p>{{lang.versions | uppercase}}</p><img
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="viewTracking('home')"><p>{{lang.tracking | uppercase}}</p><img
+                                        src="img/icons/menu/tracking.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
+                                <md-list-item ng-show="false" ng-click="viewVersions()"><p>{{lang.versions | uppercase}}</p><img
                                         src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="quickActions()"><p>{{lang.quickActions | uppercase}}</p><img

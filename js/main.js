@@ -82,12 +82,13 @@
                                         result.markers = markers.result;
                                         if (response.result.length === 1 && response.result[0].one_location === 1){
                                             newSocketService.getData('save_location', {location: markers.result[0].name}, (locationSaved) => {
-                                                if (response.result === 'location_saved') {
+                                                if (locationSaved.result === 'location_saved') {
                                                     newSocketService.getData('get_location_info', {}, (locationInfo) => {
                                                         dataService.defaultFloorName  = '';
                                                         dataService.locationFromClick = '';
                                                         if (locationInfo.result.is_inside)
                                                             $state.go('canvas');
+                                                        console.log(result)
                                                         promise.resolve(result);
                                                     })
                                                 }

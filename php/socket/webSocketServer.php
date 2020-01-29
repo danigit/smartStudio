@@ -75,6 +75,7 @@ class webSocketServer implements MessageComponentInterface{
         $session_ended = isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username_' . $username]);
         if(!$session_ended)
             error_log('SESSIONE SCADUTA: ' . date("Y-m-d H:i:s"));
+        return $session_ended;
     }
 
     /**
@@ -102,7 +103,6 @@ class webSocketServer implements MessageComponentInterface{
                 }else{
                     $result['result'] = $query;
 
-//                    $_SESSION = array();
                     $_SESSION['username_' . $decoded_message['data']['username']] = $decoded_message['data']['username'];
                     $_SESSION['id'] = $result['result']['id'];
                     $_SESSION['is_admin'] = $result['result']['role'];
@@ -117,8 +117,8 @@ class webSocketServer implements MessageComponentInterface{
                 $result['action'] = 'logout';
 
                 if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username_' . $decoded_message['data']['username']])) {
+                    error_log('LOGOUT MANUALE DELL\'UTENTE ' . $decoded_message['data']['username']);
                     unset($_SESSION['username_' . $decoded_message['data']['username']]);
-//                    $_SESSION = array();
                     session_write_close();
                     $result['result'] = 'logged_out';
                 } else
@@ -136,9 +136,11 @@ class webSocketServer implements MessageComponentInterface{
                     $query = $this->connection->get_user($_SESSION['username_' . $decoded_message['data']['username']]);
 
                     ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
-//                    $result['result'] = array('session_name' => $_SESSION['username'], 'id' => $_SESSION['id'], 'is_admin' => $_SESSION['is_admin']);
-                }else
+                }else {
+                    error_log('NESSUN UTTENTE TROVATO' . $decoded_message['data']['username']);
+                    error_log('LA SESSIONE ATTIVA E' . $_SESSION['username_' . $decoded_message['data']['username']]);
                     $result['result'] = 'no_user';
+                }
 
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
@@ -594,6 +596,28 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'set_call_me':{
+                $result['action'] = 'set_call_me';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->set_call_me($decoded_message['data']['tag']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'stop_call_me':{
+                $result['action'] = 'stop_call_me';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->stop_call_me($decoded_message['data']['tag']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //getting the tag types
             case 'get_all_types':{
                 $result['action'] = 'get_all_types';
@@ -841,6 +865,23 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'get_tracking':{
+                $result['action'] = 'get_tracking';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $fromDate = $decoded_message['data']['fromDate'];
+                $toDate = $decoded_message['data']['toDate'];
+                $tag = $decoded_message['data']['tag'];
+                $event = $decoded_message['data']['event'];
+
+
+                $query = $this->connection->get_tracking($fromDate, $toDate, $tag, $event);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
 
             case 'delete_history':{
                 $result['action'] = 'delete_history';
@@ -898,6 +939,39 @@ class webSocketServer implements MessageComponentInterface{
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
                 $query = $this->connection->get_emergency_info($decoded_message['data']['location'], $decoded_message['data']['floor']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'get_evacuation':{
+                $result['action'] = 'get_evacuation';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->get_evacuation();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'set_evacuation':{
+                $result['action'] = 'set_evacuation';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->set_evacuation();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'stop_evacuation':{
+                $result['action'] = 'stop_evacuation';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->stop_evacuation();
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -1271,6 +1345,18 @@ class webSocketServer implements MessageComponentInterface{
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
                 $query = $this->connection->get_alpha();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
+            case 'get_rtls':{
+                $result['action'] = 'get_rtls';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->get_rtls();
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

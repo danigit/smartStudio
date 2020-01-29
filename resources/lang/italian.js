@@ -364,7 +364,12 @@ function languageController($scope) {
         insertSafetyBox: 'Inserire safety box',
         saveHistory: 'Salva storico',
         protocol: 'Protocollo',
-        beaconType: 'Tipo beacon'
+        beaconType: 'Tipo beacon',
+        tracking: 'Tracking',
+        trackingTable: 'Tabella tracking',
+        priority: "Priorita",
+        headerOrder: 'Ordine header',
+        headerLeftSide: 'Header a sinistra'
     }
 };
 
@@ -441,5 +446,8 @@ let lang = {
     deleteCategory: 'Cancella Categoria',
     deleteSafetyBox: 'Cancella safety box',
     deleteSafetyBoxText: 'Sei sicuro di voler cancellare la safety box?',
-
+    initEvacuation: 'Inizia evacuazione',
+    reset: 'Riprisina',
+    callMe: 'Chiamami',
+    stopCallMe: 'Tacitami'
 }

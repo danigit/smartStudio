@@ -82,7 +82,17 @@ DISPLAY
     display: flex;
 }
 
+.position-absolute{
+    position: absolute;
+}
 
+.top-0{
+    top: 0;
+}
+
+.bottom-0{
+    bottom: 0;
+}
 
 
 

@@ -108,9 +108,13 @@
                         lang.insertProximity}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'type')"
-                        ng-class="{'md-placeholder': !anchor.anchor.type.toString()}">{{anchor.anchor.type.toString() ||
-                        lang.insertType}}
+                    <td md-cell ng-class="{'md-placeholder': !anchor.anchor.type}">
+                        <md-select ng-model="selectedAnchor" ng-disabled="!isAdmin" ng-change="updateAnchorType(anchor, selectedAnchor)" aria-label="Seleziona tipologia">
+                            <md-option><em>{{lang.nothing}}</em></md-option>
+                            <md-option ng-selected="{{anchorType.id.toString() === anchor.anchor.anchor_type_id.toString()}}" ng-repeat="anchorType in anchorTypes track by $index" ng-value="anchorType.id">
+                                {{anchorType.description}}
+                            </md-option>
+                        </md-select>
                     </td>
 
                     <td md-cell class="no-wrap" ng-class="{'md-placeholder': !anchor.permitted_asset}">

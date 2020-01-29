@@ -815,6 +815,68 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /** Funzione che recupera tutti i tag di un mac
+     * @param $tag
+     * @return int|db_errors|mysqli_stmt
+     */
+    function set_call_me($tag)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'UPDATE tag SET CALL_ME_ALARM = ? WHERE ID = ?';
+
+            $statement = $this->execute_selecting($this->query, 'ii', 1, $tag);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_EMERGENCY);
+            }
+
+            $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /** Funzione che recupera tutti i tag di un mac
+     * @param $tag
+     * @return int|db_errors|mysqli_stmt
+     */
+    function stop_call_me($tag)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'UPDATE tag SET CALL_ME_ALARM = ? WHERE ID = ?';
+
+            $statement = $this->execute_selecting($this->query, 'ii', 0, $tag);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_EMERGENCY);
+            }
+
+            $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
     /**
      * Funzione che inserisce un nuovo mac
      * @param $name
@@ -1875,6 +1937,336 @@ class Connection
     }
 
     /**
+     * Function that returns the history
+     * @param $fromDate
+     * @param $toDate
+     * @param $tag
+     * @param $event
+     * @return array|db_errors|mysqli_stmt|null
+     */
+    function get_tracking($fromDate, $toDate, $tag, $event)
+    {
+
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $statement = null;
+            $array_result = array();
+            $anchorNullStatement = null;
+            $anchorNullQuery = "";
+
+            if (($tag == 'Qualsiasi' && $event == 'Qualsiasi') || ($tag == null && $event == 'Qualsiasi') || ($tag == 'Qualsiasi' && $event == null)) {
+                $this->query = "SELECT tracking.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, tracking.TAG_X_POS, tracking.TAG_Y_POS, tracking.PROTOCOL 
+                            FROM tracking JOIN event ON tracking.EVENT_ID = event.ID JOIN anchor ON tracking.ANCHOR_ID = anchor.ID 
+                            JOIN tag ON tracking.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
+                            WHERE CAST(tracking.TIME AS DATE) BETWEEN ? AND ? ORDER BY tracking.time DESC";
+                $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
+
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $statement;
+                } else if ($statement == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $statement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                        'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+
+                $statement->close();
+
+                $anchorNullQuery = "SELECT tracking.TIME, event.DESCRIPTION, tracking.TAG_X_POS, tracking.TAG_Y_POS, tag.NAME, tracking.PROTOCOL FROM tracking JOIN event ON tracking.EVENT_ID = event.ID
+                            JOIN tag ON tracking.TAG_ID = tag.ID WHERE CAST(tracking.TIME AS DATE) BETWEEN ? AND ? AND tracking.ANCHOR_ID IS NULL ORDER BY tracking.time DESC";
+
+                $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ss', $fromDate, $toDate);
+
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $anchorNullStatement;
+                } else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $anchorNullStatement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                        'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+            } else if ($tag != null && $event == 'Qualsiasi') {
+                $this->query = "SELECT tracking.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, tracking.TAG_X_POS, tracking.TAG_Y_POS, tracking.PROTOCOL 
+                            FROM tracking JOIN event ON tracking.EVENT_ID = event.ID JOIN anchor ON tracking.ANCHOR_ID = anchor.ID 
+                            JOIN tag ON tracking.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
+                            WHERE tag.NAME = ? AND CAST(tracking.TIME AS DATE) BETWEEN ? AND ? ORDER BY tracking.time DESC";
+                $statement = $this->execute_selecting($this->query, 'sss', $tag, $fromDate, $toDate);
+
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $statement;
+                } else if ($statement == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $statement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                        'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+
+                $statement->close();
+
+                $anchorNullQuery = "SELECT tracking.TIME, event.DESCRIPTION, tracking.TAG_X_POS, tracking.TAG_Y_POS, tag.NAME, tracking.PROTOCOL FROM tracking JOIN event ON tracking.EVENT_ID = event.ID
+                            JOIN tag ON tracking.TAG_ID = tag.ID WHERE tag.NAME = ? AND CAST(tracking.TIME AS DATE) BETWEEN ? AND ? AND tracking.ANCHOR_ID IS NULL ORDER BY tracking.time DESC";
+
+                $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $tag, $fromDate, $toDate);
+
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $anchorNullStatement;
+                } else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $anchorNullStatement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                        'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+            } else if ($tag == 'Qualsiasi' && $event != null) {
+                $this->query = "SELECT tracking.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, tracking.TAG_X_POS, tracking.TAG_Y_POS, tracking.PROTOCOL 
+                            FROM tracking JOIN event ON tracking.EVENT_ID = event.ID JOIN anchor ON tracking.ANCHOR_ID = anchor.ID 
+                            JOIN tag ON tracking.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
+                            WHERE event.DESCRIPTION = ? AND CAST(tracking.TIME AS DATE) BETWEEN ? AND ? ORDER BY tracking.time DESC";
+                $statement = $this->execute_selecting($this->query, 'sss', $event, $fromDate, $toDate);
+
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $statement;
+                } else if ($statement == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $statement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                        'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+
+                $statement->close();
+
+                $anchorNullQuery = "SELECT tracking.TIME, event.DESCRIPTION, tracking.TAG_X_POS, tracking.TAG_Y_POS, tag.NAME, tracking.PROTOCOL FROM tracking JOIN event ON tracking.EVENT_ID = event.ID
+                            JOIN tag ON tracking.TAG_ID = tag.ID WHERE event.DESCRIPTION = ? AND CAST(tracking.TIME AS DATE) BETWEEN ? AND ? AND tracking.ANCHOR_ID IS NULL ORDER BY tracking.time DESC";
+
+                $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $event, $fromDate, $toDate);
+
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $anchorNullStatement;
+                } else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $anchorNullStatement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                        'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+            } else if ($event == null && $tag != null) {
+                $this->query = "SELECT tracking.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, tracking.TAG_X_POS, tracking.TAG_Y_POS, tracking.PROTOCOL 
+                            FROM tracking JOIN event ON tracking.EVENT_ID = event.ID JOIN anchor ON tracking.ANCHOR_ID = anchor.ID 
+                            JOIN tag ON tracking.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
+                            WHERE tag.NAME = ? AND CAST(tracking.TIME AS DATE) BETWEEN ? AND ? ORDER BY tracking.time DESC";
+                $statement = $this->execute_selecting($this->query, 'sss', $tag, $fromDate, $toDate);
+
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $statement;
+                } else if ($statement == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $statement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                        'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+
+                $statement->close();
+
+                $anchorNullQuery = "SELECT tracking.TIME, event.DESCRIPTION, tracking.TAG_X_POS, tracking.TAG_Y_POS, tag.NAME, tracking.PROTOCOL FROM tracking JOIN event ON tracking.EVENT_ID = event.ID
+                            JOIN tag ON tracking.TAG_ID = tag.ID WHERE tag.NAME = ? AND CAST(tracking.TIME AS DATE) BETWEEN ? AND ? AND tracking.ANCHOR_ID IS NULL ORDER BY tracking.time DESC";
+
+                $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $tag, $fromDate, $toDate);
+
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $anchorNullStatement;
+                } else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $anchorNullStatement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                        'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+            } else if ($event != null && $tag == null) {
+                $this->query = "SELECT tracking.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, tracking.TAG_X_POS, tracking.TAG_Y_POS, tracking.PROTOCOL 
+                            FROM tracking JOIN event ON tracking.EVENT_ID = event.ID JOIN anchor ON tracking.ANCHOR_ID = anchor.ID 
+                            JOIN tag ON tracking.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
+                            WHERE event.DESCRIPTION = ? AND CAST(tracking.TIME AS DATE) BETWEEN ? AND ? ORDER BY tracking.time DESC";
+                $statement = $this->execute_selecting($this->query, 'sss', $event, $fromDate, $toDate);
+
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $statement;
+                } else if ($statement == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $statement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                        'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+
+                $statement->close();
+
+                $anchorNullQuery = "SELECT tracking.TIME, event.DESCRIPTION, tracking.TAG_X_POS, tracking.TAG_Y_POS, tag.NAME, tracking.PROTOCOL FROM tracking JOIN event ON tracking.EVENT_ID = event.ID
+                            JOIN tag ON tracking.TAG_ID = tag.ID WHERE event.DESCRIPTION = ? AND CAST(tracking.TIME AS DATE) BETWEEN ? AND ? AND tracking.ANCHOR_ID IS NULL ORDER BY tracking.time DESC";
+
+                $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $event, $fromDate, $toDate);
+
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $anchorNullStatement;
+                } else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $anchorNullStatement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                        'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+            } else if ($event != null && $tag != null) {
+                $this->query = "SELECT tracking.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, tracking.TAG_X_POS, tracking.TAG_Y_POS, tracking.PROTOCOL 
+                            FROM tracking JOIN event ON tracking.EVENT_ID = event.ID JOIN anchor ON tracking.ANCHOR_ID = anchor.ID 
+                            JOIN tag ON tracking.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
+                            WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND CAST(tracking.TIME AS DATE) BETWEEN ? AND ? ORDER BY tracking.time DESC";
+                $statement = $this->execute_selecting($this->query, 'ssss', $event, $tag, $fromDate, $toDate);
+
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $statement;
+                } else if ($statement == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $statement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                        'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+
+                $statement->close();
+
+                $anchorNullQuery = "SELECT tracking.TIME, event.DESCRIPTION, tracking.TAG_X_POS, tracking.TAG_Y_POS, tag.NAME, tracking.PROTOCOL FROM tracking JOIN event ON tracking.EVENT_ID = event.ID
+                            JOIN tag ON tracking.TAG_ID = tag.ID WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND tracking.ANCHOR_ID IS NULL AND CAST(tracking.TIME AS DATE) BETWEEN ? AND ? ORDER BY tracking.time DESC";
+
+                $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ssss', $event, $tag, $fromDate, $toDate);
+
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $anchorNullStatement;
+                } else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $anchorNullStatement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                        'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+            } else if ($tag == null && $event == null) {
+                $this->query = "SELECT tracking.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, tracking.TAG_X_POS, tracking.TAG_Y_POS, tracking.PROTOCOL
+                            FROM tracking JOIN event ON tracking.EVENT_ID = event.ID JOIN anchor ON tracking.ANCHOR_ID = anchor.ID
+                            JOIN tag ON tracking.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
+                            WHERE CAST(tracking.TIME AS DATE) BETWEEN ? AND ? ORDER BY tracking.time DESC";
+                $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
+
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $statement;
+                } else if ($statement == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $statement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                        'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+
+                $statement->close();
+
+                $anchorNullQuery = "SELECT tracking.TIME, event.DESCRIPTION, tracking.TAG_X_POS, tracking.TAG_Y_POS, tag.NAME, tracking.PROTOCOL FROM tracking JOIN event ON tracking.EVENT_ID = event.ID
+                            JOIN tag ON tracking.TAG_ID = tag.ID WHERE CAST(tracking.TIME AS DATE) BETWEEN ? AND ? AND tracking.ANCHOR_ID IS NULL ORDER BY tracking.time DESC";
+
+                $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ss', $fromDate, $toDate);
+
+                if ($anchorNullStatement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $anchorNullStatement;
+                } else if ($anchorNullStatement === false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_GETTING_HISTORY);
+                }
+                $this->result = $anchorNullStatement->get_result();
+
+                while ($row = mysqli_fetch_assoc($this->result)) {
+                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                        'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
+                        'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
+                }
+            }
+
+
+            mysqli_close($this->connection);
+            return $array_result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
      * @param $fromDate
      * @param $toDate
      * @return db_errors|int|mysqli_stmt
@@ -1990,7 +2382,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT anchor.ID, anchor.MAC, anchor.NAME, X_POS, Y_POS, Z_POS, anchor.RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, anchor_types.DESCRIPTION, PERMITTED_ASSET, IS_OFFLINE, 
+            $this->query = 'SELECT anchor.ID, anchor.MAC, anchor.NAME, X_POS, Y_POS, Z_POS, anchor.RADIUS, IP, RSSI_THRESHOLD, PROXIMITY, anchor_types.ID AS ANCHOR_TYPE_ID, anchor_types.DESCRIPTION, PERMITTED_ASSET, IS_OFFLINE, 
                         EMERGENCY_ZONE, NEIGHBORS, BATTERY_STATUS, FLOOR_ID, floor.NAME AS FLOOR_NAME, l.NAME AS LOCATION_NAME FROM anchor JOIN floor ON anchor.FLOOR_ID = floor.ID JOIN location l ON floor.LOCATION_ID = l.ID
                         JOIN anchor_types ON anchor.TYPE = anchor_types.ID WHERE floor.NAME = ? AND l.NAME = ? ORDER BY anchor.NAME';
 
@@ -2009,7 +2401,7 @@ class Connection
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'mac' => $row['MAC'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'],
                     'z_pos' => $row['Z_POS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'proximity' => $row['PROXIMITY'],
-                    'type' => $row['DESCRIPTION'], 'permitted_asset' => $row['PERMITTED_ASSET'], 'is_offline' => $row['IS_OFFLINE'], 'emergency_zone' => $row['EMERGENCY_ZONE'],
+                    'anchor_type_id' => $row['ANCHOR_TYPE_ID'], 'type' => $row['DESCRIPTION'], 'permitted_asset' => $row['PERMITTED_ASSET'], 'is_offline' => $row['IS_OFFLINE'], 'emergency_zone' => $row['EMERGENCY_ZONE'],
                     'neighbors' => $row['NEIGHBORS'], 'battery_status' => $row['BATTERY_STATUS'], 'floor_id' => $row['FLOOR_ID'], 'floor_name' => $row['FLOOR_NAME'], 'location_name' => $row['LOCATION_NAME']);
             }
 
@@ -2916,6 +3308,98 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /** Function that gets the emergency state
+     * @return int | db_errors | mysqli_stmt
+     */
+    function get_evacuation()
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "SELECT EVACUATION_ALARM FROM tag";
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_LOCATIONS);
+            }
+
+            $result = 1;
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                if ($row['EVACUATION_ALARM'] == 0){
+                    $result = 0;
+                    break;
+                }
+            }
+
+            return $result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /** Function that gets the emergency state
+     * @return int | db_errors | mysqli_stmt
+     */
+    function set_evacuation()
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'UPDATE tag SET EVACUATION_ALARM = ?';
+
+            $statement = $this->execute_selecting($this->query, 'i', 1);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_EMERGENCY);
+            }
+
+            $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /** Function that gets the emergency state
+     * @return int | db_errors | mysqli_stmt
+     */
+    function stop_evacuation()
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'UPDATE tag SET EVACUATION_ALARM = ?';
+
+            $statement = $this->execute_selecting($this->query, 'i', 0);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_EMERGENCY);
+            }
+
+            $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
     function get_tag_outside_location_zoom()
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
@@ -3077,9 +3561,10 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT zone.ID, zone.NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, COLOR, FLOOR_ID FROM zone JOIN floor 
+            $this->query = "SELECT zone.ID, zone.NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, zone.COLOR AS ZONE_COLOR, FLOOR_ID, WORK_PROCESS_ID, working_process.DESCRIPTION, working_process.COLOR AS PROCESS_COLOR, 
+                            PRIORITY, HEADER_ORDER, HEADER_LEFT_SIDE, FONT_COLOR FROM zone JOIN floor 
                             ON FLOOR_ID = floor.ID JOIN location l on floor.LOCATION_ID = l.ID JOIN user_has_location 
-                            ON l.ID = user_has_location.LOCATION_ID JOIN user u ON user_has_location.USER_ID = u.ID 
+                            ON l.ID = user_has_location.LOCATION_ID JOIN user u ON user_has_location.USER_ID = u.ID LEFT JOIN working_process ON zone.WORK_PROCESS_ID = working_process.ID
                             WHERE floor.NAME = ? AND l.NAME = ? AND u.NAME = ?";
 
             $statement = $this->execute_selecting($this->query, 'sss', $floor, $location, $user);
@@ -3097,7 +3582,9 @@ class Connection
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_left' => $row['X_LEFT'],
                     'x_right' => $row['X_RIGHT'], 'y_up' => $row['Y_UP'], 'y_down' => $row['Y_DOWN'],
-                    'color' => $row['COLOR'], 'floor_id' => $row['FLOOR_ID']);
+                    'color' => $row['ZONE_COLOR'], 'floor_id' => $row['FLOOR_ID'], 'work_process_id' => $row['WORK_PROCESS_ID'], 'process_description' => $row['DESCRIPTION'],
+                    'process_color' => $row['PROCESS_COLOR'], 'priority' => $row['PRIORITY'], 'header_order' => $row['HEADER_ORDER'], 'header_left_side' => $row['HEADER_LEFT_SIDE'],
+                    'font_color' => $row['FONT_COLOR']);
             }
 
             mysqli_close($this->connection);
@@ -3263,7 +3750,11 @@ class Connection
 
         if ($this->connection) {
             $this->query = "UPDATE zone SET " . strtoupper($zone_field) . " = ? WHERE ID = ?";
-            $statement = $this->execute_selecting($this->query, 'ss', $field_value, $zone_id);
+            if ($zone_field == 'header_left_side'){
+                $statement = $this->execute_selecting($this->query, 'is', $field_value, $zone_id);
+            }else {
+                $statement = $this->execute_selecting($this->query, 'ss', $field_value, $zone_id);
+            }
 
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
@@ -3803,6 +4294,34 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array = array('alpha' => $row['ZONE_ALPHA']);
+            }
+
+            mysqli_close($this->connection);
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function get_rtls()
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'SELECT SAFE_MON_STATUS, DESCRIPTION, COLOR FROM rtls JOIN safemon ON SAFE_MON_STATUS = safemon.ID ';
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_MAC_TYPES);
+            }
+
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array = array('sefe_mon_id' => $row['SAFE_MON_STATUS'], 'description' => $row['DESCRIPTION'], 'color' => $row['COLOR']);
             }
 
             mysqli_close($this->connection);

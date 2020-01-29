@@ -103,7 +103,7 @@
 
                     //if the marker(location) is outside it cannot have anchors so i controll only the tags
                     if (!marker.is_inside) {
-                        if (dataService.checkIfTagsHaveAlarms(tags)) {
+                        if (dataService.checkIfTagsHaveAlarmsInfo(tags)) {
                             if (!dataService.alarmLocationsContainLocation(alarmLocations, marker))
                                 alarmLocations.push(marker);
 
@@ -122,7 +122,7 @@
                         let locationTags    = dataService.getIndoorLocationTags(marker, indoorTags);
 
 
-                        if (dataService.checkIfTagsHaveAlarms(locationTags)) {
+                        if (dataService.checkIfTagsHaveAlarmsInfo(locationTags)) {
                             if (!dataService.alarmLocationsContainLocation(alarmLocations, marker))
                                 alarmLocations.push(marker);
 
@@ -2119,6 +2119,7 @@
         let zoneToModify       = null;
         let alpha              = canvasData.alpha;
 
+        console.log(canvasData)
         canvasCtrl.isAdmin = dataService.isAdmin;
         canvasCtrl.isUserManager = dataService.isUserManager;
         canvasCtrl.isTracker = dataService.isTracker;
@@ -2309,8 +2310,6 @@
                 bufferCanvas.width  = canvasImage.naturalWidth;
                 bufferCanvas.height = canvasImage.naturalHeight;
 
-                console.log('updating indoor location');
-
                 //updating the canvas and drawing border
                 updateCanvas(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasImage);
 
@@ -2355,9 +2354,13 @@
                                     if (!floorZones.session_state)
                                         window.location.reload();
 
+                                    let workingZones = document.getElementById('working-zones');
+                                    let angularWorkingZones = angular.element(workingZones)
+
                                     if (floorZones.result.length > 0 && dataService.switch.showZones) {
                                         canvasCtrl.floorData.floorZones = floorZones.result;
-                                        floorZones.result.forEach((zone) => {
+                                        let orderedZones = floorZones.result.sort((z1, z2) => (z1.priority < z2.priority) ? 1 : -1);
+                                        orderedZones.forEach((zone) => {
                                             drawZoneRect({
                                                 x : zone.x_left,
                                                 y : zone.y_up,
@@ -2365,7 +2368,28 @@
                                                 yy: zone.y_down
                                             }, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, zone.color, false, alpha);
                                         });
+
+                                        let sortedZones = floorZones.result.sort((z1, z2) => (z1.header_order > z2.header_order) ? 1 : -1);
+                                        let lavElements = Array.prototype.slice.call( document.querySelectorAll('.lavoration') );
+                                        angular.element(lavElements).remove();
+                                        sortedZones.forEach((zone) => {
+                                            if (zone.work_process_id !== null){
+                                                let side = zone.header_left_side ? "left; margin-left: 35px;" : "right; margin-right: 90px";
+                                                let newLavoration = angular.element('<div class="lavoration" style="font-size: small; bottom: 0; padding: 10px 10px 0 10px; background: ' +  zone.process_color + '; border-radius: 10px 10px 0 0; float: ' + side + '; text-align: center; color:' + zone.font_color + '"><span style="font-weight: bold; text-decoration: underline; color:' + zone.font_color + '">' + zone.name.toUpperCase() + '</span><br>' + zone.process_description + '</div>');
+                                                angularWorkingZones.append(newLavoration)
+                                            }
+                                        })
                                     }
+
+                                    newSocketService.getData('get_rtls', {}, (response) => {
+                                        if (!response.session_state)
+                                            window.location.reload();
+
+                                        angular.element(document.querySelector('.rtls-mon')).remove();
+
+                                        let newLavoration = angular.element('<div class="rtls-mon" style="position: absolute; width: 200px; left: 46%; font-size: small; bottom: 0; padding: 10px 10px 0 10px; background: ' +  response.result.color + '; border-radius: 10px 10px 0 0; float: left; text-align: center"><span style="word-break: break-all; font-weight: bold;">' + response.result.description.toUpperCase() + '</span></div>');
+                                        angularWorkingZones.append(newLavoration)
+                                    });
 
                                     newSocketService.getData('get_anchors_by_floor_and_location', {
                                         floor   : canvasCtrl.floorData.defaultFloorName,
@@ -2457,7 +2481,7 @@
                                                                     isolatedTags.forEach(function (tag, index) {
                                                                         if (!dataService.isOutdoor(tag)) {
                                                                             if (canvasCtrl.isAdmin === 1 || canvasCtrl.isTracker === 1) {
-                                                                                if (tag.tag_type_id === 1 || tag.tag_type_id === 14) {
+                                                                                if (tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19) {
                                                                                     if (dataService.checkIfTagHasAlarm(tag)) {
                                                                                         dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
                                                                                             .then((alarmImages) => {
@@ -2467,7 +2491,9 @@
                                                                                                 context.drawImage(bufferCanvas, 0, 0);
                                                                                                 contextDrawed = true;
                                                                                             });
-                                                                                    } else if (!dataService.isTagOffline(tag)) {
+                                                                                    } else if (dataService.isTagOffline(tag)) {
+                                                                                        drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                    } else if(!tag.is_exit && !tag.radio_switched_off){
                                                                                         drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
                                                                                     }
                                                                                 } else {
@@ -2489,7 +2515,7 @@
                                                                                 }
                                                                             } else if (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) {
                                                                                 if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
-                                                                                    if (tag.tag_type_id === 1 || tag.tag_type_id === 14) {
+                                                                                    if (tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19) {
                                                                                         if (dataService.checkIfTagHasAlarm(tag)) {
                                                                                             dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
                                                                                                 .then((alarmImages) => {
@@ -3211,7 +3237,6 @@
                 let virtualTagPosition = scaleIconSize(tag.x_pos, tag.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                 tagCloud               = dataService.groupNearTags(dataService.floorTags, tag);
 
-                console.log(dataService.floorTags);
                 if (!dataService.isOutdoor(tag) && !canvasCtrl.switch.showDrawing) {
                     if (dataService.isElementAtClick(virtualTagPosition, mouseDownCoords, 45)) {
                         if (tagCloud.groupTags.length > 1) {
@@ -3267,7 +3292,7 @@
                             }
                             dialogShown = true;
                         } else {
-                            if (tag.tag_type_id === 1 || tag.tag_type_id === 14) {
+                            if (tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19) {
                                 if (dataService.checkIfTagHasAlarm(tag)){
                                     $mdDialog.show({
                                         locals             : {tag: tag},
@@ -3795,6 +3820,9 @@
                     $scope.safeTags   = null;
                     $scope.unsafeTags = [];
                     $scope.data       = [];
+                    $scope.evacuation_value = lang.initEvacuation;
+                    $scope.evacuation_button = 'background-red';
+                    let evacuation_on = false;
 
                     $scope.men = {
                         safe  : 0,
@@ -3819,6 +3847,40 @@
 
                         $scope.data = [$scope.men.safe, $scope.men.unsafe];
                     });
+
+                    newSocketService.getData('get_evacuation', {}, (response) => {
+                        console.log(response);
+                        if (response.result == 1){
+                            evacuation_on            = true;
+                            $scope.evacuation_button = 'background-green';
+                            $scope.evacuation_value  = lang.reset;
+                        }else{
+                            $scope.evacuation_on     = false;
+                            $scope.evacuation_button = 'background-red';
+                            $scope.evacuation_value  = lang.initEvacuation;
+                        }
+                    });
+
+                    $scope.sendEvacuation = () =>{
+                        console.log('evacuation is: ', evacuation_on);
+                        if (evacuation_on == false) {
+                            newSocketService.getData('set_evacuation', {}, (response) => {
+                                if (response.result > 0) {
+                                    evacuation_on            = true;
+                                    $scope.evacuation_button = 'background-green';
+                                    $scope.evacuation_value  = lang.reset;
+                                }
+                            });
+                        }else{
+                            newSocketService.getData('stop_evacuation', {}, (response) => {
+                                if (response.result > 0) {
+                                    evacuation_on     = false;
+                                    $scope.evacuation_button = 'background-red';
+                                    $scope.evacuation_value  = lang.initEvacuation;
+                                }
+                            })
+                        }
+                    };
 
                     $scope.hide = () => {
                         $mdDialog.hide();
@@ -4783,6 +4845,122 @@
         };
 
         //history table
+        $scope.viewTracking = function (position) {
+            dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
+            dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
+            dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
+
+            $mdDialog.show({
+                templateUrl        : componentsPath + 'tracking-table.html',
+                parent             : angular.element(document.body),
+                clickOutsideToClose: true,
+                controller         : ['$scope', function ($scope) {
+                    let from = new Date();
+                    from.setDate(from.getDate() - 7);
+
+                    $scope.tableEmpty    = false;
+                    $scope.isAdmin       = dataService.isAdmin;
+                    $scope.isUserManager = dataService.isUserManager;
+
+                    $scope.tracking = {
+                        fromDate     : from,
+                        toDate       : new Date(),
+                        tags         : dataService.allTags,
+                        events       : null,
+                        selectedTag  : null,
+                        selectedEvent: null
+                    };
+
+                    $scope.query = {
+                        limitOptions: [5, 10, 20, 50, 100],
+                        order       : 'time',
+                        limit       : 5,
+                        page        : 1
+                    };
+
+                    $scope.trackingRows   = [];
+
+                    let getProtocol = (history_rows) => {
+                        let historyRows = [];
+
+                        history_rows.forEach(function (his) {
+                            let hisRow = his;
+                            switch (his.protocol) {
+                                case 0: {
+                                    hisRow.protocol = 'BLE';
+                                    break;
+                                }
+                                case 1: {
+                                    hisRow.protocol = 'WIFI';
+                                    break;
+                                }
+                                case 2: {
+                                    hisRow.protocol = 'GPRS';
+                                    break;
+                                }
+                                case 3: {
+                                    hisRow.protocol = 'SafetyBox';
+                                    break;
+                                }
+                            }
+                            historyRows.push(hisRow)
+                        });
+                        return historyRows;
+                    };
+
+                    $scope.$watchGroup(['tracking.fromDate', 'tracking.toDate', 'tracking.selectedTag', 'tracking.selectedEvent'], function (newValues) {
+                        let fromDate = $filter('date')(newValues[0], 'yyyy-MM-dd');
+                        let toDate   = $filter('date')(newValues[1], 'yyyy-MM-dd');
+
+
+                        newSocketService.getData('get_events', {}, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
+
+                            $scope.tracking.events = response.result;
+                        });
+
+                        newSocketService.getData('get_tracking', {
+                            fromDate: fromDate,
+                            toDate  : toDate,
+                            tag     : newValues[2],
+                            event   : newValues[3]
+                        }, (response) => {
+                            if (!response.session_state)
+                                window.location.reload();
+
+                            $scope.trackingRows = getProtocol(response.result);
+
+                            $scope.tableEmpty = $scope.trackingRows.length === 0;
+                            $scope.$apply();
+                        });
+                    });
+
+                    $scope.hide = () => {
+
+                        $mdDialog.hide();
+                    }
+                }],
+                onRemoving         : function () {
+                    switch (position) {
+                        case 'home':
+                            if (dataService.homeTimer === undefined){
+                                NgMap.getMap('main-map').then((map) => {
+                                    $rootScope.$emit('constantUpdateNotifications', map)
+                                });
+                            }
+                            break;
+                        case 'canvas':
+                            if (dataService.canvasInterval === undefined){
+                                $rootScope.$emit('constantUpdateCanvas')
+                            }
+                            break;
+                    }
+                }
+            });
+        };
+
+        //history table
         $scope.viewHistory = function (position) {
             dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
             dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
@@ -4812,7 +4990,7 @@
 
                     $scope.query = {
                         limitOptions: [5, 10, 20, 50, 100],
-                        order       : 'Data',
+                        order       : 'time',
                         limit       : 5,
                         page        : 1
                     };
@@ -4896,7 +5074,8 @@
                                 window.location.reload();
 
                             $scope.historyRows = getProtocol(response.result);
-                            console.log($scope.historyRows);
+                            $scope.query['limitOptions'] = [5, 10, 20, 100];
+                            $scope.query['limitOptions'].push(response.result.length);
 
                             newSocketService.getData('get_all_locations', {}, (locations) =>{
                                 $scope.historyRows.forEach((event, index) => {
@@ -5125,6 +5304,8 @@
                     $scope.isUserManager = userManager;
                     $scope.selectedType  = null;
                     $scope.tagTypes      = [];
+                    $scope.tagsCallMe = {};
+                    let call_me_button = false;
                     $scope.query         = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
@@ -5166,6 +5347,13 @@
                             });
 
                             $scope.tagsOnline = $scope.tags.filter(t => !tempOffgrid.some(to => to.id === t.id));
+
+                            console.log(response)
+                            response.result.forEach(function(tag){
+                                let tagId = tag.id;
+                                $scope.tagsCallMe[tagId] = {background: (tag.call_me_alarm === 1) ? 'background-green': 'background-red', value: (tag.call_me_alarm === 1) ? lang.stopCallMe : lang.callMe, on: (tag.call_me_alarm === 1)}
+                            });
+                            console.log($scope.tagsCallMe)
                         });
 
                         newSocketService.getData('get_all_types', {}, (response) => {
@@ -5666,6 +5854,26 @@
 
                             $mdDialog.show(tagParameters);
                         })
+                    };
+
+                    $scope.callMe = (tag) =>{
+                        if (!$scope.tagsCallMe[tag.id]['on']) {
+                            newSocketService.getData('set_call_me', {tag: tag.id}, (response) => {
+                                if (response.result > 0) {
+                                    $scope.tagsCallMe[tag.id]['on']              = true;
+                                    $scope.tagsCallMe[tag.id]['background'] = 'background-green';
+                                    $scope.tagsCallMe[tag.id]['value'] = lang.stopCallMe;
+                                }
+                            });
+                        } else {
+                            newSocketService.getData('stop_call_me', {tag: tag.id}, (response) =>{
+                                if (response.result > 0) {
+                                    $scope.tagsCallMe[tag.id]['on']              = false;
+                                    $scope.tagsCallMe[tag.id]['background'] = 'background-red';
+                                    $scope.tagsCallMe[tag.id]['value'] = lang.callMe;
+                                }
+                            });
+                        }
                     };
 
                     $scope.hide = () => {
@@ -6704,6 +6912,8 @@
                         tags              : dataService.allTags
                     };
                     $scope.anchors       = [];
+                    $scope.anchorTypes = [];
+                    $scope.selectedType = null;
 
                     $scope.query = {
                         limitOptions: [5, 10, 15],
@@ -6776,6 +6986,25 @@
                     };
 
                     updateAnchorsTable();
+
+                    newSocketService.getData('get_anchor_types', {}, (anchor_types) => {
+                        console.log(anchor_types)
+                        $scope.anchorTypes = anchor_types.result
+                    });
+
+                    $scope.updateAnchorType = (anchor, selectedType) => {
+                        console.log('updating anchors')
+                        if (anchor.anchor.type.toString() !== selectedType.toString()) {
+                            newSocketService.getData('change_anchor_field', {
+                                anchor_id   : anchor.anchor.id,
+                                anchor_field: 'type',
+                                field_value : selectedType
+                            }, (response) => {
+                                if (!response.session_state)
+                                    window.location.reload();
+                            });
+                        }
+                    };
 
                     $rootScope.$on('updateAnchorsTable', function () {
                         updateAnchorsTable();
@@ -7191,7 +7420,6 @@
             dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
             dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
             dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
-            console.log(dataService.user);
 
             newSocketService.getData('logout', {username: dataService.user.username}, (response) => {
                 if (!response.session_state)
