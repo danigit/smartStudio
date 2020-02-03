@@ -1,0 +1,193 @@
+<div ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">SMART STUDIO - {{lang.legend | uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+
+        <md-table-container>
+
+            <table md-table md-row-select="options.rowSelection" multiple="true" ng-model="selected"
+                   md-progress="promise">
+
+                <thead md-head md-order="query.order">
+                <tr md-row>
+                    <th md-column><span class="color-darkcyan">{{lang.image | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.meaning | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.description | uppercase}}</span></th>
+                </tr>
+                </thead>
+
+                <tbody md-body>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/online_tag_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.safe_tag_meaning}}</td>
+                    <td md-cell>{{lang.safe_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/cumulative_tags_32.png" alt="" title=""></td>
+                    <td md-cell>{{lang.safe_tags_meaning}}</td>
+                    <td md-cell>{{lang.safe_tags_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/man_down_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.alarm_tag_meaning}}</td>
+                    <td md-cell>{{lang.alarm_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/sos_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.sos_tag_meaning}}</td>
+                    <td md-cell>{{lang.sos_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/battery_low_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.low_battery_tag_meaning}}</td>
+                    <td md-cell>{{lang.low_battery_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/out_of_location_legend.png" alt="" title=""></td>
+                    <td md-cell>{{lang.out_location_tag_meaning}}</td>
+                    <td md-cell>{{lang.out_location_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/man-down-tacitated_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.men_down_tacited_tag_meaning}}</td>
+                    <td md-cell>{{lang.men_down_tacited_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/man-down-disabled_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.men_down_disabled_tag_meaning}}</td>
+                    <td md-cell>{{lang.men_down_disabled_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/inside_zone_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.prohibited_tag_zone_tag_meaning}}</td>
+                    <td md-cell>{{lang.prohibited_tag_zone_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/man_in_quote_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.quote_change_tag_meaning}}</td>
+                    <td md-cell>{{lang.quote_change_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/glove_dpi_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.not_dpi_glove_tag_meaning}}</td>
+                    <td md-cell>{{lang.not_dpi_glove_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/helmet_dpi_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.not_dpi_helmet_tag_meaning}}</td>
+                    <td md-cell>{{lang.not_dpi_helmet_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/belt_dpi_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.not_dpi_belt_tag_meaning}}</td>
+                    <td md-cell>{{lang.not_dpi_belt_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/mask_dpi_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.not_dpi_mask_tag_meaning}}</td>
+                    <td md-cell>{{lang.not_dpi_mask_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/cumulative_tags_half_alert_32.png" alt="" title=""></td>
+                    <td md-cell>{{lang.mixt_tags_safe_alarm_meaning}}</td>
+                    <td md-cell>{{lang.mixt_tags_safe_alarm_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/offline_tag_24.png" alt="" title=""></td>
+                    <td md-cell>{{lang.lost_tag_meaning}}</td>
+                    <td md-cell>{{lang.lost_tag_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/cumulative_tags_offline_online_32.png" alt="" title=""></td>
+                    <td md-cell>{{lang.mixt_tags_safe_lost_meaning}}</td>
+                    <td md-cell>{{lang.mixt_tags_safe_lost_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/cumulative_tags_offline_alert_32.png" alt="" title=""></td>
+                    <td md-cell>{{lang.mixt_tags_lost_alarm_meaning}}</td>
+                    <td md-cell>{{lang.mixt_tags_lost_alarm_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/cumulative_tags_32.png" alt="" title=""></td>
+                    <td md-cell>{{lang.mixt_tags_all_meaning}}</td>
+                    <td md-cell>{{lang.mixt_tags_all_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/cumulative_tags_all_offline_32.png" alt="" title=""></td>
+                    <td md-cell>{{lang.lost_tags_meaning}}</td>
+                    <td md-cell>{{lang.lost_tags_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/cumulative_tags_all_32.png" alt="" title=""></td>
+                    <td md-cell>{{lang.alarm_tags_meaning}}</td>
+                    <td md-cell>{{lang.alarm_tags_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/online_legend_anchor.png" alt="" title=""></td>
+                    <td md-cell>{{lang.online_anchor_meaning}}</td>
+                    <td md-cell>{{lang.online_anchor_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/tags/offline_legend_anchor.png" alt="" title=""></td>
+                    <td md-cell>{{lang.offline_anchor_meaning}}</td>
+                    <td md-cell>{{lang.offline_anchor_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/markers/location-marker.png" alt="" title=""></td>
+                    <td md-cell>{{lang.indoor_location_meaning}}</td>
+                    <td md-cell>{{lang.indoor_location_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/markers/mountain.png" alt="" title=""></td>
+                    <td md-cell>{{lang.outdoor_location_meaning}}</td>
+                    <td md-cell>{{lang.outdoor_location_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/alarm-icon.png" alt="" title=""></td>
+                    <td md-cell>{{lang.alarm_symbol_meaning}}</td>
+                    <td md-cell>{{lang.alarm_symbol_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/offline_anchors_alert_64.png" alt="" title=""></td>
+                    <td md-cell>{{lang.anchor_alarm_symbol_meaning}}</td>
+                    <td md-cell>{{lang.anchor_alarm_symbol_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/engine_off_64.png" alt="" title=""></td>
+                    <td md-cell>{{lang.engine_alarm_meaning}}</td>
+                    <td md-cell>{{lang.engine_alarm_description}}</td>
+                </tr>
+                <tr md-row md-select="floor" md-on-select="logItem" md-auto-select="true">
+                    <td md-cell class="padding-10-px"><img src="./img/icons/offline_tags_alert_64.png" alt="" title=""></td>
+                    <td md-cell>{{lang.alarm_tags_home_meaning}}</td>
+                    <td md-cell>{{lang.alarm_tags_home_description}}</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </md-table-container>
+    </div>
+</md-content>
+<!--end popup content-->

@@ -1,0 +1,293 @@
+<div class="width-325-px" ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{lang.parameters | uppercase}} {{tag.name}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+    <!--end popup header-->
+</div>
+<!--popup content-->
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+
+        <form id="insertConfiguarionsForm" name="insertConfigurationsForm">
+            <h4 class="parameter-type margin-top-40-px"><span class="parameter-span">Safety</span></h4>
+            <div layout="row">
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.advertisementRate}}</label>
+                    <md-select ng-model="sendedValues.adv_rate">
+                        <md-option ng-selected="{{adv_rate.value.toString() === tagParameters.adv_rate.toString()}}" ng-repeat="adv_rate in selectValues.adv_rate" ng-value="adv_rate.value">
+                            {{adv_rate.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <label>{{lang.powerLevel}}</label>
+                    <md-select ng-model="sendedValues.power_level">
+                        <md-option ng-selected="{{power_level.value.toString() === tagParameters.power_level.toString()}}" ng-repeat="power_level in selectValues.power_level" ng-value="power_level.value">
+                            {{power_level.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <label>{{lang.disableTiming}}</label>
+                    <md-select ng-model="sendedValues.disable_timing">
+                        <md-option ng-selected="{{disable_timing.value.toString() === tagParameters.disable_timing.toString()}}" ng-repeat="disable_timing in selectValues.disable_timing" ng-value="disable_timing.value">
+                            {{disable_timing.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <label>{{lang.alarmTiming}}</label>
+                    <md-select ng-model="sendedValues.alarm_timing">
+                        <md-option ng-selected="{{alarm_timing.value.toString() === tagParameters.alarm_timing.toString()}}" ng-repeat="alarm_timing in selectValues.alarm_timing" ng-value="alarm_timing.value">
+                            {{alarm_timing.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+            </div>
+            <div layout="row">
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.noMovTiming}}</label>
+                    <md-select ng-model="sendedValues.no_mov_timing">
+                        <md-option ng-selected="{{no_mov_timing.value.toString() === tagParameters.no_mov_timing.toString()}}" ng-repeat="no_mov_timing in selectValues.no_mov_timing" ng-value="no_mov_timing.value">
+                            {{no_mov_timing.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <label>{{lang.manDownMode}}</label>
+                    <md-select ng-model="sendedValues.md_mode">
+                        <md-option ng-selected="{{md_mode.value.toString() === tagParameters.md_mode.toString()}}" ng-repeat="md_mode in selectValues.md_mode" ng-value="md_mode.value">
+                            {{md_mode.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <label>{{lang.keepAliveTimer}}</label>
+                    <md-select ng-model="sendedValues.ka">
+                        <md-option ng-selected="{{ka.value.toString() === tagParameters.ka.toString()}}" ng-repeat="ka in selectValues.ka" ng-value="ka.value">
+                            {{ka.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <label>{{lang.scanningTimer}}</label>
+                    <md-select ng-model="sendedValues.scanning_rate">
+                        <md-option ng-selected="{{scanning_rate.value.toString() === tagParameters.scanning_rate.toString()}}" ng-repeat="scanning_rate in selectValues.scanning_rate" ng-value="scanning_rate.value">
+                            {{scanning_rate.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+            </div>
+            <div layout="row">
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.lndPrtTimer}}</label>
+                    <md-select ng-model="sendedValues.lnd_prt_timing">
+                        <md-option ng-selected="{{lnd_prt_timing.value.toString() === tagParameters.lnd_prt_timing.toString()}}" ng-repeat="lnd_prt_timing in selectValues.lnd_prt_timing" ng-value="lnd_prt_timing.value">
+                            {{lnd_prt_timing.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <label>{{lang.scanningBeacons}}</label>
+                    <md-select ng-model="sendedValues.scanning_pkt">
+                        <md-option ng-selected="{{scanning_pkt.value.toString() === tagParameters.scanning_pkt.toString()}}" ng-repeat="scanning_pkt in selectValues.scanning_pkt" ng-value="scanning_pkt.value">
+                            {{scanning_pkt.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <label>{{lang.freefallRate}}</label>
+                    <md-select ng-model="sendedValues.freefall_thd">
+                        <md-option ng-selected="{{freefall_thd.value.toString() === tagParameters.freefall_thd.toString()}}" ng-repeat="freefall_thd in selectValues.freefall_thd" ng-value="freefall_thd.value">
+                            {{freefall_thd.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <label>{{lang.simOn}}</label>
+                    <md-select ng-model="sendedValues.sim_is_here">
+                        <md-option ng-selected="{{sim_is_here.value.toString() === tagParameters.sim_is_here.toString()}}" ng-repeat="sim_is_here in selectValues.sim_is_here" ng-value="sim_is_here.value">
+                            {{sim_is_here.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+            </div>
+            <div layout="row">
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.wifiOn}}</label>
+                    <md-select ng-model="sendedValues.wifi_is_here">
+                        <md-option ng-selected="{{wifi_is_here.value.toString() === tagParameters.wifi_is_here.toString()}}" ng-repeat="wifi_is_here in selectValues.wifi_is_here" ng-value="wifi_is_here.value">
+                            {{wifi_is_here.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <label>{{lang.advSatOn}}</label>
+                    <md-select ng-model="sendedValues.advertise_is_here">
+                        <md-option ng-selected="{{advertise_is_here.value.toString() === tagParameters.advertise_is_here.toString()}}" ng-repeat="advertise_is_here in selectValues.advertise_is_here" ng-value="advertise_is_here.value">
+                            {{advertise_is_here.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <input type="text" ng-model="sendedValues.mac_filter" name="mac_filter"
+                           placeholder="{{lang.macFilter}}">
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.loopSound}}</label>
+                    <md-select ng-model="sendedValues.periodic_sound">
+                        <md-option ng-selected="{{periodic_sound.value.toString() === tagParameters.periodic_sound.toString()}}" ng-repeat="periodic_sound in selectValues.periodic_sound" ng-value="periodic_sound.value">
+                            {{periodic_sound.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div layout="row">
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.tacitation_mode}}</label>
+                    <md-select ng-model="sendedValues.tacitation_mode">
+                        <md-option ng-selected="{{tacitation_mode.value.toString() === tagParameters.tacitation_mode.toString()}}" ng-repeat="tacitation_mode in selectValues.tacitation_mode" ng-value="tacitation_mode.value">
+                            {{tacitation_mode.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.lnd_prt_angle}}</label>
+                    <md-select ng-model="sendedValues.lnd_prt_angle">
+                        <md-option ng-selected="{{lnd_prt_angle.value.toString() === tagParameters.lnd_prt_angle.toString()}}" ng-repeat="lnd_prt_angle in selectValues.lnd_prt_angle" ng-value="lnd_prt_angle.value">
+                            {{lnd_prt_angle.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.beaconType}}</label>
+                    <md-select ng-model="sendedValues.beacon_type">
+                        <md-option ng-selected="{{beacon_type.value.toString() === tagParameters.beacon_type.toString()}}" ng-repeat="beacon_type in selectValues.beacon_type" ng-value="beacon_type.value">
+                            {{beacon_type.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+
+            <h4 class="parameter-type margin-top-20-px"><span class="parameter-span">Rete</span></h4>
+
+            <div layout="row">
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.apnOperator}}</label>
+                    <md-select ng-model="sendedValues.apn_name">
+                        <md-option ng-selected="{{apn_name.value.toString() === tagParameters.apn_name.toString()}}" ng-repeat="apn_name in selectValues.apn_name" ng-value="apn_name.value">
+                            {{apn_name.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <label>{{lang.apnCode}}</label>
+                    <md-select ng-model="sendedValues.apn_code">
+                        <md-option ng-selected="{{apn_code.value.toString() === tagParameters.apn_code.toString() && tagParameters.apn_code.toString()  !== ''}}" ng-repeat="apn_code in selectValues.apn_code" ng-value="apn_code.value">
+                            {{apn_code.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <input type="text" ng-model="sendedValues.server_ip" name="server_ip"
+                           placeholder="{{lang.serverIp}}">
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <input type="text" ng-model="sendedValues.rest_name" name="rest_name"
+                           placeholder="{{lang.restName}}">
+                </md-input-container>
+
+            </div>
+            <div layout="row">
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <input type="text" ng-model="sendedValues.ssid_wifi" name="ssid_wifi"
+                           placeholder="{{lang.ssidWiFi}}">
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <input type="text" ng-model="sendedValues.pwd_wifi" name="pwd_wifi"
+                           placeholder="{{lang.pwdWiFi}}">
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <input type="text" ng-model="sendedValues.ip_gateway_wifi" name="ip_gateway_wifi"
+                           placeholder="{{lang.ipGatewayWiFi}}">
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <input type="text" ng-model="sendedValues.ip_wetag_wifi" name="ip_wetag_wifi"
+                           placeholder="{{lang.ipWetagWiFi}}">
+                </md-input-container>
+
+            </div>
+
+            <h4 class="parameter-type margin-top-20-px"><span class="parameter-span">Uwb</span></h4>
+
+            <div layout="row">
+                <md-input-container md-no-float class="md-block width-200-px">
+                    <label>{{lang.geofenceThd}}</label>
+                    <md-select ng-model="sendedValues.geofence_thd">
+                        <md-option ng-selected="{{geofence_thd.value.toString() === tagParameters.geofence_thd.toString()}}" ng-repeat="geofence_thd in selectValues.geofence_thd" ng-value="geofence_thd.value">
+                            {{geofence_thd.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <input type="text" ng-model="sendedValues.mac_uwb" name="mac_uwb"
+                           placeholder="{{lang.macUwb}}">
+                </md-input-container>
+
+                <md-input-container md-no-float class="md-block margin-left-20-px width-200-px">
+                    <input type="text" ng-model="sendedValues.udp_port_uwb" name="udp_port_uwb"
+                           placeholder="{{lang.geofencePort}}">
+                </md-input-container>
+
+            </div>
+
+            <div layout="row" layout-align="center end" class="width-100 margin-top-15-px">
+                <md-button ng-click="insertConfigurations(insertConfigurationsForm)" class="md-raised background-darkcyan color-white">
+                    {{lang.saveConfiguration | uppercase}}
+                </md-button>
+            </div>
+        </form>
+    </div>
+</md-content>
+<!--end popup content-->

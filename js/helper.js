@@ -1,3 +1,4 @@
+
 /**
  * Function that draw the border of the canvas
  * @param canvasWidth
@@ -64,6 +65,7 @@ function drawDashedLine(canvasWidth, canvasHeight, context, spacing, floorWidth,
             context.stroke();
         }
     }
+    context.closePath();
 }
 
 /**
@@ -104,18 +106,14 @@ function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) 
     context.beginPath();
     if (isTag) {
         context.fillStyle = 'red';
-        // (value.id < 10) ? id = '0' + value.id : id = value.id;
-        context.fillText(value.name, virtualTag.width - 5, virtualTag.height - 3);
+        context.fillText(value.name, virtualTag.width - 10, virtualTag.height - 14);
     } else {
         context.fillStyle = '#0093c4';
-        context.fillRect(virtualTag.width - 13, virtualTag.height - 17, 46, 16);
-        context.fillStyle = 'white';
-        // (value.id < 10) ? id = '0' + value.id : id = value.id;
         id = value.name;
-        context.fillText(id, virtualTag.width - 12, virtualTag.height - 5);
+        context.fillText(id, virtualTag.width - 17, virtualTag.height - 15);
     }
 
-    context.drawImage(img, virtualTag.width, virtualTag.height);
+    context.drawImage(img, virtualTag.width - 10, virtualTag.height - 10);
     context.strokeStyle = '#ff000015';
     context.stroke();
     if (value.radius > 0) {
@@ -126,6 +124,7 @@ function drawIcon(value, context, img, width, canvasWidth, canvasHeight, isTag) 
         context.fill();
         context.stroke();
     }
+    context.closePath();
 }
 
 /**
@@ -151,6 +150,7 @@ function drawCloudIcon(value, context, img, width, canvasWidth, canvasHeight, ta
     context.drawImage(img, virtualTag.width, virtualTag.height);
     context.strokeStyle = '#ff000015';
     context.stroke();
+    context.closePath();
 }
 
 /**
@@ -179,11 +179,10 @@ function scaleIconSize(width, height, realWidth, realHeight, canvasWidth, canvas
         height: 0
     };
 
-    let realPercentX = (width * 100) / parseInt(realWidth);
-    let realPercentY = (height * 100) / parseInt(realHeight);
+    let ratio = canvasWidth / realWidth;
 
-    scaledSize.width  = (realPercentX * canvasWidth) / 100;
-    scaledSize.height = (realPercentY * canvasHeight) / 100;
+    scaledSize.width  = ratio * width;
+    scaledSize.height = ratio * height;
 
     return scaledSize;
 }
@@ -210,10 +209,11 @@ function openFullScreen(elem) {
  * @returns {Promise<any>}
  */
 function convertImageToBase64(img) {
+    console.log(img);
     if (img == null)
         return Promise.resolve(null);
 
-    const image = new Image();
+    let image = new Image();
 
     let canvas  = document.createElement('canvas');
     let context = canvas.getContext('2d');
@@ -245,9 +245,10 @@ function convertImageToBase64(img) {
  * @returns {{x: string, y: string}}
  */
 function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemWidth, elemHeight) {
-    let realHeight       = (floorWidth * canvasHeight) / canvasWidth;
-    let reversePositionX = ((elemWidth * floorWidth * 100) / canvasWidth) / 100;
-    let reversePositionY = ((elemHeight * realHeight * 100) / canvasHeight) / 100;
+    let ratio = floorWidth / canvasWidth;
+
+    let reversePositionX = ratio * elemWidth;
+    let reversePositionY = ratio * elemHeight;
 
     return {x: reversePositionX.toFixed(2), y: reversePositionY.toFixed(2)};
 }
@@ -263,6 +264,7 @@ function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemW
  * @param map_spacing
  * @param floorWidth
  * @param showDrawing
+ * @param anchorPositioning
  */
 function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canvasContext, image, map_spacing, floorWidth, showDrawing, anchorPositioning) {
     updateCanvas(canvasWidth, canvasHeight, canvasContext, image);
@@ -284,7 +286,6 @@ function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canv
             }
         )
     }
-
 }
 
 /**
@@ -295,29 +296,34 @@ function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canv
  * @param drawingContext
  * @param showDrawing
  */
-function drawLine(begin, end, type, drawingContext, showDrawing) {
+function drawLine(begin, end, type, drawingContext, showDrawing) {;
     drawingContext.setLineDash([]);
     drawingContext.lineWidth   = 2;
     drawingContext.strokeStyle = 'black';
-    drawingContext.beginPath();
-    drawingContext.moveTo(begin.x, begin.y);
+
     if (type === 'vertical') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect({x: begin.x, y: end.y}, drawingContext);
         }
+        drawingContext.beginPath();
+        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(begin.x, end.y);
     } else if (type === 'horizontal') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect({x: end.x, y: begin.y}, drawingContext);
         }
+        drawingContext.beginPath();
+        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(end.x, begin.y);
     } else if (type === 'inclined') {
         if (showDrawing) {
             drawRect(begin, drawingContext);
             drawRect(end, drawingContext);
         }
+        drawingContext.beginPath();
+        drawingContext.moveTo(begin.x, begin.y);
         drawingContext.lineTo(end.x, end.y)
     }
     drawingContext.stroke();
@@ -330,12 +336,93 @@ function drawLine(begin, end, type, drawingContext, showDrawing) {
  * @param drawingContext
  */
 function drawRect(begin, drawingContext) {
+    drawingContext.beginPath();
     drawingContext.fillStyle = 'black';
     drawingContext.fillRect(begin.x - 5, begin.y - 5, 10, 10);
+    drawingContext.closePath();
 }
 
-function handleSocketError(socket) {
-    socket.onerror = (error) => {
-        console.error('L\'errore e\' => ', error.message);
+/**
+ * Function that draws a rectangle on the canvas
+ * @param begin
+ * @param drawingContext
+ * @param floorWidth
+ * @param canvasWidth
+ * @param canvasHeight
+ * @param color
+ * @param drawingOn
+ * @param alpha
+ */
+// drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
+function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, drawingOn, alpha) {
+    let realHeight = (floorWidth * canvasHeight) / canvasWidth;
+
+    let virtualPositionTop    = scaleIconSize(begin.x, begin.y, floorWidth, realHeight, canvasWidth, canvasHeight);
+    let virtualPositionBottom = scaleIconSize(begin.xx, begin.yy, floorWidth, realHeight, canvasWidth, canvasHeight);
+
+    let width  = virtualPositionBottom.width - virtualPositionTop.width;
+    let height = virtualPositionBottom.height - virtualPositionTop.height;
+
+    drawingContext.beginPath();
+    if (drawingOn) {
+        drawingContext.fillStyle = 'black';
+        drawingContext.fillRect(virtualPositionTop.width - 5, virtualPositionTop.height - 5, 10, 10);
     }
+    drawingContext.globalAlpha = alpha;
+    drawingContext.fillStyle   = color;
+    drawingContext.fillRect(virtualPositionTop.width | 0, virtualPositionTop.height | 0, width | 0, height | 0);
+    drawingContext.globalAlpha = 1.0;
+    drawingContext.stroke();
+    drawingContext.closePath();
+
+}
+
+/**
+ * Function that draws a rectangle on the canvas
+ * @param begin
+ * @param drawingContext
+ * @param floorWidth
+ * @param canvasWidth
+ * @param canvasHeight
+ * @param color
+ * @param alpha
+ */
+// drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
+function drawZoneRectFromDrawing(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, alpha) {
+
+    let width  = begin.xx - begin.x;
+    let height = begin.yy - begin.y;
+
+    drawingContext.beginPath();
+    drawingContext.fillStyle = 'black';
+    drawingContext.fillRect(begin.x - 5, begin.y - 5, 10, 10);
+    drawingContext.globalAlpha = alpha;
+    drawingContext.fillStyle = color;
+    drawingContext.fillRect(begin.x, begin.y, width, height);
+    drawingContext.globalAlpha = 1.0;
+    drawingContext.stroke();
+    drawingContext.closePath();
+}
+
+function findZone(coords, zones, floor, canvasWidth, canvasHeight) {
+    let findedZones = [];
+    let realcoords = scaleSizeFromVirtualToReal(floor, canvasWidth, canvasHeight, coords.x, coords.y);
+    zones.forEach((z) => {
+        if ((realcoords.x > z.x_left && realcoords.x < z.x_right && realcoords.y > z.y_up && realcoords.y < z.y_down)) {
+            findedZones.push(z.id);
+        }
+    });
+
+    return findedZones;
+}
+
+function findDrawedZone(coords, zones, floor, canvasWidth, canvasHeight) {
+    let findedZones = [];
+    zones.forEach((z) => {
+        if ((coords.x > z.topLeft.x && coords.x < z.bottomRight.x && coords.y > z.topLeft.y && coords.y < z.bottomRight.y)) {
+            findedZones.push(z);
+        }
+    });
+
+    return findedZones;
 }

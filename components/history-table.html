@@ -1,10 +1,10 @@
-<!--<div>-->
 <!--popup header-->
 <div ng-controller="languageController">
     <md-toolbar id="popup-toolbar" ng-class="">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -65,29 +65,44 @@
                     </md-input-container>
                 </div>
             </div>
+            <div layout="row" layout-align="center center">
+                <div ng-show="isAdmin">
+                    <md-button ng-click="deleteHistory()" class="md-raised background-red color-white margin-auto margin-top-20-px">{{lang.deleteHistory}}</md-button>
+                </div>
+                <div class="margin-left-20-px">
+                    <md-button ng-click="saveHistory()" class="md-raised background-green color-white margin-auto margin-top-20-px">{{lang.saveHistory}}</md-button>
+                </div>
+            </div>
         </div>
-        <div layout="column">
-            <md-table-container>
+        <div layout="column" layout-align="center center">
+            <md-table-container class="margin-bottom-40-px" id="his-table">
 
                 <table md-table>
-
                     <thead md-head md-order="query.order">
                     <tr md-row>
-                        <th md-column><span class="color-darkcyan">{{lang.date | uppercase}}</span></th>
-                        <th md-column><span class="color-darkcyan">{{lang.event | uppercase}}</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">{{lang.tag | uppercase}}</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">{{lang.anchor | uppercase}}</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">{{lang.site | uppercase}}</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">{{lang.floor | uppercase}}</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">{{lang.xPos | uppercase}}</span></th>
-                        <th md-column md-numeric><span class="color-darkcyan">{{lang.yPos | uppercase}}</span></th>
-
+                        <th md-column md-order-by="time"><span class="color-darkcyan">{{lang.date | uppercase}}</span>
+                        </th>
+                        <th md-column md-order-by="event"><span class="color-darkcyan">{{lang.event | uppercase}}</span>
+                        </th>
+                        <th md-column md-order-by="tag"><span class="color-darkcyan">{{lang.tag | uppercase}}</span>
+                        </th>
+                        <th md-column md-order-by="anchor"><span
+                                class="color-darkcyan">{{lang.anchor | uppercase}}</span></th>
+                        <th md-column md-order-by="location"><span
+                                class="color-darkcyan">{{lang.site | uppercase}}</span></th>
+                        <th md-column md-order-by="floor"><span class="color-darkcyan">{{lang.floor | uppercase}}</span>
+                        </th>
+                        <th md-column md-order-by="tag_x_pos" md-numeric><span class="color-darkcyan">{{lang.xPos | uppercase}}</span>
+                        </th>
+                        <th md-column md-order-by="tag_y_pos" md-numeric><span class="color-darkcyan">{{lang.yPos | uppercase}}</span>
+                        <th md-column md-order-by="protocol" md-numeric><span class="color-darkcyan">{{lang.protocol | uppercase}}</span>
+                        </th>
                     </tr>
                     </thead>
 
                     <tbody md-body>
                     <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
-                        ng-repeat="row in historyRows | limitTo: query.limit: (query.page -1 ) * query.limit track by $index">
+                        ng-repeat="row in historyRows | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit track by $index">
                         <td md-cell class="no-wrap">{{row.time}}</td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.event}">{{row.event || lang.noData}}
                         </td>
@@ -105,6 +120,9 @@
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag_y_pos.toString()}">
                             {{row.tag_y_pos.toString() || lang.noData}}
                         </td>
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.protocol.toString()}">
+                            {{row.protocol.toString() || lang.noData}}
+                        </td>
                     </tr>
                     <tr md-row ng-show="tableEmpty">
                         <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
@@ -112,7 +130,7 @@
                     </tbody>
                 </table>
             </md-table-container>
-            <md-table-pagination class="color-red" md-limit="query.limit" md-limit-options="query.limitOptions"
+            <md-table-pagination class="color-red background-white position-fixed bottom-0 width-100" md-limit="query.limit" md-limit-options="query.limitOptions"
                                  md-page="query.page"
                                  md-total="{{historyRows.length}}" md-on-paginate="">
             </md-table-pagination>
@@ -120,4 +138,3 @@
     </div>
 </md-content>
 <!--end popup content-->
-<!--</div>-->

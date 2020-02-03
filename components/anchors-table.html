@@ -3,7 +3,8 @@
     <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hideAnchors()">
-                <img src="img/icons/close-icon.png" aria-label="Close dialog" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -23,9 +24,9 @@
 <!--popup content-->
 <md-content class="popup-padding">
 
-    <div layout="column" layout-align="center center">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
 
-        <md-table-container>
+        <md-table-container class="margin-bottom-40-px">
 
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
@@ -40,71 +41,96 @@
                     <th md-column><span class="color-darkcyan">{{lang.floor | uppercase}}</span></th>
                     <th md-column md-numeric><span class="color-darkcyan">{{lang.radius | uppercase}}</span></th>
                     <th md-column><span class="color-darkcyan">{{lang.ip}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span></th>
+                    <th md-column><span class="color-darkcyan">{{lang.anchorState | uppercase}}</span></th>
                     <th md-column md-numeric=""><span class="color-darkcyan">{{lang.rssi | uppercase}}</span></th>
                     <th md-column md-numeric><span class="color-darkcyan">{{lang.proximity | uppercase}}</span></th>
                     <th md-column><span class="color-darkcyan">{{lang.type}}</span></th>
                     <th md-column><span class="color-darkcyan">{{lang.permittedAssets | uppercase}}</span></th>
+                    <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
 
                 <tbody md-body>
                 <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
-                    ng-repeat="anchor in anchors | limitTo: query.limit: (query.page -1 ) * query.limit">
-                    <td md-cell><img aria-label="{{lang.anchorState}}" alt="{{lang.anchorState}}" title="{{lang.anchorState}}"
-                                     ng-src="{{anchor.is_online ? 'img/icons/tags/anchor_online_16.png' : 'img/icons/tags/anchor_offline_16.png'}}">
+                    ng-repeat="anchor in anchors | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
+                    <td md-cell><img alt="{{lang.anchorState}}" title="{{lang.anchorState}}"
+                                     aria-label="{{lang.anchorState}}"
+                                     ng-src="{{anchor.anchor.is_offline ? 'img/icons/tags/anchor_offline_16.png' : 'img/icons/tags/anchor_online_16.png'}}">
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'name')"
-                        ng-class="{'md-placeholder': !anchor.name}">{{anchor.name || lang.insertName}}
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'name')"
+                        ng-class="{'md-placeholder': !anchor.anchor.name}">{{anchor.anchor.name || lang.insertName}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'x_pos')"
-                        ng-class="{'md-placeholder': !anchor.x_pos.toString()}">{{anchor.x_pos.toString() ||
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'x_pos')"
+                        ng-class="{'md-placeholder': !anchor.anchor.x_pos.toString()}">{{anchor.anchor.x_pos.toString() ||
                         lang.insertXPos}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'y_pos')"
-                        ng-class="{'md-placeholder': !anchor.y_pos.toString()}">{{anchor.y_pos.toString() ||
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'y_pos')"
+                        ng-class="{'md-placeholder': !anchor.anchor.y_pos.toString()}">{{anchor.anchor.y_pos.toString() ||
                         lang.insertYPos}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'z_pos')"
-                        ng-class="{'md-placeholder': !anchor.z_pos.toString()}">{{anchor.z_pos.toString() ||
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'z_pos')"
+                        ng-class="{'md-placeholder': !anchor.anchor.z_pos.toString()}">{{anchor.anchor.z_pos.toString() ||
                         lang.insertZPos}}
                     </td>
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'floor_name')"
-                        ng-class="{'md-placeholder': !anchor.floor_name.toString()}">{{anchor.floor_name.toString()
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'floor_name')"
+                        ng-class="{'md-placeholder': !anchor.anchor.floor_name.toString()}">{{anchor.anchor.floor_name.toString()
                         || lang.insertFloor}}
                     </td>
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'radius')"
-                        ng-class="{'md-placeholder': !anchor.radius.toString()}">{{anchor.radius.toString() ||
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'radius')"
+                        ng-class="{'md-placeholder': !anchor.anchor.radius.toString()}">{{anchor.anchor.radius.toString() ||
                         lang.insertRadius}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'ip')"
-                        ng-class="{'md-placeholder': !anchor.ip}">
-                        {{anchor.ip || lang.insertIp}}
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'ip')"
+                        ng-class="{'md-placeholder': !anchor.anchor.ip}">
+                        {{anchor.anchor.ip || lang.insertIp}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'rssi')"
-                        ng-class="{'md-placeholder': !anchor.rssi.toString()}">{{anchor.rssi.toString() || lang.insertRssi}}
+                    <td md-cell class="no-wrap"><img alt="{{lang.bateryStatus}}" ng-src="{{anchor.anchor.battery_status ? 'img/icons/battery_empty_24.png'
+                                                            : 'img/icons/battery_full_24.png'}}">
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'proximity')"
-                        ng-class="{'md-placeholder': !anchor.proximity.toString()}">{{anchor.proximity.toString() ||
+                    <td md-cell class="no-wrap" ><span ng-class="{'color-green': !anchor.anchor.is_offline, 'color-red': anchor.anchor.is_offline}">{{(anchor.anchor.is_offline ? (lang.offline | uppercase) : (lang.online | uppercase))}}</span>
+                    </td>
+
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'rssi')"
+                        ng-class="{'md-placeholder': !anchor.anchor.rssi.toString()}">{{anchor.anchor.rssi.toString() ||
+                        lang.insertRssi}}
+                    </td>
+
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor.anchorInfo, 'proximity')"
+                        ng-class="{'md-placeholder': !anchor.anchor.proximity.toString()}">{{anchor.anchor.proximity.toString() ||
                         lang.insertProximity}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'type')"
-                        ng-class="{'md-placeholder': !anchor.type.toString()}">{{anchor.type.toString() || lang.insertType}}
+                    <td md-cell ng-class="{'md-placeholder': !anchor.anchor.type}">
+                        <md-select ng-model="selectedAnchor" ng-disabled="!isAdmin" ng-change="updateAnchorType(anchor, selectedAnchor)" aria-label="Seleziona tipologia">
+                            <md-option><em>{{lang.nothing}}</em></md-option>
+                            <md-option ng-selected="{{anchorType.id.toString() === anchor.anchor.anchor_type_id.toString()}}" ng-repeat="anchorType in anchorTypes track by $index" ng-value="anchorType.id">
+                                {{anchorType.description}}
+                            </md-option>
+                        </md-select>
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor, 'permitted_asset')"
-                        ng-class="{'md-placeholder': !anchor.permitted_asset}">{{anchor.permitted_asset || lang.insertValue}}
+                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !anchor.permitted_asset}">
+                        <md-select ng-model="anchor.permitteds" placeholder="{{lang.permitted}}" ng-disabled="!isAdmin" ng-change="updatePermitteds(anchor.anchor.id, anchor.permitteds)"
+                                   multiple>
+                            <md-optgroup label="{{tag.name}}" ng-repeat="tag in anchorTable.tags">
+                                <md-option ng-value="permitted.mac" ng-repeat="permitted in anchorTable.permittedAssets | filter: {tag: tag.name}">
+                                    {{permitted.mac}}
+                                </md-option>
+                            </md-optgroup>
+                        </md-select>
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="deleteRow(anchor)"><img
-                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteAnchor}}" title="{{lang.deleteAnchor}}"></td>
+                    <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="deleteRow(anchor.anchor)"><img
+                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteAnchor}}"
+                            title="{{lang.deleteAnchor}}"></td>
 
                 </tr>
                 <tr md-row ng-show="tableEmpty">
@@ -114,14 +140,14 @@
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
-            <div layout="row" layout-align="center end" class="margin-bottom-30-px">
+        <md-input-container md-no-float ng-show="isAdmin" class="md-block width-100 margin-bottom-50-px margin-top-0">
+            <div layout="row" layout-align="center end">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="{{lang.addAnchor}}" title="{{lang.addAnchor}}">
             </div>
         </md-input-container>
 
-        <md-table-pagination class="color-red" md-limit="query.limit" md-limit-options="query.limitOptions"
+        <md-table-pagination class="color-red background-white position-fixed bottom-0 width-100" md-limit="query.limit" md-limit-options="query.limitOptions"
                              md-page="query.page"
                              md-total="{{anchors.length}}" md-on-paginate="getAnchors">
         </md-table-pagination>

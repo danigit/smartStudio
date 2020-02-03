@@ -4,7 +4,7 @@
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
-          <list size="40">
+          <list size="51">
             <item index="0" class="java.lang.String" itemvalue="layout" />
             <item index="1" class="java.lang.String" itemvalue="layout-align" />
             <item index="2" class="java.lang.String" itemvalue="md-numeric" />
@@ -45,6 +45,17 @@
             <item index="37" class="java.lang.String" itemvalue="ng-view" />
             <item index="38" class="java.lang.String" itemvalue="layout-margin" />
             <item index="39" class="java.lang.String" itemvalue="flex" />
+            <item index="40" class="java.lang.String" itemvalue="md-order-by" />
+            <item index="41" class="java.lang.String" itemvalue="ng-disabled" />
+            <item index="42" class="java.lang.String" itemvalue="ng-selected" />
+            <item index="43" class="java.lang.String" itemvalue="layout-sm" />
+            <item index="44" class="java.lang.String" itemvalue="layout-xs" />
+            <item index="45" class="java.lang.String" itemvalue="flex-lg" />
+            <item index="46" class="java.lang.String" itemvalue="flex-xl" />
+            <item index="47" class="java.lang.String" itemvalue="flex-sm" />
+            <item index="48" class="java.lang.String" itemvalue="flex-xs" />
+            <item index="49" class="java.lang.String" itemvalue="colorpick-eyedropper-active" />
+            <item index="50" class="java.lang.String" itemvalue="md-on-open" />
           </list>
         </value>
       </option>

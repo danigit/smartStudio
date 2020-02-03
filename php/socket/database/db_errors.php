@@ -47,6 +47,15 @@ class db_errors
     public static $ERROR_ON_UPDATING_FLOOR_IMAGE = 36;
     public static $ERROR_ON_CHANGING_FIELD = 37;
     public static $ERROR_ON_GETTING_EMERGENCY = 38;
+    public static $ERROR_ON_GETTING_TAG_OUTDOOR_LOCATION_ZOOM = 39;
+    public static $ERROR_ON_GETTING_USER_SETTINGS = 40;
+    public static $ERROR_ON_INSERTING_USER = 41;
+    public static $ERROR_ON_GETTING_USERS = 42;
+    public static $ERROR_ON_SENDING_EMAIL = 43;
+    public static $ERROR_ON_INSERTING_USER_HAS_LOCATION = 44;
+    public static $ERROR_ON_DELETING_USER_LOCATION = 45;
+    public static $ERROR_ON_UPDATIDN_PASSWORD = 46;
+    public static $ERROR_ON_INSERTING_SAFETY_BOX = 47;
 
     private $error;
 
@@ -153,6 +162,24 @@ class db_errors
                 return 'ERROR_ON_CHANGING_FIELD';
             case 38:
                 return 'ERROR_ON_GETTING_EMERGENCY';
+            case 39:
+                return '$ERROR_ON_GETTING_TAG_OUTDOOR_LOCATION_ZOOM';
+            case 40:
+                return '$ERROR_ON_GETTING_USER_SETTINGSM';
+            case 41:
+                return '$ERROR_ON_INSERTING_USER';
+            case 42:
+                return '$ERROR_ON_GETTING_USERS';
+            case 43:
+                return '$ERROR_ON_SENDING_EMAIL';
+            case 44:
+                return '$ERROR_ON_INSERTING_USER_HAS_LOCATION';
+            case 45:
+                return '$ERROR_ON_DELETING_USER_LOCATION';
+            case 46:
+                return '$ERROR_ON_DUPDATING_PASSWORD';
+            case 47:
+                return '$ERROR_ON_DINSERTING_SAFETY_BOX';
             default:
                 return 'UNKNOWN_ERROR';
         }

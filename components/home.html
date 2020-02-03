@@ -2,15 +2,21 @@
     <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
         <!--map container-->
         <div id="map-div">
-            <div layout="column" class="top-corner background-transparent-white">
-                <img ng-show="homeCtrl.showAlarmsIcon" ng-click="homeCtrl.showAlarmsHome()" class="margin-bottom-3"
-                     src="img/icons/alarm-icon.png" alt="{{lang.activeAllarms}}" title="{{lang.activeAllarms}}">
-                <img ng-show="homeCtrl.showOfflineTagsIcon" ng-click="homeCtrl.showOfflineTagsHome()"
-                     class="margin-bottom-5-px" src="img/icons/offline_tags_alert_64.png"
-                     alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}">
-                <img ng-show="homeCtrl.showOfflineAnchorsIcon" ng-click="homeCtrl.showOfflineAnchorsHome()"
-                     src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
-                     title="{{lang.offlineAnchors}}">
+            <div layout="column" class="top-corner">
+                <div layout="column" class="background-transparent-gray">
+                    <img ng-show="homeCtrl.showAlarmsIcon" ng-click="homeCtrl.showAlarmsHome()" class="pulse-image margin-bottom-5-px padding-top-bottom-6px"
+                         src="img/icons/alarm-icon.png" alt="{{lang.activeAllarms}}" title="{{lang.activeAllarms}}">
+                    <img ng-show="homeCtrl.showOfflineTagsIcon" ng-click="homeCtrl.showOfflineTagsHome()"
+                         class="margin-bottom-5-px padding-top-bottom-6px border-bottom-3-white border-top-3-white" src="img/icons/offline_tags_alert_64.png"
+                         alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}">
+                    <img ng-show="homeCtrl.showOfflineAnchorsIcon" ng-click="homeCtrl.showOfflineAnchorsHome()" class="margin-bottom-5-px padding-top-bottom-6px border-bottom-3-white"
+                         src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
+                         title="{{lang.offlineAnchors}}">
+                    <img ng-show="homeCtrl.showEngineOffIcon" class="padding-top-bottom-6px border-bottom-3-white"
+                         src="img/icons/engine_off_64.png" alt="{{lang.engineOff}}"
+                         title="{{lang.engineOff}}">
+                </div>
+                <div ng-if="homeCtrl.showAlarmsIcon || homeCtrl.showOfflineTagsIcons || homeCtrl.showOfflineAnchorsIcon || homeCtrl.showEngineOffIcon" class="triangle-transparent-gray-down"></div>
             </div>
             <ng-map id="main-map" ng-init="homeCtrl.markerClicked()" center="{{mapConfiguration.center}}"
                     zoom="{{mapConfiguration.zoom}}" mape-type-id="{{mapConfiguration.map_type}}" class="height-100-vh">
@@ -32,7 +38,7 @@
         <div flex="100" ng-controller="menuController">
 
             <div id="open-menu-button" ng-click="toggleLeft()" class="margin-left--8-px cursor-pointer outline-none">
-                <img id="open-menu-icon" src="img/icons/menu-arrow.png" alt="">
+                <img id="open-menu-icon" src="img/icons/menu-arrow.png" alt="{{lang.openMenu}}" title="{{lang.openMenu}}">
             </div>
             <section layout="row" flex>
 
@@ -56,27 +62,48 @@
 
                         <div layout="column" id="menu-container">
                             <md-list>
-                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="openLocations()"><p>{{lang.sitesTable}}
+                                <md-list-item ng-show="homeCtrl.isAdmin || homeCtrl.isUserManager" ng-click="openLocations()"><p>{{lang.sitesTable | uppercase}}
                                 </p><img src="img/icons/menu/add-location.png"
                                          class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="registry()"><p>{{lang.weTagTable}}</p><img
+                                <md-list-item ng-show="homeCtrl.isUserManager" ng-click="openUserManager()"><p>{{lang.userManager | uppercase}}
+                                </p><img src="img/icons/menu/user-manager-icon.png"
+                                         class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="openSuperuserManager()"><p>{{lang.userManager | uppercase}}
+                                </p><img src="img/icons/menu/user-manager-icon.png"
+                                         class="menu-list-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="registry('home')"><p>{{lang.weTagTable | uppercase}}</p><img
                                         src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="viewHistory()"><p>{{lang.history}}</p><img
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="tagCategories('home')"><p>{{lang.tagCategory | uppercase}}</p><img
+                                        src="img/icons/menu/tag_category.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="safetyBox('home')"><p>{{lang.safetyBox | uppercase}}</p><img
+                                        src="img/icons/menu/safety_box.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
+                                <md-list-item ng-click="viewHistory('home')"><p>{{lang.history | uppercase}}</p><img
                                         src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="viewVersions()"><p>{{lang.versions}}</p><img
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="viewTracking('home')"><p>{{lang.tracking | uppercase}}</p><img
+                                        src="img/icons/menu/tracking.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
+                                <md-list-item ng-show="false" ng-click="viewVersions()"><p>{{lang.versions | uppercase}}</p><img
                                         src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="changePassword()"><p>{{lang.changePassword}}</p><img
+                                <md-list-item ng-click="quickActions()"><p>{{lang.quickActions | uppercase}}</p><img
+                                        src="img/icons/menu/quick_action_16.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
+                                <md-list-item ng-click="showLegend()"><p>{{lang.legend | uppercase}}</p><img
+                                        src="img/icons/menu/legend_icon.png" class="menu-list-icon"
+                                        alt=""></md-list-item>
+                                <md-list-item ng-click="changePassword()"><p>{{lang.changePassword | uppercase}}</p><img
                                         src="img/icons/menu/password_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="logout()"><p class="color-red">{{lang.logout}}</p><img
+                                <md-list-item ng-click="logout()"><p class="color-red">{{lang.logout | uppercase}}</p><img
                                         src="img/icons/menu/logout_icon_16.png" class="menu-list-icon"
                                         alt=""></md-list-item>
                             </md-list>
 
-                            <div id="change-floor-container" layout="column" class="padding-10-px"
+                            <div ng-show="isAdmin" id="change-floor-container" layout="column" class="padding-10-px"
                                  layout-align="center center">
 
                                 <md-input-container class="margin-bottom-0 margin-top-10">
@@ -89,27 +116,45 @@
                                     </md-select>
                                 </md-input-container>
                             </div>
-
-                            <div id="fullscreen-on-off-container" layout="column" class="padding-10-px width-100"
+                            <div id="zoom-location-container" layout="column" class="padding-10-px"
                                  layout-align="center center">
 
-                                <div flex="100" layout layout-align="center center">
-                                    <md-subheader class="padding-0" ng-show="homeCtrl.switch.showFullscreen">Fullscreen:
-                                        <b class="color-green">ON</b></md-subheader>
-                                    <md-subheader class="padding-0"ng-show="!homeCtrl.switch.showFullscreen">Fullscreen:
-                                        <b class="color-red">OFF</b>
-                                    </md-subheader>
-                                </div>
+                                <md-input-container class="margin-bottom-0 margin-top-10">
+                                    <label>{{lang.searchLocation}}</label>
+                                    <md-select ng-model="selectedLocation" md-on-open="getUserLocations()">
 
-                                <md-switch class="md-primary margin-none margin-top-10-px"
-                                           md-no-ink aria-label="Passsa in modalita' fullscreen"
-                                           ng-model="homeCtrl.switch.showFullscreen">
-                                </md-switch>
+                                        <md-option ng-repeat="location in locations" ng-value="location">
+                                            {{location.name}}
+                                        </md-option>
+                                    </md-select>
+                                </md-input-container>
+                            </div>
+                            <div layout="row" layout-align="center center" class="width-300-px">
+
+                                <div id="fullscreen-on-off-container" layout="column" class="padding-10-px width-50"
+                                     layout-align="center center">
+
+                                    <div flex="100" layout layout-align="center center">
+                                        <md-subheader class="padding-0" ng-show="switch.mapFullscreen">{{lang.fullscreen}}:
+                                            <b class="color-green">ON</b></md-subheader>
+                                        <md-subheader class="padding-0"ng-show="!switch.mapFullscreen">{{lang.fullscreen}}:
+                                            <b class="color-red">OFF</b>
+                                        </md-subheader>
+                                    </div>
+
+                                    <md-switch class="md-primary margin-none margin-top-10-px"
+                                               md-no-ink aria-label="{{lang.showHideFullscreen}}" title="{{lang.showHideFullscreen}}"
+                                               ng-model="switch.mapFullscreen">
+                                    </md-switch>
+                                </div>
                             </div>
                         </div>
                     </md-content>
                 </md-sidenav>
             </section>
+            <div ng-show="ctrlDataService.playAlarm" layout="column" layout-align="center center" class="bottom-left fadeIn">
+                <md-button ng-click="muteAlarms()" ng-class="alertButtonColor" class="md-raised color-white"><div><span class="margin-right-10-px text-bold">{{lang.muteAlarm}}</span><img class="vertical-align-middle" src="img/icons/mute_alarms.png" alt=""></div></md-button>
+            </div>
         </div>
         <!--end menu container-->
     </div>

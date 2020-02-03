@@ -2,7 +2,7 @@
     'use strict';
 
     //loading the angular framework and the dependencies
-    let main = angular.module('main', ['ngMaterial', 'ui.router', 'ngMessages', 'ngMap', 'md.data.table', 'chart.js']);
+    let main = angular.module('main', ['ngMaterial', 'ui.router', 'ngMessages', 'ngMap', 'md.data.table', 'chart.js', 'ngFileSaver']);
 
     //Configuring the router and the angular initial data
     main.config(RoutesConfig);
@@ -20,12 +20,11 @@
                 templateUrl: componentsPath + 'login.html',
                 controller : 'loginController as loginCtr',
                 resolve    : {
-                    goToHomeIfLoggedIn: ['socketService', '$state', function (socketService, $state) {
-                        socketService.sendRequest('get_user', {})
-                            .then(function (response) {
-                                if (response.result !== 'no_user')
-                                    $state.go('home');
-                            });
+                    goToHomeIfLoggedIn: ['$state', 'newSocketService', 'dataService', function ($state, newSocketService, dataService) {
+                        newSocketService.getData('get_user', {username: sessionStorage.user}, (response) => {
+                            if (response.result !== 'no_user')
+                                $state.go('home');
+                        });
                     }]
                 }
             })
@@ -50,52 +49,65 @@
                 templateUrl: componentsPath + 'home.html',
                 controller : 'homeController as homeCtrl',
                 resolve    : {
-                    homeData: ['socketService', 'dataService', '$state', '$q', function (socketService, dataService, $state, $q) {
+                    homeData: ['newSocketService', 'dataService', '$state', '$q', function (newSocketService, dataService, $state, $q) {
                         let promise = $q.defer();
                         let result  = {};
-                        socketService.sendRequest('get_user', {})
-                            .then((response) => {
-                                if (response.result.session_name !== undefined) {
-                                    dataService.username = response.result.session_name;
-                                    dataService.isAdmin  = response.result.is_admin;
-
-                                    return socketService.sendRequest('get_markers', {username: response.result.session_name})
+                        setTimeout(function () {
+                            newSocketService.getData('get_user', {username: sessionStorage.user}, (response) => {
+                                console.log(response);
+                                if (response.result !== 'no_user') {
+                                    dataService.user = response.result[0];
+                                    if (response.result[0].role === 1) {
+                                        dataService.isAdmin = response.result[0].role;
+                                        dataService.isUserManager = 0;
+                                        dataService.isTracker = 0;
+                                        result.password_changed = response.result[0].password_changed;
+                                    }else if (response.result[0].role === 2){
+                                        dataService.isAdmin = 0;
+                                        dataService.isTracker = 0;
+                                        dataService.isUserManager      = response.result[0].role;
+                                        result.password_changed = response.result[0].password_changed;
+                                    }else if (response.result[0].role === 0){
+                                        dataService.isAdmin = 0;
+                                        dataService.isUserManager = 0;
+                                        dataService.isTracker = 0;
+                                        result.password_changed = response.result[0].password_changed;
+                                    } else if (response.result[0].role === 3){
+                                        dataService.isAdmin = 0;
+                                        dataService.isUserManager = 0;
+                                        dataService.isTracker = 1;
+                                        result.password_changed = response.result[0].password_changed;
+                                    }
+                                    newSocketService.getData('get_markers', {username: response.result[0].username}, (markers) => {
+                                        result.markers = markers.result;
+                                        if (response.result.length === 1 && response.result[0].one_location === 1){
+                                            newSocketService.getData('save_location', {location: markers.result[0].name}, (locationSaved) => {
+                                                if (locationSaved.result === 'location_saved') {
+                                                    newSocketService.getData('get_location_info', {}, (locationInfo) => {
+                                                        dataService.defaultFloorName  = '';
+                                                        dataService.locationFromClick = '';
+                                                        if (locationInfo.result.is_inside)
+                                                            $state.go('canvas');
+                                                        console.log(result)
+                                                        promise.resolve(result);
+                                                    })
+                                                }
+                                            });
+                                        }else {
+                                            newSocketService.getData('get_all_tags', {}, (tags) => {
+                                                if (tags !== null && tags !== undefined) {
+                                                    dataService.allTags = tags.result;
+                                                    promise.resolve(result);
+                                                }
+                                            })
+                                        }
+                                    })
                                 } else {
                                     $state.go('login');
                                 }
-                            })
-                            .then((response) => {
-                                result.markers = response.result;
-                                if (response.result.length === 1 && response.result[0].one_location === 1){
-                                    socketService.sendRequest('save_location', {location: response.result[0].name})
-                                        .then((response) => {
-                                            if (response.result === 'location_saved') {
-                                                return socketService.sendRequest('get_location_info', {})
-                                            }
-                                        })
-                                        .then((response) => {
-                                            dataService.defaultFloorName  = '';
-                                            dataService.locationFromClick = '';
-                                            if (response.result.is_inside)
-                                                $state.go('canvas')
-                                        })
-                                        .catch((error) => {
-                                            console.log('markerAddListener error => ', error);
-                                        });
-                                }else {
-                                    return socketService.sendRequest('get_all_tags', {});
-                                }
-                            })
-                            .then((response) => {
-                                if (response !== null && response !== undefined) {
-                                    dataService.allTags = response.result;
-                                    promise.resolve(result);
-                                }
-                            })
-                            .catch((error) => {
-                                console.log('homeState error => ', error);
                             });
 
+                        }, 500);
                         return promise.promise;
                     }],
                 }
@@ -107,42 +119,57 @@
                 templateUrl: componentsPath + 'outdoor-location.html',
                 controller : 'outdoorController as outdoorCtrl',
                 resolve    : {
-                    outdoorData: ['socketService', 'dataService', '$state', '$q', function (socketService, dataService, $state, $q) {
+                    outdoorData: ['newSocketService', 'dataService', '$state', '$q', function (newSocketService, dataService, $state, $q) {
                         let promise = $q.defer();
                         let result  = {};
-                        socketService.sendRequest('get_location_info', {})
-                            .then((response) => {
+                        setTimeout(function () {
+                            newSocketService.getData('get_location_info', {}, (response) => {
                                 if (response.result !== 'location_not_found') {
+                                    dataService.location = response.result;
                                     if (response.result.is_inside)
                                         $state.go('home')
                                 } else {
                                     $state.go('home');
                                 }
+                                newSocketService.getData('get_user', {username: sessionStorage.user}, (user) => {
+                                    if (user.result[0].username !== undefined) {
 
-                                return socketService.sendRequest('get_user', {})
-                            })
-                            .then((response) => {
-                                if (response.result.session_name !== undefined) {
+                                        dataService.user = user.result[0];
 
-                                    dataService.username = response.result.session_name;
-                                    dataService.isAdmin = response.result.is_admin;
+                                        if (user.result[0].role === 1) {
+                                            dataService.isAdmin       = user.result[0].role;
+                                            dataService.isUserManager = 0;
+                                            dataService.isTracker = 0;
+                                        } else if (user.result[0].role === 2) {
+                                            dataService.isAdmin       = 0;
+                                            dataService.isUserManager = user.result[0].role;
+                                            dataService.isTracker = 0;
+                                        } else if (user.result[0].role === 0) {
+                                            dataService.isAdmin       = 0;
+                                            dataService.isUserManager = 0;
+                                            dataService.isTracker = 0;
+                                        } else if (user.result[0].role === 3){
+                                            dataService.isAdmin = 0;
+                                            dataService.isUserManager = 0;
+                                            dataService.isTracker = 1;
+                                        }
 
-                                    return socketService.sendRequest('get_all_tags')
-                                } else {
-                                    $state.go('login');
-                                }
-                            })
-                            .then((response) => {
-
-                                dataService.allTags = response.result;
-                                dataService.alarmsSounds = [];
-
-                                promise.resolve(result);
-                            })
-                            .catch((error) => {
-                                console.log('outdoorLocationState => ', error);
+                                        newSocketService.getData('get_tag_by_user', {user: dataService.user.username}, (userTags) => {
+                                            dataService.userTags = userTags.result;
+                                            newSocketService.getData('get_all_tags', {}, (allTags) => {
+                                                if (allTags !== null && allTags !== undefined) {
+                                                    dataService.allTags      = allTags.result;
+                                                    dataService.alarmsSounds = [];
+                                                    promise.resolve(result);
+                                                }
+                                            });
+                                        })
+                                    } else {
+                                        $state.go('login');
+                                    }
+                                });
                             });
-
+                        }, 500);
                         return promise.promise;
                     }],
                 }
@@ -154,53 +181,69 @@
                 templateUrl: componentsPath + 'canvas.html',
                 controller : 'canvasController as canvasCtrl',
                 resolve    : {
-                    canvasData: ['socketService', 'dataService', '$state', '$q', function (socketService, dataService, $state, $q) {
+                    canvasData: ['newSocketService', 'dataService', '$state', '$q', function (newSocketService, dataService, $state, $q) {
                         let promise = $q.defer();
                         let result  = {};
 
-                        socketService.sendRequest('get_user', {})
-                            .then((response) => {
-                                if (response.result.session_name !== undefined) {
-                                    dataService.username = response.result.session_name;
-                                    dataService.isAdmin  = response.result.is_admin;
+                        setTimeout(function () {
+                            newSocketService.getData('get_user', {username: sessionStorage.user}, (response) => {
+                                if (response.result[0].username !== undefined) {
+                                    dataService.user = response.result[0];
+                                    if (response.result[0].role === 1) {
+                                        dataService.isAdmin       = response.result[0].role;
+                                        dataService.isUserManager = 0;
+                                        dataService.isTracker = 0;
+                                    } else if (response.result[0].role === 2) {
+                                        dataService.isAdmin       = 0;
+                                        dataService.isUserManager = response.result[0].role;
+                                        dataService.isTracker = 0;
+                                    } else if (response.result[0].role === 0) {
+                                        dataService.isAdmin       = 0;
+                                        dataService.isUserManager = 0;
+                                        dataService.isTracker = 0;
+                                    } else if (response.result[0].role === 3){
+                                        dataService.isAdmin = 0;
+                                        dataService.isUserManager = 0;
+                                        dataService.isTracker = 1;
+                                    }
 
-                                    return socketService.sendRequest('get_location_info', {})
+                                    newSocketService.getData('get_location_info', {}, (locationInfo) => {
+                                        if (locationInfo.result !== 'location_not_found') {
+                                            if (locationInfo.result.is_inside) {
+                                                dataService.location         = locationInfo.result
+                                                dataService.isLocationInside = locationInfo.result.is_inside;
+                                            } else
+                                                $state.go('home');
+
+                                            newSocketService.getData('get_floors_by_location', {location: locationInfo.result.name}, (floors) => {
+                                                dataService.floors = floors.result;
+
+                                                newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
+                                                    dataService.userTags = userTags.result;
+
+                                                    newSocketService.getData('get_floors_by_user', {user: dataService.user.username}, (userFloors) => {
+                                                        dataService.userFloors = userFloors.result;
+
+                                                        dataService.alarmsSounds = [];
+
+                                                        newSocketService.getData('get_all_tags', {}, (allTags) => {
+                                                            dataService.allTags = allTags.result;
+
+                                                            newSocketService.getData('get_alpha', {}, (alpha) => {
+                                                                result.alpha = alpha.result.alpha;
+                                                                promise.resolve(result);
+                                                            })
+                                                        })
+                                                    })
+                                                })
+                                            })
+                                        }
+                                    })
                                 } else {
                                     $state.go('login');
                                 }
-                            })
-                            .then((response) => {
-                                if (response.result !== 'location_not_found') {
-                                    (response.result.is_inside)
-                                        ? dataService.location = response.result.name
-                                        : $state.go('home');
-
-                                    return socketService.sendRequest('get_floors_by_location', {location: response.result.name});
-                                }
-                            })
-                            .then((response) => {
-                                dataService.floors = response.result;
-
-                                return socketService.sendRequest('get_tags_by_user', {user: dataService.username});
-                            })
-                            .then((response) => {
-                                dataService.tags = response.result;
-
-                                return socketService.sendRequest('get_floors_by_user', {user: dataService.username});
-                            })
-                            .then((response) => {
-                                dataService.userFloors = response.result;
-
-                                dataService.alarmsSounds = [];
-                                return socketService.sendRequest('get_all_tags', {});
-                            })
-                            .then((response) => {
-                                dataService.allTags = response.result;
-                                promise.resolve(result);
-                            })
-                            .catch((error) => {
-                                console.log('canvasState error => ', error);
                             });
+                        }, 500);
                         return promise.promise;
                     }]
                 }

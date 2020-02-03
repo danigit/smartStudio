@@ -3,7 +3,8 @@
     <md-toolbar id="popup-toolbar" class="background-red">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -45,12 +46,20 @@
                         <div class="md-list-item-text" layout="column">
                             <h3>{{lang.notSafeAreaPersons}}: <b class="color-red">{{ men.unsafe }}</b></h3>
                             <h4>{{ men.unsafe }} {{lang.notSafeAreaPersons | lowercase}}</h4>
-                            <md-select ng-if="unsafeTags.length > 0" ng-model="antani" placeholder="Persone disperse">
-                                <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in unsafeTags">{{tag.name}}</md-option>
+                            <md-select ng-if="unsafeTags.length > 0" ng-model="antani"
+                                       placeholder="{{lang.lostPersons}}">
+                                <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in unsafeTags">
+                                    {{tag.name}}
+                                </md-option>
                             </md-select>
                         </div>
                     </md-list-item>
                 </md-list>
+            </div>
+        </div>
+        <div layout="row" layout-align="center center">
+            <div class="margin-left-20-px">
+                <md-button ng-click="sendEvacuation()" id="evacuation-button" ng-class="evacuation_button" class="md-raised color-white margin-auto margin-top-20-px">{{evacuation_value}}</md-button>
             </div>
         </div>
     </md-content>

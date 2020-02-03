@@ -1,0 +1,117 @@
+<!--<div>-->
+<!--popup header-->
+<div ng-controller="languageController">
+    <md-toolbar id="popup-toolbar" ng-class="user.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{lang.insertUser | uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+
+        <form id="insertUserForm" name="insertUserForm">
+            <div layout="column">
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input required type="text" ng-model="user.username" name="userUsername"
+                           placeholder="{{lang.insertUsername}}" aria-label="">
+                    <div ng-messages="insertUserForm.userUsername.$error || insertUserForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">{{lang.insertUsername}}</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input required type="text" ng-model="user.name" name="userName"
+                           placeholder="{{lang.insertName}}" aria-label="">
+                    <div ng-messages="insertUserForm.userName.$error || insertUserForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">{{lang.insertName}}</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input required type="text" ng-model="user.email" name="userEmail"
+                           placeholder="{{lang.insertEmail}}" ng-pattern="/^.+@.+\..+$/" aria-label="">
+                    <div ng-messages="insertUserForm.userEmail.$error || insertUserForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">{{lang.insertEmail}}</div>
+                        <div ng-message="pattern">{{lang.insertValidEmail}}</div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input type="text" ng-model="user.phone" name="phone"
+                           placeholder="{{lang.phoneNumber}}" aria-label="">
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <div layout="row">
+                        <div>
+                            <input type="text" ng-model="user.emailForList" name="userEmailList"
+                            placeholder="{{lang.addEmail}}" ng-pattern="/^.+@.+\..+$/" aria-label="">
+                        </div>
+                        <div class="margin-left-10-px"><img class="cursor-pointer" ng-click="addEmail()" src="img/icons/add_row_24.png" alt="{{lang.addEmail}}" title="{{lang.addEmail}}"></div>
+                    </div>
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input type="text" ng-model="user.botUrl" name="botUrl"
+                           placeholder="{{lang.insertBootUrl}}" aria-label="">
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input type="text" ng-model="user.chatId" name="chatId"
+                           placeholder="{{lang.insertChatId}}" aria-label="">
+                </md-input-container>
+
+                <md-input-container md-no-float class="margin-bottom-0">
+                    <input type="text" ng-model="user.webUrl" name="webUrl"
+                           placeholder="{{lang.insertWebUrl}}" aria-label="">
+                </md-input-container>
+
+                <md-input-container>
+                    <label>Ruolo</label>
+                    <md-select ng-model="userRoleRegister.registerRole">
+                        <md-option ng-repeat="role in roles" ng-value="role.userValue">
+                            {{role.userName}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+
+            <div class="background-transparent-white text-center color-green font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                 ng-show="user.showSuccess">
+                {{user.message}}
+            </div>
+
+            <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"
+                 ng-show="user.showError">
+                {{user.message}}
+            </div>
+
+            <div layout="row" layout-align="center center" class="margin-top-15-px">
+                <md-button ng-click="insertUser(insertUserForm)"
+                           class="md-raised background-darkcyan color-white">{{lang.insertUser | uppercase}}
+                </md-button>
+            </div>
+        </form>
+    </div>
+</md-content>
+<!--end popup content-->

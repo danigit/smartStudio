@@ -1,0 +1,144 @@
+<div ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar">
+        <div layout="row" layout-align="center center" class="margin-top-20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{lang.quickActions | uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+    <!--end popup header-->
+
+    <!--popup content-->
+    <md-content class="popup-padding">
+        <div layout="column" layout-align="center center">
+            <div layout="row" layout-align="center center" class="width-300-px" >
+
+                <div id="grid-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showGrid">{{lang.grid}}: <b
+                                class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showGrid">{{lang.grid}}:
+                            <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Mostra/nascondi la griglia"
+                               ng-model="switch.showGrid">
+                    </md-switch>
+                </div>
+
+                <div id="sound-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.playAudio">{{lang.audio}}: <b
+                                class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.playAudio">{{lang.audio}}:
+                            <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Attiva/disattiva audio"
+                               ng-model="switch.playAudio">
+                    </md-switch>
+                </div>
+            </div>
+            <div layout="row" layout-align="center center" class="width-300-px">
+
+                <div id="anchors-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showAnchors">{{lang.anchors}}:
+                            <b class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showAnchors">
+                            {{lang.anchors}}: <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Mostra/nascondi le telecamere"
+                               ng-model="switch.showAnchors">
+                    </md-switch>
+                </div>
+
+                <div id="cameras-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showCameras">{{lang.cameras}}:
+                            <b class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showCameras">
+                            {{lang.cameras}}: <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Mostra/nascondi le telecamere"
+                               ng-model="switch.showCameras">
+                    </md-switch>
+                </div>
+            </div>
+            <div layout="row" layout-align="center center" class="width-300-px">
+
+                <div id="zones-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showZones">{{lang.zones}}:
+                            <b class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showZones">
+                            {{lang.zones}}: <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Mostra/nascondi le telecamere"
+                               ng-model="switch.showZones">
+                    </md-switch>
+                </div>
+
+                <div id="outags-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showOutrangeTags">{{lang.outLocationTags}}:
+                            <b class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showOutrangeTags">
+                            {{lang.outLocationTags}}: <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Mostra/nascondi i tag fuori location"
+                               ng-model="switch.showOutrangeTags">
+                    </md-switch>
+                </div>
+            </div>
+
+            <div layout="row" layout-align="center center" class="width-300-px" ng-show="isUserManager">
+
+                <div id="outdoor-tags-on-off-container" layout="column" class="padding-10-px width-50"
+                     layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showOutdoorTags">{{lang.showOutdoorTagsLabel}}:
+                            <b class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showOutdoorTags">
+                            {{lang.showOutdoorTagsLabel}}: <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch class="md-primary margin-none margin-top-10-px" ng-change="switchChanged"
+                               md-no-ink aria-label="Mostra/nascondi i tag"
+                               ng-model="switch.showOutdoorTags">
+                    </md-switch>
+                </div>
+            </div>
+            <md-button class="md-primary md-raised background-darkcyan" ng-click="updateUserSettings()">{{lang.saveConfiguration | uppercase}}</md-button>
+        </div>
+    </md-content>
+    <!--end popup content-->
+</div>

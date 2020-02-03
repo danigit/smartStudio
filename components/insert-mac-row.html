@@ -3,7 +3,8 @@
     <md-toolbar id="popup-toolbar" ng-class="insertMac.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -35,12 +36,11 @@
             </md-input-container>
 
             <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
-                <input required type="text" ng-model="insertMac.type" name="insertMacType"
-                       placeholder="{{lang.type}}">
-                <div ng-messages="insertMacRowForm.insertMacType.$error || insertMacRowForm.$submitted"
-                     role="alert">
-                    <div ng-message=" required">{{lang.insertType}}</div>
-                </div>
+                <label>{{lang.type}}</label>
+                <md-select ng-model="insertMac.type">
+                    <md-option ng-value=1>UWB</md-option>
+                    <md-option ng-value=0>BLUETOOTH</md-option>
+                </md-select>
             </md-input-container>
 
             <div layout="row" layout-align="center end" class="width-100">

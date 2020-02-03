@@ -3,7 +3,8 @@
     <md-toolbar id="popup-toolbar" ng-class="location.resultClass">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -63,15 +64,25 @@
                 </md-input-container>
             </div>
 
-            <md-input-container ng-show="!location.isIndoor" md-no-float class="padding-left-10-px margin-bottom-0">
-                <input required type="number" ng-model="location.radius" name="locationRadius"
-                       placeholder="{{lang.coverInGrades}}">
-                <div ng-messages="insertLocationForm.locationRadius.$error || insertLocationForm.$submitted"
-                     role="alert">
-                    <div ng-message=" required">{{lang.insertRadius}}</div>
-                </div>
-            </md-input-container>
+            <div layout="row">
+                <md-input-container ng-show="!location.isIndoor" md-no-float class="padding-left-10-px margin-bottom-0">
+                    <input required type="number" ng-model="location.radius" name="locationRadius"
+                           placeholder="{{lang.coverInGrades}}">
+                    <div ng-messages="insertLocationForm.locationRadius.$error || insertLocationForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">{{lang.insertRadius}}</div>
+                    </div>
+                </md-input-container>
 
+                <md-input-container ng-show="!location.isIndoor" md-no-float class="padding-left-10-px margin-bottom-0">
+                    <input required type="number" ng-model="location.meterRadius" name="locationMeterRadius"
+                           placeholder="{{lang.coverInMeters}}">
+                    <div ng-messages="insertLocationForm.locationMeterRadius.$error || insertLocationForm.$submitted"
+                         role="alert">
+                        <div ng-message=" required">{{lang.insertRadius}}</div>
+                    </div>
+                </md-input-container>
+            </div>
             <md-input-container md-no-float class="margin-bottom-0">
                 <div layout="row" layout-align="center center">
                     <md-checkbox ng-model="location.isIndoor" aria-label="Checkbox 1"

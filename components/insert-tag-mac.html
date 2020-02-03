@@ -3,7 +3,8 @@
     <md-toolbar id="popup-toolbar">
         <div layout="row" layout-align="end center" class="width-100">
             <md-button class="md-icon-button margin-none" ng-click="hide()">
-                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}" title="{{lang.closeButton}}"/>
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
             </md-button>
         </div>
 
@@ -49,7 +50,7 @@
                         {{'' + mac.type || lang.insertType}}
                     </td>
                     <td md-cell ng-click="deleteMac($event, mac)"><img
-                            src="img/icons/delete_trash_24.png" alt="Cancella mac" title="Aggiungi mac"></td>
+                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteMac}}" title="{{lang.deleteMac}}"></td>
                 </tr>
                 <tr md-row ng-show="macs.length === 0">
                     <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
@@ -72,3 +73,4 @@
     </div>
 </md-content>
 <!--end popup content-->
+

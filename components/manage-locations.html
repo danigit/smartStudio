@@ -1,0 +1,70 @@
+<div>
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="Close dialog" alt="Close" title="Close"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{user.name}} LOCATIONS</h1>
+            </div>
+        </div>
+    </md-toolbar>
+    <!--end popup header-->
+</div>
+<!--popup content-->
+
+<md-content class="popup-padding width-500-px">
+
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+
+        <md-table-container class="margin-bottom-40-px">
+
+            <table md-table md-row-select="options.rowSelection" ng-model="selected"
+                   md-progress="promise">
+
+                <thead md-head md-order="query.order">
+                <tr md-row>
+                    <th md-column><span class="color-darkcyan">{{lang.name}}</span></th>
+                </tr>
+                </thead>
+
+                <tbody md-body>
+                <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
+                    ng-repeat="location in locations | limitTo: query.limit: (query.page -1 ) * query.limit">
+
+                    <td md-cell ng-class="{'md-placeholder': !location.name}">
+                        {{location.name || 'Inserire nome'}}
+                    </td>
+
+                    <td md-cell ng-click="deleteManagedLocation(location)"><img
+                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteLocation}}" title="{{lang.deleteLocation}}"></td>
+                </tr>
+                <tr md-row ng-show="locations.length === 0">
+                    <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+
+        <md-input-container md-no-float class="md-block width-100 margin-top-bottom-25-px">
+            <div layout="row" layout-align="center end" class="margin-bottom-30-px">
+                <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
+                     ng-click="manageNewLocation()" alt="{{lang.addLocation}}" title="{{lang.addLocation}}">
+            </div>
+        </md-input-container>
+
+        <md-table-pagination class="color-red background-white position-fixed bottom-0 width-100" md-limit="query.limit" md-limit-options="query.limitOptions"
+                             md-page="query.page"
+                             md-total="{{locations.length}}" md-on-paginate="">
+        </md-table-pagination>
+    </div>
+</md-content>
+<!--end popup content-->

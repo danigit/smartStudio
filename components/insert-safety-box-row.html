@@ -1,0 +1,65 @@
+<div ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="insertSafetyBox.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{lang.insertSafetyBoxTitle | uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding width-500-px">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+
+        <form id="insertTagRowForm" name="insertSafetyBoxForm">
+            <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <input required type="text" ng-model="insertSafetyBox.name" name="insertSafetyBoxName"
+                       placeholder="{{lang.name}}">
+                <div ng-messages="insertSafetyBoxForm.insertSafetyBoxName.$error || insertSafetyBoxForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">{{lang.insertName}}</div>
+                </div>
+            </md-input-container>
+
+            <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <input required type="text" ng-model="insertSafetyBox.imei" name="insertSafetyBoxImei"
+                       placeholder="{{lang.imei}}">
+                <div ng-messages="insertSafetyBoxForm.insertSafetyBoxImei.$error || insertSafetyBoxForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">{{lang.insertImei}}</div>
+                </div>
+            </md-input-container>
+
+<!--            <div class="background-transparent-white text-center color-green font-medium margint-top-5-px margin-bottom-10-px padding-10-px"-->
+<!--                 ng-show="insertTagCategory.showSuccess">-->
+<!--                {{insertTagCategory.message}}-->
+<!--            </div>-->
+
+<!--            <div class="background-transparent-white text-center color-red font-medium margint-top-5-px margin-bottom-10-px padding-10-px"-->
+<!--                 ng-show="insertTagCategory.showError">-->
+<!--                {{insertTagCategory.message}}-->
+<!--            </div>-->
+
+            <div layout="row" layout-align="center end" class="width-100">
+                <md-button ng-click="submitSafetyBox(insertSafetyBoxForm)" class="md-raised background-darkcyan color-white">
+                    {{lang.insertSafetyBox}}
+                </md-button>
+            </div>
+        </form>
+    </div>
+</md-content>
+<!--end popup content-->

@@ -5,11 +5,14 @@
  * Date: 27/12/18
  * Time: 17.52
  */
-
-define('MARKERS_IMAGES_PATH', '../../img/icons/markers/');
-define('FLOOR_IMAGES_PATH', '../../img/floors/');
+require_once 'mailer/PHPMailerAutoload.php';
 
 require_once 'db_errors.php';
+
+
+define('MARKERS_IMAGES_PATH', '../../img/icons/markers/');
+define('TAG_CATEGORY_IMAGES_PATH', '../../img/icons/tags/');
+define('FLOOR_IMAGES_PATH', '../../img/floors/');
 
 /**
  * Functions that parse an error array and return the appropriate error object
@@ -39,3 +42,47 @@ function parse_string($error_string){
 
     return end($split_error);
 }
+
+function sendEmail($email, $code){
+    try {
+        $mail = new PHPMailer;
+        $mail->isSMTP();
+        $mail->Host = 'tls://smtp.gmail.com';
+        $mail->Port = 587; //587; // 465;
+        $mail->SMTPSecure = 'tls';
+        $mail->SMTPAuth = true;
+        $mail->Username = "";
+        $mail->Password = "";
+        $mail->setFrom('', 'Smart Studio');
+        $mail->addAddress($email);
+        $mail->Subject = "Recupero password";
+        $mail->msgHTML("Sei stato contattato da Smart Track per la creazione di un nuovo account riguardante Smart Studio<br><br>
+                                  La tua password provisoria e' : <b class='color-ottanio'>" . $code . "</b><br><br>");
+        if (!$mail->send()) //telnet smtp.aruba.it 587
+            return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
+    }catch (Exception $e){
+        return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
+    }
+}
+
+//
+///**
+// * Function that generates a random code of 6 characters, that has letters an numbers in it
+// * @return string - the generated code
+// */
+//function generateRandomCode() {
+//    $chars = "abcdefghijkmnopqrstuvwxyz0123456789";
+//    srand((double)microtime()*1000000);
+//    $i = 0;
+//    $code = '' ;
+//
+//    while ($i < 6) {
+//        $num = rand() % 33;
+//        $tmp = substr($chars, $num, 1);
+//        $code = $code . $tmp;
+//        $i++;
+//    }
+//
+//    return $code;
+//
+//}

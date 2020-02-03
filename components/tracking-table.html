@@ -1,0 +1,124 @@
+<!--popup header-->
+<div ng-controller="languageController">
+    <md-toolbar id="popup-toolbar" ng-class="">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg font-x-large">{{lang.trackingTable | uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+        <div class="border-1-gray history-filter">
+            <div layout="column" layout-align="center start">
+                <md-subheader class="color-darkcyan">{{lang.filter}}:</md-subheader>
+            </div>
+
+            <div layout="row">
+                <md-subheader>{{lang.from}}:</md-subheader>
+                <md-datepicker ng-model="tracking.fromDate" md-placeholder="{{lang.selectDate}}"
+                               md-open-on-focus></md-datepicker>
+                <md-subheader>{{lang.to}}:</md-subheader>
+                <md-datepicker ng-model="tracking.toDate" md-placeholder="{{lang.selectDate}}"
+                               md-open-on-focus></md-datepicker>
+            </div>
+            <div layout="row" class="width-100">
+                <div layout="column" layout-align="center start" class="width-50 padding-left-10-px">
+                    <md-input-container class="margin-bottom-0 margin-top-10">
+
+                        <label>{{lang.name}}</label>
+
+                        <md-select ng-model="tracking.selectedTag">
+                            <md-option ng-value="QUALSIASI">{{lang.anything | uppercase}}</md-option>
+                            <md-option ng-repeat="tag in tracking.tags" ng-value="tag.name">
+                                {{tag.name}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+                <div layout="column" layout-align="center end" class="width-50">
+                    <md-input-container class="margin-bottom-0 margin-top-10">
+
+                        <label>{{lang.eventType}}</label>
+
+                        <md-select ng-model="tracking.selectedEvent">
+                            <md-option ng-value="QUALSIASI">{{lang.anything | uppercase}}</md-option>
+                            <md-option ng-repeat="event in tracking.events" ng-value="event.description">
+                                {{event.description}}
+                            </md-option>
+                        </md-select>
+                    </md-input-container>
+                </div>
+            </div>
+        </div>
+        <div layout="column" layout-align="center center">
+            <md-table-container class="margin-bottom-40-px" id="his-table">
+
+                <table md-table>
+                    <thead md-head md-order="query.order">
+                    <tr md-row>
+                        <th md-column md-order-by="time"><span class="color-darkcyan">{{lang.date | uppercase}}</span>
+                        </th>
+                        <th md-column md-order-by="event"><span class="color-darkcyan">{{lang.event | uppercase}}</span>
+                        </th>
+                        <th md-column md-order-by="tag"><span class="color-darkcyan">{{lang.tag | uppercase}}</span>
+                        </th>
+                        <th md-column md-order-by="anchor"><span
+                                class="color-darkcyan">{{lang.anchor | uppercase}}</span></th>
+                        <th md-column md-order-by="tag_x_pos" md-numeric><span class="color-darkcyan">{{lang.xPos | uppercase}}</span>
+                        </th>
+                        <th md-column md-order-by="tag_y_pos" md-numeric><span class="color-darkcyan">{{lang.yPos | uppercase}}</span>
+                        <th md-column md-order-by="protocol" md-numeric><span class="color-darkcyan">{{lang.protocol | uppercase}}</span>
+                        </th>
+                    </tr>
+                    </thead>
+
+                    <tbody md-body>
+                    <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
+                        ng-repeat="row in trackingRows | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit track by $index">
+                        <td md-cell class="no-wrap">{{row.time}}</td>
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.event}">{{row.event || lang.noData}}
+                        </td>
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag}">{{row.tag || lang.noData}}
+                        </td>
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.anchor}">{{row.anchor || lang.noData}}
+                        </td>
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag_x_pos.toString()}">
+                            {{row.tag_x_pos.toString() || lang.noData}}
+                        </td>
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag_y_pos.toString()}">
+                            {{row.tag_y_pos.toString() || lang.noData}}
+                        </td>
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.protocol.toString()}">
+                            {{row.protocol.toString() || lang.noData}}
+                        </td>
+                    </tr>
+                    <tr md-row ng-show="tableEmpty">
+                        <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
+            <md-table-pagination class="color-red background-white position-fixed bottom-0 width-100" md-limit="query.limit" md-limit-options="query.limitOptions"
+                                 md-page="query.page"
+                                 md-total="{{trackingRows.length}}" md-on-paginate="">
+            </md-table-pagination>
+        </div>
+    </div>
+</md-content>
+<!--end popup content-->

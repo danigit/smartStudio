@@ -1,14 +1,24 @@
 /***************************************************************
+ * SOCKET COFIGURATIONS
+ ***************************************************************/
+let socketServer               = new WebSocket('ws://localhost:8090');
+let socketOpened = false;
+let groupTagDistance = 400.5;
+
+socketServer.onopen = function () {
+    console.log('Socket opened')
+    socketOpened = true;
+};
+
+/***************************************************************
  * DIRECTORIES PATHS
  ***************************************************************/
 const mainPath = '';
 const componentsPath = 'components/';
 const imagePath = 'img/';
 const iconsPath = 'img/icons/';
-const menuIconsPath = 'img/icons/menu/';
 const markersIconPath = 'img/icons/markers/';
 const tagsIconPath = 'img/icons/tags/';
-const resourcePath = 'resources/';
 const audioPath = 'resources/audio/';
 const floorPath = 'img/floors/';
 
@@ -22,10 +32,9 @@ const canvasGridPattern = [5, 5];
  * MAPS COFIGURATIONS
  ***************************************************************/
 const mapZoom = 10;
+const outdoorLocationZoom = 17;
 const mapType = 'TERAIN';
 const mapCenter = [41.87194, 12.56738];
-
-let requestId = 0;
 
 let mapConfiguration = [{
     featureType: "poi",

@@ -53,11 +53,15 @@
 }
 
 .marker-info-container{
-    margin-left: 30px;
+    margin-left: 10px;
     /*width: 200px;*/
     /*height: 200px;*/
 }
 
 .gm-fullscreen-control{
     display: none!important;
+}
+
+#empty-battery-anchor-list .md-text{
+    width: 100%!important;
 }
