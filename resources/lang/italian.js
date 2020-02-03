@@ -419,7 +419,7 @@ let lang = {
     shutDownTags                    : 'WeTags spenti',
     activeTags: 'Tag attivi',
     disabledTags                    : 'WeTags disabilitati',
-    lostTags                        : 'WeTags dispersi',
+    lostTags                        : 'WeTags dispersi/offline',
 	deleteSite                      : 'Cancella sito',
     okDeleteSite                    : 'Sei sicuro di voler cancellare il sito?',
     deleteTag                       : 'Cancella WeTag',

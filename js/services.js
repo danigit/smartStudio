@@ -52,6 +52,7 @@
         service.outdoorZoneInserted = false;
         service.playedTime = null;
         service.alarmsInterval = undefined;
+        service.reconnectSocket = null;
 
 
 
@@ -203,7 +204,7 @@
                         offTags: 0
                     };
 
-                    $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315", "#F76E41"];
+                    $scope.colors = ["#F76E41", "#4BAE5A", "#E12315", "#D3D3D3"];
                     $scope.labels = [lang.disabledTags, lang.activeTags, lang.shutDownTags, lang.lostTags];
 
                     service.offlineTagsInterval     = $interval(function () {
@@ -212,12 +213,10 @@
                                 window.location.reload();
 
                             //tags indorr of type 2 offgrid(dispersi)
-                            let offGridTagsIndoor  = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && (t.type_id !== 1 && t.type_id !== 14 && t.tag_type_id !== 5 && t.tag_type_id !== 9 && t.tag_type_id !== 17 && t.tag_type_id !== 19)
-                                && !t.radio_switched_off && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
+                            let offGridTagsIndoor  = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && !t.radio_switched_off && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
 
                             //tags outdoor of type 2 offgrid(dispersi
-                            let offGridTagsOutdoor = response.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && (t.type_id !== 1 && t.type_id !== 14 && t.tag_type_id !== 5 && t.tag_type_id !== 9 && t.tag_type_id !== 17 && t.tag_type_id !== 19)
-                                && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+                            let offGridTagsOutdoor = response.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
 
                             //tags off
                             let tempOffTags = response.result.filter(t => t.radio_switched_off);
@@ -243,14 +242,14 @@
                             }
 
                             //tags type 1 offline
-                            let tempOfflineTagsIndoor = response.result.filter(t => (t.type_id === 1 || t.type_id === 14 || t.tag_type_id === 5 || t.tag_type_id === 9 || t.tag_type_id === 17 || t.tag_type_id === 19) && (t.is_exit && !t.radio_switched_off));
-                            if (!angular.equals(tempOfflineTagsIndoor, $scope.offlineTagsIndoor)){
-                                $scope.offlineTagsIndoor       = tempOfflineTagsIndoor;
-                            }
+                            // let tempOfflineTagsIndoor = response.result.filter(t => (t.is_exit && !t.radio_switched_off));
+                            // if (!angular.equals(tempOfflineTagsIndoor, $scope.offlineTagsIndoor)){
+                            //     $scope.offlineTagsIndoor       = tempOfflineTagsIndoor;
+                            // }
 
-                            $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
+                            // $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
                             $scope.tagsStateIndoor.offGrid = offGridTagsIndoor.length + offGridTagsOutdoor.length;
-                            $scope.tagsStateIndoor.online  = response.result.length - $scope.tagsStateIndoor.offGrid - $scope.tagsStateIndoor.offline - $scope.offTags.length;
+                            $scope.tagsStateIndoor.online  = response.result.length - $scope.tagsStateIndoor.offGrid - $scope.offTags.length;
 
                             $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online, $scope.tagsStateIndoor.offTags, $scope.tagsStateIndoor.offGrid];
 
@@ -284,9 +283,7 @@
         //checking if there is at least one tag offline
         service.checkIfTagsAreOffline = (tags) => {
             return tags.some(function (tag) {
-                return ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && (tag.type_id === 1 || tag.type_id === 14) && (tag.is_exit && !tag.radio_switched_off))
-                    || ((tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0) && !tag.radio_switched_off && (((Date.now() - new Date(tag.gps_time)) > tag.sleep_time_outdoor)))
-                    || ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && (tag.type_id !== 1 && tag.type_id !== 14) && !tag.radio_switched_off && (((Date.now() - new Date(tag.time)) > tag.sleep_time_indoor)));
+                return service.isTagOffline(tag)
             })
         };
 
@@ -397,31 +394,23 @@
 
             tags.forEach(function (tagElement) {
                 if (tag.id !== tagElement.id) {
-                    if ((tagElement.x_pos - 0.5 < tag.x_pos && tag.x_pos < tagElement.x_pos + 0.5
-                        && (tagElement.y_pos - 0.5 < tag.y_pos && tag.y_pos < tagElement.y_pos + 0.5))) {
-                        if ((service.checkIfTagHasAlarm(tag)
-                            || ((tag.tag_type_id !== 1 && tag.tag_type_id !== 14 && tag.tag_type_id !== 5 && tag.tag_type_id !== 9 && tag.tag_type_id !== 17 && tag.tag_type_id !== 19) && !tag.radio_switched_off)
-                            || ((tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19) && !(tag.is_exit && tag.radio_switched_off)))) {
+                    if ((Math.abs(tagElement.x_pos - groupTagDistance) < tag.x_pos && tag.x_pos < Math.abs(tagElement.x_pos + groupTagDistance)
+                        && (Math.abs(tagElement.y_pos - groupTagDistance) < tag.y_pos && tag.y_pos < Math.abs(tagElement.y_pos + groupTagDistance)))) {
+                        console.log(tagElement)
+                        if (service.checkIfTagHasAlarm(tag) || !tag.radio_switched_off){
 
                             if (!tagsGrouping.groupTags.some(t => t.id === tag.id)) {
                                 tagsGrouping.groupTags.push(tag);
                             }
                         }
 
-                        if (tagElement.tag_type_id !== 1 && tagElement.tag_type_id !== 14 && tagElement.tag_type_id !== 5 && tagElement.tag_type_id !== 9 && tagElement.tag_type_id !== 17 && tagElement.tag_type_id !== 19) {
-                            if (service.checkIfTagHasAlarm(tagElement)) {
-                                tagsGrouping.groupTags.push(tagElement)
-                            } else if (!tagElement.radio_switched_off) {
-                                tagsGrouping.groupTags.push(tagElement)
-                            }
-                        } else if ((tagElement.tag_type_id === 1 || tagElement.tag_type_id === 14 || tagElement.tag_type_id === 5 || tagElement.tag_type_id === 9 || tagElement.tag_type_id === 17 || tagElement.tag_type_id === 19)) {
-                            if (service.checkIfTagHasAlarm(tagElement)) {
-                                tagsGrouping.groupTags.push(tagElement);
-                            } else if (!(tagElement.is_exit && tagElement.radio_switched_off)) {
-                                tagsGrouping.groupTags.push(tagElement);
-                            }
+                        if (service.checkIfTagHasAlarm(tagElement)) {
+                            tagsGrouping.groupTags.push(tagElement)
+                        } else if (!tagElement.radio_switched_off) {
+                            tagsGrouping.groupTags.push(tagElement)
                         }
                     } else {
+                        // console.log(tagElement)
                         tagsGrouping.singleTags.push(tagElement);
                     }
                 }
@@ -933,11 +922,9 @@
                     || tag.battery_status || tag.man_in_quote
                     || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone) {
                     tagState.withAlarm = true;
-                } else if (((tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19)
-                    && tag.is_exit && !tag.radio_switched_off) || (tag.tag_type_id !== 1 && tag.tag_type_id !== 14 && tag.tag_type_id !== 5 && tag.tag_type_id !== 9
-                    && tag.tag_type_id !== 17 && tag.tag_type_id !== 19 && tag.radio_switched_off && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor))) {
+                } else if (service.isTagOffline(tag)){
                     tagState.offline = true;
-                } else {
+                } else if(!tag.radio_switched_off){
                     tagState.withoutAlarm = true;
                 }
             });
@@ -1026,10 +1013,15 @@
                     image.src = tagsIconPath + 'call_me_alarm_24.png';
                 }
             } else {
+                console.log('no alarm')
                 if (isCategoryAndImageNotNull(tag)){
                     image.src = tagsIconPath + category_name_no_alarm + '.png';
                 } else {
-                    image.src = tagsIconPath + 'online_tag_24.png';
+                    if (service.isTagOffline(tag)){
+                        image.src = tagsIconPath + 'offline_tag_24.png';
+                    }else{
+                        image.src = tagsIconPath + 'online_tag_24.png';
+                    }
                 }
             }
         };
@@ -1057,8 +1049,8 @@
 
                                 //controling if is a cloud or a isolatedTags tag
                                 if (value.length > 1) {
+                                    // console.log(value)
                                     let tagState = service.checkTagsStateAlarmNoAlarmOffline(value);
-
                                     if (tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
                                         img.src = tagsIconPath + 'cumulative_tags_all_32.png'
                                     } else if (tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
@@ -1073,18 +1065,18 @@
                                         img.src = tagsIconPath + 'cumulative_tags_offline_32.png'
                                     } else if (!tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
                                         img.src = tagsIconPath + 'cumulative_tags_32.png'
+                                    } else{
+                                        resolve(null)
                                     }
                                 } else {
                                     if (service.checkIfTagHasAlarm(value)) {
                                         service.assigningTagImage(value, img);
-                                    } else if ((value.tag_type_id === 1 || value.tag_type_id === 14 || value.tag_type_id === 5 || value.tag_type_id === 9 || value.tag_type_id === 17 || value.tag_type_id === 19) && value.is_exit && !value.radio_switched_off) {
-                                        img.src = tagsIconPath + 'offline_tag_24.png';
-                                    } else if (value.tag_type_id !== 1 && value.tag_type_id !== 14 && value.tag_type_id !== 5 && value.tag_type_id !== 9 && value.tag_type_id !== 17 && value.tag_type_id !== 19 && !value.radio_switched_0ff && (new Date(Date.now()) - (new Date(value.time)) > value.sleep_time_indoor)) {
-                                        img.src = tagsIconPath + 'offline_tag_24.png';
-                                    } else if (!(value.is_exit && value.radio_switched_off)) {
+                                    } else if (service.isTagOffline(value)) {
                                         service.assigningTagImage(value, img);
+                                        // img.src = tagsIconPath + 'offline_tag_24.png';
                                     } else {
-                                        img.src = tagsIconPath + 'online_tag_24.png';
+                                        service.assigningTagImage(value, img);
+                                        // img.src = tagsIconPath + 'online_tag_24.png';
                                     }
                                 }
                             }
@@ -1164,86 +1156,16 @@
         };
 
         service.isTagOffline = (tag) => {
-            return (tag.is_exit && !tag.radio_switched_off);
+            return ((tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0) && !tag.radio_switched_off && (((Date.now() - new Date(tag.gps_time)) > tag.sleep_time_outdoor)))
+                || ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && !tag.radio_switched_off && (((Date.now() - new Date(tag.time)) > tag.sleep_time_indoor)));
 
         };
 
         service.showAlarms = () => {}
     }
 
-    /**
-    //  * Function thai initialize a websocket chanel
-    //  * @type {Array}
-    //  */
-    // socketService.$inject = ['$state'];
-    //
-    // function socketService($state) {
-    //     let service = this;
-    //     service.socketClosed     = false;
-    //     let server               = new WebSocket('ws://localhost:8090');
-    //     let serializedSocket = new WebSocket('ws://localhost:8090');
-    //
-    //     service.getSocket = () => {
-    //         return serializedSocket;
-    //     };
-    //
-    //     let isConstantOpen = false;
-    //
-    //     serializedSocket.onopen = function () {
-    //         isConstantOpen = true;
-    //     };
-    //
-    //     serializedSocket.onerror = function () {
-    //         console.error('error on connection')
-    //     };
-    //
-    //     serializedSocket.onerror = function() {
-    //         $state.go('login');
-    //         service.socketClosed = true;
-    //     };
-    //
-    //     let isOpen = false;
-    //
-    //     service.floor = {
-    //         defaultFloor: 1
-    //     };
-    //
-    //     server.onopen = function () {
-    //         isOpen = true;
-    //     };
-    //
-    //     server.onclose = () => {
-    //         $state.go('login');
-    //         service.socketClosed = true;
-    //     };
-    //
-    //     service.sendRequest = (action, data) => {
-    //         return new Promise(function (resolve, reject) {
-    //
-    //             if (isOpen) {
-    //                 server.send(encodeRequest(action, data));
-    //                 server.onmessage = function (message) {
-    //                     resolve(JSON.parse(message.data));
-    //                 };
-    //             }
-    //
-    //             server.onopen = function () {
-    //                 server.send(encodeRequest(action, data));
-    //                 server.onmessage = function (message) {
-    //                     resolve(JSON.parse(message.data));
-    //                     isOpen = true;
-    //                 };
-    //             };
-    //
-    //             server.onerror = function (error) {
-    //                 reject(error);
-    //             }
-    //         });
-    //     };
-    // }
-
-    newSocketService.$inject = ['$state'];
-    function newSocketService($state) {
+    newSocketService.$inject = ['$state', '$interval'];
+    function newSocketService($state, $interval) {
         let service              = this;
         let id = 0;
         service.server               = socketServer;
@@ -1262,6 +1184,7 @@
             if (socketOpened) {
                 service.server.send(stringifyedData);
                 service.callbacks.push({id: id, value: callback});
+                $interval.cancel(service.reconnectSocket);
             }
 
             service.server.onmessage = (response) => {
@@ -1278,6 +1201,11 @@
             service.server.onclose = () => {
                 $state.go('login');
                 service.socketClosed = true;
+                service.reconnectSocket = $interval(function () {
+                    console.log('trying to reconect')
+                    socketServer = new WebSocket('ws://localhost:8090');
+                    service.server = socketServer
+                }, 5000)
             }
         };
     }

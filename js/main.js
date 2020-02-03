@@ -131,7 +131,7 @@
                                 } else {
                                     $state.go('home');
                                 }
-                                newSocketService.getData('get_user', {username: sessionStorage.usere}, (user) => {
+                                newSocketService.getData('get_user', {username: sessionStorage.user}, (user) => {
                                     if (user.result[0].username !== undefined) {
 
                                         dataService.user = user.result[0];

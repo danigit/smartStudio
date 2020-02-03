@@ -4309,7 +4309,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT SAFE_MON_STATUS, DESCRIPTION, COLOR FROM rtls JOIN safemon ON SAFE_MON_STATUS = safemon.ID ';
+            $this->query = 'SELECT SAFE_MON_STATUS, TIME_REST, DESCRIPTION, COLOR, IS_ACTIVE_SAFEMON, IS_ACTIVE_TIME_REST FROM rtls JOIN safemon ON SAFE_MON_STATUS = safemon.ID ';
 
             $this->result = $this->connection->query($this->query);
 
@@ -4321,7 +4321,8 @@ class Connection
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
-                $result_array = array('sefe_mon_id' => $row['SAFE_MON_STATUS'], 'description' => $row['DESCRIPTION'], 'color' => $row['COLOR']);
+                $result_array = array('sefe_mon_id' => $row['SAFE_MON_STATUS'], 'description' => $row['DESCRIPTION'], 'color' => $row['COLOR'],
+                    'is_active_safemon' => $row['IS_ACTIVE_SAFEMON'], 'is_active_time_rest' => $row['IS_ACTIVE_TIME_REST'], 'time_rest' => $row['TIME_REST']);
             }
 
             mysqli_close($this->connection);

@@ -45,29 +45,29 @@
                     <img src="img/icons/tags/offline_tag_24.png" class="md-avatar" alt="{{lang.offlineTags}}"
                          title="{{lang.offlineTags}}">
                     <div class="md-list-item-text" layout="column">
-                        <h3>{{lang.offlineTags}}: <b class="color-darkgray">{{ offlineTagsIndoor.length }}</b></h3>
-                        <h4 class="color-darkgray">{{ offlineTagsIndoor.length }} {{lang.areOfflineTags | lowercase}}</h4>
+                        <h3>{{lang.offlineTags}}: <b class="color-darkgray">{{ tagsStateIndoor.offGrid }}</b></h3>
+                        <h4 class="color-darkgray">{{ tagsStateIndoor.offGrid }} {{lang.areOfflineTags | lowercase}}</h4>
                         <md-select ng-if="offlineTagsIndoor.length > 0" ng-model="antani"
                                    placeholder="{{lang.offlineTags}}">
-                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offlineTagsIndoor">
+                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offgridTags">
                                 <img src="img/icons/offline_tags_alert_grey_24.png" class="margin-right-10-px" alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}"><span class="font-large vertical-align-super">{{tag.name}}</span>
                             </md-option>
                         </md-select>
                     </div>
                 </md-list-item>
-                <md-list-item class="md-2-line">
-                    <img src="img/icons/tags/offline_tag_24.png" class="md-avatar" alt="{{lang.lostTags}}"
-                         title="{{lang.lostTags}}">
-                    <div class="md-list-item-text" layout="column">
-                        <h3>{{lang.lostTags}}: <b class="color-orange">{{tagsStateIndoor.offGrid}}</b></h3>
-                        <h4 class="color-orange">{{ tagsStateIndoor.offGrid }} {{lang.areLostTags | lowercase}}</h4>
-                        <md-select ng-if="offgridTags.length > 0" ng-model="antani" placeholder="{{lang.lostTags}}">
-                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offgridTags">
-                                <img src="img/icons/offline_tags_alert_24.png" class="margin-right-10-px"><span class="font-large vertical-align-super">{{tag.name}}</span>
-                            </md-option>
-                        </md-select>
-                    </div>
-                </md-list-item>
+<!--                <md-list-item class="md-2-line">-->
+<!--                    <img src="img/icons/tags/offline_tag_24.png" class="md-avatar" alt="{{lang.lostTags}}"-->
+<!--                         title="{{lang.lostTags}}">-->
+<!--                    <div class="md-list-item-text" layout="column">-->
+<!--                        <h3>{{lang.offlineTags}}: <b class="color-orange">{{tagsStateIndoor.offGrid}}</b></h3>-->
+<!--                        <h4 class="color-orange">{{ tagsStateIndoor.offGrid }} {{lang.areLostTags | lowercase}}</h4>-->
+<!--                        <md-select ng-if="offgridTags.length > 0" ng-model="antani" placeholder="{{lang.lostTags}}">-->
+<!--                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in offgridTags">-->
+<!--                                <img src="img/icons/offline_tags_alert_24.png" class="margin-right-10-px"><span class="font-large vertical-align-super">{{tag.name}}</span>-->
+<!--                            </md-option>-->
+<!--                        </md-select>-->
+<!--                    </div>-->
+<!--                </md-list-item>-->
                 <md-list-item class="md-2-line">
                     <img src="img/icons/tags/offline_tag_24.png" class="md-avatar" alt="{{lang.shutdownTags}}"
                          title="{{lang.shutdownTags}}">
