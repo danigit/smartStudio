@@ -76,12 +76,13 @@
         let markers              = homeData.markers;
         let tags                 = dataService.allTags;
         let bounds               = new google.maps.LatLngBounds();
-        let allarmZoom           = undefined;
+        let alarmZoom           = undefined;
         let controllerMap        = null;
         let alarmLocations       = [];
         let imageIndex           = 0;
         let alarmLocationsLength = 0;
-        let zoomSetted           = 0;
+        let zoomSetter           = 0;
+
 
         //visualizing the data according if the user is admin or not
         homeCtrl.isAdmin       = dataService.isAdmin;
@@ -102,80 +103,86 @@
             let findTagLocation = (allTags, indoorTags, anchors, map) => {
                 let alarmBounds = new google.maps.LatLngBounds();
 
+                // looping through user locations
                 markers.forEach((marker) => {
-                    let tags = dataService.getOutdoorLocationTags(marker, allTags);
+                    // getting the tags inside the current location
                     let markerObject = new google.maps.Marker({
                         position: new google.maps.LatLng(marker.position[0], marker.position[1]),
                     });
 
                     let markerSelected = homeCtrl.dynamicMarkers.filter(m => m.getPosition().lat() === markerObject.getPosition().lat() && m.getPosition().lng() === markerObject.getPosition().lng())[0];
 
-                    //if the marker(location) is outside it cannot have anchors so i controll only the tags
+                    // getting the situation of tags and anchors
+                    let locationAnchors = dataService.getLocationAnchors(marker, anchors);
+                    let locationTags    = dataService.getIndoorLocationTags(marker, indoorTags);
+                    let locationTagsOutdoor = dataService.getOutdoorLocationTags(marker, allTags);
+                    let tagAlarmsIndoor    = dataService.checkIfTagsHaveAlarmsInfo(locationTags);
+                    let anchorAlarms = dataService.checkIfAnchorsHaveAlarmsOrAreOffline(locationAnchors);
+                    let tagAlarmsOutdoor    = dataService.checkIfTagsHaveAlarmsInfo(locationTagsOutdoor);
+
+                    // if the location is outdoor I control only the tags because I don't have anchors
                     if (!marker.is_inside) {
-                        if (dataService.checkIfTagsHaveAlarmsInfo(tags)) {
+                        if (tagAlarmsOutdoor) {
+                            // if the location isn't among the ones with an allarm, i add it
                             if (!dataService.alarmLocationsContainLocation(alarmLocations, marker))
                                 alarmLocations.push(marker);
 
+                            // I show the icon of the alarm
                             (imageIndex === 0)
                                 ? markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'))
                                 : markerSelected.setIcon(iconsPath + 'alarm-icon.png');
-                        } else {
+                        }
+                        // if the location has no more alarms I remove it from the locations with alarm and restore the default icon
+                        else {
                             if (dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
                                 markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                             }
                         }
-                    }//If the marker(location) is indoor I control if the anchors and the tags have alarms
-                    else {
-                        let locationAnchors = dataService.getLocationAnchors(marker, anchors);
-                        let locationTags    = dataService.getIndoorLocationTags(marker, indoorTags);
-
-
-                        if (dataService.checkIfTagsHaveAlarmsInfo(locationTags)) {
+                    } else {
+                        if (tagAlarmsIndoor || anchorAlarms) {
+                            // if the location isn't among the ones with an allarm, i add it
                             if (!dataService.alarmLocationsContainLocation(alarmLocations, marker))
                                 alarmLocations.push(marker);
 
-                            if (dataService.checkIfAnchorsHaveAlarms(locationAnchors) || dataService.checkIfAreAnchorsOffline(locationAnchors)) {
-                                if (!dataService.alarmLocationsContainLocation(alarmLocations, marker))
-                                    alarmLocations.push(marker);
-
+                            // control if I have only tag alarms
+                            if (tagAlarmsIndoor && !anchorAlarms) {
+                                (imageIndex === 0)
+                                    ? markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'))
+                                    : markerSelected.setIcon(iconsPath + 'alarm-icon.png');
+                            }
+                            // control if I have both tags and anchor alarms
+                            else if (tagAlarmsIndoor && anchorAlarms) {
                                 (imageIndex === 0)
                                     ? markerSelected.setIcon(iconsPath + 'alarm-icon.png')
                                     : markerSelected.setIcon(iconsPath + 'offline_anchors_alert_64.png')
-                            } else {
+                            }
+                            // controll if I have only anchor alarms
+                            else if (anchorAlarms) {
                                 (imageIndex === 0)
-                                    ? markerSelected.setIcon(iconsPath + 'alarm-icon.png')
-                                    : markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
+                                    ? markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'))
+                                    : markerSelected.setIcon(iconsPath + 'offline_anchors_alert_64.png')
                             }
-                        } else if (dataService.checkIfAnchorsHaveAlarms(locationAnchors) || dataService.checkIfAreAnchorsOffline(locationAnchors)) {
-                            if (!dataService.alarmLocationsContainLocation(alarmLocations, marker))
-                                alarmLocations.push(marker);
-
-                            (imageIndex === 1)
-                                ? markerSelected.setIcon(iconsPath + 'offline_anchors_alert_64.png')
-                                : markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
-                        } else if (!dataService.checkIfAnchorsHaveAlarms(locationAnchors) && !dataService.checkIfAreAnchorsOffline(locationAnchors) && !dataService.checkIfTagsHaveAlarms(locationTags)) {
-                            if (dataService.alarmLocationsContainLocation(alarmLocations, marker)) {
-                                alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
-                                markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
-                            }
+                            // if the location has no more alarms I remove it from the locations with alarm and restore the default icon
+                        }
+                        // if the location has no more alarms I remove it from the locations with alarm and restore the default icon
+                        else{
+                            alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
+                            markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
                         }
                     }
                 });
 
 
                 //resizing the zoom of the map to see only the locations in alarm
-                if (alarmLocations.length > 0 && alarmLocations.length !== alarmLocationsLength) {
+                if (alarmLocations.length > 0){
+                    console.log(alarmLocations)
+                    alarmBounds = new google.maps.LatLngBounds();
                     alarmLocations.forEach(location => {
                         alarmBounds.extend(new google.maps.LatLng(location.position[0], location.position[1]))
                     });
 
-                    map.fitBounds(alarmBounds);
-
-                    if (allarmZoom !== map.getZoom())
-                        allarmZoom = map.getZoom();
-
-                    alarmLocationsLength = alarmLocations.length;
+                    map.fitBounds(alarmBounds)
                 }
 
                 imageIndex++;
@@ -188,19 +195,34 @@
             let constantUpdateNotifications = (map) => {
                 dataService.homeTimer = $interval(() => {
 
-                    console.log('updating home page');
+                    if (DEBUG)
+                        console.log ('updateing notifications');
+
                     newSocketService.getData('get_all_tags', {}, (response) => {
                         if (!response.session_state)
                             window.location.reload();
 
                         dataService.allTags = response.result;
 
-                        tags                         = response.result;
-                        dataService.checkIfTagsAreOutOfLocations(response.result).then(result => {
-                            if(dataService.switch.showOutrangeTags && result.some(r => r === true))
-                                homeCtrl.showAlarmsIcon = true;
+                        tags = response.result;
+
+                        newSocketService.getData('get_all_locations', {}, (locations) => {
+                            if (!response.session_state)
+                                window.location.reload();
+
+                            // controlling if there are tags out off all the locations
+                            dataService.allTags.forEach(function(tag){
+                                // applying only for tags outdoor
+                                if (dataService.isOutdoor(tag)) {
+                                    // checking if any tag is out of all locations
+                                    if(!dataService.checkIfAnyTagOutOfLocation(locations.result, tag) && dataService.switch.showOutrangeTags){
+                                        homeCtrl.showAlarmsIcon = true;
+                                    }
+                                }
+                            })
                         });
 
+                        // showing the home alarm icons
                         homeCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarmsInfo(response.result);
                         homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
 
@@ -215,21 +237,20 @@
                             if (!userTags.session_state)
                                 window.location.reload();
 
-                            findTagLocation(tags, userTags.result, response.result, map);
+                            findTagLocation(dataService.allTags, userTags.result, response.result, map);
 
                             //setting the zoom of the map to see all the locations if there are no locations with alarms
-                            if (alarmLocations.length === 0 && zoomSetted === 0 && homeCtrl.dynamicMarkers.length === 0) {
-                                alarmLocationsLength = 0;
+                            if (alarmLocations.length === 0){
                                 map.setCenter(bounds.getCenter());
                                 map.fitBounds(bounds);
-                                zoomSetted = 1
-                            } else if (alarmLocations.length > 0 ) {
-                                zoomSetted = 0;
-                            } else if (homeCtrl.dynamicMarkers.length === 0){
+                            }
+
+                            // setting the center of the map if there are no locations
+                            if (homeCtrl.dynamicMarkers.length === 0){
                                 map.setCenter(new google.maps.LatLng(44.44, 8.88));
                             }
 
-                            homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
+                            homeCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsHaveAlarmsOrAreOffline(response.result);
                         });
                     });
 
@@ -242,6 +263,7 @@
                 }, 1000);
             };
 
+            //TODO FINO A QUI
             $rootScope.$on('constantUpdateNotifications', function (event, map) {
                 constantUpdateNotifications(map);
             });
@@ -1266,7 +1288,6 @@
 
                 newSocketService.getData('get_all_tags', {}, (response) => {
                     dataService.allTags = response.result;
-                    console.log(response)
 
                     tags                            = response.result;
                     dataService.checkIfTagsAreOutOfLocations(response.result).then(result => {

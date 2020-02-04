@@ -95,7 +95,6 @@ class webSocketServer implements MessageComponentInterface{
         switch ($decoded_message['action']){
             //handeling login
             case 'login':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'login';
                 $query = $this->connection->login($decoded_message['data']['username'], $decoded_message['data']['password']);
 
@@ -115,7 +114,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //handeling logout
             case 'logout':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'logout';
 
                 if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username_' . $decoded_message['data']['username']])) {
@@ -131,10 +129,10 @@ class webSocketServer implements MessageComponentInterface{
             }
             //geting the user
             case 'get_user':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_user';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
+                error_log('Sessione; ' . $_SESSION['username_simone']);
                 if (isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username_' . $decoded_message['data']['username']])) {
                     $query = $this->connection->get_user($_SESSION['username_' . $decoded_message['data']['username']]);
 
@@ -150,7 +148,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a location
             case 'insert_location':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_location';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -165,7 +162,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //deleting a location
             case 'delete_location':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_location';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -178,7 +174,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //saving a location
             case 'save_location':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_location';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -193,7 +188,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the location field
             case 'change_location_field':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_location_field';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -207,7 +201,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting a location infos
             case 'get_location_info':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_location_info';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -236,7 +229,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting all the locations
             case 'get_all_locations':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_all_locations';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -249,7 +241,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting a location by user
             case 'get_locations_by_user':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_location_by_user';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -262,7 +253,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //saving marker image
             case 'save_marker_image':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_marker_image';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -291,7 +281,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the locations
             case 'get_markers':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_markers';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -304,7 +293,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a floor
             case 'insert_floor':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_floor';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -318,7 +306,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //deleting a floor
             case 'delete_floor':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_floor';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -331,7 +318,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //saving floor image
             case 'save_floor_image':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_floor_image';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -346,7 +332,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //updating floor image
             case 'update_floor_image':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_floor_image';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -366,7 +351,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting floor info
             case 'get_floor_info':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_floor_info';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -379,7 +363,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the floors by location
             case 'get_floors_by_location':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_floors_by_location';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -392,7 +375,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the floors by user
             case 'get_floors_by_user':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_floors_by_user';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -405,7 +387,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the floor field
             case 'change_floor_field':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_floor_field';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -418,7 +399,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //save the canvas drawing
             case 'save_drawing':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'save_drawing';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -431,7 +411,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the saved drawing
             case 'get_drawing':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_drawing';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -444,7 +423,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a tag
             case 'insert_tag':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_tag';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -457,7 +435,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //deleting a tag
             case 'delete_tag':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_tag';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -528,7 +505,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changeng the tag field
             case 'change_tag_field':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_tag_field';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -553,7 +529,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting all the tags
             case 'get_all_tags':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_all_tags';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -566,7 +541,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the tags by user
             case 'get_tags_by_user':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_tags_by_user';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -579,7 +553,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the tags by floor and location
             case 'get_tags_by_floor_and_location':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_tags_by_floor_and_location';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -592,7 +565,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the tag macs
             case 'get_tag_macs':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_tag_macs';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -649,7 +621,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the tag types
             case 'get_all_types':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_all_types';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -662,7 +633,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the floor of a certain tag
             case 'get_tag_floor':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_tag_floor';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -675,7 +645,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting a mac
             case 'insert_mac':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_mac';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -688,7 +657,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //deleting a mac
             case 'delete_mac':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_mac';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -734,7 +702,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the mac field
             case 'change_mac_field':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_mac_field';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -774,7 +741,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //inserting an anchor
             case 'insert_anchor':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'insert_anchor';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -788,7 +754,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //deleting an anchor
             case 'delete_anchor':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'delete_anchor';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -801,7 +766,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the anchor tipes
             case 'get_anchor_types':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_anchor_types';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -814,7 +778,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the anchor field
             case 'change_anchor_field':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_anchor_field';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -839,7 +802,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //updating the achor pasition
             case 'update_anchor_position':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'update_anchor_position';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -852,7 +814,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the anchors by floor and location
             case 'get_anchors_by_floor_and_location':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_anchors_by_floor_and_location';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -865,7 +826,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the anchors by location
             case 'get_anchors_by_location':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_anchors_by_location';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -878,7 +838,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the anchors by user
             case 'get_anchors_by_user':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_anchors_by_user';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -891,7 +850,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the history
             case 'get_history':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_history';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -942,7 +900,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //changing the password
             case 'change_password':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'change_password';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -955,7 +912,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the cameras by floor and location
             case 'get_cameras_by_floor_and_location':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_cameras_by_floor_and_location';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -968,7 +924,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the events
             case 'get_events':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_events';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 
@@ -981,7 +936,6 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting the emergency info
             case 'get_emergency_info':{
-                $result['id'] = $decoded_message['id'];
                 $result['action'] = 'get_emergency_info';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
 

@@ -54,7 +54,6 @@
                         let result  = {};
                         setTimeout(function () {
                             newSocketService.getData('get_user', {username: sessionStorage.user}, (response) => {
-                                console.log(response);
                                 if (response.result !== 'no_user') {
                                     dataService.user = response.result[0];
                                     if (response.result[0].role === 1) {

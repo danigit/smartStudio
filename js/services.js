@@ -50,7 +50,7 @@
         service.drawingManagerRound = null;
         service.outdoorZones = [];
         service.outdoorZoneInserted = false;
-        service.playedTime = null;
+        service.playedTime = 0;
         service.alarmsInterval = undefined;
         service.reconnectSocket = null;
 
@@ -78,7 +78,7 @@
             return alarms.some(a => a.tagId === alarm.tagId && a.name === alarm.name);
         };
 
-        //getting the tags in the outdoor location passed as parameter
+        // getting the tags in the outdoor location passed as parameter
         service.getOutdoorLocationTags = (location, tags) => {
             return tags.filter(t => !location.is_inside && service.isTagInLocation(t, location));
         };
@@ -100,11 +100,12 @@
             }
         };
 
-        //getting the tags in the location indoor passed as parameter
+        // getting the tags in the location indoor passed as parameter
         service.getIndoorLocationTags = (location, tags) => {
             return tags.filter(t => (location.position[0] === t.location_latitude && location.position[1] === t.location_longitude))
         };
 
+        // function that loads the user setting (the ones that go in quick actions)
         service.loadUserSettings = () => {
             newSocketService.getData('get_user_settings', {username: service.user.username}, (response) => {
                 if (!response.session_state)
@@ -136,12 +137,25 @@
             return undefined;
         };
 
+        // check if the passed tag is out of all the locations
+        service.checkIfAnyTagOutOfLocation = (locations, tag) => {
+            return locations.some(l => {
+                if (!l.is_inside) {
+                    // control if the tag is out of the current location (l)
+                    return (service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
+                }
+            })
+        };
+
+        // function that check if the tag is out of all the locations
         service.checkIfTagsAreOutOfLocations = (tags) => {
+
             return Promise.all(
                 tags.map(function (tag) {
                     return new Promise(function (resolve) {
                         if (service.isOutdoor(tag)) {
                             newSocketService.getData('get_all_locations', {}, (response) => {
+                                // console.log('GETTING ALL THE LOCATIONS')
                                 resolve(!response.result.some(l => {
                                     if (!l.is_inside) {
                                         return (service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
@@ -280,7 +294,7 @@
             });
         };
 
-        //checking if there is at least one tag offline
+        // checking if there is at least one tag offline among the passed tags
         service.checkIfTagsAreOffline = (tags) => {
             return tags.some(function (tag) {
                 return service.isTagOffline(tag)
@@ -679,11 +693,11 @@
             })
         };
 
+        // checking if any of the the passed tags have at least one alarm
         service.checkIfTagsHaveAlarmsInfo = (tags) => {
             return tags.some(function (tag) {
                 return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                    || tag.battery_status || tag.man_in_quote
-                    || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone;
+                    || tag.battery_status || tag.man_in_quote || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone;
             })
         };
 
@@ -693,6 +707,12 @@
                 || tag.call_me_alarm || tag.diagnostic_request));
         };
 
+        // checking if at least one of the passed anchors has an alarm
+        service.checkIfAnchorsHaveAlarmsOrAreOffline = (anchors) => {
+            return anchors.some(a => a.battery_status || a.is_offline === 1);
+        };
+
+        // checking if at least one of the passed anchors has an alarm
         service.checkIfAnchorsHaveAlarms = (anchors) => {
             return anchors.some(a => a.battery_status);
         };
@@ -700,87 +720,73 @@
         //function that plays the alarms audio of the tags passed as parameter
         service.playAlarmsAudio = (tags) => {
             let audio;
+
+            // incrementing the number after which the next play is going to happen
+            service.playedTime++;
+
+            // getting the allarms to be played
             tags.forEach(function (tag) {
                 if (tag.battery_status) {
+                    // control if the alarm is already considered, if not I add it to the allarms to play
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'battery')) {
-                        service.playedTime = null;
                         service.alarmsSounds.push({tag: tag.name, alarm: 'battery'});
                     }
-                } else {
+                }
+                // if the alarm is no more active I remove it
+                else {
                     service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.name, 'battery');
                 }
 
                 if (tag.man_down) {
+                    // control if the alarm is already considered, if not I add it to the allarms to play
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'mandown')) {
                         service.alarmsSounds.push({tag: tag.name, alarm: 'mandown'});
-                        service.playedTime = null;
                     }
-                } else {
+                }
+                // if the alarm is no more active I remove it
+                else {
                     service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.name, 'mandown');
                 }
 
                 if (tag.sos) {
+                    // control if the alarm is already considered, if not I add it to the allarms to play
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'sos')) {
                         service.alarmsSounds.push({tag: tag.name, alarm: 'sos'});
-                        service.playedTime = null;
                     }
-                } else {
-                    service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.name, 'sos');
                 }
-
-                if (service.alarmsSounds.length === 0 ){
-                    service.playAlarm = false;
+                // if the alarm is no more active I remove it
+                else {
+                    service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.name, 'sos');
                 }
             });
 
-            if (service.playedTime === null) {
-                service.playAlarm = true;
+            // control if there are allarm to be played
+            if (service.alarmsSounds.length !== 0){
+                // control what type of alarm I have to play set the audio
                 if (service.alarmsSounds.length > 1 && (service.switch && service.switch.playAudio)) {
                     audio = new Audio(audioPath + 'sndMultipleAlarm.mp3');
-                    audio.play();
-                    service.playedTime        = new Date();
                 } else {
-                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'battery') && (service.switch && service.switch.playAudio)) {
+                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'battery')) {
                         audio = new Audio(audioPath + 'sndBatteryAlarm.mp3');
-                        audio.play();
-                        service.playedTime = new Date();
                     }
-                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'mandown') && (service.switch && service.switch.playAudio)) {
+                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'mandown')) {
                         audio = new Audio(audioPath + 'sndManDownAlarm.mp3');
-                        audio.play();
-                        service.playedTime = new Date();
                     }
-                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'sos') && (service.switch && service.switch.playAudio)) {
+                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'sos')) {
                         audio = new Audio(audioPath + 'indila-sos.mp3');
-                        audio.play();
-                        service.playedTime = new Date();
-                    }
-                }
-                if (service.playedTime === null)
-                    service.playAlarm = false;
-            } else if ((new Date().getTime() - service.playedTime.getTime()) > 5000 && service.playAlarm) {
-                if (service.alarmsSounds.length > 1 && (service.switch && service.switch.playAudio)) {
-                    audio = new Audio(audioPath + 'sndMultipleAlarm.mp3');
-                    audio.play();
-                    service.playedTime        = new Date();
-                } else {
-                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'battery') && (service.switch && service.switch.playAudio)) {
-                        audio = new Audio(audioPath + 'sndBatteryAlarm.mp3');
-                        audio.play();
-                        service.playedTime = new Date();
-                    }
-                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'mandown') && (service.switch && service.switch.playAudio)) {
-                        audio = new Audio(audioPath + 'sndManDownAlarm.mp3');
-                        audio.play();
-                        service.playedTime = new Date();
-                    }
-                    if (controlIfArrayHasAlarm(service.alarmsSounds, 'sos') && (service.switch && service.switch.playAudio)) {
-                        audio = new Audio(audioPath + 'indila-sos.mp3');
-                        audio.play();
-                        service.playedTime = new Date();
                     }
                 }
             }
+
+            // play the alarm
+            if (service.playedTime > 4 && (service.switch && service.switch.playAudio)){
+                audio.play();
+                service.playedTime = 0;
+            }
+
+            // if the alarm audio is disabled playTime will increase forever sow I reset it
+            if (service.playedTime > 5)
+                service.playedTime = 0
         };
 
         //checking if the tag has an alarm
