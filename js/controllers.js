@@ -77,11 +77,11 @@
         let tags                 = dataService.allTags;
         let bounds               = new google.maps.LatLngBounds();
         let alarmZoom           = undefined;
-        let controllerMap        = null;
         let alarmLocations       = [];
         let imageIndex           = 0;
         let alarmLocationsLength = 0;
-        let zoomSetter           = 0;
+        // I use this varable so that the zoom is done only at the firs cicle, so that I can zoom out after automatic zoom
+        let zoomSetter           = false;
 
 
         //visualizing the data according if the user is admin or not
@@ -131,6 +131,7 @@
                             (imageIndex === 0)
                                 ? markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'))
                                 : markerSelected.setIcon(iconsPath + 'alarm-icon.png');
+                            zoomSetter = false;
                         }
                         // if the location has no more alarms I remove it from the locations with alarm and restore the default icon
                         else {
@@ -163,7 +164,7 @@
                                     ? markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'))
                                     : markerSelected.setIcon(iconsPath + 'offline_anchors_alert_64.png')
                             }
-                            // if the location has no more alarms I remove it from the locations with alarm and restore the default icon
+                            zoomSetter = false;
                         }
                         // if the location has no more alarms I remove it from the locations with alarm and restore the default icon
                         else{
@@ -175,14 +176,14 @@
 
 
                 //resizing the zoom of the map to see only the locations in alarm
-                if (alarmLocations.length > 0){
-                    console.log(alarmLocations)
+                if (alarmLocations.length > 0 && !zoomSetter){
                     alarmBounds = new google.maps.LatLngBounds();
                     alarmLocations.forEach(location => {
                         alarmBounds.extend(new google.maps.LatLng(location.position[0], location.position[1]))
                     });
 
                     map.fitBounds(alarmBounds)
+                    zoomSetter = true;
                 }
 
                 imageIndex++;
@@ -240,9 +241,10 @@
                             findTagLocation(dataService.allTags, userTags.result, response.result, map);
 
                             //setting the zoom of the map to see all the locations if there are no locations with alarms
-                            if (alarmLocations.length === 0){
+                            if (alarmLocations.length === 0 && zoomSetter){
                                 map.setCenter(bounds.getCenter());
                                 map.fitBounds(bounds);
+                                zoomSetter = false;
                             }
 
                             // setting the center of the map if there are no locations
@@ -254,6 +256,7 @@
                         });
                     });
 
+                    // controlling if the engine is on and showing the icon if not
                     newSocketService.getData('get_engine_on', {}, (response) => {
                         if (!response.session_state)
                             window.location.reload();
@@ -263,81 +266,75 @@
                 }, 1000);
             };
 
-            //TODO FINO A QUI
+            // enabling the call of constantUpdateNotifications from a different controller ( service )
             $rootScope.$on('constantUpdateNotifications', function (event, map) {
                 constantUpdateNotifications(map);
             });
 
             NgMap.getMap('main-map').then((map) => {
-                controllerMap       = map;
                 dataService.homeMap = map;
                 constantUpdateNotifications(map);
                 map.set('styles', mapConfiguration);
 
+                // getting the tags of the current user
                 newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
-
+                    // getting the anchors of the current user
                     newSocketService.getData('get_anchors_by_user', {user: dataService.user.username}, (response) => {
 
                         //creating the interaction with the location icon, infoWindow, click
                         markers.forEach(marker => {
+                            // declaring the info window
+                            let infoWindow = null;
+
+                            // creating a new marker which is a copy of the current looped marker
                             let markerObject = new google.maps.Marker({
                                 position : new google.maps.LatLng(marker.position[0], marker.position[1]),
                                 animation: google.maps.Animation.DROP,
                                 icon     : markersIconPath + ((marker.icon) ? marker.icon : (marker.is_inside) ? 'location-marker.png' : 'mountain.png')
                             });
 
-                            let infoWindow = null;
-
+                            // handling only the indoor locations
                             if (marker.is_inside) {
-                                let locationTags    = dataService.getIndoorLocationTags(marker, userTags.result);
-                                let locationAnchors = dataService.getLocationAnchors(marker, response.result);
-
-                                infoWindow = new google.maps.InfoWindow({
-                                    content: '<div class="marker-info-container">' +
-                                        '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
-                                        '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
-                                        '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
-                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
-                                        '<div class="clear-float display-flex"><div class="width-50 margin-left-10-px"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
-                                        '</div><div class="width-45 "><img src="' + iconsPath + 'offline_anchors_alert_30.png" class="margin-right-10-px"><span class="font-large vertical-align-super color-red"><b>' + locationAnchors.length + '</b></span></div></div>' +
-                                        '</div>'
-                                });
-                            } else {
-                                let locationTags = dataService.getOutdoorLocationsTags(markers, tags).filter(l => l.location === marker.name)[0];
-
-                                infoWindow = new google.maps.InfoWindow({
-                                    content: '<div class="marker-info-container">' +
-                                        '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
-                                        '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
-                                        '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
-                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
-                                        '<div class="clear-float display-flex"><div class="margin-auto"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.tags + '</b></span>' +
-                                        '</div></div' +
-                                        '</div>'
-                                });
+                                // filling the info window
+                                infoWindow = dataService.fillInfoWindowInsideLocation(marker, userTags.result, response.result);
+                            }
+                            // handling only the outdoor locations
+                            else {
+                                // filling the info window
+                                infoWindow = dataService.fillInfoWindowOutsideLocation(marker, dataService.allTags)
                             }
 
+                            // open the info window on mouse over
                             markerObject.addListener('mouseover', function () {
                                 infoWindow.open(map, this);
                             });
 
+                            // closing the info window on mouse out
                             markerObject.addListener('mouseout', function () {
                                 infoWindow.close(map, this);
                             });
 
+                            // entering the location on marker click
                             markerObject.addListener('click', () => {
+                                // saving the location I'm entering to the server side, to take it back if page refreshed
+                                // the session is saved in the session variable
                                 newSocketService.getData('save_location', {location: marker.name}, (response) => {
+                                    // control if the session is ended
                                     if (!response.session_state)
                                         window.location.reload();
 
+                                    // if the location is successfully saved
                                     if (response.result === 'location_saved') {
+                                        // getting the information's about the saved location
                                         newSocketService.getData('get_location_info', {}, (locationInfo) => {
                                             if (!locationInfo.session_state)
                                                 window.location.reload();
 
+                                            // saving the location info locally
                                             dataService.location          = locationInfo.result;
                                             dataService.defaultFloorName  = '';
                                             dataService.locationFromClick = '';
+                                            // redirecting to the location inside or outside accordingly
                                             (locationInfo.result.is_inside)
                                                 ? $state.go('canvas')
                                                 : $state.go('outdoor-location');
@@ -345,25 +342,32 @@
                                     }
                                 });
                             });
-
+                            // pushing the created marker with the rest of the markers
                             homeCtrl.dynamicMarkers.push(markerObject);
+                            // including the bounds of the new marker
                             bounds.extend(markerObject.getPosition());
                         });
 
+                        // drawing the cluster of markers if any
                         homeCtrl.markerClusterer = new MarkerClusterer(map, homeCtrl.dynamicMarkers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
 
-                        //if there are no markers I set the map to italy with default zoom
-                        if (homeCtrl.dynamicMarkers.length === 0) {
+                        // if there are no markers I set the map to italy with default zoom
+                        if (homeCtrl.dynamicMarkers.length === 0 && !zoomSetter) {
                             map.setCenter(new google.maps.LatLng(44.44, 8.88));
                             map.setZoom(mapZoom);
-                        }//if there is only a marker I set the map on the marker with zoom 11
-                        else if (homeCtrl.dynamicMarkers.length === 1) {
+                            zoomSetter = true;
+                        }
+                        // if there is only a marker I set the map on the marker with default zoom
+                        else if (homeCtrl.dynamicMarkers.length === 1 && !zoomSetter) {
                             map.setCenter(bounds.getCenter());
                             map.setZoom(mapZoom);
-                        }//if the map has more than one marker I let maps to set automatically the zoom
+                            zoomSetter = true;
+                        }
+                        // if the map has more than one marker I let maps to set automatically the zoom
                         else {
                             map.setCenter(bounds.getCenter());
                             map.fitBounds(bounds);
+                            zoomSetter = false;
                         }
                     })
                 });
@@ -371,16 +375,19 @@
 
             //showing the info window with the online/offline tags
             homeCtrl.showOfflineTagsHome = () => {
+                // stopping the home interval
                 dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
-                dataService.showOfflineTags('home', constantUpdateNotifications, controllerMap);
+                dataService.showOfflineTags('home', constantUpdateNotifications, dataService.homeMap);
             };
 
             //showing the info window with the online/offline anchors
             homeCtrl.showOfflineAnchorsHome = () => {
+                // stoping the home interval
                 dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
-                dataService.showOfflineAnchors('home', constantUpdateNotifications, controllerMap);
+                dataService.showOfflineAnchors('home', constantUpdateNotifications, dataService.homeMap);
             };
 
+            //TODO DONE UNTILL HERE
             //showing the info window with all the alarms
             homeCtrl.showAlarmsHome = () => {
                 dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
@@ -2402,7 +2409,7 @@
 
                                         let sortedZones = floorZones.result.sort((z1, z2) => (z1.header_order > z2.header_order) ? 1 : -1);
                                         let lavElements = Array.prototype.slice.call( document.querySelectorAll('.lavoration') );
-                                        // angular.element(lavElements).remove();
+                                        angular.element(lavElements).remove();
                                         sortedZones.forEach((zone) => {
                                             if (zone.work_process_id !== null){
                                                 let side = zone.header_left_side ? "left; margin-left: 35px;" : "right; margin-right: 90px";
@@ -2495,7 +2502,6 @@
 
                                                     //getting the tag clouds
                                                     tagClouds = singleAndGroupedTags.filter(x => x.length > 1);
-                                                    console.log(tagClouds)
                                                     if (canvasCtrl.isAdmin !== 0 || canvasCtrl.isUserManager !== 0 || canvasCtrl.isTracker !== 0) {
 
                                                         dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')

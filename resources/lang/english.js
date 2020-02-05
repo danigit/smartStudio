@@ -443,4 +443,7 @@ let lang = {
     reset: '',
     callMe: '',
     stopCallMe: '',
+    disabledAnchors                 : '',
+    enabledAnchors                  : '',
+    shutDownAnchors: '',
 }

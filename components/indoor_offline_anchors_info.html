@@ -37,8 +37,8 @@
                     <img src="img/icons/tags/anchor_online_24.png" class="md-avatar" alt="{{lang.onlineAnchors}}"
                          title="{{lang.onlineAnchors}}">
                     <div class="md-list-item-text" layout="column">
-                        <h3>{{lang.onlineAnchors}}: <b class="color-green">{{anchorsState.online}}</b></h3>
-                        <h4 class="color-green">{{ anchorsState.online }} {{lang.areOnlineAnchors | lowercase}}</h4>
+                        <h3>{{lang.onlineAnchors}}: <b class="color-green">{{onlineAnchors}}</b></h3>
+                        <h4 class="color-green">{{ onlineAnchors }} {{lang.areOnlineAnchors | lowercase}}</h4>
                     </div>
                 </md-list-item>
                 <md-list-item class="md-3-line">
@@ -49,7 +49,7 @@
                         <h4 class="color-darkgray">{{ offlineAnchors.length }} {{lang.areOfflineAnchors}}</h4>
                         <md-select ng-if="offlineAnchors.length > 0" ng-model="antani"
                                    placeholder="{{lang.offlineAnchors}}">
-                            <md-option class="padding-top-bottom-35px padding-left-10-px" ng-value="anchor" ng-disabled="$index + 1" ng-repeat="anchor in offlineAnchors">
+                            <md-option class="padding-top-bottom-35px padding-left-10-px" ng-value="anchor" ng-disabled="$index + 1" ng-repeat="anchor in offlineAnchors track by $index">
                                 <p><b class="color-darkgray">{{anchor.name}}</b></p>
                                 <p>{{lang.location}} : {{anchor.location_name}}</p>
                                 <p>{{lang.floor}} : {{anchor.floor_name}}</p>
@@ -66,7 +66,7 @@
                         <h4 class="color-red">{{ shutDownAnchors.length }} {{lang.areShutDownAnchors}}</h4>
                         <md-select ng-if="shutDownAnchors.length > 0" ng-model="antani"
                                    placeholder="{{lang.shutDownAnchors}}">
-                            <md-option id="empty-battery-anchor-list" class="padding-top-bottom-35px padding-left-10-px" ng-value="anchor" ng-disabled="$index + 1" ng-repeat="anchor in shutDownAnchors">
+                            <md-option id="empty-battery-anchor-list" class="padding-top-bottom-35px padding-left-10-px" ng-value="anchor" ng-disabled="$index + 1" ng-repeat="anchor in shutDownAnchors track by $index">
                                 <div><p class="margin-none"><b class="color-red">{{anchor.name}}</b></p>
                                 <p class="margin-none">{{lang.location}} : {{anchor.location_name}}</p>
                                 <p class="margin-none">{{lang.floor}} : {{anchor.floor_name}}</p>

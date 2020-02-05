@@ -417,7 +417,7 @@ let lang = {
     okDeleteMac: 'Sei sicuro di voler cancellare il mac?',
     okDeleteZone: 'Sei sicuro di voler cancellare la zona?',
     shutDownTags                    : 'WeTags spenti',
-    activeTags: 'Tag attivi',
+    activeTags: 'WeTag attivi',
     disabledTags                    : 'WeTags disabilitati',
     lostTags                        : 'WeTags dispersi/offline',
 	deleteSite                      : 'Cancella sito',
@@ -449,5 +449,8 @@ let lang = {
     initEvacuation: 'Inizia evacuazione',
     reset: 'Riprisina',
     callMe: 'Chiamami',
-    stopCallMe: 'Tacitami'
+    stopCallMe: 'Tacitami',
+    disabledAnchors                 : 'Ancore disabilitate',
+    enabledAnchors                  : 'Ancore attive',
+    shutDownAnchors: 'Ancore scariche',
 }

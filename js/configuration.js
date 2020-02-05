@@ -31,7 +31,7 @@ const canvasGridPattern = [5, 5];
 /***************************************************************
  * MAPS COFIGURATIONS
  ***************************************************************/
-const mapZoom = 10;
+const mapZoom = 3;
 const outdoorLocationZoom = 17;
 const mapType = 'TERAIN';
 const mapCenter = [41.87194, 12.56738];

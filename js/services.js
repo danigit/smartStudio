@@ -198,85 +198,63 @@
 
         //function that show a window with the tags state
         service.showOfflineTags = (position, constantUpdateNotifications, map) => {
-
             $mdDialog.show({
                 templateUrl        : componentsPath + 'indoor_offline_tags_info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', '$controller', function ($scope, $controller) {
-                    $controller('languageController', {$scope: $scope});
-                    $scope.offlineTagsIndoor = [];
-                    $scope.offgridTags       = [];
-                    $scope.offTags       = [];
+                controller         : ['$scope', '$controller', function ($scope) {
                     $scope.data              = [];
 
-                    $scope.tagsStateIndoor = {
-                        offline: 0,
-                        online : 0,
-                        offGrid: 0,
-                        offTags: 0
-                    };
+                    // saving the number of tags in different states
+                    $scope.tagsStateIndoorOnline = 0;
+                    $scope.tagsStateIndoorOffGrid = 0;
+                    $scope.tagsStateIndoorOffTags = 0
 
-                    $scope.colors = ["#F76E41", "#4BAE5A", "#E12315", "#D3D3D3"];
-                    $scope.labels = [lang.disabledTags, lang.activeTags, lang.shutDownTags, lang.lostTags];
+                    // setting the color for each category
+                    $scope.colors = ["#4BAE5A", "#E12315", "#D3D3D3"];
+                    // setting the name for each category
+                    $scope.labels = [lang.activeTags, lang.shutDownTags, lang.disabledTags];
 
+                    // continuously updating the tag situation
                     service.offlineTagsInterval     = $interval(function () {
+                        //getting all the tags
+                        // TODO - maybe I have to take only the tags of the current logged user
                         newSocketService.getData('get_all_tags', {}, (response) => {
+                            // control if teh session is still active, if not reload the page
                             if (!response.session_state)
                                 window.location.reload();
 
-                            //tags indorr of type 2 offgrid(dispersi)
-                            let offGridTagsIndoor  = response.result.filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && !t.radio_switched_off && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
+                            // getting the offline tags indoor
+                            $scope.tagsStateIndoorOffGrid = response.result
+                                .filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && !t.radio_switched_off && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
 
-                            //tags outdoor of type 2 offgrid(dispersi
-                            let offGridTagsOutdoor = response.result.filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor));
+                            // getting teh offline tags outdoor
+                            $scope.tagsStateOffGrid = response.result
+                                .filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor))
+                                .concat($scope.tagsStateIndoorOffGrid);
 
-                            //tags off
-                            let tempOffTags = response.result.filter(t => t.radio_switched_off);
+                            // getting the shut down tags
+                            $scope.tagsStateIndoorOffTags = response.result.filter(t => t.radio_switched_off);
 
-                            if (!angular.equals(tempOffTags, $scope.offTags)){
-                                $scope.offTags = tempOffTags;
-                            }
+                            // getting the online tags
+                            $scope.tagsStateIndoorOnline  = response.result.length - $scope.tagsStateIndoorOffGrid.length - $scope.tagsStateIndoorOffTags.length;
 
-                            $scope.tagsStateIndoor.offTags = $scope.offTags.length;
-
-                            let tempOffGrid = [];
-
-                            offGridTagsIndoor.forEach(elem => {
-                                tempOffGrid.push(elem);
-                            });
-
-                            offGridTagsOutdoor.forEach(elem => {
-                                tempOffGrid.push(elem);
-                            });
-
-                            if (!angular.equals(tempOffGrid, $scope.offgridTags)){
-                                $scope.offgridTags             = tempOffGrid;
-                            }
-
-                            //tags type 1 offline
-                            // let tempOfflineTagsIndoor = response.result.filter(t => (t.is_exit && !t.radio_switched_off));
-                            // if (!angular.equals(tempOfflineTagsIndoor, $scope.offlineTagsIndoor)){
-                            //     $scope.offlineTagsIndoor       = tempOfflineTagsIndoor;
-                            // }
-
-                            // $scope.tagsStateIndoor.offline = $scope.offlineTagsIndoor.length;
-                            $scope.tagsStateIndoor.offGrid = offGridTagsIndoor.length + offGridTagsOutdoor.length;
-                            $scope.tagsStateIndoor.online  = response.result.length - $scope.tagsStateIndoor.offGrid - $scope.offTags.length;
-
-                            $scope.data = [$scope.tagsStateIndoor.offline, $scope.tagsStateIndoor.online, $scope.tagsStateIndoor.offTags, $scope.tagsStateIndoor.offGrid];
-
+                            // setting the data for the visualization
+                            $scope.data = [$scope.tagsStateIndoorOnline, $scope.tagsStateIndoorOffTags.length, $scope.tagsStateIndoorOffGrid.length];
                         });
                     }, 1000);
 
+                    // hide the window on click
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
                 }],
+                // stoping the interva (request for data) when the window closes
                 onRemoving: function(){
                     service.offlineTagsInterval = service.stopTimer(service.offlineTagsInterval);
 
+                    // starting the appropriate interval
                     switch (position) {
                         case 'home':
                             if (service.homeTimer === undefined)
@@ -312,6 +290,44 @@
         service.checkIfAreAnchorsOffline = (anchors) => {
             return anchors.some(function (anchor) {
                 return anchor.is_offline === 1;
+            });
+        };
+
+        // filling the info window for the locations indoor in the home page
+        service.fillInfoWindowInsideLocation = (marker, userTags, userAnchors) => {
+            // getting the current marker tags
+            let locationTags    = service.getIndoorLocationTags(marker, userTags);
+            //getting the current marker anchors
+            let locationAnchors = service.getLocationAnchors(marker, userAnchors);
+
+            // creating the content of the window
+            return new google.maps.InfoWindow({
+                content: '<div class="marker-info-container">' +
+                    '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+                    '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
+                    '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
+                    '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
+                    '<div class="clear-float display-flex"><div class="width-50 margin-left-10-px"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
+                    '</div><div class="width-45 "><img src="' + iconsPath + 'offline_anchors_alert_30.png" class="margin-right-10-px"><span class="font-large vertical-align-super color-red"><b>' + locationAnchors.length + '</b></span></div></div>' +
+                    '</div>'
+            });
+        };
+
+        // filling teh info window for the locations outdoor in the home page
+        service.fillInfoWindowOutsideLocation = (marker, userTags) => {
+            // getting the current marker tags
+            let locationTags = service.getOutdoorLocationTags(marker, userTags);
+
+            // filling the info window
+            return new google.maps.InfoWindow({
+                content: '<div class="marker-info-container">' +
+                    '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+                    '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
+                    '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
+                    '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
+                    '<div class="clear-float display-flex"><div class="margin-auto"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
+                    '</div></div' +
+                    '</div>'
             });
         };
 
@@ -432,61 +448,52 @@
             return tagsGrouping;
         };
 
-        //showing the info window with the online/offline anchors
+        // showing the info window with the online/offline anchors
         service.showOfflineAnchors = (position, constantUpdateNotifications, map) => {
             $mdDialog.show({
                 templateUrl        : componentsPath + 'indoor_offline_anchors_info.html',
                 parent             : angular.element(document.body),
                 targetEvent        : event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', '$controller', 'dataService', function ($scope, $controller, dataService) {
-                    $controller('languageController', {$scope: $scope});
-                    $scope.offlineAnchors = [];
-                    $scope.shutDownAnchors = [];
+                controller         : ['$scope', function ($scope) {
+                    $scope.offlineAnchors = 0;
+                    $scope.shutDownAnchors = 0;
+                    $scope.onlineAnchors = 0;
                     $scope.data           = [];
 
-                    $scope.anchorsState = {
-                        offline: 0,
-                        online : 0,
-                        shutDown: 0
-                    };
-
+                    // setting the color for each category
                     $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315"];
-                    $scope.labels = [$scope.lang.disabledAnchors, $scope.lang.enabledAnchors, $scope.lang.shutDownAnchors];
+                    // setting the text for each category
+                    $scope.labels = [lang.disabledAnchors, lang.enabledAnchors, lang.shutDownAnchors];
 
+                    // getting all the anchors of the current logged user
                     service.offlineAnchorsInterval = $interval(function () {
                         newSocketService.getData('get_anchors_by_user', {user: service.user.username}, (response) => {
                             if (!response.session_state)
                                 window.location.reload();
 
-                            let tempOfflineAnchors = response.result.filter(a => a.is_offline);
+                            // getting the offline anchors
+                            $scope.offlineAnchors = response.result.filter(a => a.is_offline);
+                            // getting the shut down anchors
+                            $scope.shutDownAnchors = response.result.filter(a => a.battery_status === 1);
+                            // getting the online anchors
+                            $scope.onlineAnchors = response.result.length - $scope.offlineAnchors.length - $scope.shutDownAnchors.length;
 
-                            if (!angular.equals(tempOfflineAnchors, $scope.offlineAnchors)) {
-                                $scope.offlineAnchors = tempOfflineAnchors;
-                            }
-
-                            let tempShutDonwAnchors = response.result.filter(a => a.battery_status === 1);
-
-                            if (!angular.equals(tempShutDonwAnchors, $scope.shutDownAnchors)){
-                                $scope.shutDownAnchors = tempShutDonwAnchors;
-                            }
-
-                            $scope.anchorsState.offline = $scope.offlineAnchors.length;
-                            $scope.anchorsState.online  = response.result.length - $scope.offlineAnchors.length;
-                            $scope.anchorsState.shutDown = $scope.shutDownAnchors.length;
-
-                            $scope.data = [$scope.anchorsState.offline, $scope.anchorsState.online, $scope.anchorsState.shutDown];
+                            // setting the data to be visualized
+                            $scope.data = [$scope.offlineAnchors.length, $scope.onlineAnchors, $scope.shutDownAnchors.length];
                         });
                     }, 1000);
 
-
+                    // closing teh pop up
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
                 }],
+                // stoping the interval (request for data) when the window closes
                 onRemoving: function(){
                     service.offlineAnchorsInterval = service.stopTimer(service.offlineAnchorsInterval);
 
+                    // restarting the appropriate interval
                     switch (position) {
                         case 'home':
                             if (service.homeTimer === undefined)
@@ -504,7 +511,7 @@
             })
         };
 
-        //showing the info window with the online/offline anchors
+        // showing the info window with the online/offline anchors
         service.showOfflineAnchorsIndoor = (position, constantUpdateNotifications, map) => {
             $mdDialog.show({
                 templateUrl        : componentsPath + 'indoor_offline_anchors_info.html',
@@ -779,7 +786,7 @@
             }
 
             // play the alarm
-            if (service.playedTime > 4 && (service.switch && service.switch.playAudio)){
+            if (audio !== undefined && service.playedTime > 4 && (service.switch && service.switch.playAudio)){
                 audio.play();
                 service.playedTime = 0;
             }
@@ -1019,7 +1026,6 @@
                     image.src = tagsIconPath + 'call_me_alarm_24.png';
                 }
             } else {
-                console.log('no alarm')
                 if (isCategoryAndImageNotNull(tag)){
                     image.src = tagsIconPath + category_name_no_alarm + '.png';
                 } else {
