@@ -350,6 +350,7 @@ function languageController($scope) {
         insertTagCategory: 'Inserisci categoria tag',
         alertImage: 'Immagine allarme',
         noAlertImage: 'Immagine no allarme',
+        offlineImage: 'Immagine offline',
         deleteCategory: 'Cancella Categoria',
         categoryTags: 'Tag per categorie',
         selectTags: 'Seleziona tags',

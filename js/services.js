@@ -396,7 +396,6 @@
                 if (tag.id !== tagElement.id) {
                     if ((Math.abs(tagElement.x_pos - groupTagDistance) < tag.x_pos && tag.x_pos < Math.abs(tagElement.x_pos + groupTagDistance)
                         && (Math.abs(tagElement.y_pos - groupTagDistance) < tag.y_pos && tag.y_pos < Math.abs(tagElement.y_pos + groupTagDistance)))) {
-                        console.log(tagElement)
                         if (service.checkIfTagHasAlarm(tag) || !tag.radio_switched_off){
 
                             if (!tagsGrouping.groupTags.some(t => t.id === tag.id)) {
@@ -940,10 +939,12 @@
         service.assigningTagImage = (tag, image) => {
             let category_name_alarm = '';
             let category_name_no_alarm = '';
+            let category_name_offline = '';
 
             if(isCategoryAndImageNotNull(tag)){
                 category_name_alarm = tag.icon_name_alarm.split('.').slice(0, -1).join('.');
                 category_name_no_alarm = tag.icon_name_no_alarm.split('.').slice(0, -1).join('.');
+                category_name_offline = tag.icon_name_offline.split('.').slice(0, -1).join('.');
             }
 
             if (tag.sos) {
@@ -1013,9 +1014,12 @@
                     image.src = tagsIconPath + 'call_me_alarm_24.png';
                 }
             } else {
-                console.log('no alarm')
                 if (isCategoryAndImageNotNull(tag)){
-                    image.src = tagsIconPath + category_name_no_alarm + '.png';
+                    if (service.isTagOffline(tag)){
+                        image.src = tagsIconPath + category_name_offline + '.png';
+                    } else {
+                        image.src = tagsIconPath + category_name_no_alarm + '.png';
+                    }
                 } else {
                     if (service.isTagOffline(tag)){
                         image.src = tagsIconPath + 'offline_tag_24.png';

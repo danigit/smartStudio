@@ -3,7 +3,7 @@
  ***************************************************************/
 let socketServer               = new WebSocket('ws://localhost:8090');
 let socketOpened = false;
-let groupTagDistance = 400.5;
+let groupTagDistance = 0.5;
 
 socketServer.onopen = function () {
     console.log('Socket opened')

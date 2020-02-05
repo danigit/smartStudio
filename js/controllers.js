@@ -2381,7 +2381,7 @@
 
                                         let sortedZones = floorZones.result.sort((z1, z2) => (z1.header_order > z2.header_order) ? 1 : -1);
                                         let lavElements = Array.prototype.slice.call( document.querySelectorAll('.lavoration') );
-                                        // angular.element(lavElements).remove();
+                                        angular.element(lavElements).remove();
                                         sortedZones.forEach((zone) => {
                                             if (zone.work_process_id !== null){
                                                 let side = zone.header_left_side ? "left; margin-left: 35px;" : "right; margin-right: 90px";
@@ -2481,12 +2481,13 @@
                                                             .then((images) => {
                                                                 //control if there are clouds to bhe shown
                                                                 if (images !== null) {
+                                                                    console.log(images)
                                                                     if (images[0] !== null) {
                                                                         if (canvasCtrl.isAdmin === 1 || canvasCtrl.isTracker === 1) {
                                                                             // drawing the clouds on the canvas
                                                                             images.forEach(function (image, index) {
                                                                                 if (image !== null) {
-                                                                                    drawCloudIcon(tagClouds[0][0], bufferContext, images[0], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
+                                                                                    drawCloudIcon(tagClouds[index][0], bufferContext, images[0], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
                                                                                 }
                                                                             });
                                                                         } else if (dataService.switch.showOutdoorTags) {
@@ -3337,74 +3338,74 @@
                             }
                             dialogShown = true;
                         } else {
-                            // if (tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19) {
-                            //     if (dataService.checkIfTagHasAlarm(tag)){
-                            //         $mdDialog.show({
-                            //             locals             : {tag: tag},
-                            //             templateUrl        : componentsPath + 'tag-info.html',
-                            //             parent             : angular.element(document.body),
-                            //             targetEvent        : event,
-                            //             clickOutsideToClose: true,
-                            //             controller         : ['$scope', 'tag', function ($scope, tag) {
-                            //                 $scope.tag          = tag;
-                            //                 $scope.isTagInAlarm = (dataService.checkIfTagsHaveAlarms(tags)) ? 'background-red' : 'background-green';
-                            //                 $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
-                            //
-                            //                 $scope.hide = () => {
-                            //                     $mdDialog.hide();
-                            //                 }
-                            //             }]
-                            //         })
-                            //     } else if (!dataService.isTagOffline(tag)) {
-                            //         $mdDialog.show({
-                            //             locals             : {tag: tag},
-                            //             templateUrl        : componentsPath + 'tag-info.html',
-                            //             parent             : angular.element(document.body),
-                            //             targetEvent        : event,
-                            //             clickOutsideToClose: true,
-                            //             controller         : ['$scope', 'tag', function ($scope, tag) {
-                            //                 $scope.tag          = tag;
-                            //                 $scope.isTagInAlarm = 'background-red';
-                            //                 $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
-                            //
-                            //                 if ($scope.alarms.length === 0) {
-                            //                     ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
-                            //                         ? $scope.isTagInAlarm = 'background-gray'
-                            //                         : $scope.isTagInAlarm = 'background-green';
-                            //                 }
-                            //
-                            //                 $scope.hide = () => {
-                            //                     $mdDialog.hide();
-                            //                 }
-                            //             }]
-                            //         })
-                            //     }
-                            // } else if (dataService.checkIfTagHasAlarm(tag) || tag.radio_switched_off !== 1) {
-                            //     $mdDialog.show({
-                            //         locals             : {tag: tag},
-                            //         templateUrl        : componentsPath + 'tag-info.html',
-                            //         parent             : angular.element(document.body),
-                            //         targetEvent        : event,
-                            //         clickOutsideToClose: true,
-                            //         controller         : ['$scope', 'tag', function ($scope, tag) {
-                            //             $scope.tag          = tag;
-                            //             $scope.isTagInAlarm = 'background-red';
-                            //             $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
-                            //
-                            //             if ($scope.alarms.length !== 0){
-                            //                 $scope.isTagInAlarm = 'background-red'
-                            //             } else if (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor){
-                            //                 $scope.isTagInAlarm = 'background-green'
-                            //             } else {
-                            //                 $scope.isTagInAlarm = 'background-gray'
-                            //             }
-                            //
-                            //             $scope.hide = () => {
-                            //                 $mdDialog.hide();
-                            //             }
-                            //         }]
-                            //     })
-                            // }
+                            if (tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19) {
+                                if (dataService.checkIfTagHasAlarm(tag)){
+                                    $mdDialog.show({
+                                        locals             : {tag: tag},
+                                        templateUrl        : componentsPath + 'tag-info.html',
+                                        parent             : angular.element(document.body),
+                                        targetEvent        : event,
+                                        clickOutsideToClose: true,
+                                        controller         : ['$scope', 'tag', function ($scope, tag) {
+                                            $scope.tag          = tag;
+                                            $scope.isTagInAlarm = (dataService.checkIfTagsHaveAlarms(tags)) ? 'background-red' : 'background-green';
+                                            $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
+
+                                            $scope.hide = () => {
+                                                $mdDialog.hide();
+                                            }
+                                        }]
+                                    })
+                                } else if (!dataService.isTagOffline(tag)) {
+                                    $mdDialog.show({
+                                        locals             : {tag: tag},
+                                        templateUrl        : componentsPath + 'tag-info.html',
+                                        parent             : angular.element(document.body),
+                                        targetEvent        : event,
+                                        clickOutsideToClose: true,
+                                        controller         : ['$scope', 'tag', function ($scope, tag) {
+                                            $scope.tag          = tag;
+                                            $scope.isTagInAlarm = 'background-red';
+                                            $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
+
+                                            if ($scope.alarms.length === 0) {
+                                                ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
+                                                    ? $scope.isTagInAlarm = 'background-gray'
+                                                    : $scope.isTagInAlarm = 'background-green';
+                                            }
+
+                                            $scope.hide = () => {
+                                                $mdDialog.hide();
+                                            }
+                                        }]
+                                    })
+                                }
+                            } else if (dataService.checkIfTagHasAlarm(tag) || tag.radio_switched_off !== 1) {
+                                $mdDialog.show({
+                                    locals             : {tag: tag},
+                                    templateUrl        : componentsPath + 'tag-info.html',
+                                    parent             : angular.element(document.body),
+                                    targetEvent        : event,
+                                    clickOutsideToClose: true,
+                                    controller         : ['$scope', 'tag', function ($scope, tag) {
+                                        $scope.tag          = tag;
+                                        $scope.isTagInAlarm = 'background-red';
+                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
+
+                                        if ($scope.alarms.length !== 0){
+                                            $scope.isTagInAlarm = 'background-red'
+                                        } else if (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor){
+                                            $scope.isTagInAlarm = 'background-green'
+                                        } else {
+                                            $scope.isTagInAlarm = 'background-gray'
+                                        }
+
+                                        $scope.hide = () => {
+                                            $mdDialog.hide();
+                                        }
+                                    }]
+                                })
+                            }
                         }
                     }
                 }
@@ -6030,6 +6031,7 @@
 
                                 let alarm_image = null;
                                 let no_alarm_image = null;
+                                let offline_image = null;
 
                                 $scope.submitTagCategory = (form) => {
                                     form.$submitted = true;
@@ -6042,6 +6044,8 @@
                                         let alarm_fileName = '';
                                         let no_alarm_file     = null;
                                         let no_alarm_fileName = '';
+                                        let offline_file = null;
+                                        let offline_fileName = '';
 
                                         if (alarm_image != null && alarm_image.files.length !== 0) {
                                             alarm_file     = alarm_image.files[0];
@@ -6053,7 +6057,12 @@
                                             no_alarm_fileName = no_alarm_file.name;
                                         }
 
-                                        if (alarm_file != null && no_alarm_file != null) {
+                                        if (offline_image != null && offline_image.files.length !== 0) {
+                                            offline_file     = offline_image.files[0];
+                                            offline_fileName = offline_file.name;
+                                        }
+
+                                        if (alarm_file != null && no_alarm_file != null && offline_file != null) {
                                             convertImageToBase64(alarm_file)
                                                 .then((images) => {
                                                     if (images !== null) {
@@ -6074,38 +6083,52 @@
                                                                             if (!no_alarm_savedImage.session_state)
                                                                                 window.location.reload();
 
-                                                                            if (savedImage.result === false || no_alarm_savedImage === false) {
-                                                                                $scope.insertTag.resultClass = 'background-red';
-                                                                                $scope.insertTagCategory.showError = true;
-                                                                                $scope.insertTagCategory.message = lang.cannotConvertImage
-                                                                            } else {
-                                                                                if (alarm_fileName !== '' && no_alarm_fileName !== '') {
-                                                                                    newSocketService.getData('insert_tag_category', {
-                                                                                        name         : $scope.insertTagCategory.name,
-                                                                                        alarm_name   : alarm_fileName,
-                                                                                        no_alarm_name: no_alarm_fileName
-                                                                                    }, (response) => {
-                                                                                        if (!response.session_state)
-                                                                                            window.location.reload();
+                                                                            convertImageToBase64(offline_file)
+                                                                                .then((offline_images) => {
+                                                                                    if (offline_images !== null) {
+                                                                                        newSocketService.getData('save_tag_category_alarm_image', {
+                                                                                            imageName: offline_fileName,
+                                                                                            image    : offline_images
+                                                                                        }, (offline_savedImage) => {
+                                                                                            if (!offline_savedImage.session_state)
+                                                                                                window.location.reload();
 
-                                                                                        if (response.result !== 0) {
-                                                                                            $scope.insertTagCategory.resultClass = 'background-green';
-                                                                                            updateCategoriesTable();
-                                                                                            $timeout(function () {
-                                                                                                $mdDialog.hide();
-                                                                                            }, 1000);
-                                                                                        } else {
-                                                                                            $scope.insertTag.resultClass = 'background-red';
-                                                                                            $scope.insertTagCategory.showError = true;
-                                                                                            $scope.insertTagCategory.message = lang.cannotSaveImage
-                                                                                        }
-                                                                                    });
-                                                                                }else{
-                                                                                    $scope.insertTag.resultClass = 'background-red';
-                                                                                    $scope.insertTagCategory.showError = true;
-                                                                                    $scope.insertTagCategory.message = lang.cannotConvertImage
-                                                                                }
-                                                                            }
+                                                                                            if (savedImage.result === false || no_alarm_savedImage === false && offline_savedImage === false) {
+                                                                                                $scope.insertTag.resultClass       = 'background-red';
+                                                                                                $scope.insertTagCategory.showError = true;
+                                                                                                $scope.insertTagCategory.message   = lang.cannotConvertImage
+                                                                                            } else {
+                                                                                                if (alarm_fileName !== '' && no_alarm_fileName !== '' && offline_fileName !== '') {
+                                                                                                    newSocketService.getData('insert_tag_category', {
+                                                                                                        name         : $scope.insertTagCategory.name,
+                                                                                                        alarm_name   : alarm_fileName,
+                                                                                                        no_alarm_name: no_alarm_fileName,
+                                                                                                        offline_name : offline_fileName
+                                                                                                    }, (response) => {
+                                                                                                        if (!response.session_state)
+                                                                                                            window.location.reload();
+
+                                                                                                        if (response.result !== 0) {
+                                                                                                            $scope.insertTagCategory.resultClass = 'background-green';
+                                                                                                            updateCategoriesTable();
+                                                                                                            $timeout(function () {
+                                                                                                                $mdDialog.hide();
+                                                                                                            }, 1000);
+                                                                                                        } else {
+                                                                                                            $scope.insertTag.resultClass       = 'background-red';
+                                                                                                            $scope.insertTagCategory.showError = true;
+                                                                                                            $scope.insertTagCategory.message   = lang.cannotSaveImage
+                                                                                                        }
+                                                                                                    });
+                                                                                                } else {
+                                                                                                    $scope.insertTag.resultClass       = 'background-red';
+                                                                                                    $scope.insertTagCategory.showError = true;
+                                                                                                    $scope.insertTagCategory.message   = lang.cannotConvertImage
+                                                                                                }
+                                                                                            }
+                                                                                        });
+                                                                                    }
+                                                                                });
                                                                         });
                                                                     }else{
                                                                         $scope.insertTagCategory.resultClass = 'background-red';
@@ -6138,6 +6161,11 @@
                                 $scope.uploadTagCategoryNoAlarmImage = () => {
                                     no_alarm_image = document.getElementById('no-alarm-image');
                                     no_alarm_image.click();
+                                };
+
+                                $scope.uploadTagCategoryOfflineImage = () => {
+                                    offline_image = document.getElementById('offline-image');
+                                    offline_image.click();
                                 };
 
                                 $scope.hide = () => {

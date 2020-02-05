@@ -71,6 +71,18 @@
                         </md-button>
                     </div>
                 </div>
+                <div layout="row" layout-align="center end" class="margin-top-15-px">
+                    <div layout="column" layout-align="end center" class="">
+                        <md-button ng-click="uploadTagCategoryOfflineImage()" class="md-raised background-orange color-white">
+                            <label>
+                                <input type="file"
+                                       class="ng-hide"
+                                       id="offline-image">
+                            </label>
+                            {{lang.offlineImage | uppercase}}
+                        </md-button>
+                    </div>
+                </div>
             </div>
             <div layout="row" layout-align="center end" class="width-100">
                 <md-button ng-click="submitTagCategory(insertTagCategoryForm)" class="md-raised background-darkcyan color-white">
