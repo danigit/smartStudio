@@ -450,5 +450,6 @@ let lang = {
     initEvacuation: 'Inizia evacuazione',
     reset: 'Riprisina',
     callMe: 'Chiamami',
-    stopCallMe: 'Tacitami'
+    stopCallMe: 'Tacitami',
+    invalidAutomation: 'Automazione invalida'
 }

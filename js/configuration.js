@@ -55,3 +55,9 @@ let mapConfiguration = [{
         {visibility: "off"}
     ]
 }];
+
+/*************************************************************
+ * GENERIC CONFIGURATIONS
+ *************************************************************/
+
+const showPartnerLogo = true;

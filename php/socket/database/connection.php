@@ -4430,6 +4430,34 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    function set_zoneA_and_zoneB($work_id, $zone_id)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+
+            $this->query = "UPDATE zone SET WORK_PROCESS_ID = ? WHERE ID = ?";
+
+            $statement = $this->execute_selecting($this->query, 'ii', $work_id, $zone_id);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
+
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
     /**
      * Function that uses the execute statement to execute a query with the prepare statement
      * @param $query - the query to be executed

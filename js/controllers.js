@@ -20,6 +20,7 @@
     loginController.$inject = ['$scope', '$state', '$timeout', 'newSocketService', 'dataService'];
 
     function loginController($scope, $state, $timeout, newSocketService, dataService) {
+        $scope.showPartnerLogo = showPartnerLogo;
         $scope.user           = {username: '', password: ''};
         // handling the login error messages
         $scope.errorHandeling = {noConnection: false, wrongData: false, socketClosed: newSocketService.socketClosed};
@@ -2129,6 +2130,8 @@
         let zoneToModify       = null;
         let alpha              = canvasData.alpha;
 
+        $scope.showPartnerLogo = showPartnerLogo;
+
         console.log(canvasData)
         canvasCtrl.isAdmin = dataService.isAdmin;
         canvasCtrl.isUserManager = dataService.isUserManager;
@@ -2314,7 +2317,9 @@
 
         //constantly updating the canvas with the objects position from the server
         let constantUpdateCanvas = () => {
-            let alarmsCounts = new Array(100).fill(0);
+            let alarmsCounts = new Array(500).fill(0);
+            let isTimeRestInError = false;
+            let newLavoration = null;
 
             dataService.canvasInterval = $interval(function () {
                 bufferCanvas.width  = canvasImage.naturalWidth;
@@ -2384,6 +2389,11 @@
                                         angular.element(lavElements).remove();
                                         sortedZones.forEach((zone) => {
                                             if (zone.work_process_id !== null){
+                                                if (zone.work_process_id !== 6 && isTimeRestInError){
+                                                    newSocketService.getData('set_zoneA_and_zoneB', {work_id: 6, zone_id: zone.id}, (response) => {
+                                                        console.log(response)
+                                                    });
+                                                }
                                                 let side = zone.header_left_side ? "left; margin-left: 35px;" : "right; margin-right: 90px";
                                                 let newLavoration = angular.element('<div class="lavoration" style="font-size: small; bottom: 0; padding: 10px 10px 0 10px; background: ' + zone.process_color + '; border-radius: 10px 10px 0 0; float: ' + side + '; text-align: center; color:' + zone.font_color + '"><span style="font-weight: bold; text-decoration: underline; color:' + zone.font_color + '">' + zone.name.toUpperCase() + '</span><br>' + zone.process_description + '</div>');
                                                 angularWorkingZones.append(newLavoration)
@@ -2398,7 +2408,11 @@
                                         angular.element(document.querySelector('.rtls-mon')).remove();
                                         angular.element(document.querySelector('.rtls-time-rest')).remove();
                                         if(response.result.is_active_safemon === '1') {
-                                            let newLavoration = angular.element('<div class="rtls-mon" style="position: absolute; width: 200px; left: 38%; font-size: small; bottom: 0; padding: 10px 10px 0 10px; background: ' + response.result.color + '; border-radius: 10px 10px 0 0; float: left; text-align: center"><span style="word-break: break-all; font-weight: bold;">' + response.result.description.toUpperCase() + '</span></div>');
+                                            if (!isTimeRestInError) {
+                                                newLavoration = angular.element('<div class="rtls-mon" style="position: absolute; width: 200px; left: 38%; font-size: small; bottom: 0; padding: 10px 10px 0 10px; background: ' + response.result.color + '; border-radius: 10px 10px 0 0; float: left; text-align: center"><span style="word-break: break-all; font-weight: bold;">' + response.result.description.toUpperCase() + '</span></div>');
+                                            }else{
+                                                newLavoration = angular.element('<div class="rtls-mon" style="position: absolute; width: 200px; left: 38%; font-size: small; bottom: 0; padding: 10px 10px 0 10px; background: #FF0000; border-radius: 10px 10px 0 0; float: left; text-align: center"><span style="word-break: break-all; font-weight: bold;">' + lang.invalidAutomation.toUpperCase() + '</span></div>');
+                                            }
                                             angularWorkingZones.append(newLavoration)
                                         }
 
@@ -2406,11 +2420,13 @@
                                             let color = '#00FF00';
                                             let description = 'ok'
                                             if ((Date.now() - Date.parse(response.result.time_rest)) > 30){
-                                                color = '#00FF00'
-                                                description = 'ok'
+                                                color = '#FF0000';
+                                                description = 'error';
+                                                isTimeRestInError = true;
                                             }else{
-                                                color = '#FF0000'
-                                                description = 'error'
+                                                color = '#00FF00';
+                                                description = 'ok';
+                                                isTimeRestInError = false;
                                             }
 
                                             let time_rest = angular.element('<div class="rtls-time-rest" style="position: absolute; width: 200px; left: 53%; font-size: small; bottom: 0; padding: 10px 10px 0 10px; background: ' + color + '; border-radius: 10px 10px 0 0; float: left; text-align: center"><span style="word-break: break-all; font-weight: bold;">' + description.toUpperCase() + '</span></div>');
@@ -2474,20 +2490,18 @@
 
                                                     //getting the tag clouds
                                                     tagClouds = singleAndGroupedTags.filter(x => x.length > 1);
-                                                    console.log(tagClouds)
                                                     if (canvasCtrl.isAdmin !== 0 || canvasCtrl.isUserManager !== 0 || canvasCtrl.isTracker !== 0) {
 
                                                         dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
                                                             .then((images) => {
                                                                 //control if there are clouds to bhe shown
                                                                 if (images !== null) {
-                                                                    console.log(images)
                                                                     if (images[0] !== null) {
                                                                         if (canvasCtrl.isAdmin === 1 || canvasCtrl.isTracker === 1) {
                                                                             // drawing the clouds on the canvas
                                                                             images.forEach(function (image, index) {
                                                                                 if (image !== null) {
-                                                                                    drawCloudIcon(tagClouds[index][0], bufferContext, images[0], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
+                                                                                    drawCloudIcon(tagClouds[index][0], bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
                                                                                 }
                                                                             });
                                                                         } else if (dataService.switch.showOutdoorTags) {
@@ -3338,8 +3352,8 @@
                             }
                             dialogShown = true;
                         } else {
-                            if (tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19) {
-                                if (dataService.checkIfTagHasAlarm(tag)){
+                            // if (tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19) {
+                                if (dataService.checkIfTagHasAlarm(tag) && !tag.radio_switched_off){
                                     $mdDialog.show({
                                         locals             : {tag: tag},
                                         templateUrl        : componentsPath + 'tag-info.html',
@@ -3356,7 +3370,30 @@
                                             }
                                         }]
                                     })
-                                } else if (!dataService.isTagOffline(tag)) {
+                                } else if (dataService.isTagOffline(tag) && !tag.radio_switched_off) {
+                                    $mdDialog.show({
+                                        locals             : {tag: tag},
+                                        templateUrl        : componentsPath + 'tag-info.html',
+                                        parent             : angular.element(document.body),
+                                        targetEvent        : event,
+                                        clickOutsideToClose: true,
+                                        controller         : ['$scope', 'tag', function ($scope, tag) {
+                                            $scope.tag          = tag;
+                                            // $scope.isTagInAlarm = 'background-red';
+                                            // $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
+
+                                            // if ($scope.alarms.length === 0) {
+                                            //     (!$scope.tag.radio_switched_off)
+                                                    $scope.isTagInAlarm = 'background-gray'
+                                                    // : $scope.isTagInAlarm = 'background-green';
+                                            // }
+
+                                            $scope.hide = () => {
+                                                $mdDialog.hide();
+                                            }
+                                        }]
+                                    })
+                                }else if(!tag.radio_switched_off){
                                     $mdDialog.show({
                                         locals             : {tag: tag},
                                         templateUrl        : componentsPath + 'tag-info.html',
@@ -3368,11 +3405,13 @@
                                             $scope.isTagInAlarm = 'background-red';
                                             $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
 
-                                            if ($scope.alarms.length === 0) {
-                                                ($scope.tag.is_exit && !$scope.tag.radio_switched_off)
-                                                    ? $scope.isTagInAlarm = 'background-gray'
-                                                    : $scope.isTagInAlarm = 'background-green';
-                                            }
+                                            // if ($scope.alarms.length !== 0){
+                                            //     $scope.isTagInAlarm = 'background-red'
+                                            // } else if (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor){
+                                                $scope.isTagInAlarm = 'background-green'
+                                            // } else {
+                                            //     $scope.isTagInAlarm = 'background-gray'
+                                            // }
 
                                             $scope.hide = () => {
                                                 $mdDialog.hide();
@@ -3380,32 +3419,32 @@
                                         }]
                                     })
                                 }
-                            } else if (dataService.checkIfTagHasAlarm(tag) || tag.radio_switched_off !== 1) {
-                                $mdDialog.show({
-                                    locals             : {tag: tag},
-                                    templateUrl        : componentsPath + 'tag-info.html',
-                                    parent             : angular.element(document.body),
-                                    targetEvent        : event,
-                                    clickOutsideToClose: true,
-                                    controller         : ['$scope', 'tag', function ($scope, tag) {
-                                        $scope.tag          = tag;
-                                        $scope.isTagInAlarm = 'background-red';
-                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
-
-                                        if ($scope.alarms.length !== 0){
-                                            $scope.isTagInAlarm = 'background-red'
-                                        } else if (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor){
-                                            $scope.isTagInAlarm = 'background-green'
-                                        } else {
-                                            $scope.isTagInAlarm = 'background-gray'
-                                        }
-
-                                        $scope.hide = () => {
-                                            $mdDialog.hide();
-                                        }
-                                    }]
-                                })
-                            }
+                            // } else if (dataService.checkIfTagHasAlarm(tag) || tag.radio_switched_off !== 1) {
+                            //     $mdDialog.show({
+                            //         locals             : {tag: tag},
+                            //         templateUrl        : componentsPath + 'tag-info.html',
+                            //         parent             : angular.element(document.body),
+                            //         targetEvent        : event,
+                            //         clickOutsideToClose: true,
+                            //         controller         : ['$scope', 'tag', function ($scope, tag) {
+                            //             $scope.tag          = tag;
+                            //             $scope.isTagInAlarm = 'background-red';
+                            //             $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
+                            //
+                            //             if ($scope.alarms.length !== 0){
+                            //                 $scope.isTagInAlarm = 'background-red'
+                            //             } else if (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor){
+                            //                 $scope.isTagInAlarm = 'background-green'
+                            //             } else {
+                            //                 $scope.isTagInAlarm = 'background-gray'
+                            //             }
+                            //
+                            //             $scope.hide = () => {
+                            //                 $mdDialog.hide();
+                            //             }
+                            //         }]
+                            //     })
+                            // }
                         }
                     }
                 }

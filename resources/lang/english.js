@@ -444,4 +444,5 @@ let lang = {
     reset: '',
     callMe: '',
     stopCallMe: '',
+    invalidAutomation: ''
 }
