@@ -7014,6 +7014,7 @@
                 clickOutsideToClose: true,
                 multiple           : true,
                 controller         : ['$scope', 'admin', function ($scope, admin) {
+                    newSocketService.server.close()
                     $scope.selected      = [];
                     $scope.isAdmin       = dataService.isAdmin;
                     $scope.isUserManager = dataService.isUserManager;

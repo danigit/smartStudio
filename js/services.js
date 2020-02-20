@@ -1203,11 +1203,16 @@
             };
 
             service.server.onclose = () => {
-                $state.go('login');
+                // $state.go('login');
                 service.socketClosed = true;
                 service.reconnectSocket = $interval(function () {
                     console.log('trying to reconect')
-                    socketServer = new WebSocket('ws://localhost:8090');
+                    socketServer = new WebSocket('ws://' + socketPath);
+                    socketServer.onopen = function(){
+                        socketOpened = true;
+                        window.location.reload()
+                    };
+
                     service.server = socketServer
                 }, 5000)
             }

@@ -1,7 +1,8 @@
 /***************************************************************
  * SOCKET COFIGURATIONS
  ***************************************************************/
-let socketServer               = new WebSocket('ws://localhost:8090');
+const socketPath = 'localhost:8090';
+let socketServer               = new WebSocket('ws:' + socketPath);
 let socketOpened = false;
 let groupTagDistance = 0.5;
 
