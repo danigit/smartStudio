@@ -55,3 +55,11 @@ let mapConfiguration = [{
         {visibility: "off"}
     ]
 }];
+
+/***************************************************************
+* HOME COFIGURATIONS
+***************************************************************/
+
+const homeAlarmUpdateTime = 1000;
+const tagAlarmsWindowUpdateTime = 1000;
+const anchorAlarmsWindowUpdateTime = 1000;

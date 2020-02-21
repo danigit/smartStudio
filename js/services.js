@@ -61,14 +61,14 @@
         //#####################################################################
 
         //getting the anchors in the location passed as parameter
-        service.getLocationAnchors = (location, anchors) => {
-            return anchors.filter(a => (a.location_latitude === location.position[0] && a.location_longitude === location.position[1]));
-        };
+        // service.getLocationAnchors = (location, anchors) => {
+        //     return anchors.filter(a => (a.location_latitude === location.position[0] && a.location_longitude === location.position[1]));
+        // };
 
-        //controlling if the alarms array passed as parameter contains an alarm in the location passed as parameter as well
-        service.alarmLocationsContainLocation = (alarms, location) => {
-            return alarms.some(l => l.position[0] === location.position[0] && l.position[1] === location.position[1])
-        };
+        // //controlling if the alarms array passed as parameter contains an alarm in the location passed as parameter as well
+        // service.alarmLocationsContainLocation = (alarms, location) => {
+        //     return alarms.some(l => l.position[0] === location.position[0] && l.position[1] === location.position[1])
+        // };
 
         service.tagsArrayNotContainsTag = (tags, tag) => {
             return tags.some(t => t.id === tag.id);
@@ -101,9 +101,9 @@
         };
 
         // getting the tags in the location indoor passed as parameter
-        service.getIndoorLocationTags = (location, tags) => {
-            return tags.filter(t => (location.position[0] === t.location_latitude && location.position[1] === t.location_longitude))
-        };
+        // service.getIndoorLocationTags = (location, tags) => {
+        //     return tags.filter(t => (location.position[0] === t.location_latitude && location.position[1] === t.location_longitude))
+        // };
 
         // function that loads the user setting (the ones that go in quick actions)
         service.loadUserSettings = () => {
@@ -137,15 +137,15 @@
             return undefined;
         };
 
-        // check if the passed tag is out of all the locations
-        service.checkIfAnyTagOutOfLocation = (locations, tag) => {
-            return locations.some(l => {
-                if (!l.is_inside) {
-                    // control if the tag is out of the current location (l)
-                    return (service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
-                }
-            })
-        };
+        // // check if the passed tag is out of all the locations
+        // service.checkIfAnyTagOutOfLocation = (locations, tag) => {
+        //     return locations.some(l => {
+        //         if (!l.is_inside) {
+        //             // control if the tag is out of the current location (l)
+        //             return (service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
+        //         }
+        //     })
+        // };
 
         // function that check if the tag is out of all the locations
         service.checkIfTagsAreOutOfLocations = (tags) => {
@@ -209,7 +209,7 @@
                     // saving the number of tags in different states
                     $scope.tagsStateIndoorOnline = 0;
                     $scope.tagsStateIndoorOffGrid = 0;
-                    $scope.tagsStateIndoorOffTags = 0
+                    $scope.tagsStateIndoorOffTags = 0;
 
                     // setting the color for each category
                     $scope.colors = ["#4BAE5A", "#E12315", "#D3D3D3"];
@@ -243,7 +243,7 @@
                             // setting the data for the visualization
                             $scope.data = [$scope.tagsStateIndoorOnline, $scope.tagsStateIndoorOffTags.length, $scope.tagsStateIndoorOffGrid.length];
                         });
-                    }, 1000);
+                    }, tagAlarmsWindowUpdateTime);
 
                     // hide the window on click
                     $scope.hide = () => {
@@ -294,24 +294,24 @@
         };
 
         // filling the info window for the locations indoor in the home page
-        service.fillInfoWindowInsideLocation = (marker, userTags, userAnchors) => {
-            // getting the current marker tags
-            let locationTags    = service.getIndoorLocationTags(marker, userTags);
-            //getting the current marker anchors
-            let locationAnchors = service.getLocationAnchors(marker, userAnchors);
-
-            // creating the content of the window
-            return new google.maps.InfoWindow({
-                content: '<div class="marker-info-container">' +
-                    '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
-                    '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
-                    '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
-                    '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
-                    '<div class="clear-float display-flex"><div class="width-50 margin-left-10-px"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
-                    '</div><div class="width-45 "><img src="' + iconsPath + 'offline_anchors_alert_30.png" class="margin-right-10-px"><span class="font-large vertical-align-super color-red"><b>' + locationAnchors.length + '</b></span></div></div>' +
-                    '</div>'
-            });
-        };
+        // service.fillInfoWindowInsideLocation = (marker, userTags, userAnchors) => {
+        //     // getting the current marker tags
+        //     let locationTags    = service.getIndoorLocationTags(marker, userTags);
+        //     //getting the current marker anchors
+        //     let locationAnchors = service.getLocationAnchors(marker, userAnchors);
+        //
+        //     // creating the content of the window
+        //     return new google.maps.InfoWindow({
+        //         content: '<div class="marker-info-container">' +
+        //             '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+        //             '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
+        //             '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
+        //             '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
+        //             '<div class="clear-float display-flex"><div class="width-50 margin-left-10-px"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
+        //             '</div><div class="width-45 "><img src="' + iconsPath + 'offline_anchors_alert_30.png" class="margin-right-10-px"><span class="font-large vertical-align-super color-red"><b>' + locationAnchors.length + '</b></span></div></div>' +
+        //             '</div>'
+        //     });
+        // };
 
         // filling teh info window for the locations outdoor in the home page
         service.fillInfoWindowOutsideLocation = (marker, userTags) => {
@@ -482,7 +482,7 @@
                             // setting the data to be visualized
                             $scope.data = [$scope.offlineAnchors.length, $scope.onlineAnchors, $scope.shutDownAnchors.length];
                         });
-                    }, 1000);
+                    }, anchorAlarmsWindowUpdateTime);
 
                     // closing teh pop up
                     $scope.hide = () => {
@@ -638,9 +638,9 @@
         };
 
         // checking if at least one of the passed anchors has an alarm
-        service.checkIfAnchorsHaveAlarmsOrAreOffline = (anchors) => {
-            return anchors.some(a => a.battery_status || a.is_offline === 1);
-        };
+        // service.checkIfAnchorsHaveAlarmsOrAreOffline = (anchors) => {
+        //     return anchors.some(a => a.battery_status || a.is_offline === 1);
+        // };
 
         // checking if at least one of the passed anchors has an alarm
         service.checkIfAnchorsHaveAlarms = (anchors) => {
@@ -837,9 +837,9 @@
         };
 
         //function that control if the tag is indoor
-        service.isOutdoorWithoutLocation = (tag) => {
-            return tag.gps_north_degree === -2 && tag.gps_east_degree === -2;
-        };
+        // service.isOutdoorWithoutLocation = (tag) => {
+        //     return tag.gps_north_degree === -2 && tag.gps_east_degree === -2;
+        // };
 
         service.goHome = () => {
             $state.go('home');
