@@ -305,6 +305,14 @@ MARGINS
     margin-left: 20px!important;
 }
 
+.margin-left-6{
+    margin-left: 6%;
+}
+
+.margin-left-8{
+    margin-left: 8%;
+}
+
 .margin-left--8-px{
     margin-left: -8px;
 }

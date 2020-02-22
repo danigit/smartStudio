@@ -2140,6 +2140,7 @@
         canvasCtrl.showAlarmsIcon         = false;
         canvasCtrl.showOfflineTagsIcon    = false;
         canvasCtrl.showOfflineAnchorsIcon = false;
+        canvasCtrl.showCategoriesButton = false;
         canvasCtrl.drawingImage           = 'horizontal-line.png';
 
         //controlling if the floor is already setted, if not i set it to the first floor in the building
@@ -2461,7 +2462,8 @@
                                                     window.location.reload();
 
                                                 dataService.floorTags = tagsByFloorAndLocation.result;
-
+                                                canvasCtrl.showCategoriesButton = dataService.hasTagCategory(tagsByFloorAndLocation.result);
+                                                console.log(canvasCtrl.showCategoriesButton)
                                                     let tagClouds            = [];
                                                     let isolatedTags         = [];
                                                     let singleAndGroupedTags = [];
@@ -7014,7 +7016,6 @@
                 clickOutsideToClose: true,
                 multiple           : true,
                 controller         : ['$scope', 'admin', function ($scope, admin) {
-                    newSocketService.server.close()
                     $scope.selected      = [];
                     $scope.isAdmin       = dataService.isAdmin;
                     $scope.isUserManager = dataService.isUserManager;

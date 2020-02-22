@@ -1131,6 +1131,13 @@
         //     return alarms;
         // };
 
+        service.hasTagCategory = (tags) => {
+            if (tags.length === 0)
+                return false;
+
+            return tags.some(t => t.category_id !== null)
+        };
+
         service.getOutdoorTagLocation = (locations, tag) => {
             return locations.filter( l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
         };
@@ -1204,7 +1211,7 @@
 
             service.server.onclose = () => {
                 // $state.go('login');
-                service.socketClosed = true;
+                socketOpened = false;
                 service.reconnectSocket = $interval(function () {
                     console.log('trying to reconect')
                     socketServer = new WebSocket('ws://' + socketPath);

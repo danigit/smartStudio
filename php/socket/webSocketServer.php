@@ -33,8 +33,7 @@ class webSocketServer implements MessageComponentInterface{
      * @throws \Exception
      */
     function onOpen(ConnectionInterface $conn){
-        error_log('UTENTE ' . $conn->resourceId . ' CONNESSO.');
-        error_log('SESSION STATUS: ' . session_status() );
+        error_log('CONNESSIONE SOCKET RISTABILITA DAL CLIENTE ' . $conn->resourceId);
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_regenerate_id();
             error_log('SESSIONE RIGENERATA, ID SESSIONE: ' . session_id());
@@ -73,8 +72,8 @@ class webSocketServer implements MessageComponentInterface{
 
     function isSessionEnded($username){
         $session_ended = isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username_' . $username]);
-        if(!$session_ended)
-            error_log('SESSIONE SCADUTA: ' . date("Y-m-d H:i:s"));
+//        if(!$session_ended)
+//            error_log('SESSIONE NON ATTIVE: ' . date("Y-m-d H:i:s"));
         return $session_ended;
     }
 
@@ -107,6 +106,7 @@ class webSocketServer implements MessageComponentInterface{
                     $_SESSION['id'] = $result['result']['id'];
                     $_SESSION['is_admin'] = $result['result']['role'];
                     session_write_close();
+                    error_log("UTENTE " . $decoded_message['data']['username'] . ' SI E LOGGATO');
                 }
 
                 $this->clients[$from->resourceId]->send(json_encode($result));
@@ -137,8 +137,7 @@ class webSocketServer implements MessageComponentInterface{
 
                     ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
                 }else {
-                    error_log('NESSUN UTTENTE TROVATO' . $decoded_message['data']['username']);
-                    error_log('LA SESSIONE ATTIVA E' . $_SESSION['username_' . $decoded_message['data']['username']]);
+                    error_log('L\'UTENTE ' . $decoded_message['data']['username'] . ' NON E COLLEGATO');
                     $result['result'] = 'no_user';
                 }
 
