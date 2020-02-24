@@ -79,9 +79,9 @@
         };
 
         // getting the tags in the outdoor location passed as parameter
-        service.getOutdoorLocationTags = (location, tags) => {
-            return tags.filter(t => !location.is_inside && service.isTagInLocation(t, location));
-        };
+        // service.getOutdoorLocationTags = (location, tags) => {
+        //     return tags.filter(t => !location.is_inside && service.isTagInLocation(t, location));
+        // };
 
         //controlling if the tag passed as parameter is in the location passed as parameter as well
         service.isTagInLocation = (tag, location) => {
@@ -243,7 +243,7 @@
                             // setting the data for the visualization
                             $scope.data = [$scope.tagsStateIndoorOnline, $scope.tagsStateIndoorOffTags.length, $scope.tagsStateIndoorOffGrid.length];
                         });
-                    }, tagAlarmsWindowUpdateTime);
+                    }, TAGS_ALARMS_WINDOW_UPDATE_TIME);
 
                     // hide the window on click
                     $scope.hide = () => {
@@ -314,22 +314,22 @@
         // };
 
         // filling teh info window for the locations outdoor in the home page
-        service.fillInfoWindowOutsideLocation = (marker, userTags) => {
-            // getting the current marker tags
-            let locationTags = service.getOutdoorLocationTags(marker, userTags);
-
-            // filling the info window
-            return new google.maps.InfoWindow({
-                content: '<div class="marker-info-container">' +
-                    '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
-                    '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
-                    '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
-                    '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
-                    '<div class="clear-float display-flex"><div class="margin-auto"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
-                    '</div></div' +
-                    '</div>'
-            });
-        };
+        // service.fillInfoWindowOutsideLocation = (marker, userTags) => {
+        //     // getting the current marker tags
+        //     let locationTags = service.getOutdoorLocationTags(marker, userTags);
+        //
+        //     // filling the info window
+        //     return new google.maps.InfoWindow({
+        //         content: '<div class="marker-info-container">' +
+        //             '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+        //             '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
+        //             '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
+        //             '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
+        //             '<div class="clear-float display-flex"><div class="margin-auto"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
+        //             '</div></div' +
+        //             '</div>'
+        //     });
+        // };
 
 
         //#####################################################################
@@ -482,7 +482,7 @@
                             // setting the data to be visualized
                             $scope.data = [$scope.offlineAnchors.length, $scope.onlineAnchors, $scope.shutDownAnchors.length];
                         });
-                    }, anchorAlarmsWindowUpdateTime);
+                    }, ANCHORS_ALARMS_WINDOW_UPDATE_TIME);
 
                     // closing teh pop up
                     $scope.hide = () => {
@@ -512,73 +512,73 @@
         };
         
         //creating the informations to be shown on the info window of the canvas objects
-        service.createAlarmObjectForInfoWindow = (tag, name, description, image, location) => {
-            return {
-                tagId      : tag.id,
-                tag        : tag.name,
-                name       : name,
-                description: description,
-                image      : image,
-                location: location
-            };
-        };
+        // service.createAlarmObjectForInfoWindow = (tag, name, description, image, location) => {
+        //     return {
+        //         tagId      : tag.id,
+        //         tag        : tag.name,
+        //         name       : name,
+        //         description: description,
+        //         image      : image,
+        //         location: location
+        //     };
+        // };
 
         // service.isTagInLocation = (tag, location) => {
         //     return service.getTagDistanceFromLocationOrigin(tag, location.position) <= location.radius;
         // };
 
         //getting all the alarms of the tag passed as parameter and creating the objects to be shown in info window
-        service.loadTagAlarmsForInfoWindow = (tag, locations, tagLocation) => {
-            let alarms = [];
-
-            if (tag.sos) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.sos, lang.helpRequest,tagsIconPath + 'sos_24.png', tagLocation));
-            }
-            if (tag.man_down) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDown, lang.manDown, tagsIconPath + 'man_down_24.png', tagLocation));
-            }
-            if (tag.battery_status) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.batteryEmpty, lang.batteryEmpty, tagsIconPath + 'battery_low_24.png', tagLocation));
-            }
-            if (tag.helmet_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.helmetDpi, lang.helmetDpi, tagsIconPath + 'helmet_dpi_24.png', tagLocation));
-            }
-            if (tag.belt_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.beltDpi, lang.beltDpi, tagsIconPath + 'belt_dpi_24.png', tagLocation));
-            }
-            if (tag.glove_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.gloveDpi, lang.gloveDpi, tagsIconPath + 'glove_dpi_24.png', tagLocation));
-            }
-            if (tag.shoe_dpi) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.shoeDpi, lang.shoeDpi, tagsIconPath + 'shoe_dpi_24.png', tagLocation));
-            }
-            if (tag.man_down_disabled) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDownDisabled, lang.manDownDisabled, tagsIconPath + 'man_down_disbled_24.png', tagLocation));
-            }
-            if (tag.man_down_tacitated) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDownTacitated, lang.manDownTacitated, tagsIconPath + 'man_down_tacitated_24.png', tagLocation));
-            }
-            if (tag.man_in_quote) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manInQuote, lang.manInQuote, tagsIconPath + 'man_in_quote_24.png', tagLocation));
-            }
-            if (tag.call_me_alarm) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.callMeAllarm, lang.callMeAllarm, tagsIconPath + 'call_me_alarm_24.png', tagLocation));
-            }
-            if (tag.inside_zone) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.insideZone, lang.inside_zone, tagsIconPath + 'inside_zone_24.png', tagLocation));
-            }
-
-            if (locations !== null) {
-                if (service.isOutdoor(tag) && locations.length > 0) {
-                    let isInLocation = locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
-                    if (!isInLocation) {
-                        alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png'));
-                    }
-                }
-            }
-
-            return alarms;
-        };
+        // service.loadTagAlarmsForInfoWindow = (tag, locations, tagLocation) => {
+        //     let alarms = [];
+        //
+        //     if (tag.sos) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.sos, lang.helpRequest,tagsIconPath + 'sos_24.png', tagLocation));
+        //     }
+        //     if (tag.man_down) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDown, lang.manDown, tagsIconPath + 'man_down_24.png', tagLocation));
+        //     }
+        //     if (tag.battery_status) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.batteryEmpty, lang.batteryEmpty, tagsIconPath + 'battery_low_24.png', tagLocation));
+        //     }
+        //     if (tag.helmet_dpi) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.helmetDpi, lang.helmetDpi, tagsIconPath + 'helmet_dpi_24.png', tagLocation));
+        //     }
+        //     if (tag.belt_dpi) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.beltDpi, lang.beltDpi, tagsIconPath + 'belt_dpi_24.png', tagLocation));
+        //     }
+        //     if (tag.glove_dpi) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.gloveDpi, lang.gloveDpi, tagsIconPath + 'glove_dpi_24.png', tagLocation));
+        //     }
+        //     if (tag.shoe_dpi) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.shoeDpi, lang.shoeDpi, tagsIconPath + 'shoe_dpi_24.png', tagLocation));
+        //     }
+        //     if (tag.man_down_disabled) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDownDisabled, lang.manDownDisabled, tagsIconPath + 'man_down_disbled_24.png', tagLocation));
+        //     }
+        //     if (tag.man_down_tacitated) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDownTacitated, lang.manDownTacitated, tagsIconPath + 'man_down_tacitated_24.png', tagLocation));
+        //     }
+        //     if (tag.man_in_quote) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manInQuote, lang.manInQuote, tagsIconPath + 'man_in_quote_24.png', tagLocation));
+        //     }
+        //     if (tag.call_me_alarm) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.callMeAllarm, lang.callMeAllarm, tagsIconPath + 'call_me_alarm_24.png', tagLocation));
+        //     }
+        //     if (tag.inside_zone) {
+        //         alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.insideZone, lang.inside_zone, tagsIconPath + 'inside_zone_24.png', tagLocation));
+        //     }
+        //
+        //     if (locations !== null) {
+        //         if (service.isOutdoor(tag) && locations.length > 0) {
+        //             let isInLocation = locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
+        //             if (!isInLocation) {
+        //                 alarms.push(service.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png'));
+        //             }
+        //         }
+        //     }
+        //
+        //     return alarms;
+        // };
 
         // service.getIndoorTagLocation = (tag) => {
         //     return new Promise(resolve => {

@@ -63,6 +63,9 @@
                         </md-button>
                     </td>
                 </tr>
+                <tr md-row ng-show="tableEmpty">
+                    <td md-cell colspan="13" class="text-center color-red">{{lang.noResultFound}}</td>
+                </tr>
                 </tbody>
             </table>
         </md-table-container>

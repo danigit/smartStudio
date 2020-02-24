@@ -64,7 +64,7 @@
                     // getting the situation of tags and anchors
                     let locationAnchors = homeService.getLocationAnchors(marker, anchors);
                     let locationTags    = homeService.getIndoorLocationTags(marker, indoorTags);
-                    let locationTagsOutdoor = dataService.getOutdoorLocationTags(marker, allTags);
+                    let locationTagsOutdoor = homeService.getOutdoorLocationTags(marker, allTags);
                     let tagAlarmsIndoor    = dataService.checkIfTagsHaveAlarmsInfo(locationTags);
                     let tagAlarmsOutdoor    = dataService.checkIfTagsHaveAlarmsInfo(locationTagsOutdoor);
                     let anchorAlarms = homeService.checkIfAnchorsHaveAlarmsOrAreOffline(locationAnchors);
@@ -73,29 +73,33 @@
                     if (!marker.is_inside) {
                         if (tagAlarmsOutdoor) {
                             // if the location isn't among the ones with an allarm, i add it
-                            if (!dataService.alarmLocationsContainLocation(alarmLocations, marker))
+                            if (!homeService.alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations.push(marker);
+                                zoomSetter = false;
+                            }
 
                             // I show the icon of the alarm
                             (imageIndex === 0)
                                 ? markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'))
                                 : markerSelected.setIcon(iconsPath + 'alarm-icon.png');
-                            zoomSetter = false;
                         }
                         // if the location has no more alarms I remove it from the locations with alarm and restore the default icon
                         else {
                             if (homeService.alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
                                 markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
+                                zoomSetter = false;
                             }
                         }
                     } else {
                         if (tagAlarmsIndoor || anchorAlarms) {
-                            // if the location isn't among the ones with an allarm, i add it
-                            if (!homeService.alarmLocationsContainLocation(alarmLocations, marker))
+                            // if the location isn't among the ones with an alarm, i add it
+                            if (!homeService.alarmLocationsContainLocation(alarmLocations, marker)) {
                                 alarmLocations.push(marker);
+                                zoomSetter = false;
+                            }
 
-                            // control if I have only tag alarms
+                                // control if I have only tag alarms
                             if (tagAlarmsIndoor && !anchorAlarms) {
                                 (imageIndex === 0)
                                     ? markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'))
@@ -113,12 +117,14 @@
                                     ? markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'))
                                     : markerSelected.setIcon(iconsPath + 'offline_anchors_alert_64.png')
                             }
-                            zoomSetter = false;
                         }
                         // if the location has no more alarms I remove it from the locations with alarm and restore the default icon
                         else{
-                            alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
-                            markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
+                            if (homeService.alarmLocationsContainLocation(alarmLocations, marker)) {
+                                alarmLocations = alarmLocations.filter(l => !angular.equals(l.position, marker.position));
+                                markerSelected.setIcon(markersIconPath + ((marker.icon) ? marker.icon : 'location-marker.png'));
+                                zoomSetter = false;
+                            }
                         }
                     }
                 });
@@ -131,7 +137,7 @@
                         alarmBounds.extend(new google.maps.LatLng(location.position[0], location.position[1]))
                     });
 
-                    map.fitBounds(alarmBounds)
+                    map.fitBounds(alarmBounds);
                     zoomSetter = true;
                 }
 
@@ -222,7 +228,7 @@
                         // showing the engine icon if the ingine is offline
                         homeCtrl.showEngineOffIcon = response.result === 0;
                     })
-                }, homeAlarmUpdateTime);
+                }, HOME_ALARM_UPDATE_TIME);
             };
 
             // enabling the call of constantUpdateNotifications from a different controller ( service )
@@ -265,7 +271,7 @@
                             // handling only the outdoor locations
                             else {
                                 // filling the info window
-                                infoWindow = fillInfoWindowOutsideLocation(marker, dataService.allTags)
+                                infoWindow = homeService.fillInfoWindowOutsideLocation(marker, dataService.allTags)
                             }
 
                             // open the info window on mouse over
@@ -352,7 +358,6 @@
             };
 
             //showing the info window with all the alarms
-            // TODO - fatto fino a qui
             homeCtrl.showAlarmsHome = () => {
                 // stoping the home timer
                 dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
@@ -367,12 +372,15 @@
                     clickOutsideToClose: true,
                     multiple           : true,
                     controller         : ['$scope', 'dataService', ($scope, dataService) => {
+
                         $scope.alarms          = [];
                         $scope.outlocationTags = dataService.switch.showOutrangeTags;
+                        $scope.tableEmpty = true;
+
                         let locations          = [];
                         let indoorLocationTags = [];
-                        let localAlarms = [];
                         let allTags = [];
+                        let allTagsAlarms = []
 
                         $scope.query = {
                             limitOptions: [5, 10, 15],
@@ -384,7 +392,7 @@
                         // starting the interval for updating the alarms in the table
                         dataService.alarmsInterval = $interval(() => {
                             if (DEBUG)
-                                console.log('alarm timer runnning ...');
+                                console.log('alarm timer running ...');
 
                             // getting all the tags
                             newSocketService.getData('get_all_tags', {}, (allTagsResult) => {
@@ -411,124 +419,100 @@
                                             locations = response.result;
 
                                             indoorLocationTags        = userTags.result;
+                                            // the dags indoor have no location if the anchor is null
                                             let indoorNoLocationTags  = allTags.filter(t => !dataService.isOutdoor(t) && t.anchor_id === null);
-                                            let outdoorLocationTags   = allTags.filter(t => dataService.isOutdoor(t) && t.gps_north_degree !== -2 && t.gps_east_degree !== -2);
-                                            let outdoorNoSiteTags     = allTags.filter(t => (dataService.isOutdoor(t) && homeService.isOutdoorWithoutLocation(t)));
-                                            let outdoorNoLocationTags = [];
 
-                                            outdoorLocationTags.forEach(tag => {
-                                                if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius)) {
-                                                    if (!dataService.tagsArrayNotContainsTag(outdoorNoLocationTags, tag))
-                                                        outdoorNoLocationTags.push(tag);
-                                                }
-                                            });
+                                            // getting the tags outdoor that have a location
+                                            //TODO - the hasTagAValidGps is superflous because I control already in isOutdoor but I have to understand if isOutdoor
+                                            // should controll ongli gps != 0
+                                            let outdoorLocationTags   = allTags.filter(t => dataService.isOutdoor(t) && homeService.hasTagAValidGps(t));
 
-                                            //removing the tags that are out of location
+                                            // getting the tags outdoor that have no site setted
+                                            let outdoorNoSiteTags     = allTags.filter(t => (homeService.hasTagAnInvalidGps(t)));
+
+                                            // getting the outdoor tags without any location
+                                            let outdoorNoLocationTags = homeService.getTagsWithoutAnyLocation(outdoorLocationTags, locations);
+
+                                            // removing the tags that are out of all the location
                                             outdoorLocationTags = outdoorLocationTags.filter(t => !outdoorNoLocationTags.some(ot => ot.id === t.id));
 
-                                            indoorLocationTags.forEach(tag => {
-                                                let tagLocation = userLocations.result.filter(l => l.latitude === tag.location_latitude && l.longitude === tag.location_longitude);
+                                            allTagsAlarms = [];
+
+                                            // getting the indoor tags with a location alarms
+                                            userTags.result.forEach(tag => {
+                                                // getting the location of the current tag
+                                                let tagLocation = userLocations.result.find(l => l.latitude === tag.location_latitude && l.longitude === tag.location_longitude);
+
+                                                // i control if the tag has a location
                                                 if (tagLocation !== undefined) {
-                                                    let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name);
 
-                                                    if (tagAlarms.length === 0){
-                                                        $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
-                                                    }
-
-                                                    let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                                    $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
-
-                                                    tagAlarms.forEach(alarm => {
-                                                        if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
-                                                            $scope.alarms.push(alarm);
-                                                    });
+                                                    // getting the tags alarms
+                                                    homeService.loadTagAlarmsForInfoWindow(tag, tagLocation.name)
+                                                        .forEach(alarm => {
+                                                            allTagsAlarms.push(alarm);
+                                                        });
                                                 }
                                             });
 
+                                            // getting the indoor tags without a location alarms
                                             indoorNoLocationTags.forEach(tag => {
-                                                //inserting outside site alarm
-                                                // $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag senza posizione', "Il tag non ha una posizione definita", tagsIconPath + 'tag_withouth_position_24.png', lang.noPosition));
-
-                                                //inserting tag alarms
-                                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation);
-
-                                                if (tagAlarms.length === 0){
-                                                    $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
-                                                }
-
-                                                let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
-
-                                                tagAlarms.forEach(alarm => {
-                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
-                                                        $scope.alarms.push(alarm);
-                                                })
-                                            });
-
-                                            outdoorLocationTags.forEach(tag => {
-                                                if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius))
-                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
-                                                        $scope.alarms.push(dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
-
-                                                let tagLocation = locations.filter(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
-                                                if (tagLocation.length > 0) {
-                                                    let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, tagLocation[0].name);
-
-                                                    if (tagAlarms.length === 0){
-                                                        $scope.alarms = $scope.alarms.filter(a => a.tagId !== tag.id);
-                                                    }
-
-                                                    let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                                    $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
-
-                                                    tagAlarms.forEach(alarm => {
-                                                        if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
-                                                            $scope.alarms.push(alarm);
+                                                // getting the tags alarms
+                                                homeService.loadTagAlarmsForInfoWindow(tag, lang.noLocation)
+                                                    .forEach(alarm => {
+                                                        allTagsAlarms.push(alarm);
                                                     })
+                                            });
+
+                                            // getting the outdoor locations tags alarms
+                                            outdoorLocationTags.forEach(tag => {
+                                                // getting tag location
+                                                let tagLocation = locations.find(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
+
+                                                // i control if the tag has a location
+                                                if (tagLocation !== undefined) {
+
+                                                    //getting the tags alarms
+                                                    homeService.loadTagAlarmsForInfoWindow(tag, tagLocation.name)
+                                                        .forEach(alarm => {
+                                                            allTagsAlarms.push(alarm);
+                                                        })
                                                 }
                                             });
 
+                                            // getting the outdoor tags without a location alarms
                                             outdoorNoLocationTags.forEach(tag => {
-                                                //inserting outsite site alarm
-                                                let alarmOut = dataService.createAlarmObjectForInfoWindow(tag, 'Tag fuori sito', "Il tag e' fuori da tutti i siti", tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation);
-                                                if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarmOut))
-                                                    $scope.alarms.push(alarmOut);
+                                                // show the tag as no location
+                                                if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius))
+                                                    allTagsAlarms.push(homeService.createAlarmObjectForInfoWindow(tag, lang.outOfSite, lang.outOfSiteDescription, tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
 
-                                                //inserting tag alarms
-                                                let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tag, null, lang.noLocation);
-
-                                                let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-
-                                                localTagAlarms = localTagAlarms.filter(lta => !(lta.tagId === alarmOut.tagId && lta.name === alarmOut.name))
-
-                                                if (localTagAlarms.length === 0)
-                                                    $scope.alarms = $scope.alarms.filter(a => !(a.tagId === alarmOut.tagId && a.name !== alarmOut.name));
-
-                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
-
-                                                tagAlarms.forEach(alarm => {
-                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
-                                                        $scope.alarms.push(alarm);
-                                                })
+                                                // getting tags alarms
+                                                homeService.loadTagAlarmsForInfoWindow(tag, lang.noLocation)
+                                                    .forEach(alarm => {
+                                                        allTagsAlarms.push(alarm);
+                                                    })
                                             });
 
+                                            // getting the tags with no valida position alarms
                                             outdoorNoSiteTags.forEach(tag => {
-                                                dataService.loadTagAlarmsForInfoWindow(tag, null, 'Tag senza posizione').forEach(alarm => {
-                                                    if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
-                                                        $scope.alarms.push(alarm);
-                                                })
+                                                // getting the tags that have no valid position
+                                                allTagsAlarms.push(homeService.createAlarmObjectForInfoWindow(tag, lang.noValidPosition, lang.noValidPositionDescription, tagsIconPath + 'tag_withouth_position_24.png', lang.noLocation));
                                             });
 
-                                            // console.log($scope.alarms);
+                                            // setting the alarms in the table
+                                            $scope.alarms = allTagsAlarms;
+
+                                            // controlling if there are alarms
+                                            $scope.tableEmpty = ($scope.alarms.length === 0);
                                             $scope.$apply();
                                         });
 
                                     });
                                 });
                             });
-                        }, 1000);
+                        }, ALARMS_WINDOW_UPDATE_TIME);
 
                         //opening the location where the alarm is
+                        // TODO - fatto fino a qui
                         $scope.loadLocation = (alarm) => {
                             let tag = allTags.filter(t => t.id === alarm.tagId)[0];
 
