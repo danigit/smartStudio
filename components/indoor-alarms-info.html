@@ -57,7 +57,7 @@
                     <td md-cell class="no-wrap">{{alarm.location}}</td>
                     <td md-cell class="no-wrap">
                         <md-button
-                                ng-click="loadLocation(alarm)"
+                                ng-click="loadLocation(alarm.tagId)"
                                 class="md-raised background-darkcyan color-white">
                             {{lang.openSite | uppercase}}
                         </md-button>

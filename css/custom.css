@@ -17,6 +17,14 @@ DIMENSIONS
     height: 60px!important;
 }
 
+.height-150px{
+    height: 150px;
+}
+
+.height-300px{
+    height: 300px;
+}
+
 .width-auto{
     width: auto!important;
 }
@@ -47,6 +55,10 @@ DIMENSIONS
 
 .width-5{
     width: 5%;
+}
+
+.width-40px{
+    width: 40px;
 }
 
 .width-60px{
@@ -88,6 +100,10 @@ DISPLAY
 
 .top-0{
     top: 0;
+}
+
+.top-60px{
+    top: 60px;
 }
 
 .bottom-0{
@@ -140,7 +156,7 @@ FONTS
 }
 
 .text-bold{
-    font-weight: bold;
+    font-weight: bold!important;
 }
 
 .text-underlined{
@@ -241,6 +257,10 @@ MARGINS
     margin-top: 20px!important;
 }
 
+.margin-top-150px{
+    margin-top: 150px;
+}
+
 .margin-top--20-px{
     margin-top: -20px!important;
 }
@@ -274,7 +294,7 @@ MARGINS
 }
 
 .margin-bottom-30-px{
-    margin-bottom: 30px;
+    margin-bottom: 30px!important;
 }
 
 .margin-bottom-50-px{
@@ -339,6 +359,10 @@ PADDING
 }
 .padding-top-bottom-35px{
     padding: 35px 0;
+}
+
+.padding-bottom-none{
+    padding-bottom: 0;
 }
 
 .padding-bottom-10{
@@ -589,7 +613,7 @@ OTHER
         transform: scale(1,1);
     }
     50% {
-        transform: scale(1.2,1.2);
+        transform: scale(2.0,2.0);
     }
     75% {
         transform: scale(1.1);
@@ -615,9 +639,9 @@ OTHER
 }
 
 .triangle-transparent-gray-down{
-    border-left: 35px solid transparent;
-    border-right: 29px solid transparent;
-    border-top: 50px solid #0000002e ;
+    border-left: 22px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 30px solid #0000002e ;
 }
 
 .vertical-align-super{
@@ -747,8 +771,9 @@ POSITION
 
 .top-corner{
     position: absolute;
+    width: 40px;
     top: 0;
-    right: 10px;
+    right: 20px;
     z-index: 100;
 }
 

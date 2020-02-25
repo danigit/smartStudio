@@ -6,16 +6,23 @@
 
             <form id="loginForm" name="loginForm">
 
-                <div layout="row" layout-align="center center">
-                    <img src="img/icons/login-icon.png" class="avatar-image border-radius-50"
+                <div layout="row" layout-align="center center" class="height-300px align-item-start">
+                    <img src="img/icons/login-icon-inner.png" class="avatar-image border-radius-50 position-absolute"
                          alt="Smart Track" title="Smart Track">
+                    <img src="img/icons/login-icon-middle-inner.png" class="avatar-image border-radius-50 spin-logo-right-2s"
+                         alt="Smart Track" title="Smart Track">
+                    <img src="img/icons/login-icon-middle-outer.png" class="avatar-image border-radius-50 spin-logo-left-3s"
+                         alt="Smart Track" title="Smart Track">
+                    <img src="img/icons/login-icon-outer.png" class="avatar-image border-radius-50 spin-logo-right"
+                         alt="Smart Track" title="Smart Track">
+                    <div layout="row" layout-align="center center" class="padding-bottom-10 margin-top-150px">
+                        <h1 class=" font-iceberg font-x-large margin-none margin-top-150px">SAFETY IoT PLATFORM</h1>
+                    </div>
                 </div>
 
                 <div layout="column">
 
-                    <div layout="row" layout-align="center center" class="padding-bottom-10 padding-top-5">
-                        <h1 class=" font-iceberg font-x-large">SAFETY IoT PLATFORM</h1>
-                    </div>
+
 
                     <md-input-container class="margin-bottom-0">
                         <label for="usernameInput" class="font-smal">{{lang.username}}</label>

@@ -14,11 +14,16 @@
     background-color: #0093c4;
     position: absolute;
     left: 0;
-    top: 48px;
+    top: 60px;
     /*padding: 10px 5px 10px 5px;*/
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
     z-index: 10;
+}
+
+#open-menu-button:hover{
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #home-button{
@@ -32,14 +37,19 @@
     z-index: 10;
 }
 
+#home-button:hover{
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 #open-menu-icon{
     width: 20px;
-    padding: 20px 5px 19px 10px;
+    padding: 15px 1px 12px 3px;
 }
 
 #home-button-icon{
     width: 20px;
-    padding: 20px 5px 19px 10px;
+    padding: 15px 1px 12px 3px;
 }
 
 .gmnoprint{

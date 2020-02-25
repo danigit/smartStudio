@@ -130,6 +130,10 @@
     background-color: #8bf6ff30;
 }
 
+#menu-container .md-button:not([disabled]):hover .menu-icon{
+    transform: scale(2.0)
+}
+
 #menu-container .md-select-value{
     color: #0093c4;
     border-bottom: 1px solid #0093c4;
