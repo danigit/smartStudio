@@ -4322,9 +4322,13 @@ class Connection
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
+                $database_time = $row['TIME_REST'];
+                $milisec_time = strtotime($database_time);
                 $result_array = array('sefe_mon_id' => $row['SAFE_MON_STATUS'], 'description' => $row['DESCRIPTION'], 'color' => $row['COLOR'],
-                    'is_active_safemon' => $row['IS_ACTIVE_SAFEMON'], 'is_active_time_rest' => $row['IS_ACTIVE_TIME_REST'], 'time_rest' => $row['TIME_REST']);
+                    'is_active_safemon' => $row['IS_ACTIVE_SAFEMON'], 'is_active_time_rest' => $row['IS_ACTIVE_TIME_REST'],
+                    'data_time' => $milisec_time, 'now_time' => strtotime("now"));
             }
+
 
             mysqli_close($this->connection);
 

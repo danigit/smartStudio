@@ -87,6 +87,7 @@
         //visualizing the data according if the user is admin or not
         homeCtrl.isAdmin       = dataService.isAdmin;
         homeCtrl.isUserManager = dataService.isUserManager;
+        homeCtrl.socketOpened = socketOpened;
 
         homeCtrl.dynamicMarkers = [];
 
@@ -190,6 +191,7 @@
                 dataService.homeTimer = $interval(() => {
 
                     console.log('updating home page');
+                    homeCtrl.socketOpened = socketOpened;
                     newSocketService.getData('get_all_tags', {}, (response) => {
                         if (!response.session_state)
                             window.location.reload();
@@ -2142,6 +2144,7 @@
         canvasCtrl.showOfflineAnchorsIcon = false;
         canvasCtrl.showCategoriesButton = false;
         canvasCtrl.drawingImage           = 'horizontal-line.png';
+        canvasCtrl.socketOpened = socketOpened;
 
         //controlling if the floor is already setted, if not i set it to the first floor in the building
         if (dataService.defaultFloorName === '') {
@@ -2323,6 +2326,7 @@
             let newLavoration = null;
 
             dataService.canvasInterval = $interval(function () {
+                canvasCtrl.socketOpened = socketOpened;
                 bufferCanvas.width  = canvasImage.naturalWidth;
                 bufferCanvas.height = canvasImage.naturalHeight;
 
@@ -2419,8 +2423,8 @@
 
                                         if (response.result.is_active_time_rest === '1'){
                                             let color = '#00FF00';
-                                            let description = 'ok'
-                                            if ((Date.now() - Date.parse(response.result.time_rest)) > 30){
+                                            let description = 'ok';
+                                            if ((response.result.now_time - response.result.data_time) > TIME_REST){
                                                 color = '#FF0000';
                                                 description = 'error';
                                                 isTimeRestInError = true;
@@ -2463,7 +2467,7 @@
 
                                                 dataService.floorTags = tagsByFloorAndLocation.result;
                                                 canvasCtrl.showCategoriesButton = dataService.hasTagCategory(tagsByFloorAndLocation.result);
-                                                console.log(canvasCtrl.showCategoriesButton)
+                                                // console.log(canvasCtrl.showCategoriesButton)
                                                     let tagClouds            = [];
                                                     let isolatedTags         = [];
                                                     let singleAndGroupedTags = [];

@@ -2,6 +2,7 @@
  * SOCKET COFIGURATIONS
  ***************************************************************/
 const socketPath = 'localhost:8090';
+const MESSAGE_WAITING_TIME = 30000;
 let socketServer               = new WebSocket('ws://' + socketPath);
 let socketOpened = false;
 let groupTagDistance = 0.5;
@@ -28,6 +29,7 @@ const floorPath = 'img/floors/';
  ***************************************************************/
 const canvasBorderSpace = 25;
 const canvasGridPattern = [5, 5];
+const TIME_REST = 30;
 
 /***************************************************************
  * MAPS COFIGURATIONS

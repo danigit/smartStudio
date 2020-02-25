@@ -15,6 +15,9 @@
                     <img ng-show="homeCtrl.showEngineOffIcon" class="padding-top-bottom-6px border-bottom-3-white"
                          src="img/icons/engine_off_64.png" alt="{{lang.engineOff}}"
                          title="{{lang.engineOff}}">
+                    <img ng-show="!homeCtrl.socketOpened" class="padding-top-bottom-6px border-bottom-3-white"
+                         src="img/icons/socket-down.ico" alt="{{lang.engineOff}}"
+                         title="{{lang.engineOff}}">
                 </div>
                 <div ng-if="homeCtrl.showAlarmsIcon || homeCtrl.showOfflineTagsIcons || homeCtrl.showOfflineAnchorsIcon || homeCtrl.showEngineOffIcon" class="triangle-transparent-gray-down"></div>
             </div>

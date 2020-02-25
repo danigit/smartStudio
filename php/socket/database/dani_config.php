@@ -16,3 +16,5 @@ define('DB_PASSWORD', 'password');
 //define('DB_DATABASE', 'cloud_safety_1');
 //define('DB_DATABASE', 'cloud_safety_2');
 define('DB_DATABASE', 'ilvatest');
+
+define('TIME_REST', 30);

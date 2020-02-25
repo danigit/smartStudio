@@ -53,6 +53,7 @@
         service.playedTime = null;
         service.alarmsInterval = undefined;
         service.reconnectSocket = null;
+        service.lastMessageTime = null;
 
 
 
@@ -1194,14 +1195,22 @@
 
             if (socketOpened) {
                 service.server.send(stringifyedData);
+                service.lastMessageTime = new Date();
                 service.callbacks.push({id: id, value: callback});
                 $interval.cancel(service.reconnectSocket);
             }
 
             service.server.onmessage = (response) => {
-                let result = JSON.parse(response.data);
-                let call = service.callbacks.shift();
-                call.value(result);
+                let now = new Date();
+                if (Math.abs(now.getTime() - service.lastMessageTime.getTime()) > MESSAGE_WAITING_TIME){
+                    console.log('CLOSING THE SOCKET BECAUSE THE NETWORK IS TOO SLOW');
+                    service.server.close();
+
+                }else {
+                    let result = JSON.parse(response.data);
+                    let call   = service.callbacks.shift();
+                    call.value(result);
+                }
             };
 
             service.server.onerror = (error) => {
