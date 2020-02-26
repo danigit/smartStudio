@@ -15,13 +15,11 @@
         let homeCtrl = this;
 
         let markers              = homeData.markers;
-        let tags                 = dataService.allTags;
         let bounds               = new google.maps.LatLngBounds();
-        let alarmZoom           = undefined;
         let alarmLocations       = [];
         let imageIndex           = 0;
-        let alarmLocationsLength = 0;
-        // I use this varable so that the zoom is done only at the firs cicle, so that I can zoom out after automatic zoom
+
+        // I use this variable so that the zoom is done only at the firs circle, so that I can zoom out after automatic zoom
         let zoomSetter           = false;
 
 
@@ -172,15 +170,7 @@
                                 window.location.reload();
 
                             // controlling if there are tags out off all the locations
-                            dataService.allTags.forEach(function(tag){
-                                // applying only for tags outdoor
-                                if (dataService.isOutdoor(tag)) {
-                                    // checking if any tag is out of all locations
-                                    if(!homeService.checkIfAnyTagOutOfLocation(locations.result, tag) && dataService.switch.showOutrangeTags){
-                                        homeCtrl.showAlarmsIcon = true;
-                                    }
-                                }
-                            })
+                            homeCtrl.showAlarmsIcon = dataService.showAlarmForOutOfLocationTags(dataService.allTags, locations.result);
                         });
 
                         // showing the home alarm icons
@@ -357,295 +347,13 @@
                 dataService.showOfflineAnchors('home', constantUpdateNotifications, dataService.homeMap);
             };
 
-            //showing the info window with all the alarms
             homeCtrl.showAlarmsHome = () => {
                 // stoping the home timer
                 dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
 
-                // showing the table with the alarms
-                $mdDialog.show({
-                    templateUrl        : componentsPath + 'indoor-alarms-info.html',
-                    parent             : angular.element(document.body),
-                    targetEvent        : event,
-                    clickOutsideToClose: true,
-                    multiple           : true,
-                    controller         : ['$scope', 'dataService', ($scope, dataService) => {
-
-                        $scope.alarms          = [];
-                        $scope.outlocationTags = dataService.switch.showOutrangeTags;
-                        $scope.tableEmpty = true;
-
-                        let locations          = [];
-                        let indoorLocationTags = [];
-                        let allTags = [];
-                        let allTagsAlarms = []
-
-                        $scope.query = {
-                            limitOptions: [5, 10, 15],
-                            order       : 'name',
-                            limit       : 5,
-                            page        : 1
-                        };
-
-                        // starting the interval for updating the alarms in the table
-                        dataService.alarmsInterval = $interval(() => {
-                            if (DEBUG)
-                                console.log('alarm timer running ...');
-
-                            // getting all the tags
-                            newSocketService.getData('get_all_tags', {}, (allTagsResult) => {
-
-                                allTags = allTagsResult.result;
-
-                                // getting all the tags of the logged user
-                                // they are all the indoor tags because the tags are related to the users by the anchors and the anchors are
-                                // only in indoor locations
-                                newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
-                                    if (!userTags.session_state)
-                                        window.location.reload();
-
-                                    // get all the locations of the logged user
-                                    newSocketService.getData('get_user_locations', {user: dataService.user.id}, (userLocations) => {
-                                        if (!userLocations.session_state)
-                                            window.location.reload();
-
-                                        // getting all the locations
-                                        newSocketService.getData('get_all_locations', {}, (response) => {
-                                            if (!response.session_state)
-                                                window.location.reload();
-
-                                            locations = response.result;
-
-                                            indoorLocationTags        = userTags.result;
-                                            // the dags indoor have no location if the anchor is null
-                                            let indoorNoLocationTags  = allTags.filter(t => !homeService.isOutdoor(t) && t.anchor_id === null);
-
-                                            // getting the tags outdoor that have a location
-                                            //TODO - the hasTagAValidGps is superflous because I control already in isOutdoor but I have to understand if isOutdoor
-                                            // should controll ongli gps != 0
-                                            let outdoorLocationTags   = allTags.filter(t => homeService.isOutdoor(t) && homeService.hasTagAValidGps(t));
-
-                                            // getting the tags outdoor that have no site setted
-                                            let outdoorNoSiteTags     = allTags.filter(t => (homeService.isOutdoor(t) && homeService.hasTagAnInvalidGps(t)));
-
-                                            // getting the outdoor tags without any location
-                                            let outdoorNoLocationTags = homeService.getTagsWithoutAnyLocation(outdoorLocationTags, locations);
-
-                                            // removing the tags that are out of all the location
-                                            outdoorLocationTags = outdoorLocationTags.filter(t => !outdoorNoLocationTags.some(ot => ot.id === t.id));
-
-                                            allTagsAlarms = [];
-
-                                            // getting the indoor tags with a location alarms
-                                            userTags.result.forEach(tag => {
-                                                // getting the location of the current tag
-                                                let tagLocation = userLocations.result.find(l => l.latitude === tag.location_latitude && l.longitude === tag.location_longitude);
-
-                                                // i control if the tag has a location
-                                                if (tagLocation !== undefined) {
-
-                                                    // getting the tags alarms
-                                                    dataService.loadTagAlarmsForInfoWindow(tag, tagLocation.name)
-                                                        .forEach(alarm => {
-                                                            allTagsAlarms.push(alarm);
-                                                        });
-                                                }
-                                            });
-
-                                            // getting the indoor tags without a location alarms
-                                            indoorNoLocationTags.forEach(tag => {
-                                                // getting the tags alarms
-                                                dataService.loadTagAlarmsForInfoWindow(tag, lang.noLocation)
-                                                    .forEach(alarm => {
-                                                        allTagsAlarms.push(alarm);
-                                                    })
-                                            });
-
-                                            // getting the outdoor locations tags alarms
-                                            outdoorLocationTags.forEach(tag => {
-                                                // getting tag location
-                                                let tagLocation = locations.find(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
-
-                                                // i control if the tag has a location
-                                                if (tagLocation !== undefined) {
-
-                                                    //getting the tags alarms
-                                                    dataService.loadTagAlarmsForInfoWindow(tag, tagLocation.name)
-                                                        .forEach(alarm => {
-                                                            allTagsAlarms.push(alarm);
-                                                        })
-                                                }
-                                            });
-
-                                            // getting the outdoor tags without a location alarms
-                                            outdoorNoLocationTags.forEach(tag => {
-                                                // show the tag as no location
-                                                if (!locations.some(l => dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius))
-                                                    allTagsAlarms.push(dataService.createAlarmObjectForInfoWindow(tag, lang.outOfSite, lang.outOfSiteDescription, tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
-
-                                                // getting tags alarms
-                                                dataService.loadTagAlarmsForInfoWindow(tag, lang.noLocation)
-                                                    .forEach(alarm => {
-                                                        allTagsAlarms.push(alarm);
-                                                    })
-                                            });
-
-                                            // getting the tags with no valida position alarms
-                                            outdoorNoSiteTags.forEach(tag => {
-                                                // getting the tags that have no valid position
-                                                allTagsAlarms.push(dataService.createAlarmObjectForInfoWindow(tag, lang.noValidPosition, lang.noValidPositionDescription, tagsIconPath + 'tag_withouth_position_24.png', lang.noLocation));
-                                            });
-
-                                            // setting the alarms in the table
-                                            $scope.alarms = allTagsAlarms;
-
-                                            // controlling if there are alarms
-                                            $scope.tableEmpty = ($scope.alarms.length === 0);
-                                            $scope.$apply();
-                                        });
-
-                                    });
-                                });
-                            });
-                        }, ALARMS_WINDOW_UPDATE_TIME);
-
-                        //opening the location where the alarm is
-                        $scope.loadLocation = (alarm) => {
-                            // closing the alarms table
-                            $mdDialog.hide();
-
-                            // getting the tag in alarm
-                            let tag = allTags.find(t => t.id === alarm);
-
-                            // controlling if the tag is in an outdoor location
-                            if (homeService.isOutdoor(tag)) {
-                                // if the tag is outdoor and has no position i show tag not found message
-                                if (tag.gps_north_degree === -2 && tag.gps_east_degree === -2) {
-                                    showNotFountTagWindow()
-                                } else {
-                                    // getting the outdoor location of the tag
-                                    let tagLocation = locations.find(l => (dataService.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude])) <= l.radius);
-
-                                    // if the tag has a location then I go in the outdoor location
-                                    if (tagLocation !== undefined) {
-                                        newSocketService.getData('save_location', {location: tagLocation.name}, (response) => {
-                                            if (!response.session_state)
-                                                window.location.reload();
-
-                                            if (response.result === 'location_saved') {
-                                                $state.go('outdoor-location');
-                                            }
-                                        });
-                                    }
-                                    //if the tag is out of all the locations the I show the message tag out of locations
-                                    else {
-                                        $mdDialog.show({
-                                            locals             : {alarmTag: tag},
-                                            templateUrl        : componentsPath + 'search-tag-outside.html',
-                                            parent             : angular.element(document.body),
-                                            targetEvent        : event,
-                                            clickOutsideToClose: true,
-                                            controller         : ['$scope', 'NgMap', 'alarmTag', function ($scope, NgMap, alarmTag) {
-                                                $scope.isTagOutOfLocation = 'background-red';
-                                                $scope.locationName       = alarmTag.name + ' ' + lang.tagOutSite.toUpperCase();
-                                                $scope.mapConfiguration   = {
-                                                    zoom    : 8,
-                                                    map_type: mapType,
-                                                };
-
-                                                newSocketService.getData('get_tag_outside_location_zoom', {}, (response) => {
-                                                    if (!response.session_state)
-                                                        window.location.reload();
-
-                                                    $scope.mapConfiguration.zoom = response.result;
-                                                });
-
-                                                NgMap.getMap('search-map').then((map) => {
-                                                    map.set('styles', mapConfiguration);
-                                                    let latLng = new google.maps.LatLng(alarmTag.gps_north_degree, alarmTag.gps_east_degree);
-
-                                                    map.setCenter(latLng);
-
-                                                    new google.maps.Marker({
-                                                        position: latLng,
-                                                        map     : map,
-                                                        icon    : tagsIconPath + 'search-tag.png'
-                                                    });
-                                                });
-
-                                                $scope.hide = () => {
-                                                    $mdDialog.hide();
-                                                }
-                                            }]
-                                        })
-                                    }
-                                }
-                            }
-                            // here means that the tag is in an indoor location
-                            else {
-                                // getting the tag informations
-                                let indoorTag = indoorLocationTags.find(t => t.id === tag.id);
-
-                                //if the tag has no indoor location then I show the message tag not found
-                                if (indoorTag === undefined) {
-                                   showNotFountTagWindow();
-                                }
-                                //if the tag has a location then I go in the location
-                                else {
-                                    newSocketService.getData('save_location', {location: indoorTag.location_name}, (response) => {
-                                        if (!response.session_state)
-                                            window.location.reload();
-
-                                        if (response.result === 'location_saved') {
-                                            dataService.defaultFloorName  = indoorTag.floor_name;
-                                            dataService.locationFromClick = indoorTag.location_name;
-                                            $state.go('canvas');
-                                        }
-                                    });
-                                }
-                            }
-                        };
-
-                        /**
-                         * Function that shows a popup with the message that the tag has no location
-                         */
-                        let showNotFountTagWindow = () => {
-                            $timeout(function () {
-                                $mdDialog.show({
-                                    templateUrl        : componentsPath + 'tag-not-found-alert.html',
-                                    parent             : angular.element(document.body),
-                                    targetEvent        : event,
-                                    clickOutsideToClose: true,
-                                    controller         : ['$scope', '$controller', ($scope, $controller) => {
-                                        $controller('languageController', {$scope: $scope});
-
-
-                                        $scope.title   = lang.tagNotFound.toUpperCase();
-                                        $scope.message = lang.tagNotLocation;
-
-                                        $scope.hide = () => {
-                                            $mdDialog.hide();
-                                        }
-                                    }]
-                                })
-                            }, 100);
-                        };
-
-                        $scope.hide = () => {
-                            $mdDialog.hide();
-                        }
-                    }],
-                    onRemoving         : function () {
-                        dataService.alarmsInterval = dataService.stopTimer(dataService.alarmsInterval);
-
-                        if (dataService.homeTimer === undefined) {
-                            NgMap.getMap('main-map').then((map) => {
-                                constantUpdateNotifications(map)
-                            });
-                        }
-                    }
-                })
-            };
+                // showing the alarm table
+                dataService.showAlarms()
+            }
         }
 
         // if the default password hasn't been changed, I force the user to change it

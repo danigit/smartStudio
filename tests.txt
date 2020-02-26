@@ -1,0 +1,10 @@
+HOME
+
+- zoom in zoom out when a location has alarm
+- zoom in zoom out always for the map
+- location in alarm alternating alarms
+- icons on right top corner showing and hiding
+- icons on right top corner working on click
+- alarms table showing the correct alarms
+- alarms table not showing alarm out of all sites if the quick configuration is not enabled
+- alarms table open site button must work properly
