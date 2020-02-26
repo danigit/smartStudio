@@ -1223,7 +1223,7 @@
                 socketOpened = false;
                 service.reconnectSocket = $interval(function () {
                     console.log('trying to reconect')
-                    socketServer = new WebSocket('ws://' + socketPath);
+                    socketServer = new WebSocket(socketPath);
                     socketServer.onopen = function(){
                         socketOpened = true;
                         window.location.reload()

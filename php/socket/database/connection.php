@@ -1626,7 +1626,7 @@ class Connection
             $anchorNullQuery = "";
 
             if (($tag == 'Qualsiasi' && $event == 'Qualsiasi') || ($tag == null && $event == 'Qualsiasi') || ($tag == 'Qualsiasi' && $event == null)) {
-                $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
+                $this->query = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
                             WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
@@ -1642,14 +1642,14 @@ class Connection
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
                         'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
 
                 $statement->close();
 
-                $anchorNullQuery = "SELECT history.TIME, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
+                $anchorNullQuery = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
                             JOIN tag ON history.TAG_ID = tag.ID WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? AND history.ANCHOR_ID IS NULL ORDER BY history.time DESC";
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ss', $fromDate, $toDate);
@@ -1664,12 +1664,12 @@ class Connection
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
                         'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
             } else if ($tag != null && $event == 'Qualsiasi') {
-                $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
+                $this->query = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
                             WHERE tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
@@ -1685,14 +1685,14 @@ class Connection
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
                         'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
 
                 $statement->close();
 
-                $anchorNullQuery = "SELECT history.TIME, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
+                $anchorNullQuery = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
                             JOIN tag ON history.TAG_ID = tag.ID WHERE tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? AND history.ANCHOR_ID IS NULL ORDER BY history.time DESC";
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $tag, $fromDate, $toDate);
@@ -1707,12 +1707,12 @@ class Connection
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
                         'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
             } else if ($tag == 'Qualsiasi' && $event != null) {
-                $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
+                $this->query = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
                             WHERE event.DESCRIPTION = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
@@ -1728,14 +1728,14 @@ class Connection
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
                         'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
 
                 $statement->close();
 
-                $anchorNullQuery = "SELECT history.TIME, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
+                $anchorNullQuery = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
                             JOIN tag ON history.TAG_ID = tag.ID WHERE event.DESCRIPTION = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? AND history.ANCHOR_ID IS NULL ORDER BY history.time DESC";
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $event, $fromDate, $toDate);
@@ -1750,12 +1750,12 @@ class Connection
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
                         'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
             } else if ($event == null && $tag != null) {
-                $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
+                $this->query = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
                             WHERE tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
@@ -1771,14 +1771,14 @@ class Connection
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
                         'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
 
                 $statement->close();
 
-                $anchorNullQuery = "SELECT history.TIME, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
+                $anchorNullQuery = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
                             JOIN tag ON history.TAG_ID = tag.ID WHERE tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? AND history.ANCHOR_ID IS NULL ORDER BY history.time DESC";
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $tag, $fromDate, $toDate);
@@ -1793,12 +1793,12 @@ class Connection
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
                         'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
             } else if ($event != null && $tag == null) {
-                $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
+                $this->query = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
                             WHERE event.DESCRIPTION = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
@@ -1814,14 +1814,14 @@ class Connection
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
                         'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
 
                 $statement->close();
 
-                $anchorNullQuery = "SELECT history.TIME, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
+                $anchorNullQuery = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
                             JOIN tag ON history.TAG_ID = tag.ID WHERE event.DESCRIPTION = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? AND history.ANCHOR_ID IS NULL ORDER BY history.time DESC";
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'sss', $event, $fromDate, $toDate);
@@ -1836,12 +1836,12 @@ class Connection
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
                         'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
             } else if ($event != null && $tag != null) {
-                $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
+                $this->query = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL 
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID 
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
                             WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
@@ -1857,14 +1857,14 @@ class Connection
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
                         'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
 
                 $statement->close();
 
-                $anchorNullQuery = "SELECT history.TIME, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
+                $anchorNullQuery = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
                             JOIN tag ON history.TAG_ID = tag.ID WHERE event.DESCRIPTION = ? AND tag.NAME = ? AND history.ANCHOR_ID IS NULL AND CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ssss', $event, $tag, $fromDate, $toDate);
@@ -1879,12 +1879,12 @@ class Connection
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
                         'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
             } else if ($tag == null && $event == null) {
-                $this->query = "SELECT history.TIME, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL
+                $this->query = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, anchor.NAME AS ANCHOR_NAME, tag.NAME AS TAG_NAME, l.NAME AS LOCATION_NAME, f.NAME AS FLOOR_NAME, history.TAG_X_POS, history.TAG_Y_POS, history.PROTOCOL
                             FROM history JOIN event ON history.EVENT_ID = event.ID JOIN anchor ON history.ANCHOR_ID = anchor.ID
                             JOIN tag ON history.TAG_ID = tag.ID JOIN floor f on anchor.FLOOR_ID = f.ID JOIN location l on f.LOCATION_ID = l.ID
                             WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? ORDER BY history.time DESC";
@@ -1900,14 +1900,14 @@ class Connection
                 $this->result = $statement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => $row['ANCHOR_NAME'], 'tag' => $row['TAG_NAME'],
                         'location' => $row['LOCATION_NAME'], 'floor' => $row['FLOOR_NAME'], 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }
 
                 $statement->close();
 
-                $anchorNullQuery = "SELECT history.TIME, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
+                $anchorNullQuery = "SELECT history.TIME, history.MD_TYPE, event.DESCRIPTION, history.TAG_X_POS, history.TAG_Y_POS, tag.NAME, history.PROTOCOL FROM history JOIN event ON history.EVENT_ID = event.ID
                             JOIN tag ON history.TAG_ID = tag.ID WHERE CAST(history.TIME AS DATE) BETWEEN ? AND ? AND history.ANCHOR_ID IS NULL ORDER BY history.time DESC";
 
                 $anchorNullStatement = $this->execute_selecting($anchorNullQuery, 'ss', $fromDate, $toDate);
@@ -1922,7 +1922,7 @@ class Connection
                 $this->result = $anchorNullStatement->get_result();
 
                 while ($row = mysqli_fetch_assoc($this->result)) {
-                    $array_result[] = array('time' => $row['TIME'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
+                    $array_result[] = array('time' => $row['TIME'], 'man_down_cause' => $row['MD_TYPE'], 'event' => $row['DESCRIPTION'], 'anchor' => 'nessun dato', 'tag' => $row['NAME'],
                         'location' => 'nessun dato', 'floor' => 'nessun dato', 'tag_x_pos' => $row['TAG_X_POS'],
                         'tag_y_pos' => $row['TAG_Y_POS'], 'protocol' => $row['PROTOCOL']);
                 }

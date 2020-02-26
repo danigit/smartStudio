@@ -2145,6 +2145,7 @@
         canvasCtrl.showCategoriesButton = false;
         canvasCtrl.drawingImage           = 'horizontal-line.png';
         canvasCtrl.socketOpened = socketOpened;
+        canvasCtrl.legend = [];
 
         //controlling if the floor is already setted, if not i set it to the first floor in the building
         if (dataService.defaultFloorName === '') {
@@ -2319,6 +2320,19 @@
 
         };
 
+        newSocketService.getData('get_tag_categories', {}, (response) => {
+            if (!response.session_state)
+                window.location.reload();
+
+            response.result.forEach((category) => {
+                canvasCtrl.legend.push({name: category.name, img: category.no_alarm_image});
+            })
+            console.log(canvasCtrl.legend)
+        });
+
+        canvasCtrl.changeLabel = (item) => {
+
+        }
         //constantly updating the canvas with the objects position from the server
         let constantUpdateCanvas = () => {
             let alarmsCounts = new Array(500).fill(0);
@@ -5095,24 +5109,46 @@
                             let hisRow = his;
                             switch (his.protocol) {
                                 case 0: {
-                                    hisRow.protocol = 'BLE';
+                                    hisRow.protocol = lang.ble;
                                     break;
                                 }
                                 case 1: {
-                                    hisRow.protocol = 'WIFI';
+                                    hisRow.protocol = lang.wifi;
                                     break;
                                 }
                                 case 2: {
-                                    hisRow.protocol = 'GPRS';
+                                    hisRow.protocol = lang.gprs;
                                     break;
                                 }
                                 case 3: {
-                                    hisRow.protocol = 'SafetyBox';
+                                    hisRow.protocol = lang.safetyBox;
                                     break;
                                 }
                             }
+
+                            switch (his.man_down_cause) {
+                                case 0: {
+                                    hisRow.man_down_cause = lang.noCause;
+                                    break;
+                                }
+                                case 1: {
+                                    hisRow.man_down_cause = lang.freefall;
+                                    break;
+                                }
+                                case 2: {
+                                    hisRow.man_down_cause = lang.lndPrt;
+                                    break;
+                                }
+                                case 3: {
+                                    hisRow.man_down_cause = lang.noMov;
+                                    break;
+                                }
+                            }
+
                             historyRows.push(hisRow)
                         });
+
+                        console.log(historyRows)
                         return historyRows;
                     };
 

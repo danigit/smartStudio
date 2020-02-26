@@ -370,7 +370,11 @@ function languageController($scope) {
         trackingTable: 'Tabella tracking',
         priority: "Priorita",
         headerOrder: 'Ordine header',
-        headerLeftSide: 'Header a sinistra'
+        headerLeftSide: 'Header a sinistra',
+        categoryLegend: 'Legenda categorie',
+        openLegend: 'Legenda',
+        manDownCause: 'Causa uomo a terra',
+        anchorMac: 'MAC anchora'
     }
 };
 
@@ -451,5 +455,13 @@ let lang = {
     reset: 'Riprisina',
     callMe: 'Chiamami',
     stopCallMe: 'Tacitami',
-    invalidAutomation: 'Automazione invalida'
+    invalidAutomation: 'Automazione invalida',
+    noCause: 'No cause',
+    freefall: 'Freefall',
+    lndPrt: 'LND/PRT',
+    noMov: 'No mov',
+    ble: 'BLE',
+    wifi: 'WIFI',
+    gprs: 'GPRS',
+    safetyBox: 'Safety Box'
 }

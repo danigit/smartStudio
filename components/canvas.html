@@ -105,16 +105,19 @@
 
         <!-- begin categories legend-->
         <input ng-if="canvasCtrl.showCategoriesButton" type="checkbox" name="toggle" id="toggle" />
-        <label for="toggle" class="top-right-center"></label>
+        <label for="toggle" class="top-right-center">{{lang.openLegend}}</label>
         <div class="message">
-            <div class="category-title">Categories Legend</div>
+            <div class="category-title">{{lang.categoryLegend}}</div>
+
             <ul class="float-left margin-left-6">
-                <li class="category-list-item"><img class="margin-right-50-px" src="img/icons/tags/Colatori.png"> Colatori</li>
-                <li class="category-list-item"><img class="margin-right-50-px" src="img/icons/tags/Esercizio.png"><div>Esercizio</div></li>
+                <li ng-if="$even" class="category-list-item" ng-repeat="category in canvasCtrl.legend track by $index">
+                    <img class="margin-right-50-px" src="img/icons/tags/{{category.img}}">{{category.name}}
+                </li>
             </ul>
             <ul class="float-left margin-left-8">
-                <li class="category-list-item"><img class="margin-right-50-px" src="img/icons/tags/Manutentore.png">Manutentore</li>
-                <li class="category-list-item"><img class="margin-right-50-px" src="img/icons/tags/Terzi.png"><div>Terzi</div></li>
+                <li ng-if="!$even" class="category-list-item" ng-repeat="category in canvasCtrl.legend track by $index">
+                    <img class="margin-right-50-px" src="img/icons/tags/{{category.img}}">{{category.name}}
+                </li>
             </ul>
         </div>
         <!-- end categories legend-->
