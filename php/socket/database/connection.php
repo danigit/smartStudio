@@ -2587,6 +2587,7 @@ class Connection
      */
     function get_all_tags()
     {
+        $milisec_time = strtotime("now");
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -2621,6 +2622,7 @@ class Connection
             }
 
             mysqli_close($this->connection);
+            $result_array['server_time'] = $milisec_time;
             return $result_array;
         }
 

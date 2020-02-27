@@ -56,7 +56,7 @@
 
 
 
-        service.showAlarms = () => {
+        service.showAlarms = (constantUpdateNotifications, map) => {
             // showing the table with the alarms
             $mdDialog.show({
                 templateUrl        : componentsPath + 'indoor-alarms-info.html',
@@ -337,9 +337,7 @@
                     service.alarmsInterval = service.stopTimer(service.alarmsInterval);
 
                     if (service.homeTimer === undefined) {
-                        NgMap.getMap('main-map').then((map) => {
-                            constantUpdateNotifications(map)
-                        });
+                        constantUpdateNotifications(map)
                     }
                 }
             })
@@ -736,6 +734,9 @@
             }
         };
 
+        service.setMarkerOnlineIcon = (marker) => {
+            marker.setIcon(tagsIconPath + 'online_tag_24.png');
+        };
         //function that controls if the passed marker is on the map
         service.markerIsOnMap = (markers, marker) => {
             return markers.some(m => m.getPosition().equals(marker.getPosition()));

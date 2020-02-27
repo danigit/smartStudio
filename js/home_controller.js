@@ -170,11 +170,12 @@
                                 window.location.reload();
 
                             // controlling if there are tags out off all the locations
-                            homeCtrl.showAlarmsIcon = dataService.showAlarmForOutOfLocationTags(dataService.allTags, locations.result);
+                            // showing the home alarm icons if there are tags in alarm
+                            homeCtrl.showAlarmsIcon = (dataService.showAlarmForOutOfLocationTags(response.result, locations.result)
+                                || dataService.checkIfTagsHaveAlarmsInfo(response.result))
                         });
 
-                        // showing the home alarm icons
-                        homeCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarmsInfo(response.result);
+
                         homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
 
                         dataService.playAlarmsAudio(response.result);
@@ -352,7 +353,7 @@
                 dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
 
                 // showing the alarm table
-                dataService.showAlarms()
+                dataService.showAlarms(constantUpdateNotifications, dataService.homeMap)
             }
         }
 
