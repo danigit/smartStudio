@@ -792,6 +792,7 @@
         let insideCircleInfoWindow = null;
         let outsideCircleInfoWindow = null;
         outdoorCtrl.ctrlDataService = dataService.playAlarm;
+        outdoorCtrl.socketOpened = socketOpened;
 
         dataService.drawingManagerRect = new google.maps.drawing.DrawingManager({
             drawingMode: google.maps.drawing.OverlayType.RECTANGLE,

@@ -1,7 +1,7 @@
 /***************************************************************
  * SOCKET COFIGURATIONS
  ***************************************************************/
-const socketPath = 'wss://developer.dashboardsmarttrack.io:8090';
+const socketPath = 'ws://localhost:8090';
 const MESSAGE_WAITING_TIME = 30000;
 let socketServer               = new WebSocket(socketPath);
 let socketOpened = false;
