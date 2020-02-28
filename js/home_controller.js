@@ -35,6 +35,7 @@
             center  : mapCenter
         };
 
+        console.log(dataService.allTags)
         //controlling if the user has already changed the default password, if yes I show the home screen
         if (homeData.password_changed) {
             dataService.loadUserSettings();
@@ -159,15 +160,11 @@
 
                     // getting all the tags
                     newSocketService.getData('get_all_tags', {}, (response) => {
-                        if (!response.session_state)
-                            window.location.reload();
 
                         dataService.allTags = response.result;
 
                         // getting all the locations
                         newSocketService.getData('get_all_locations', {}, (locations) => {
-                            if (!response.session_state)
-                                window.location.reload();
 
                             // controlling if there are tags out off all the locations
                             // showing the home alarm icons if there are tags in alarm
@@ -176,39 +173,37 @@
                         });
 
 
+                        console.log(response.result)
                         homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
 
                         dataService.playAlarmsAudio(response.result);
-                    });
 
-                    // getting the anchors of the logged user
-                    newSocketService.getData('get_anchors_by_user', {user: dataService.user.username}, (response) => {
-                        if (!response.session_state)
-                            window.location.reload();
+                        // getting the anchors of the logged user
+                        newSocketService.getData('get_anchors_by_user', {user: dataService.user.username}, (response) => {
 
-                        // getting the tags of the logged user
-                        newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
-                            if (!userTags.session_state)
-                                window.location.reload();
+                            // getting the tags of the logged user
+                            newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
 
-                            // updating the locations state
-                            setLocationsAlarms(dataService.allTags, userTags.result, response.result, map);
+                                // updating the locations state
+                                setLocationsAlarms(dataService.allTags, userTags.result, response.result, map);
 
-                            //setting the zoom of the map to see all the locations if there are no locations with alarms
-                            if (alarmLocations.length === 0 && zoomSetter){
-                                map.setCenter(bounds.getCenter());
-                                map.fitBounds(bounds);
-                                zoomSetter = false;
-                            }
+                                //setting the zoom of the map to see all the locations if there are no locations with alarms
+                                if (alarmLocations.length === 0 && zoomSetter) {
+                                    map.setCenter(bounds.getCenter());
+                                    map.fitBounds(bounds);
+                                    zoomSetter = false;
+                                }
 
-                            // setting the center of the map if there are no locations
-                            if (homeCtrl.dynamicMarkers.length === 0){
-                                map.setCenter(new google.maps.LatLng(44.44, 8.88));
-                            }
+                                // setting the center of the map if there are no locations
+                                if (homeCtrl.dynamicMarkers.length === 0) {
+                                    map.setCenter(new google.maps.LatLng(44.44, 8.88));
+                                }
 
-                            // showing the anchors alarm icon if there are anchors in alarm
-                            homeCtrl.showOfflineAnchorsIcon = homeService.checkIfAnchorsHaveAlarmsOrAreOffline(response.result);
+                                // showing the anchors alarm icon if there are anchors in alarm
+                                homeCtrl.showOfflineAnchorsIcon = homeService.checkIfAnchorsHaveAlarmsOrAreOffline(response.result);
+                            });
                         });
+
                     });
 
                     // controlling if the engine is on and showing the icon if not
@@ -254,6 +249,7 @@
                                 icon     : markersIconPath + ((marker.icon) ? marker.icon : (marker.is_inside) ? 'location-marker.png' : 'mountain.png')
                             });
 
+                            console.log(dataService.allTags)
                             // handling only the indoor locations
                             if (marker.is_inside) {
                                 // filling the info window
@@ -262,7 +258,7 @@
                             // handling only the outdoor locations
                             else {
                                 // filling the info window
-                                infoWindow = homeService.fillInfoWindowOutsideLocation(marker, dataService.allTags)
+                                // infoWindow = homeService.fillInfoWindowOutsideLocation(marker, dataService.allTags)
                             }
 
                             // open the info window on mouse over

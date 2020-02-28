@@ -30,8 +30,9 @@
          * Function that sets an icon image to the marker passed as parameter
          * @param tag
          * @param marker
+         * @param offline
          */
-        outdoor_service.setIcon = (tag, marker) => {
+        outdoor_service.setIcon = (tag, marker, offline) => {
             if (tag.sos) {
                 marker.setIcon(tagsIconPath + 'sos_24.png');
             } else if (tag.man_down) {
@@ -54,6 +55,8 @@
                 marker.setIcon(tagsIconPath + 'man_in_quote_24.png');
             } else if (tag.call_me_alarm) {
                 marker.setIcon(tagsIconPath + 'call_me_alarm_24.png');
+            } else if (offline){
+                marker.setIcon(tagsIconPath + 'offline_tag_24.png');
             } else {
                 marker.setIcon(tagsIconPath + 'online_tag_24.png');
             }

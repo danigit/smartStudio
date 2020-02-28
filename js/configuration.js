@@ -3,7 +3,7 @@
  ***************************************************************/
 let socketServer               = new WebSocket('ws://localhost:8090');
 let socketOpened = false;
-let groupTagDistance = 400.5;
+let groupTagDistance = 0.5;
 const DEBUG = true;
 
 socketServer.onopen = function () {
@@ -27,6 +27,13 @@ const floorPath = 'img/floors/';
  ***************************************************************/
 const canvasBorderSpace = 25;
 const canvasGridPattern = [5, 5];
+const CANVAS_GRID_COLOR = 'lightgray';
+const TIME_REST_COLOR_OK = '#00FF00';
+const TIME_REST_COLOR_ERROR = '#FF0000';
+const TIME_REST_DESCRIPTION_OK = 'OK';
+const TIME_REST_DESCRIPTION_ERROR = 'ERROR';
+const TIME_REST = 30;
+const TAG_CLOUD_DISTANCE = 0.5;
 
 /***************************************************************
  * MAPS COFIGURATIONS
@@ -66,6 +73,7 @@ let mapConfiguration = [{
 ***************************************************************/
 
 const HOME_ALARM_UPDATE_TIME = 1000;
+const OUTDOOR_ALARM_UPDATE_TIME = 1000;
 const TAGS_ALARMS_WINDOW_UPDATE_TIME = 1000;
 const ALARMS_WINDOW_UPDATE_TIME = 1000;
 const ANCHORS_ALARMS_WINDOW_UPDATE_TIME = 1000;

@@ -777,6 +777,13 @@ POSITION
     z-index: 100;
 }
 
+.top-corner-actions{
+    position: absolute;
+    top: 0;
+    right: 20px;
+    z-index: 100;
+}
+
 .bottom-left{
     position: fixed;
     bottom: 0;

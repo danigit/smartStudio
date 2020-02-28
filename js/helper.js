@@ -76,6 +76,7 @@ function drawDashedLine(canvasWidth, canvasHeight, context, spacing, floorWidth,
  * @param image
  */
 function updateCanvas(canvasWidth, canvasHeight, context, image) {
+    console.log('updating canvas')
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     if (image !== undefined) {
         context.drawImage(image, 0, 0);

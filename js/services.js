@@ -737,6 +737,10 @@
         service.setMarkerOnlineIcon = (marker) => {
             marker.setIcon(tagsIconPath + 'online_tag_24.png');
         };
+
+        service.setMarkerOfflineIcon = (marker) => {
+            marker.setIcon(tagsIconPath + 'offline_tag_24.png');
+        };
         //function that controls if the passed marker is on the map
         service.markerIsOnMap = (markers, marker) => {
             return markers.some(m => m.getPosition().equals(marker.getPosition()));
@@ -796,7 +800,6 @@
                 if (tag.id !== tagElement.id) {
                     if ((Math.abs(tagElement.x_pos - groupTagDistance) < tag.x_pos && tag.x_pos < Math.abs(tagElement.x_pos + groupTagDistance)
                         && (Math.abs(tagElement.y_pos - groupTagDistance) < tag.y_pos && tag.y_pos < Math.abs(tagElement.y_pos + groupTagDistance)))) {
-                        console.log(tagElement)
                         if (service.checkIfTagHasAlarm(tag) || !tag.radio_switched_off){
 
                             if (!tagsGrouping.groupTags.some(t => t.id === tag.id)) {
@@ -1493,7 +1496,12 @@
             }
 
             service.server.onmessage = (response) => {
+                console.log(response.data)
                 let result = JSON.parse(response.data);
+                console.log(result)
+                // if (!result.session_state && (result.action !== 'get_user' || result.action !== 'login')){
+                    // window.location.reload();
+                // }
                 let call = service.callbacks.shift();
                 call.value(result);
             };
