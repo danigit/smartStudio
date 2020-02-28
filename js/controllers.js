@@ -28,7 +28,9 @@
         // function that makes the log in of the user
         $scope.login = (form) => {
             form.$submitted = 'true';
-            if ($scope.user.username !== '' && $scope.user.password !== '') {
+            if (socketOpened === false){
+                $scope.errorHandeling.socketClosed = true;
+            }else if ($scope.user.username !== '' && $scope.user.password !== '') {
                 // control if socket is connected
                 if (socketServer.readyState === 1) {
                     newSocketService.getData('login', {
@@ -1268,6 +1270,7 @@
             //updating the elements on the map every seccond
             dataService.updateMapTimer = $interval(() => {
 
+                outdoorCtrl.socketOpened = socketOpened;
                 newSocketService.getData('get_all_tags', {}, (response) => {
                     dataService.allTags = response.result;
                     console.log(response)
