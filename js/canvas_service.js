@@ -81,38 +81,191 @@
 
             for (let i = 0; i < tagsDistances.length; i++){
                 cloud = tagsDistances[i].filter((d) => {
-                    if (d.dist < TAG_CLOUD_DISTANCE && !indexes.some(t => d.tag === t)){
-                        indexes.push(d.tag);
+                    if (d.dist < TAG_CLOUD_DISTANCE && !indexes.some(t => d.tag.id === t)){
+                        indexes.push(d.tag.id);
                         return true;
                     }
                 });
 
-                if (cloud.length > 1)
-                    clouds.push(cloud);
-                else if (cloud.length === 1)
-                    singleTags.push(cloud[0])
+                if (cloud.length > 1) {
+                    clouds.push(cloud.map(c => c.tag));
+                }else if (cloud.length === 1)
+                    singleTags.push(cloud[0].tag)
 
             }
             return {clouds: clouds, single: singleTags}
         };
 
+        /**
+         * Function that calculates the distances between all the tags passed as parameter
+         * @param tags
+         * @returns {any[]}
+         */
         canvas_service.calculateDistances = (tags) => {
             let distances = new Array(tags.length);
 
             for(let i = 0; i < tags.length; i++){
                 distances[i] = new Array(tags.length).fill(0);
                 for(let j = 0; j < tags.length; j++){
-                    distances[i][j] = {tag: tags[j].id, dist: canvas_service.calculateDistance(tags[i], tags[j])};
+                    distances[i][j] = {tag: tags[j], dist: canvas_service.calculateDistance(tags[i], tags[j])};
                 }
             }
             return distances;
         };
 
+        /**
+         * Function that calculates the distance between two tags
+         * @param tag1
+         * @param tag2
+         * @returns {number}
+         */
         canvas_service.calculateDistance = (tag1, tag2) => {
             let x_dist = Math.abs(tag1.x_pos - tag2.x_pos);
             let y_dist = Math.abs(tag1.y_pos - tag2.y_pos);
 
             return Math.hypot(x_dist, y_dist);
+        };
+
+        canvas_service.loadTagsImages = (tagClouds) => {
+            if (tagClouds.length === 0) {
+                return Promise.resolve(null);
+            } else {
+                //loading all the images asynchronously
+                return Promise.all(
+                    tagClouds.map(function (value) {
+                        return new Promise(function (resolve) {
+                            let img = new Image();
+
+                            let tagState = service.checkTagsStateAlarmNoAlarmOffline(value);
+
+                            if (tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
+                                img.src = tagsIconPath + 'cumulative_tags_all_32.png'
+                            } else if (tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
+                                img.src = tagsIconPath + 'cumulative_tags_half_alert_32.png';
+                            } else if (tagState.withAlarm && !tagState.withoutAlarm && !tagState.offline) {
+                                img.src = tagsIconPath + 'cumulative_tags_all_alert_32.png'
+                            } else if (tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
+                                img.src = tagsIconPath + 'cumulative_tags_offline_alert_32.png'
+                            } else if (!tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
+                                img.src = tagsIconPath + 'cumulative_tags_offline_online_32.png'
+                            } else if (!tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
+                                img.src = tagsIconPath + 'cumulative_tags_offline_32.png'
+                            } else if (!tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
+                                img.src = tagsIconPath + 'cumulative_tags_32.png'
+                            } else{
+                                resolve(null)
+                            }
+
+                            img.onload = function () {
+                                resolve(img);
+                            }
+                        })
+                    })
+                )
+            }
         }
+
+        canvas_service.loadTagCloudsImages = (tagClouds, onAllLoaded) => {
+            let i, numLoading = tagClouds.length;
+            const onload = () => --numLoading === 0 && onAllLoaded(images);
+            const images = [];
+            for(i = 0; i < tagClouds.length; i++){
+                const img = new Image();
+                images.push(img);
+                let tagState = dataService.checkTagsStateAlarmNoAlarmOffline(tagClouds[i]);
+                if (tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
+                    img.src = tagsIconPath + 'cumulative_tags_all_32.png'
+                } else if (tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
+                    img.src = tagsIconPath + 'cumulative_tags_half_alert_32.png';
+                } else if (tagState.withAlarm && !tagState.withoutAlarm && !tagState.offline) {
+                    img.src = tagsIconPath + 'cumulative_tags_all_alert_32.png'
+                } else if (tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
+                    img.src = tagsIconPath + 'cumulative_tags_offline_alert_32.png'
+                } else if (!tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
+                    img.src = tagsIconPath + 'cumulative_tags_offline_online_32.png'
+                } else if (!tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
+                    img.src = tagsIconPath + 'cumulative_tags_offline_32.png'
+                } else if (!tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
+                    img.src = tagsIconPath + 'cumulative_tags_32.png'
+                }
+                img.onload = onload;
+            }
+            return images;
+        }
+
+        canvas_service.loadTagSingleImages = (tagClouds, onAllLoaded) => {
+            let i, numLoading = tagClouds.length;
+            const onload = () => --numLoading === 0 && onAllLoaded(images);
+            const images = [];
+            for(i = 0; i < tagClouds.length; i++){
+                const img = new Image();
+                images.push(img);
+                if (dataService.checkIfTagHasAlarm(tagClouds[i])) {
+                    dataService.assigningTagImage(tagClouds[i], img);
+                } else if (dataService.isTagOffline(tagClouds[i])) {
+                    dataService.assigningTagImage(tagClouds[i], img);
+                    // img.src = tagsIconPath + 'offline_tag_24.png';
+                } else {
+                    dataService.assigningTagImage(tagClouds[i], img);
+                    // img.src = tagsIconPath + 'online_tag_24.png';
+                }
+                img.onload = onload;
+            }
+            return images;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 })();

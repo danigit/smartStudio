@@ -2622,7 +2622,8 @@ class Connection
             }
 
             mysqli_close($this->connection);
-            $result_array['server_time'] = $milisec_time;
+            // TODO - if I put this on the client I get an object instead of an array
+//            $result_array['server_time'] = array($milisec_time);
             return $result_array;
         }
 

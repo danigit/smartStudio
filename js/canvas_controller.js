@@ -225,6 +225,10 @@
             let newLavoration = null;
             let color       = TIME_REST_COLOR_OK;
             let description = TIME_REST_DESCRIPTION_OK;
+            let visibleTags = [];
+            let cloudAndSinle = [];
+            let tagClouds = []
+            let singleTags = []
 
             // starting the continuous update of the canvas
             dataService.canvasInterval = $interval(function () {
@@ -408,211 +412,251 @@
                                                     singleTags: angular.copy(tagsByFloorAndLocation.result),
                                                 };
                                                 
-                                                let visibleTags = tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off);
-                                                let cloudAndSinle = canvasService.createClouds(visibleTags);
+                                                visibleTags = tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off);
+                                                cloudAndSinle = canvasService.createClouds(visibleTags);
 
-                                                for (let i = 0; i < temporaryTagsArray.singleTags.length;) {
-                                                    //getting the near tags of the tag passed as second parameter
-                                                    if (temporaryTagsArray.singleTags.length > 0) {
-                                                        let currentTag     = temporaryTagsArray.singleTags[0];
-                                                        temporaryTagsArray = dataService.groupNearTags(temporaryTagsArray.singleTags, temporaryTagsArray.singleTags[0]);
+                                                tagClouds = cloudAndSinle.clouds;
+                                                singleTags = cloudAndSinle.single;
 
-                                                        if (temporaryTagsArray.groupTags.length === 1) {
-                                                            isolatedTags.push(temporaryTagsArray.groupTags[0])
-                                                        } else if (temporaryTagsArray.groupTags.length > 1) {
-                                                            singleAndGroupedTags.push(temporaryTagsArray.groupTags);
-                                                        } else {
-                                                            isolatedTags.push(currentTag);
-                                                        }
-                                                    }
-                                                }
+                                                // for (let i = 0; i < temporaryTagsArray.singleTags.length;) {
+                                                //     //getting the near tags of the tag passed as second parameter
+                                                //     if (temporaryTagsArray.singleTags.length > 0) {
+                                                //         let currentTag     = temporaryTagsArray.singleTags[0];
+                                                //         temporaryTagsArray = dataService.groupNearTags(temporaryTagsArray.singleTags, temporaryTagsArray.singleTags[0]);
+                                                //
+                                                //         if (temporaryTagsArray.groupTags.length === 1) {
+                                                //             isolatedTags.push(temporaryTagsArray.groupTags[0])
+                                                //         } else if (temporaryTagsArray.groupTags.length > 1) {
+                                                //             singleAndGroupedTags.push(temporaryTagsArray.groupTags);
+                                                //         } else {
+                                                //             isolatedTags.push(currentTag);
+                                                //         }
+                                                //     }
+                                                // }
 
                                                 //getting the tag clouds
-                                                tagClouds = singleAndGroupedTags.filter(x => x.length > 1);
-                                                console.log(tagClouds)
+                                                // tagClouds = singleAndGroupedTags.filter(x => x.length > 1);
+                                                // console.log(tagClouds)
+                                                // console.log(cloudAndSinle)
                                                 console.log(cloudAndSinle)
-                                                if (canvasCtrl.isAdmin !== 0 || canvasCtrl.isUserManager !== 0 || canvasCtrl.isTracker !== 0) {
 
-                                                    dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
-                                                        .then((images) => {
-                                                            //control if there are clouds to bhe shown
-                                                            if (images !== null) {
-                                                                if (images[0] !== null) {
-                                                                    if (canvasCtrl.isAdmin === 1 || canvasCtrl.isTracker === 1) {
-                                                                        // drawing the clouds on the canvas
-                                                                        images.forEach(function (image, index) {
-                                                                            if (image !== null) {
-                                                                                drawCloudIcon(tagClouds[0][0], bufferContext, images[0], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
-                                                                            }
-                                                                        });
-                                                                    } else if (dataService.switch.showOutdoorTags) {
-                                                                        if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
-                                                                            images.forEach(function (image, index) {
-                                                                                if (image !== null) {
-                                                                                    drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                    } else {
-                                                                        if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
-                                                                            images.forEach(function (image, index) {
-                                                                                if (image !== null) {
-                                                                                    drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                    }
+
+                                                canvasService.loadTagCloudsImages(cloudAndSinle.clouds, (images) => {
+                                                    if (canvasCtrl.isAdmin === 1 || canvasCtrl.isTracker === 1) {
+                                                        // drawing the clouds on the canvas
+                                                        images.forEach(function (image, index) {
+                                                            if (image !== null) {
+                                                                drawCloudIcon(tagClouds[0][0], bufferContext, images[0], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
+                                                            }
+                                                        });
+                                                    } else if (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) {
+                                                        if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
+                                                            images.forEach(function (image, index) {
+                                                                if (image !== null) {
+                                                                    drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
                                                                 }
-                                                            }
-
-                                                            return dataService.loadImagesAsynchronouslyWithPromise(isolatedTags, 'tag');
-                                                        })
-                                                        .then((images) => {
-                                                            if (images !== null) {
-                                                                //drawing the isolated tags
-                                                                isolatedTags.forEach(function (tag, index) {
-                                                                    if (!dataService.isOutdoor(tag)) {
-                                                                        if (canvasCtrl.isAdmin === 1 || canvasCtrl.isTracker === 1) {
-                                                                            // if(dataService.checkIfTagHasAlarm(tag) || !tag.radio_switched_off) {
-                                                                            //     drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                            // }
-                                                                            if (dataService.checkIfTagHasAlarm(tag) && !tag.radio_switched_off) {
-                                                                                dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
-                                                                                    .then((alarmImages) => {
-                                                                                        if (alarmsCounts[index] > alarmImages.length - 1)
-                                                                                            alarmsCounts[index] = 0;
-                                                                                        drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                                        context.drawImage(bufferCanvas, 0, 0);
-                                                                                        contextDrawed = true;
-                                                                                    });
-                                                                            } else if (dataService.isTagOffline(tag)) {
-                                                                                drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                            } else if (!tag.radio_switched_off) {
-                                                                                drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                            } else {
-                                                                                if (dataService.checkIfTagHasAlarm(tag) && !tag.radio_switched_off) {
-                                                                                    dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
-                                                                                        .then((alarmImages) => {
-                                                                                            if (alarmsCounts[index] > alarmImages.length - 1)
-                                                                                                alarmsCounts[index] = 0;
-
-                                                                                            drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                                            context.drawImage(bufferCanvas, 0, 0);
-                                                                                            contextDrawed = true;
-                                                                                        })
-                                                                                } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor)) {
-                                                                                    drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                                } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor)) {
-                                                                                    drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                                }
-                                                                            }
-                                                                        } else if (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) {
-                                                                            if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
-
-                                                                                // if (tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19) {
-                                                                                //     if (dataService.checkIfTagHasAlarm(tag)) {
-                                                                                //         dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
-                                                                                //             .then((alarmImages) => {
-                                                                                //                 if (alarmsCounts[index] > alarmImages.length - 1)
-                                                                                //                     alarmsCounts[index] = 0;
-                                                                                //                 drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                                //                 context.drawImage(bufferCanvas, 0, 0);
-                                                                                //                 contextDrawed = true;
-                                                                                //             });
-                                                                                //     } else if (!dataService.isTagOffline(tag)) {
-                                                                                //         drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                                //     }
-                                                                                // } else {
-                                                                                if (dataService.checkIfTagHasAlarm(tag)) {
-                                                                                    dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
-                                                                                        .then((alarmImages) => {
-                                                                                            if (alarmsCounts[index] > alarmImages.length - 1)
-                                                                                                alarmsCounts[index] = 0;
-
-                                                                                            drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                                            context.drawImage(bufferCanvas, 0, 0);
-                                                                                            contextDrawed = true;
-                                                                                        })
-                                                                                } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor)) {
-                                                                                    drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                                }
-                                                                                // } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor)) {
-                                                                                //     drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                                // }
-                                                                                // }
-                                                                            }
-                                                                        } else {
-                                                                            if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
-                                                                                if (dataService.checkIfTagHasAlarm(tag)) {
-                                                                                    dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
-                                                                                        .then((alarmImages) => {
-                                                                                            if (alarmsCounts[index] > alarmImages.length - 1)
-                                                                                                alarmsCounts[index] = 0;
-                                                                                            drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                                            context.drawImage(bufferCanvas, 0, 0);
-                                                                                            contextDrawed = true;
-                                                                                        });
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                })
-                                                            }
-                                                            if (!contextDrawed) {
-                                                                context.drawImage(bufferCanvas, 0, 0);
-                                                                contextDrawed = false;
-                                                            }
-                                                        });
-                                                } else {
-                                                    dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
-                                                        .then((images) => {
-                                                            //control if there are clouds to bhe shown
-                                                            if (images[0] !== null) {
-
-                                                                tagClouds.forEach(tags => {
-                                                                    if (dataService.checkIfTagsHaveAlarms(tags)) {
-                                                                        images.forEach(function (image, index) {
-                                                                            if (image !== null) {
-                                                                                drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
-                                                                                context.drawImage(bufferCanvas, 0, 0);
-                                                                                contextDrawed = true;
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                })
-                                                            }
-
-                                                            return dataService.loadImagesAsynchronouslyWithPromise(isolatedTags, 'tag');
-                                                        })
-                                                        .then((images) => {
-                                                            if (images[0] !== null) {
-                                                                //drawing the isolated tags
-                                                                isolatedTags.forEach(function (tag, index) {
-                                                                    if (!dataService.isOutdoor(tag)) {
-                                                                        if (dataService.checkIfTagHasAlarm(tag)) {
-                                                                            dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
-                                                                                .then((alarmImages) => {
-                                                                                    if (alarmsCounts[index] > alarmImages.length - 1)
-                                                                                        alarmsCounts[index] = 0;
-
-                                                                                    drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                                    context.drawImage(bufferCanvas, 0, 0);
-                                                                                    contextDrawed = true;
-                                                                                });
-
-                                                                        }
-                                                                        // drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                        // context.drawImage(bufferCanvas, 0, 0);
-
-                                                                    }
-                                                                })
-                                                            }
-                                                        });
-                                                    if (!contextDrawed) {
-                                                        context.drawImage(bufferCanvas, 0, 0);
-                                                        contextDrawed = false;
+                                                            });
+                                                        }
                                                     }
-                                                }
+                                                    // else {
+                                                    //     if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
+                                                    //         images.forEach(function (image, index) {
+                                                    //             if (image !== null) {
+                                                    //                 drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
+                                                    //             }
+                                                    //         });
+                                                    //     }
+                                                    // }
+                                                });
+
+                                                canvasService.loadTagSingleImages(cloudAndSinle.single, (images) => {
+
+                                                })
+                                                // if (canvasCtrl.isAdmin|| canvasCtrl.isTracker) {
+                                                //
+                                                //
+                                                //     // console.log(imgs)
+                                                //     dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
+                                                //         .then((images) => {
+                                                //             //control if there are clouds to bhe shown
+                                                //             // // console.log(images)
+                                                //             // if (images !== null) {
+                                                //             //     if (images[0] !== null) {
+                                                //             //         if (canvasCtrl.isAdmin === 1 || canvasCtrl.isTracker === 1) {
+                                                //             //             // drawing the clouds on the canvas
+                                                //             //             images.forEach(function (image, index) {
+                                                //             //                 if (image !== null) {
+                                                //             //                     drawCloudIcon(tagClouds[0][0], bufferContext, images[0], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
+                                                //             //                 }
+                                                //             //             });
+                                                //             //         } else if (dataService.switch.showOutdoorTags) {
+                                                //             //             if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
+                                                //             //                 images.forEach(function (image, index) {
+                                                //             //                     if (image !== null) {
+                                                //             //                         drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
+                                                //             //                     }
+                                                //             //                 });
+                                                //             //             }
+                                                //             //         } else {
+                                                //             //             if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
+                                                //             //                 images.forEach(function (image, index) {
+                                                //             //                     if (image !== null) {
+                                                //             //                         drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
+                                                //             //                     }
+                                                //             //                 });
+                                                //             //             }
+                                                //             //         }
+                                                //             //     }
+                                                //             // }
+                                                //
+                                                //             return dataService.loadImagesAsynchronouslyWithPromise(isolatedTags, 'tag');
+                                                //         })
+                                                //         .then((images) => {
+                                                //             if (images !== null) {
+                                                //                 //drawing the isolated tags
+                                                //                 isolatedTags.forEach(function (tag, index) {
+                                                //                     if (!dataService.isOutdoor(tag)) {
+                                                //                         if (canvasCtrl.isAdmin === 1 || canvasCtrl.isTracker === 1) {
+                                                //                             // if(dataService.checkIfTagHasAlarm(tag) || !tag.radio_switched_off) {
+                                                //                             //     drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                             // }
+                                                //                             if (dataService.checkIfTagHasAlarm(tag) && !tag.radio_switched_off) {
+                                                //                                 dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
+                                                //                                     .then((alarmImages) => {
+                                                //                                         if (alarmsCounts[index] > alarmImages.length - 1)
+                                                //                                             alarmsCounts[index] = 0;
+                                                //                                         drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                                         context.drawImage(bufferCanvas, 0, 0);
+                                                //                                         contextDrawed = true;
+                                                //                                     });
+                                                //                             } else if (dataService.isTagOffline(tag)) {
+                                                //                                 drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                             } else if (!tag.radio_switched_off) {
+                                                //                                 drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                             } else {
+                                                //                                 if (dataService.checkIfTagHasAlarm(tag) && !tag.radio_switched_off) {
+                                                //                                     dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
+                                                //                                         .then((alarmImages) => {
+                                                //                                             if (alarmsCounts[index] > alarmImages.length - 1)
+                                                //                                                 alarmsCounts[index] = 0;
+                                                //
+                                                //                                             drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                                             context.drawImage(bufferCanvas, 0, 0);
+                                                //                                             contextDrawed = true;
+                                                //                                         })
+                                                //                                 } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor)) {
+                                                //                                     drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                                 } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor)) {
+                                                //                                     drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                                 }
+                                                //                             }
+                                                //                         } else if (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) {
+                                                //                             if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
+                                                //
+                                                //                                 // if (tag.tag_type_id === 1 || tag.tag_type_id === 14 || tag.tag_type_id === 5 || tag.tag_type_id === 9 || tag.tag_type_id === 17 || tag.tag_type_id === 19) {
+                                                //                                 //     if (dataService.checkIfTagHasAlarm(tag)) {
+                                                //                                 //         dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
+                                                //                                 //             .then((alarmImages) => {
+                                                //                                 //                 if (alarmsCounts[index] > alarmImages.length - 1)
+                                                //                                 //                     alarmsCounts[index] = 0;
+                                                //                                 //                 drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                                 //                 context.drawImage(bufferCanvas, 0, 0);
+                                                //                                 //                 contextDrawed = true;
+                                                //                                 //             });
+                                                //                                 //     } else if (!dataService.isTagOffline(tag)) {
+                                                //                                 //         drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                                 //     }
+                                                //                                 // } else {
+                                                //                                 if (dataService.checkIfTagHasAlarm(tag)) {
+                                                //                                     dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
+                                                //                                         .then((alarmImages) => {
+                                                //                                             if (alarmsCounts[index] > alarmImages.length - 1)
+                                                //                                                 alarmsCounts[index] = 0;
+                                                //
+                                                //                                             drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                                             context.drawImage(bufferCanvas, 0, 0);
+                                                //                                             contextDrawed = true;
+                                                //                                         })
+                                                //                                 } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor)) {
+                                                //                                     drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                                 }
+                                                //                                 // } else if (tag.radio_switched_off !== 1 && (new Date(Date.now()) - (new Date(tag.time)) > tag.sleep_time_indoor)) {
+                                                //                                 //     drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                                 // }
+                                                //                                 // }
+                                                //                             }
+                                                //                         } else {
+                                                //                             if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
+                                                //                                 if (dataService.checkIfTagHasAlarm(tag)) {
+                                                //                                     dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
+                                                //                                         .then((alarmImages) => {
+                                                //                                             if (alarmsCounts[index] > alarmImages.length - 1)
+                                                //                                                 alarmsCounts[index] = 0;
+                                                //                                             drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                                             context.drawImage(bufferCanvas, 0, 0);
+                                                //                                             contextDrawed = true;
+                                                //                                         });
+                                                //                                 }
+                                                //                             }
+                                                //                         }
+                                                //                     }
+                                                //                 })
+                                                //             }
+                                                //             if (!contextDrawed) {
+                                                //                 context.drawImage(bufferCanvas, 0, 0);
+                                                //                 contextDrawed = false;
+                                                //             }
+                                                //         });
+                                                // } else {
+                                                //     dataService.loadImagesAsynchronouslyWithPromise(tagClouds, 'tag')
+                                                //         .then((images) => {
+                                                //             //control if there are clouds to bhe shown
+                                                //             if (images[0] !== null) {
+                                                //
+                                                //                 tagClouds.forEach(tags => {
+                                                //                     if (dataService.checkIfTagsHaveAlarms(tags)) {
+                                                //                         images.forEach(function (image, index) {
+                                                //                             if (image !== null) {
+                                                //                                 drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[0].length);
+                                                //                                 context.drawImage(bufferCanvas, 0, 0);
+                                                //                                 contextDrawed = true;
+                                                //                             }
+                                                //                         });
+                                                //                     }
+                                                //                 })
+                                                //             }
+                                                //
+                                                //             return dataService.loadImagesAsynchronouslyWithPromise(isolatedTags, 'tag');
+                                                //         })
+                                                //         .then((images) => {
+                                                //             if (images[0] !== null) {
+                                                //                 //drawing the isolated tags
+                                                //                 isolatedTags.forEach(function (tag, index) {
+                                                //                     if (!dataService.isOutdoor(tag)) {
+                                                //                         if (dataService.checkIfTagHasAlarm(tag)) {
+                                                //                             dataService.loadAlarmsImagesWithPromise(dataService.getTagAlarms(tag))
+                                                //                                 .then((alarmImages) => {
+                                                //                                     if (alarmsCounts[index] > alarmImages.length - 1)
+                                                //                                         alarmsCounts[index] = 0;
+                                                //
+                                                //                                     drawIcon(tag, bufferContext, alarmImages[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                                     context.drawImage(bufferCanvas, 0, 0);
+                                                //                                     contextDrawed = true;
+                                                //                                 });
+                                                //
+                                                //                         }
+                                                //                         // drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                //                         // context.drawImage(bufferCanvas, 0, 0);
+                                                //
+                                                //                     }
+                                                //                 })
+                                                //             }
+                                                //         });
+                                                //     if (!contextDrawed) {
+                                                //         context.drawImage(bufferCanvas, 0, 0);
+                                                //         contextDrawed = false;
+                                                //     }
+                                                // }
                                             });
                                         });
 

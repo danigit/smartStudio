@@ -1496,9 +1496,7 @@
             }
 
             service.server.onmessage = (response) => {
-                console.log(response.data)
                 let result = JSON.parse(response.data);
-                console.log(result)
                 // if (!result.session_state && (result.action !== 'get_user' || result.action !== 'login')){
                     // window.location.reload();
                 // }
