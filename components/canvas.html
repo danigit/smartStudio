@@ -2,16 +2,20 @@
     <div layout="column" layout-align="center center">
         <div layout="column" class="top-corner">
             <div layout="column" class="background-transparent-gray">
-                <img ng-show="canvasCtrl.showAlarmsIcon" ng-click="showAlarms()" class="pulse-image margin-bottom-5-px padding-top-bottom-6px width-40px"
+                <img ng-class="{hide: !canvasCtrl.showAlarmsIcon}" ng-click="showAlarms()" class="pulse-image margin-bottom-5-px padding-top-bottom-6px width-40px"
                      src="img/icons/alarm-icon.png" alt="{{lang.activeAllarms}}" title="{{lang.activeAllarms}}">
-                <img ng-show="canvasCtrl.showOfflineTagsIcon" ng-click="showOfflineTagsIndoor()" class="margin-bottom-5-px padding-top-bottom-6px width-40px border-bottom-3-white border-top-3-white"
+                <img ng-if="canvasCtrl.showOfflineTagsIcon" ng-click="showOfflineTagsIndoor()" class="margin-bottom-5-px padding-top-bottom-6px width-40px border-bottom-3-white border-top-3-white"
                      src="img/icons/offline_tags_alert_64.png" alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}">
-                <img ng-show="canvasCtrl.showOfflineAnchorsIcon" ng-click="showOfflineAnchorsIndoor()" class="margin-bottom-5-px padding-top-bottom-6px width-40px border-bottom-3-white"
+                <img ng-if="canvasCtrl.showOfflineAnchorsIcon" ng-click="showOfflineAnchorsIndoor()" class="margin-bottom-5-px padding-top-bottom-6px width-40px border-bottom-3-white"
                      src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
                      title="{{lang.offlineAnchors}}">
-                <img ng-show="canvasCtrl.showEngineOffIcon" class="padding-top-bottom-6px width-40px spin-logo-right-no-absolute"
+                <img ng-if="!canvasCtrl.socketOpened" class="padding-top-bottom-6px border-bottom-3-white width-40px"
+                     src="img/icons/socket-down.ico" alt="{{lang.engineOff}}"
+                     title="{{lang.engineOff}}">
+                <img ng-class="{hide: !canvasCtrl.showEngineOffIcon}" class="padding-top-bottom-6px width-40px spin-logo-right-no-absolute"
                      src="img/icons/engine_off_64.png" alt="{{lang.engineOff}}"
                      title="{{lang.engineOff}}">
+
             </div>
             <div ng-if="canvasCtrl.showAlarmsIcon || canvasCtrl.showOfflineTagsIcons || canvasCtrl.showOfflineAnchorsIcon || canvasCtrl.showEngineOffIcon" class="triangle-transparent-gray-down"></div>
         </div>
@@ -100,6 +104,25 @@
         </div>
         <!--end draw buttoon-->
 
+        <!-- begin categories legend-->
+        <input ng-if="canvasCtrl.showCategoriesButton && !canvasCtrl.switch.showDrawing" type="checkbox" name="toggle" id="toggle" />
+        <label for="toggle" class="top-right-center"></label>
+        <div class="message">
+            <div class="category-title color-darkcyan">{{lang.categoryLegend | uppercase}}</div>
+
+            <ul class="float-left width-50 padding-left-4 margin-none">
+                <li ng-if="$even" class="category-list-item font-medium" ng-repeat="category in canvasCtrl.legend track by $index">
+                    <img class="margin-right-50-px width-30px" ng-src="img/icons/tags/{{ category.img }}">{{category.name}}
+                </li>
+            </ul>
+            <ul class="float-left margin-none">
+                <li ng-if="!$even" class="category-list-item font-medium" ng-repeat="category in canvasCtrl.legend track by $index">
+                    <img class="margin-right-50-px width-30px" ng-src="img/icons/tags/{{ category.img }}">{{category.name}}
+                </li>
+            </ul>
+        </div>
+        <!-- end categories legend-->
+
         <!--header text-->
         <div layout="row" layout-align="center center" class="background-ottanio width-100 position-absolute top-0">
             <div id='working-zones' class="position-absolute bottom-0 width-100">
@@ -137,7 +160,7 @@
                             md-whiteframe="4">
 
                     <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
-                        <h1 class="md-toolbar-tools color-black">Menu</h1>
+                        <h1 class="md-toolbar-tools color-black text-bold">MENU</h1>
                         <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
                             <img src="img/icons/menu/close-menu.png" alt="{{lang.closeButton}}"
                                  title="{{lang.closeButton}}">
@@ -145,38 +168,43 @@
                     </md-toolbar>
 
                     <md-content layout-margin class="margin-top-10">
-                        <div layout="column" layout-align="center center">
-                            <img src="img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track"
-                                 title="Smart Track">
-                            <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
+                        <div layout="column" layout-align="center center" class=" height-150px align-item-none">
+                            <img src="img/icons/login-icon-inner.png" class="home-menu-logo top-0 position-absolute"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-middle-inner.png" class="home-menu-logo spin-logo-right-2s top-0"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-middle-outer.png" class="home-menu-logo spin-logo-left-3s top-0"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-outer.png" class="home-menu-logo spin-logo-right top-0"
+                                 alt="Smart Track" title="Smart Track">
+                            <h1 class="font-iceberg color-ottanio position-absolute top-60px">SMART STUDIO</h1>
                         </div>
 
                         <div layout="column" id="menu-container">
                             <md-list ng-controller="menuController">
                                 <md-list-item ng-click="registry('canvas')"><p>{{lang.weTagTable | uppercase}}</p><img
-                                        src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
+                                        src="img/icons/menu/anagrafica-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="showAnchorsTable()"><p>{{lang.anchorsTable | uppercase}}</p><img
-                                        src="img/icons/menu/anchor-online-icon.png"
-                                        class="menu-list-icon" alt=""></md-list-item>
+                                        src="img/icons/menu/anchor-icon.ico"
+                                        class="menu-list-icon menu-icon" alt=""></md-list-item>
                                 <md-list-item ng-click="floorUpdate()"><p>{{lang.floorTable | uppercase}}</p><img
-                                        src="img/icons/menu/floor-icon.png" class="menu-list-icon"
+                                        src="img/icons/menu/floor-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="zone()"><p>{{lang.zoneTable | uppercase}}</p><img
-                                        src="img/icons/menu/floor-icon.png" class="menu-list-icon"
+                                        src="img/icons/menu/outdoor-zone.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="viewHistory('canvas')"><p>{{lang.history | uppercase}}</p><img
-                                        src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/history-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="quickActions()"><p>{{lang.quickActions | uppercase}}</p><img
-                                        src="img/icons/menu/quick_action_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/quick-actions.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="changePassword()"><p>{{lang.changePassword | uppercase}}</p><img
-                                        src="img/icons/menu/password_icon_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/password-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="logout()"><p class="color-red">{{lang.logout | uppercase}}</p>
-                                    <img
-                                            src="img/icons/menu/logout_icon_16.png" class="menu-list-icon"
+                                    <img src="img/icons/menu/logout-icon.ico" class="menu-list-icon menu-icon"
                                             alt=""></md-list-item>
                             </md-list>
 
@@ -261,16 +289,16 @@
                                      layout-align="center center">
 
                                     <div flex="100" layout layout-align="center center">
-                                        <md-subheader class="padding-0" ng-show="canvasCtrl.switch.showFullscreen">Fullscreen:
+                                        <md-subheader class="padding-0" ng-show="switch.mapFullscreen">Fullscreen:
                                             <b class="color-green">ON</b></md-subheader>
-                                        <md-subheader class="padding-0"ng-show="!canvasCtrl.switch.showFullscreen">Fullscreen:
+                                        <md-subheader class="padding-0"ng-show="!switch.mapFullscreen">Fullscreen:
                                             <b class="color-red">OFF</b>
                                         </md-subheader>
                                     </div>
 
                                     <md-switch class="md-primary margin-none margin-top-10-px"
                                                md-no-ink aria-label="{{lang.showHideFullscreen}}" title="{{lang.showHideFullscreen}}"
-                                               ng-model="canvasCtrl.switch.showFullscreen">
+                                               ng-model="switch.mapFullscreen">
                                     </md-switch>
                                 </div>
                             </div>
@@ -278,8 +306,8 @@
                     </md-content>
                 </md-sidenav>
             </section>
-            <div ng-show="ctrlDataService.playAlarm" layout="column" layout-align="center center" class="bottom-left fadeIn">
-                <md-button ng-click="muteAlarms()" ng-class="alertButtonColor" class="md-raised background-red color-white"><div><span class="margin-right-10-px text-bold">{{lang.muteAlarm}}</span><img class="vertical-align-middle" src="img/icons/mute_alarms.png" alt=""></div></md-button>
+            <div ng-show="ctrlDataService.playAlarm" layout="column" layout-align="center center" class="fadeIn mute-alarms">
+                <md-button ng-click="muteAlarms()" ng-class="alertButtonColor" class="md-raised color-white margin-none"><div><span class="margin-right-10-px text-bold">{{lang.muteAlarm}}</span><img class="vertical-align-middle" src="img/icons/mute_alarms.png" alt=""></div></md-button>
             </div>
         </div>
         <!--end menu container-->

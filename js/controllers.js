@@ -5,7 +5,7 @@
     let main = angular.module('main');
 
     //CONTROLLERS
-    main.controller('loginController', loginController);
+    // main.controller('loginController', loginController);
     main.controller('recoverPassController', recoverPassController);
     // main.controller('canvasController', canvasController);
     // main.controller('outdoorController', outdoorController);
@@ -16,50 +16,50 @@
      * Function that manage the user login with email and password
      * @type {string[]}
      */
-    loginController.$inject = ['$scope', '$state', '$timeout', 'newSocketService', 'dataService'];
-
-    function loginController($scope, $state, $timeout, newSocketService, dataService) {
-        $scope.user           = {username: '', password: ''};
-        // handling the login error messages
-        $scope.errorHandeling = {noConnection: false, wrongData: false, socketClosed: newSocketService.socketClosed};
-
-        // function that makes the log in of the user
-        $scope.login = (form) => {
-            form.$submitted = 'true';
-            if ($scope.user.username !== '' && $scope.user.password !== '') {
-                // control if socket is connected
-                if (socketServer.readyState === 1) {
-                    newSocketService.getData('login', {
-                        username: $scope.user.username,
-                        password: $scope.user.password
-                    }, (response) => {
-                        // showing errors on login
-                        if (response === 'error') {
-                            $scope.errorHandeling.wrongData    = false;
-                            $scope.errorHandeling.noConnection = true;
-                        }
-                        // if the login is ok I save the username in local and redirect to home
-                        else if (response.result.id !== undefined) {
-                            dataService.user.username = $scope.user.username;
-                            sessionStorage.user       = $scope.user.username;
-                            $state.go('home');
-                        }
-                        // showing errors on login
-                        else {
-                            $scope.errorHandeling.noConnection = false;
-                            $scope.errorHandeling.wrongData    = true;
-                        }
-                        $scope.$apply();
-                    });
-                }
-            }
-        };
-
-        //change the page to the recover password page
-        $scope.recoverPassword = () => {
-            $state.go('recover-password');
-        }
-    }
+    // loginController.$inject = ['$scope', '$state', '$timeout', 'newSocketService', 'dataService'];
+    //
+    // function loginController($scope, $state, $timeout, newSocketService, dataService) {
+    //     $scope.user           = {username: '', password: ''};
+    //     // handling the login error messages
+    //     $scope.errorHandeling = {noConnection: false, wrongData: false, socketClosed: newSocketService.socketClosed};
+    //
+    //     // function that makes the log in of the user
+    //     $scope.login = (form) => {
+    //         form.$submitted = 'true';
+    //         if ($scope.user.username !== '' && $scope.user.password !== '') {
+    //             // control if socket is connected
+    //             if (socketServer.readyState === 1) {
+    //                 newSocketService.getData('login', {
+    //                     username: $scope.user.username,
+    //                     password: $scope.user.password
+    //                 }, (response) => {
+    //                     // showing errors on login
+    //                     if (response === 'error') {
+    //                         $scope.errorHandeling.wrongData    = false;
+    //                         $scope.errorHandeling.noConnection = true;
+    //                     }
+    //                     // if the login is ok I save the username in local and redirect to home
+    //                     else if (response.result.id !== undefined) {
+    //                         dataService.user.username = $scope.user.username;
+    //                         sessionStorage.user       = $scope.user.username;
+    //                         $state.go('home');
+    //                     }
+    //                     // showing errors on login
+    //                     else {
+    //                         $scope.errorHandeling.noConnection = false;
+    //                         $scope.errorHandeling.wrongData    = true;
+    //                     }
+    //                     $scope.$apply();
+    //                 });
+    //             }
+    //         }
+    //     };
+    //
+    //     //change the page to the recover password page
+    //     $scope.recoverPassword = () => {
+    //         $state.go('recover-password');
+    //     }
+    // }
 
     // /**
     //  * Function that manages the outdoor locations includind:
@@ -3254,6 +3254,7 @@
         $scope.userRole         = '';
         $scope.ctrlDataService = dataService;
         $scope.alertButtonColor = 'background-red';
+        $scope.mapFullscreen = false;
 
         $scope.switch = {
             mapFullscreen          : false,
@@ -4221,24 +4222,45 @@
                             let hisRow = his;
                             switch (his.protocol) {
                                 case 0: {
-                                    hisRow.protocol = 'BLE';
+                                    hisRow.protocol = lang.ble;
                                     break;
                                 }
                                 case 1: {
-                                    hisRow.protocol = 'WIFI';
+                                    hisRow.protocol = lang.wifi;
                                     break;
                                 }
                                 case 2: {
-                                    hisRow.protocol = 'GPRS';
+                                    hisRow.protocol = lang.gprs;
                                     break;
                                 }
                                 case 3: {
-                                    hisRow.protocol = 'SafetyBox';
+                                    hisRow.protocol = lang.safetyBox;
                                     break;
                                 }
                             }
+
+                            switch (his.man_down_cause) {
+                                case 0: {
+                                    hisRow.man_down_cause = lang.noCause;
+                                    break;
+                                }
+                                case 1: {
+                                    hisRow.man_down_cause = lang.freefall;
+                                    break;
+                                }
+                                case 2: {
+                                    hisRow.man_down_cause = lang.lndPrt;
+                                    break;
+                                }
+                                case 3: {
+                                    hisRow.man_down_cause = lang.noMov;
+                                    break;
+                                }
+                            }
+
                             historyRows.push(hisRow)
                         });
+                        console.log(historyRows)
                         return historyRows;
                     };
 
@@ -4338,24 +4360,45 @@
                             let hisRow = his;
                             switch (his.protocol) {
                                 case 0: {
-                                    hisRow.protocol = 'BLE';
+                                    hisRow.protocol = lang.ble;
                                     break;
                                 }
                                 case 1: {
-                                    hisRow.protocol = 'WIFI';
+                                    hisRow.protocol = lang.wifi;
                                     break;
                                 }
                                 case 2: {
-                                    hisRow.protocol = 'GPRS';
+                                    hisRow.protocol = lang.gprs;
                                     break;
                                 }
                                 case 3: {
-                                    hisRow.protocol = 'SafetyBox';
+                                    hisRow.protocol = lang.safetyBox;
                                     break;
                                 }
                             }
+
+                            switch (his.man_down_cause) {
+                                case 0: {
+                                    hisRow.man_down_cause = lang.noCause;
+                                    break;
+                                }
+                                case 1: {
+                                    hisRow.man_down_cause = lang.freefall;
+                                    break;
+                                }
+                                case 2: {
+                                    hisRow.man_down_cause = lang.lndPrt;
+                                    break;
+                                }
+                                case 3: {
+                                    hisRow.man_down_cause = lang.noMov;
+                                    break;
+                                }
+                            }
+
                             historyRows.push(hisRow)
                         });
+                        console.log(historyRows)
                         return historyRows;
                     };
 
@@ -7014,11 +7057,20 @@
         });
 
         $scope.$watch('switch.mapFullscreen', function (newValue) {
+            //showing the fullscreen if switched
             if (newValue) {
                 openFullScreen(document.querySelector('body'));
+                $mdSidenav('left').close();
             } else if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement ||
                 document.msFullscreenElement) {
                 document.exitFullscreen();
+                $scope.switch.mapFullscreen = false;
+            }
+        });
+
+        // switching off the fullscreen when closing from esc button
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && !document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement) {
                 $scope.switch.mapFullscreen = false;
             }
         });

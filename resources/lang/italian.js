@@ -16,7 +16,7 @@ function languageController($scope) {
         radius                          : 'Raggio',
         proximity                       : 'Prossimità',
         permittedAssets                 : 'Permitted assets',
-        anchorState                     : 'Stato ancora',
+        anchorState                     : 'Stato ancore',
         insertName                      : 'Inserire nome',
         insertXPos                      : 'Inserire coord x',
         insertYPos                      : 'Inserire coord y',
@@ -369,7 +369,11 @@ function languageController($scope) {
         trackingTable: 'Tabella tracking',
         priority: "Priorita",
         headerOrder: 'Ordine header',
-        headerLeftSide: 'Header a sinistra'
+        headerLeftSide: 'Header a sinistra',
+        openLegend: 'Legenda',
+        categoryLegend: 'Legenda categorie',
+        manDownCause: 'Causa uomo a terra',
+        anchorMac: 'MAC anchora'
     }
 };
 
@@ -457,4 +461,21 @@ let lang = {
     disabledAnchors                 : 'Ancore disabilitate',
     enabledAnchors                  : 'Ancore attive',
     shutDownAnchors: 'Ancore scariche',
+    entering: 'Attendere prego ....',
+    locationNotSaved: 'Impossibile salvare location',
+    zoneFloorUpdated:'Zona aggiornata',
+    zoneFloorDeleted:'Zona cancellata',
+    zoneFloorNotUpdated:'Impossibile aggiornare la zona',
+    zoneFloorNotDeleted:'Impossibile cancellare la zona',
+    headerZonesNotSetted: 'Impossibile settare le zone nel header',
+    invalidAutomation: 'Automazione invalida',
+    impossibleRecoverTagCategories: 'Impossibile recuperare le caegorie dei tag',
+    noCause: 'No cause',
+    freefall: 'Freefall',
+    lndPrt: 'LND/PRT',
+    noMov: 'No mov',
+    ble: 'BLE',
+    wifi: 'WIFI',
+    gprs: 'GPRS',
+    safetyBox: 'Safety Box'
 }

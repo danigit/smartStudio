@@ -1,5 +1,8 @@
 <div ng-controller="languageController">
     <div layout="column" layout-align="center center" layout-wrap class="height-100-vh">
+        <div layout="row" class="outdoor-location-name">
+            <h2 class="margin-bottom-0 font-iceberg">{{outdoorCtrl.locationName | uppercase}}</h2>
+        </div>
         <div layout="column" class="top-corner">
             <div layout="column" class="background-transparent-gray">
                 <img ng-show="outdoorCtrl.showAlarmsIcon" ng-click="outdoorCtrl.showAlarms()" class="pulse-image margin-bottom-5-px padding-top-bottom-6px width-40px"
@@ -7,6 +10,12 @@
                 <img ng-show="outdoorCtrl.showOfflineTagsIcon" ng-click="outdoorCtrl.showOfflineTags()"
                      class="margin-bottom-5-px padding-top-bottom-6px border-bottom-3-white border-top-3-white width-40px" src="img/icons/offline_tags_alert_64.png"
                      alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}">
+                <img ng-show="outdoorCtrl.showOfflineAnchorsIcon" ng-click="outdoorCtrl.showOfflineAnchors()" class="margin-bottom-5-px padding-top-bottom-6px width-40px border-bottom-3-white"
+                     src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
+                     title="{{lang.offlineAnchors}}">
+                <img ng-show="!outdoorCtrl.socketOpened" class="padding-top-bottom-6px border-bottom-3-white width-40px"
+                     src="img/icons/socket-down.ico" alt="{{lang.engineOff}}"
+                     title="{{lang.engineOff}}">
                 <img ng-show="outdoorCtrl.showEngineOffIcon" class="adding-top-bottom-6px width-40px spin-logo-right-no-absolute"
                      src="img/icons/engine_off_64.png" alt="{{lang.engineOff}}" title="{{lang.engineOff}}">
             </div>
@@ -48,7 +57,7 @@
                 <md-sidenav id="menu-panel" class="md-sidenav-left" md-component-id="left" md-whiteframe="4">
 
                     <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
-                        <h1 class="md-toolbar-tools color-black">Menu</h1>
+                        <h1 class="md-toolbar-tools text-bold color-black">MENU</h1>
                         <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
                             <img src="img/icons/menu/close-menu.png" alt="{{lang.closeButton}}"
                                  title="{{lang.closeButton}}">
@@ -57,31 +66,37 @@
 
                     <md-content layout-margin class="margin-top-10">
 
-                        <div layout="column" layout-align="center center">
-                            <img src="img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track"
-                                 title="Smart Track">
-                            <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
+                        <div layout="column" layout-align="center center" class=" height-150px align-item-none">
+                            <img src="img/icons/login-icon-inner.png" class="home-menu-logo top-0 position-absolute"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-middle-inner.png" class="home-menu-logo spin-logo-right-2s top-0"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-middle-outer.png" class="home-menu-logo spin-logo-left-3s top-0"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-outer.png" class="home-menu-logo spin-logo-right top-0"
+                                 alt="Smart Track" title="Smart Track">
+                            <h1 class="font-iceberg color-ottanio position-absolute top-60px">SMART STUDIO</h1>
                         </div>
 
                         <div layout="column" id="menu-container">
                             <md-list ng-controller="menuController">
                                 <md-list-item ng-click="registry('outdoor')"><p>{{lang.weTagTable | uppercase}}</p><img
-                                        src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
+                                        src="img/icons/menu/anagrafica-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="viewHistory()"><p>{{lang.history | uppercase}}</p><img
-                                        src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/history-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="quickActions()"><p>{{lang.quickActions | uppercase}}</p><img
-                                        src="img/icons/menu/quick_action_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/quick-actions.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="zoneOutdoor()"><p>{{lang.zoneTable | uppercase}}</p><img
-                                        src="img/icons/menu/floor-icon.png" class="menu-list-icon"
+                                        src="img/icons/menu/outdoor-zone.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="changePassword()"><p>{{lang.changePassword | uppercase}}</p><img
-                                        src="img/icons/menu/password_icon_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/password-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                                 <md-list-item ng-click="logout()"><p class="color-red">{{lang.logout | uppercase}}</p><img
-                                        src="img/icons/menu/logout_icon_16.png" class="menu-list-icon"
+                                        src="img/icons/menu/logout-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                             </md-list>
 
@@ -155,10 +170,10 @@
                     </md-content>
                 </md-sidenav>
             </section>
-            <div ng-show="ctrlDataService.playAlarm" layout="column" layout-align="center center" class="bottom-left fadeIn">
+            <div ng-show="ctrlDataService.playAlarm" layout="column" layout-align="center center" class="fadeIn mute-alarms">
                 <md-button ng-click="muteAlarms()" ng-class="alertButtonColor" class="md-raised background-red margin-none color-white"><div><span class="margin-right-10-px text-bold">{{lang.muteAlarm}}</span><img class="vertical-align-middle" src="img/icons/mute_alarms.png" alt=""></div></md-button>
             </div>
-            <div layout="column" layout-align="center center" class="bottom-right">
+            <div layout="column" layout-align="center center" class="fadeIn center-map">
                 <md-button ng-click="centerMap()" class="md-raised background-darkcyan margin-none color-white"><div><span class="margin-right-10-px text-bold">{{lang.centerMap}}</span><img class="vertical-align-middle" src="img/icons/center_map.png" alt=""></div></md-button>
             </div>
         </div>

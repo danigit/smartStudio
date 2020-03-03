@@ -12,6 +12,9 @@
                     <img ng-show="homeCtrl.showOfflineAnchorsIcon" ng-click="homeCtrl.showOfflineAnchorsHome()" class="margin-bottom-5-px padding-top-bottom-6px width-40px border-bottom-3-white"
                          src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
                          title="{{lang.offlineAnchors}}">
+                    <img ng-show="!homeCtrl.socketOpened" class="padding-top-bottom-6px border-bottom-3-white width-40px"
+                         src="img/icons/socket-down.ico" alt="{{lang.engineOff}}"
+                         title="{{lang.engineOff}}">
                     <img ng-show="homeCtrl.showEngineOffIcon" class="padding-top-bottom-6px width-40px spin-logo-right-no-absolute"
                          src="img/icons/engine_off_64.png" alt="{{lang.engineOff}}"
                          title="{{lang.engineOff}}">
@@ -69,7 +72,7 @@
                         <div layout="column" id="menu-container" class="margin-bottom-30-px">
                             <md-list>
                                 <md-list-item ng-show="homeCtrl.isAdmin || homeCtrl.isUserManager" ng-click="openLocations()" class="font-smal"><p>{{lang.sitesTable | uppercase}}
-                                </p><img src="img/icons/menu/add-48.ico"
+                                </p><img src="img/icons/menu/add-location.ico"
                                          class="menu-list-icon menu-icon" alt=""></md-list-item>
                                 <md-list-item ng-show="homeCtrl.isUserManager" ng-click="openUserManager()" class="font-smal"><p>{{lang.userManager | uppercase}}
                                 </p><img src="img/icons/menu/user-manager-icon.ico"
@@ -158,7 +161,7 @@
                     </md-content>
                 </md-sidenav>
             </section>
-            <div ng-show="ctrlDataService.playAlarm" layout="column" layout-align="center center" class="bottom-left fadeIn">
+            <div ng-show="ctrlDataService.playAlarm" layout="column" layout-align="center center" class="fadeIn mute-alarms">
                 <md-button ng-click="muteAlarms()" ng-class="alertButtonColor" class="md-raised color-white margin-none"><div><span class="margin-right-10-px text-bold">{{lang.muteAlarm}}</span><img class="vertical-align-middle" src="img/icons/mute_alarms.png" alt=""></div></md-button>
             </div>
         </div>

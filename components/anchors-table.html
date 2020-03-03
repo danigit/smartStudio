@@ -46,6 +46,7 @@
                     <th md-column md-numeric=""><span class="color-darkcyan">{{lang.rssi | uppercase}}</span></th>
                     <th md-column md-numeric><span class="color-darkcyan">{{lang.proximity | uppercase}}</span></th>
                     <th md-column><span class="color-darkcyan">{{lang.type}}</span></th>
+                    <th md-column md-numeric><span class="color-darkcyan">{{lang.anchorMac | uppercase}}</span></th>
                     <th md-column><span class="color-darkcyan">{{lang.permittedAssets | uppercase}}</span></th>
                     <th ng-if="isAdmin" md-column></th>
                 </tr>
@@ -115,6 +116,11 @@
                                 {{anchorType.description}}
                             </md-option>
                         </md-select>
+                    </td>
+
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'mac')"
+                        ng-class="{'md-placeholder': !anchor.anchor.mac.toString()}">{{anchor.anchor.mac.toString() ||
+                        lang.insertMac}}
                     </td>
 
                     <td md-cell class="no-wrap" ng-class="{'md-placeholder': !anchor.permitted_asset}">

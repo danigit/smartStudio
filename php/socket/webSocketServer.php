@@ -1386,6 +1386,17 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'set_zoneA_and_zoneB':{
+                $result['action'] = 'set_zoneA_and_zoneB';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']['username']);
+
+                $query = $this->connection->set_zoneA_and_zoneB($decoded_message['data']['work_id'], $decoded_message['data']['zone_id']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             default:
                 $this->clients[$from->resourceId]->send(json_encode(array('result' => 'no_action')));
         }

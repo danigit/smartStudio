@@ -363,6 +363,8 @@ function languageController($scope) {
         priority: '',
         headerOrder: '',
         headerLeftSide: '',
+        openLegend: '',
+        categoryLegend: ''
     }
 };
 
@@ -450,4 +452,21 @@ let lang = {
     disabledAnchors                 : '',
     enabledAnchors                  : '',
     shutDownAnchors: '',
+    entering: '',
+    locationNotSaved: '',
+    zoneFloorUpdated: '',
+    zoneFloorDeleted:'',
+    zoneFloorNotUpdated: '',
+    zoneFloorNotDeleted: '',
+    headerZonesNotSetted: '',
+    invalidAutomation: '',
+    impossibleRecoverTagCategories: '',
+    noCause: '',
+    freefall: '',
+    lndPrt: '',
+    noMov: '',
+    ble: '',
+    wifi: '',
+    gprs: '',
+    safetyBox: ''
 }

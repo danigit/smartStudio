@@ -96,6 +96,7 @@
                         </th>
                         <th md-column md-order-by="tag_y_pos" md-numeric><span class="color-darkcyan">{{lang.yPos | uppercase}}</span>
                         <th md-column md-order-by="protocol" md-numeric><span class="color-darkcyan">{{lang.protocol | uppercase}}</span>
+                        <th md-column md-order-by="mann_down_cause" md-numeric><span class="color-darkcyan">{{lang.manDownCause | uppercase}}</span>
                         </th>
                     </tr>
                     </thead>
@@ -123,9 +124,12 @@
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.protocol.toString()}">
                             {{row.protocol.toString() || lang.noData}}
                         </td>
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.man_down_cause.toString()}">
+                            {{row.man_down_cause.toString() || lang.noData}}
+                        </td>
                     </tr>
                     <tr md-row ng-show="tableEmpty">
-                        <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
+                        <td md-cell colspan="10" class="text-center color-red">{{lang.noResultFound}}</td>
                     </tr>
                     </tbody>
                 </table>

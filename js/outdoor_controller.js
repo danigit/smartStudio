@@ -18,12 +18,14 @@
         let tags                       = null;
         let bounds                     = new google.maps.LatLngBounds();
         let locationInfo               = dataService.location;
-        let controllerMap              = null;
+        let outdoorMap              = null;
         let insideCircleInfoWindow = null;
         let outsideCircleInfoWindow = null;
         let outdoorTags = [];
 
         outdoorCtrl.ctrlDataService = dataService.playAlarm;
+        outdoorCtrl.locationName = dataService.location.name;
+        outdoorCtrl.socketOpened = socketOpened;
 
         dataService.drawingManagerRect = new google.maps.drawing.DrawingManager({
             drawingMode: google.maps.drawing.OverlayType.RECTANGLE,
@@ -41,26 +43,39 @@
         outdoorCtrl.isTracker = dataService.isTracker;
 
         outdoorCtrl.mapConfiguration = {
-            zoom    : outdoorLocationZoom,
+            zoom    : OUTDOOR_LOCATION_ZOOM,
             map_type: mapType,
             center  : mapCenter
         };
 
         dataService.loadUserSettings();
 
-        //showing the info window with the online/offline tags
+        /**
+         * Function that show the info window with the online/offline tags
+         */
         outdoorCtrl.showOfflineTags = () => {
             dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
-            dataService.showOfflineTags('outdoor', constantUpdateMapTags, controllerMap);
+            dataService.showOfflineTags('outdoor', constantUpdateMapTags, outdoorMap);
         };
 
-        //showing the info window with all the alarms
+        /**
+         * Function that show the info window with the online/offline anchors
+         */
+        outdoorCtrl.showOfflineAnchors = () => {
+            // stopping the home interval
+            dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
+            dataService.showOfflineAnchors('outdoor', constantUpdateMapTags, outdoorMap);
+        };
+
+        /**
+         * Function that show the info window with all the alarms
+         */
         outdoorCtrl.showAlarms = () => {
             // stoping the map timer
             dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
 
             //showing the alarm table
-            dataService.showAlarms(constantUpdateMapTags, controllerMap);
+            dataService.showAlarms(constantUpdateMapTags, outdoorMap, 'outdoor');
         };
 
         /**
@@ -90,11 +105,11 @@
 
         // getting the map variable
         NgMap.getMap('outdoor-map').then((map) => {
-            controllerMap = map;
+            outdoorMap = map;
 
             // setting the map style
-            map.set('styles', mapConfiguration);
-            map.setZoom(outdoorLocationZoom);
+            map.set('styles', MAP_CONFIGURATION);
+            map.setZoom(OUTDOOR_LOCATION_ZOOM);
 
             //showing the info with the coordinates when I click on the map
             google.maps.event.addListener(map, 'click', (event) => {
@@ -106,7 +121,6 @@
 
         });
 
-        //updating the markers of the map every second
         /**
          * Function that updates every n seconds the elements on the map
          * @param map
@@ -120,7 +134,7 @@
             // this is the marker corresponding to the tag I am working with
             let mapMarker = null;
 
-            // drawing the circle that delines the location area
+            // drawing the circle that defines the location area
             let circle = new google.maps.Circle({
                 strokeColor  : '#0093c4',
                 strokeOpacity: CIRCLE_STROKE_OPACITY,
@@ -140,8 +154,6 @@
             // controlling if I have to update the zones
             if (updateZones) {
                 newSocketService.getData('get_outdoor_zones', {location: dataService.location.name}, (response) => {
-                    if (!response.session_state)
-                        window.location.reload();
 
                     //updating the forbidden zones position
                     response.result.forEach(zone => {
@@ -165,8 +177,9 @@
                                     }
                                 })
                             });
-                        } else {
-                            // drawing the circle
+                        }
+                        // the zone is a circle
+                        else {
                             dataService.outdoorZones.push({
                                 id: zone.id,
                                 zone: new google.maps.Circle({
@@ -191,30 +204,35 @@
             // updating the elements on the map every n seconds
             dataService.updateMapTimer = $interval(() => {
 
+                if (DEBUG)
+                    console.log('outdoor map updating...');
+
+                // controlling if the socket is opened
+                outdoorCtrl.socketOpened = socketOpened;
+
                 // getting all the tags
                 newSocketService.getData('get_all_tags', {}, (response) => {
                     dataService.allTags = response.result;
 
-                    tags = response.result;
+                    tags = response.result.filter(t => !t.radio_switched_off);
                     // getting all the locations
                     newSocketService.getData('get_all_locations', {}, (locations) => {
 
                         // showing the alarm icon if there are tags out of location and the quick action is setted
-                        outdoorCtrl.showAlarmsIcon = dataService.showAlarmForOutOfLocationTags(tags, locations.result);
-
                         // showing the alarm icon if there are tags with alarms
-                        outdoorCtrl.showAlarmsIcon      = dataService.checkIfTagsHaveAlarmsInfo(response.result);
+                        outdoorCtrl.showAlarmsIcon = (dataService.showAlarmForOutOfLocationTags(tags.filter(t => dataService.isOutdoor(t)), locations.result.filter(l => !l.is_inside))
+                            || dataService.checkIfTagsHaveAlarmsInfo(tags));
 
                         // showing tags alarm icon if there are tags offline
                         outdoorCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
 
                         // playing the audio if there are alarms
-                        dataService.playAlarmsAudio(response.result);
+                        dataService.playAlarmsAudio(tags);
 
                         // gettin only the outdoor tags
                         outdoorTags = response.result.filter(t => dataService.isOutdoor(t) && dataService.hasTagAValidGps(t));
 
-                        // deleting markers on the map that have change position
+                        // deleting markers on the map that have change position or icon
                         dataService.dynamicTags.filter(marker => !outdoorService.isMarkerStillOnMap(marker, outdoorTags))
                             .forEach(dt => {
                                 dataService.dynamicTags.forEach((tag, index) => {
@@ -225,7 +243,7 @@
                             })
                         });
 
-                        // handling the drawing of the markers on hte outdoor location
+                        // handling the drawing of the markers on the outdoor location
                         outdoorTags.forEach((tag, index) => {
                             alarmsCounts.push(0);
                             prevAlarmCounts.push(0);
@@ -254,7 +272,7 @@
                                     outdoorService.setIcon(tag, marker, false);
 
                                     // If the user is admin I show all the tags
-                                    if (outdoorCtrl.isAdmin === 1 || outdoorCtrl.isTracker) {
+                                    if (outdoorCtrl.isAdmin || outdoorCtrl.isTracker) {
                                         // showing the tag on the map
                                         setOutdoorMarker(mapMarker, marker, tag, alarmsCounts, index, tagAlarms, prevAlarmCounts, map, true, locationInfo.name);
                                     }
@@ -288,7 +306,6 @@
 
                                     // control if the user is admin or tracker
                                     if (outdoorCtrl.isAdmin || outdoorCtrl.isTracker) {
-                                        //
                                         setOutdoorMarker(mapMarker, marker, tag, alarmsCounts, index, tagAlarms, prevAlarmCounts, map, false, locationInfo.name);
                                     } else if (outdoorCtrl.isUserManager && dataService.switch.showOutdoorTags) {
                                         if (dataService.checkIfTagsHaveAlarmsOutdoor(tags)) {
@@ -358,6 +375,10 @@
         let setOutdoorMarker = (mapMarker, marker, tag, alarmsCounts, index, tagAlarms, prevAlarmCounts, map, online, locationName) => {
             // control if the marker is on map
             if (mapMarker !== -1) {
+                // reseting the info window after the marker is changed
+                google.maps.event.clearListeners(dataService.dynamicTags[mapMarker], 'click');
+                setMarkerInfoWindow(dataService.dynamicTags[mapMarker], tag, locationName);
+
                 // control if the tag has alarms so that I show the alarm tag
                 if (dataService.checkIfTagHasAlarm(tag)) {
 
@@ -368,14 +389,6 @@
 
                     // setting the icon of the marker on the map
                     dataService.dynamicTags[mapMarker].setIcon(tagAlarms[alarmsCounts[index]++]);
-
-                    // setting the InfoWindo with the new alarms for the marker on the map
-                    if (tagAlarms.length !== prevAlarmCounts[index]) {
-                        // removing the prevoius InfoWindo
-                        google.maps.event.clearListeners(dataService.dynamicTags[mapMarker], 'click');
-                        // adding the new InfoWindow
-                        setMarkerInfoWindow(dataService.dynamicTags[mapMarker], tag, locationName)
-                    }
                 }
                 // controlling if the tag is not off
                 else if (!tag.radio_switched_off) {
@@ -427,8 +440,8 @@
                         $scope.alarms = dataService.loadTagAlarmsForInfoWindow(tag, locationName);
 
                         if ($scope.alarms.length === 0) {
-                            (!$scope.tag.radio_switched_off)
-                                ? $scope.isTagInAlarm = 'background-gray'
+                            (dataService.isTagOffline(tag))
+                                ? $scope.isTagInAlarm = 'background-darkgray'
                                 : $scope.isTagInAlarm = 'background-green';
                         }
 
@@ -445,7 +458,7 @@
          */
         $scope.centerMap = () => {
             let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
-            controllerMap.setCenter(latLng);
+            outdoorMap.setCenter(latLng);
         };
 
         $rootScope.$on('constantUpdateMapTags', function (event, map) {

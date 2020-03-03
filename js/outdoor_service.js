@@ -73,14 +73,15 @@
                 || tag.call_me_alarm || tag.diagnostic_request));
         };
 
-        /**
-         * Function tat control if the tag is in the location
-         * @param tag
-         * @param location
-         * @returns {boolean}
-         */
-        outdoor_service.isTagInLocation = (tag, location) => {
-            return dataService.getTagDistanceFromLocationOrigin(tag, location.position) <= location.radius;
-        };
+        // already in service
+        // /**
+        //  * Function tat control if the tag is in the location
+        //  * @param tag
+        //  * @param location
+        //  * @returns {boolean}
+        //  */
+        // outdoor_service.isTagInLocation = (tag, location) => {
+        //     return dataService.getTagDistanceFromLocationOrigin(tag, location.position) <= location.radius;
+        // };
     }
 })();

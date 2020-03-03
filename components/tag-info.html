@@ -25,38 +25,38 @@
     <div layout="column" layout-align="center center" ng-controller="languageController">
         <md-list>
             <md-list-item class="width-500-px">
-                <p class="float-left">{{lang.tagType}}:</p>
+                <p class="float-left text-bold">{{lang.tagType}}:</p>
                 <p class="float-right text-right">{{tag.tag_type_name}}</p>
             </md-list-item>
             <md-list-item class="width-500-px">
-                <p class="float-left">{{lang.floor}}:</p>
+                <p class="float-left text-bold">{{lang.floor}}:</p>
                 <p class="float-right text-right">{{tag.floor_name}}</p>
             </md-list-item>
             <md-list-item class="width-500-px">
-                <p class="float-left">{{lang.anchor}}:</p>
+                <p class="float-left text-bold">{{lang.anchor}}:</p>
                 <p class="float-right text-right">{{tag.anchor_name}}</p>
             </md-list-item>
             <md-list-item class="width-500-px">
-                <p class="float-left">{{lang.time}}:</p>
+                <p class="float-left text-bold">{{lang.time}}:</p>
                 <p class="float-right text-right">{{tag.time}}</p>
             </md-list-item>
             <md-list-item class="width-500-px">
-                <p class="float-left">{{lang.gpsTime}}:</p>
+                <p class="float-left text-bold">{{lang.gpsTime}}:</p>
                 <p class="float-right text-right">{{tag.gps_time}}</p>
             </md-list-item>
             <md-list-item class="width-500-px">
-                <p class="float-left">{{lang.alarmTime}}:</p>
+                <p class="float-left text-bold">{{lang.alarmTime}}:</p>
                 <p class="float-right text-right">{{tag.alarm_time}}</p>
             </md-list-item>
             <md-list-item class="width-500-px">
-                <p class="float-left">{{lang.batteryLevel}}:</p>
+                <p class="float-left text-bold">{{lang.batteryLevel}}:</p>
                 <p class="float-right text-right"><img alt="{{lang.batteryStatus}}" title="{{lang.batteryStatus}}"
                                                        aria-label="{{lang.batteryStatus}}"
                                                        ng-src="{{tag.battery_status ? 'img/icons/battery_empty_24.png' : 'img/icons/battery_full_24.png'}}"></p>
             </md-list-item>
         </md-list>
         <md-list>
-            <p class="text-center color-red text-bold">{{lang.tagAlarms | uppercase}}</p>
+            <p ng-if="alarms.length !== 0" class="text-center color-red text-bold">{{lang.tagAlarms | uppercase}}</p>
             <md-list-item class="md-3-line" ng-repeat="alarm in alarms" ng-click="null">
                 <img ng-src="{{alarm.image}}" class="md-avatar" alt="{{item.who}}"/>
                 <div class="md-list-item-text" layout="column">

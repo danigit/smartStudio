@@ -8,3 +8,27 @@ HOME
 - alarms table showing the correct alarms
 - alarms table not showing alarm out of all sites if the quick configuration is not enabled
 - alarms table open site button must work properly
+
+
+
+
+
+TODO
+- zittire alarme da home mettere intervallo per zittirla(tipo per 10 min) cosi riparte se arriva un nuovo alarme
+- mettere uno switch nell quick action che abilita e disabilita il mostrare delle coordinate al click all'interno dell location outdoor
+
+
+
+
+RESOLVED BUGS
+- play alarms error on log, and fixed the show/hide of the close alarm button and stoped the alarm if the tag il closed
+- le alarmi nella home sulle locations si vedevano se il tag era spento
+- il numero dei tag in info window era sbagliato perche prendeva in considerazine andhe i ta spenti
+- risolto il flickering sul canvas
+- messo il colore giusto della finestra dei gruppi di tag
+
+
+
+AGGIUNTE
+
+- nome della location outdoor

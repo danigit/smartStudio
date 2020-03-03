@@ -25,12 +25,12 @@
             // creating the content of the window
             return new google.maps.InfoWindow({
                 content: '<div class="marker-info-container">' +
-                    '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
-                    '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
+                    '<div class="infinite-rotation"><img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio"></div>' +
+                    '<p class="text-center font-large text-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
                     '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
                     '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
-                    '<div class="clear-float display-flex"><div class="width-50 margin-left-10-px"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
-                    '</div><div class="width-45 "><img src="' + iconsPath + 'offline_anchors_alert_30.png" class="margin-right-10-px"><span class="font-large vertical-align-super color-red"><b>' + locationAnchors.length + '</b></span></div></div>' +
+                    '<div class="clear-float display-flex"><div class="width-50 margin-left-10-px"><img src="' + iconsPath + 'offline_tags_alert_32.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
+                    '</div><div class="width-45 "><img src="' + iconsPath + 'offline_anchors_alert_32.png" class="margin-right-10-px"><span class="font-large vertical-align-super color-red"><b>' + locationAnchors.length + '</b></span></div></div>' +
                     '</div>'
             });
         };
@@ -48,11 +48,11 @@
             // filling the info window
             return new google.maps.InfoWindow({
                 content: '<div class="marker-info-container">' +
-                    '<img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
-                    '<p class="text-center font-large font-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
+                    '<div class="infinite-rotation"><img src="' + markersIconPath + marker.icon + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio"></div>' +
+                    '<p class="text-center font-large text-bold color-darkcyan">' + marker.name.toUpperCase() + '</p>' +
                     '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
                     '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
-                    '<div class="clear-float display-flex"><div class="margin-auto"><img src="' + iconsPath + 'offline_tags_alert_30.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
+                    '<div class="clear-float display-flex"><div class="margin-auto"><img src="' + iconsPath + 'offline_tags_alert_32.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
                     '</div></div' +
                     '</div>'
             });
@@ -94,7 +94,7 @@
          * @returns {boolean}
          */
         home_service.checkIfAnchorsHaveAlarmsOrAreOffline = (anchors) => {
-            return anchors.some(a => a.battery_status || a.is_offline === 1);
+            return anchors.some(a => a.battery_status || a.is_offline);
         };
 
         /**
@@ -121,5 +121,28 @@
                 }
             })
         };
+
+        /**
+         * Function that control if the marker has the same position of the markerObject
+         * @param marker
+         * @param markerObject
+         * @returns {boolean|boolean}
+         */
+        home_service.isMarkerSelected = (marker, markerObject) => {
+            return marker.getPosition().lat() === markerObject.getPosition().lat() && marker.getPosition().lng() === markerObject.getPosition().lng()
+        };
+
+        /**
+         * Function that set the alarm icon to the cluster if there is a location in alarm inside
+         * @param tags
+         * @param cluster
+         */
+        home_service.setClusterIcon = (tags, cluster) => {
+            if (dataService.checkIfTagsHaveAlarms(tags)){
+                cluster.getMarkerClusterer().getStyles()[0].url= iconsPath + '/markers/cloud_error1.png';
+            } else {
+                cluster.getMarkerClusterer().getStyles()[0].url= iconsPath + '/markers/cloud_ok1.png';
+            }
+        }
     }
 })();

@@ -39,7 +39,7 @@
         service.mapInterval          = undefined;
         service.userInterval          = undefined;
         service.superUserInterval          = undefined;
-        service.playAlarm            = true;
+        service.playAlarm            = false;
         service.isLocationInside = 0;
         service.isSearchingTag       = false;
         service.offlineTagsIsOpen    = false;
@@ -53,10 +53,12 @@
         service.playedTime = 0;
         service.alarmsInterval = undefined;
         service.reconnectSocket = null;
+        service.switch = {showFullscreen: false}
+        service.lastMessageTime = null;
 
 
 
-        service.showAlarms = (constantUpdateNotifications, map) => {
+        service.showAlarms = (constantUpdateNotifications, map, position) => {
             // showing the table with the alarms
             $mdDialog.show({
                 templateUrl        : componentsPath + 'indoor-alarms-info.html',
@@ -124,7 +126,7 @@
                                         let outdoorLocationTags   = allTags.filter(t => service.isOutdoor(t) && service.hasTagAValidGps(t));
 
                                         // getting the tags outdoor that have no site setted
-                                        let outdoorNoSiteTags     = allTags.filter(t => (service.isOutdoor(t) && service.hasTagAnInvalidGps(t)));
+                                        let outdoorNoSiteTags     = allTags.filter(t => (service.hasTagAnInvalidGps(t)));
 
                                         // getting the outdoor tags without any location
                                         let outdoorNoLocationTags = service.getTagsWithoutAnyLocation(outdoorLocationTags, locations);
@@ -179,7 +181,7 @@
                                         outdoorNoLocationTags.forEach(tag => {
                                             // show the tag as no location
                                             if (!locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius))
-                                                allTagsAlarms.push(service.createAlarmObjectForInfoWindow(tag, lang.outOfSite, lang.outOfSiteDescription, tagsIconPath + 'tag_out_of_location_24.png', lang.noLocation));
+                                                allTagsAlarms.push(service.createAlarmObjectForInfoWindow(tag, lang.outOfSite, lang.outOfSiteDescription, tagsIconPath + 'tag_out_of_location.png', lang.noLocation));
 
                                             // getting tags alarms
                                             service.loadTagAlarmsForInfoWindow(tag, lang.noLocation)
@@ -191,7 +193,7 @@
                                         // getting the tags with no valida position alarms
                                         outdoorNoSiteTags.forEach(tag => {
                                             // getting the tags that have no valid position
-                                            allTagsAlarms.push(service.createAlarmObjectForInfoWindow(tag, lang.noValidPosition, lang.noValidPositionDescription, tagsIconPath + 'tag_withouth_position_24.png', lang.noLocation));
+                                            allTagsAlarms.push(service.createAlarmObjectForInfoWindow(tag, lang.noValidPosition, lang.noValidPositionDescription, tagsIconPath + 'tag_without_position.png', lang.noLocation));
                                         });
 
                                         // setting the alarms in the table
@@ -336,13 +338,26 @@
                 onRemoving         : function () {
                     service.alarmsInterval = service.stopTimer(service.alarmsInterval);
 
-                    if (service.homeTimer === undefined) {
-                        constantUpdateNotifications(map)
+                    // starting the appropriate interval
+                    switch (position) {
+                        case 'home':
+                            if (service.homeTimer === undefined)
+                                constantUpdateNotifications(map);
+                            break;
+                        case 'outdoor':
+                            if (service.updateMapTimer === undefined)
+                                constantUpdateNotifications(map);
+                            break;
+                        case 'canvas':
+                            console.log('restarting canvas');
+                            if (service.canvasInterval === undefined)
+                                constantUpdateNotifications();
                     }
                 }
             })
         }
 
+        // remain home
         /**
          * Function that control if the tag passed as parameter is outdoor
          * @param tag
@@ -352,15 +367,17 @@
             return tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0;
         };
 
+        //remoin outdoor
         /**
          * Function that controls if the tag passed as parameter is an outdoor tag without any location
          * @param tag
          * @returns {boolean|boolean}
          */
         service.hasTagAnInvalidGps = (tag) => {
-            return tag.gps_north_degree === -2 && tag.gps_east_degree === -2;
+            return ((tag.gps_north_degree === -2 && tag.gps_east_degree === -2) || (tag.gps_north_degree === -1 && tag.gps_east_degree === -1));
         };
 
+        //remain outdoor
         /**
          * Function that controls if the tag passed as parameter in not outside of every location
          * @param tag
@@ -389,6 +406,7 @@
             return outdoorNoLocationTags;
         };
 
+        //remain outdoor
         /**
          * Function that controls if there is any tag outdoor in order to show the alarm icon
          * @param tags
@@ -396,19 +414,11 @@
          * @returns {boolean}
          */
         service.showAlarmForOutOfLocationTags = (tags, locations) => {
-            tags.forEach(function (tag) {
-                // applying only for tags outdoor
-                if (service.isOutdoor(tag)) {
-                    // checking if any tag is out of all locations
-                    if (!service.checkIfAnyTagOutOfLocation(locations, tag) && service.switch.showOutrangeTags) {
-                        return true;
-                    }
-                }
-            });
-
-            return false;
+            return tags.some(t => { return !service.checkIfAnyTagOutOfLocation(locations, t)}) && service.switch.showOutrangeTags
         };
 
+        //remain home
+        //remain outdoor
         /**
          * Function that checks if the passed tag is out of all the locations
          * @param locations
@@ -416,13 +426,9 @@
          * @returns {boolean}
          */
         service.checkIfAnyTagOutOfLocation = (locations, tag) => {
-            return locations.some(l => {
-                if (!l.is_inside) {
-                    // control if the tag is out of the current location (l)
-                    return (service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
-                }
-            })
+            return locations.some(l => (service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius));
         };
+
         //#####################################################################
         //#                             HOME FUNCTIONS                        #
         //#####################################################################
@@ -450,14 +456,36 @@
         //     return tags.filter(t => !location.is_inside && service.isTagInLocation(t, location));
         // };
 
-        //controlling if the tag passed as parameter is in the location passed as parameter as well
+        // remain home
+        // remain outdoor
+        /**
+         * Controlling if the tag passed as parameter is in the location passed as parameter as well
+         * @param tag
+         * @param location
+         * @returns {boolean}
+         */
         service.isTagInLocation = (tag, location) => {
             return service.getTagDistanceFromLocationOrigin(tag, location.position) <= location.radius;
         };
 
-        //calculating the distance of the tag from the location center to see if the tag is in the location area
+        /**
+         * Function that control if the tag has a valid outdoor position
+         * @param tag
+         * @returns {boolean|boolean}
+         */
+        service.tagHasValidCoordinates = (tag) => {
+            return tag.gps_north_degree !== -2 && tag.gps_east_degree !== -2 && tag.gps_north_degree !== -1 && tag.gps_east_degree !== -1
+        };
+
+        // remain service
+        /**
+         * Calculating the distance of the tag from the location center to see if the tag is in the location area
+         * @param tag
+         * @param origin
+         * @returns {number}
+         */
         service.getTagDistanceFromLocationOrigin = (tag, origin) => {
-            if (tag.gps_north_degree !== -2 && tag.gps_east_degree !== -2) {
+            if (service.tagHasValidCoordinates(tag)) {
                 let distX = Math.abs(tag.gps_north_degree - origin[0]);
                 let distY = Math.abs(tag.gps_east_degree - origin[1]);
 
@@ -475,8 +503,6 @@
         // function that loads the user setting (the ones that go in quick actions)
         service.loadUserSettings = () => {
             newSocketService.getData('get_user_settings', {username: service.user.username}, (response) => {
-                if (!response.session_state)
-                    window.location.reload();
 
                 if(response.result.length !== 0) {
                     service.switch = {
@@ -491,6 +517,9 @@
                         showOutdoorRectDrawing: false,
                         showOutdoorRoundDrawing: false
                     };
+
+                    // turning off the home turn off button if the audio is disabled
+                    service.playAlarm = (response.result[0].sound_on === 1);
                 }
             })
         };
@@ -627,7 +656,7 @@
                             if (service.homeTimer === undefined)
                                 constantUpdateNotifications(map);
                             break;
-                        case 'outside':
+                        case 'outdoor':
                             if (service.updateMapTimer === undefined)
                                 constantUpdateNotifications(map);
                             break;
@@ -639,18 +668,26 @@
             });
         };
 
-        // checking if there is at least one tag offline among the passed tags
+        // remain home
+        // remain outdoor
+        /**
+         * Checking if there is at least one tag offline among the passed tags
+         * @param tags
+         * @returns {boolean}
+         */
         service.checkIfTagsAreOffline = (tags) => {
-            return tags.some(function (tag) {
-                return service.isTagOffline(tag)
-            })
+            return tags.some(t => service.isTagOffline(t));
         };
 
-        //checking if there is at least an anchor offline
+        // remain outdoor
+        // remain canvas
+        /**
+         * Function that check if there is at least an anchor offline
+         * @param anchors
+         * @returns {*}
+         */
         service.checkIfAnchorsAreOffline = (anchors) => {
-            return anchors.some(function (anchor) {
-                return anchor.is_offline || anchor.battery_status === 1;
-            });
+            return anchors.some(a => {return (a.is_offline || a.battery_status)});
         };
 
         //checking if there is at least an anchor offline
@@ -705,7 +742,12 @@
 
 
 
-        //function that sets an icon image to the marker passed as parameter
+        // remain outdoor
+        /**
+         * Function that sets the alarm icon for the marker
+         * @param tag
+         * @param marker
+         */
         service.setIcon = (tag, marker) => {
             if (tag.sos) {
                 marker.setIcon(tagsIconPath + 'sos_24.png');
@@ -734,10 +776,20 @@
             }
         };
 
+        // remain outdoor
+        /**
+         * Funtion that set the online icon for the marker
+         * @param marker
+         */
         service.setMarkerOnlineIcon = (marker) => {
             marker.setIcon(tagsIconPath + 'online_tag_24.png');
         };
 
+        // remain outdoor
+        /**
+         * Function that set the offline icon for the marker
+         * @param marker
+         */
         service.setMarkerOfflineIcon = (marker) => {
             marker.setIcon(tagsIconPath + 'offline_tag_24.png');
         };
@@ -872,7 +924,7 @@
                             if (service.homeTimer === undefined)
                                 constantUpdateNotifications(map);
                             break;
-                        case 'outside':
+                        case 'outdoor':
                             if (service.updateMapTimer === undefined)
                                 constantUpdateNotifications(map);
                             break;
@@ -900,6 +952,7 @@
         //     return service.getTagDistanceFromLocationOrigin(tag, location.position) <= location.radius;
         // };
 
+        // remain canvas
         //getting all the alarms of the tag passed as parameter and creating the objects to be shown in info window
         service.loadTagAlarmsForInfoWindow = (tag, tagLocation) => {
             let alarms = [];
@@ -988,6 +1041,7 @@
         };
 
         //function that checks if at least one tag has an alarm
+        // remain canvas
         service.checkIfTagsHaveAlarms = (tags) => {
             return tags.some(function (tag) {
                 return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
@@ -996,14 +1050,24 @@
             })
         };
 
-        // checking if any of the the passed tags have at least one alarm
+        // remain home
+        // remain outdoor
+        /**
+         * Checking if any of the the passed tags have at least one alarm
+         * @param tags
+         * @returns {boolean}
+         */
         service.checkIfTagsHaveAlarmsInfo = (tags) => {
-            return tags.some(function (tag) {
-                return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                    || tag.battery_status || tag.man_in_quote || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone;
-            })
+            return tags.some(tag => tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
+                    || tag.battery_status || tag.man_in_quote || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone)
         };
 
+        // remain outdoor
+        /**
+         * Function that control if there is any tag with an alarm
+         * @param tags
+         * @returns {*}
+         */
         service.checkIfTagsHaveAlarmsOutdoor = (tags) => {
             return tags.some(tag => service.isOutdoor(tag) && service.isTagInLocation(tag, {radius: service.location.radius, position: [service.location.latitude, service.location.longitude]}) && (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
                 || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
@@ -1020,9 +1084,20 @@
             return anchors.some(a => a.battery_status);
         };
 
-        //function that plays the alarms audio of the tags passed as parameter
+        // remain home
+        // remain outdoor
+        /**
+         * Function that plays the alarms audio of the tags passed as parameter
+         * @param tags
+         */
         service.playAlarmsAudio = (tags) => {
             let audio;
+
+            // reseting the alarms if there are no tags
+            if (tags.length === 0){
+                service.alarmsSounds = [];
+                service.playAlarm = false;
+            }
 
             // incrementing the number after which the next play is going to happen
             service.playedTime++;
@@ -1033,6 +1108,7 @@
                     // control if the alarm is already considered, if not I add it to the allarms to play
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'battery')) {
                         service.alarmsSounds.push({tag: tag.name, alarm: 'battery'});
+                        service.playAlarm = true;
                     }
                 }
                 // if the alarm is no more active I remove it
@@ -1044,6 +1120,7 @@
                     // control if the alarm is already considered, if not I add it to the allarms to play
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'mandown')) {
                         service.alarmsSounds.push({tag: tag.name, alarm: 'mandown'});
+                        service.playAlarm = true;
                     }
                 }
                 // if the alarm is no more active I remove it
@@ -1055,6 +1132,7 @@
                     // control if the alarm is already considered, if not I add it to the allarms to play
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'sos')) {
                         service.alarmsSounds.push({tag: tag.name, alarm: 'sos'});
+                        service.playAlarm = true;
                     }
                 }
                 // if the alarm is no more active I remove it
@@ -1079,20 +1157,32 @@
                         audio = new Audio(audioPath + 'indila-sos.mp3');
                     }
                 }
+            } else{
+                service.playAlarm = false;
             }
 
             // play the alarm
-            if (audio !== undefined && service.playedTime > 4 && (service.switch && service.switch.playAudio)){
-                audio.play();
+            if (audio !== undefined && service.playedTime > AUDIO_PLAY_INTERVAL && (service.switch && service.switch.playAudio) && service.playAlarm){
+                // waiting for the audio to load
+                audio.addEventListener('loadeddata', () => {
+                    audio.play();
+                });
+
                 service.playedTime = 0;
             }
 
             // if the alarm audio is disabled playTime will increase forever sow I reset it
-            if (service.playedTime > 5)
+            if (service.playedTime > AUDIO_PLAY_INTERVAL + 1)
                 service.playedTime = 0
         };
 
-        //checking if the tag has an alarm
+        // remain outdoor
+        // remain canvas
+        /**
+         * Function that controll if the tag has at least an alarm
+         * @param tag
+         * @returns {string|*}
+         */
         service.checkIfTagHasAlarm = (tag) => {
             return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
                 || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
@@ -1103,12 +1193,19 @@
             return tag.category_id !== null && tag.icon_name_alarm && tag.icon_name_no_alarm !== null;
         };
 
-        //function that returs the images of the alarms of the tags passed as parameter
+        // remain outdoor
+        // remain canvas
+        /**
+         * Function that returns the images of the alarms of the tags passed as parameter
+         * @param tag
+         * @returns {[]}
+         */
         service.getTagAlarms = (tag) => {
             let tagAlarmsImages = [];
 
             let category_name_alarm = '';
             let category_name_no_alarm = '';
+
             if(isCategoryAndImageNotNull(tag)){
                 category_name_alarm = tag.icon_name_alarm.split('.').slice(0, -1).join('.');
                 category_name_no_alarm = tag.icon_name_no_alarm.split('.').slice(0, -1).join('.');
@@ -1459,6 +1556,13 @@
             return locationsTags;
         };
 
+        service.hasTagCategory = (tags) => {
+            if (tags.length === 0)
+                return false;
+
+            return tags.some(t => t.category_id !== null)
+        };
+
         service.isElementAtClick = (virtualTagPosition, mouseDownCoords, distance) => {
             return ((virtualTagPosition.width - distance) < mouseDownCoords.x && mouseDownCoords.x < (virtualTagPosition.width + distance)) && ((virtualTagPosition.height - distance) < mouseDownCoords.y && mouseDownCoords.y < (virtualTagPosition.height + distance));
         };
@@ -1472,19 +1576,35 @@
         // service.showAlarms = () => {}
     }
 
+    /**
+     * Function that estabilish a connection via socket to the server, and exchange messages between client and server
+     * It handeles the reconection of the socket if has been closed
+     * @type {string[]}
+     */
     newSocketService.$inject = ['$state', '$interval'];
     function newSocketService($state, $interval) {
         let service              = this;
         let id = 0;
+
         service.server               = socketServer;
-        service.socketClosed = false;
         service.callbacks = [];
 
+        /**
+         * Function that gets the data from the client and sends it to the server, and when a message is received from the
+         * server, is calls the appropriate function on client
+         * @param action
+         * @param data
+         * @param callback
+         */
         service.getData = (action, data, callback) => {
+
             let userData = {};
+
+            //adding the user to the data sended to the server
             if (action !== 'login') {
-                data.username = sessionStorage.user;
+                data.username = cesarShift(sessionStorage.user, -CEZAR_KEY);
             }
+
             userData = data;
             // console.log('after data: ' + userData);
             let stringifyedData = JSON.stringify({action: action, data: userData});
@@ -1492,31 +1612,39 @@
             if (socketOpened) {
                 service.server.send(stringifyedData);
                 service.callbacks.push({id: id, value: callback});
+                service.lastMessageTime = new Date();
                 $interval.cancel(service.reconnectSocket);
-            }
 
-            service.server.onmessage = (response) => {
-                let result = JSON.parse(response.data);
-                // if (!result.session_state && (result.action !== 'get_user' || result.action !== 'login')){
-                    // window.location.reload();
-                // }
-                let call = service.callbacks.shift();
-                call.value(result);
-            };
+                service.server.onmessage = (response) => {
+                    let now = new Date();
+                    if (Math.abs(now.getTime() - service.lastMessageTime.getTime()) > MESSAGE_WAITING_TIME){
+                        console.log('CLOSING THE SOCKET BECAUSE THE NETWORK IS TOO SLOW');
+                        service.server.close();
+
+                    }else {
+                        let result = JSON.parse(response.data);
+                        let call   = service.callbacks.shift();
+                        call.value(result);
+                    }
+                };
+            }
 
             service.server.onerror = (error) => {
                 let call = service.callbacks.shift();
-                call.value('error');
+                // call.value('error');
             };
 
             service.server.onclose = () => {
-                $state.go('login');
-                service.socketClosed = true;
+                socketOpened = false;
                 service.reconnectSocket = $interval(function () {
                     console.log('trying to reconect')
-                    socketServer = new WebSocket('ws://localhost:8090');
-                    service.server = socketServer
-                }, 5000)
+                    socketServer = new WebSocket(SOCKET_PATH);
+                    socketServer.onopen = function(){
+                        socketOpened = true;
+                        window.location.reload()
+                    };
+                    service.server = socketServer;
+                }, SOCKET_RECONECT_INTERVAL)
             }
         };
     }

@@ -20,6 +20,8 @@ CUSTOM
 }
 
 #login-container {
+    width: 70%;
+    margin-top: 10%;
     background: #00000014;
     padding: 40px;
     box-shadow: 0 0 110px 30px #00000026;
