@@ -7,13 +7,20 @@
             </md-button>
         </div>
 
-        <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        <div layout="row" layout-align="center center" class="margin-top--20-px height-60px">
+            <img src="img/icons/login-icon-inner.png" class="home-menu-logo top-20px position-absolute"
+                 alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon-middle-inner.png" class="home-menu-logo spin-logo-right-2s top-20px"
+                 alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon-middle-outer.png" class="home-menu-logo spin-logo-left-3s top-20px"
+                 alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon-outer.png" class="home-menu-logo spin-logo-right top-20px"
+                 alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">{{lang.zone | uppercase}}</h1>
+                <h1 class=" font-iceberg color-white font-x-large">{{lang.zone | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -90,7 +97,7 @@
                     <td md-cell ng-show="isAdmin" ng-click="deleteRow(zone)"><img src="img/icons/delete_trash_24.png" alt="{{lang.deleteTag}}"
                                                                 title="{{lang.deleteTag}}"></td>
                 </tr>
-                <tr md-row ng-show="tableEmptyZone">
+                <tr md-row ng-show="zonesTable.length === 0">
                     <td md-cell colspan="10" class="text-center color-red">{{lang.noResultFound}}</td>
                 </tr>
                 </tbody>

@@ -4,15 +4,18 @@
         <div id="map-div">
             <div layout="column" class="top-corner">
                 <div layout="column" class="background-transparent-gray">
-                    <img ng-show="homeCtrl.showAlarmsIcon" ng-click="homeCtrl.showAlarmsHome()" class="pulse-image margin-bottom-5-px padding-top-bottom-6px"
+                    <img ng-show="homeCtrl.showAlarmsIcon" ng-click="homeCtrl.showAlarmsHome()" class="pulse-image margin-bottom-5-px padding-top-bottom-6px width-40px"
                          src="img/icons/alarm-icon.png" alt="{{lang.activeAllarms}}" title="{{lang.activeAllarms}}">
                     <img ng-show="homeCtrl.showOfflineTagsIcon" ng-click="homeCtrl.showOfflineTagsHome()"
-                         class="margin-bottom-5-px padding-top-bottom-6px border-bottom-3-white border-top-3-white" src="img/icons/offline_tags_alert_64.png"
+                         class="margin-bottom-5-px padding-top-bottom-6px border-bottom-3-white border-top-3-white width-40px" src="img/icons/offline_tags_alert_64.png"
                          alt="{{lang.offlineTags}}" title="{{lang.offlineTags}}">
-                    <img ng-show="homeCtrl.showOfflineAnchorsIcon" ng-click="homeCtrl.showOfflineAnchorsHome()" class="margin-bottom-5-px padding-top-bottom-6px border-bottom-3-white"
+                    <img ng-show="homeCtrl.showOfflineAnchorsIcon" ng-click="homeCtrl.showOfflineAnchorsHome()" class="margin-bottom-5-px padding-top-bottom-6px width-40px border-bottom-3-white"
                          src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
                          title="{{lang.offlineAnchors}}">
-                    <img ng-show="homeCtrl.showEngineOffIcon" class="padding-top-bottom-6px border-bottom-3-white"
+                    <img ng-show="!homeCtrl.socketOpened" class="padding-top-bottom-6px border-bottom-3-white width-40px"
+                         src="img/icons/socket-down.ico" alt="{{lang.engineOff}}"
+                         title="{{lang.engineOff}}">
+                    <img ng-show="homeCtrl.showEngineOffIcon" class="padding-top-bottom-6px width-40px spin-logo-right-no-absolute"
                          src="img/icons/engine_off_64.png" alt="{{lang.engineOff}}"
                          title="{{lang.engineOff}}">
                     <img ng-show="!homeCtrl.socketOpened" class="padding-top-bottom-6px border-bottom-3-white"
@@ -49,7 +52,7 @@
                             md-whiteframe="4">
 
                     <md-toolbar class="background-darkcyan" layout="row" layout-align="center center">
-                        <h1 class="md-toolbar-tools color-black">Menu</h1>
+                        <h1 class="md-toolbar-tools text-bold color-black">MENU</h1>
                         <div ng-click="toggleLeft()" class="margin-right-10-px cursor-pointer outline-none">
                             <img src="img/icons/menu/close-menu.png" alt="{{lang.closeButton}}" title="{{lang.closeButton}}">
                         </div>
@@ -57,52 +60,58 @@
 
                     <md-content layout-margin class="margin-top-10">
 
-                        <div layout="column" layout-align="center center">
-                            <img src="img/icons/login-icon.png" class="home-menu-logo" alt="Smart Track"
-                                 title="Smart Track">
-                            <h1 class="font-iceberg color-ottanio">SMART STUDIO</h1>
+                        <div layout="column" layout-align="center center" class=" height-150px align-item-none">
+                            <img src="img/icons/login-icon-inner.png" class="home-menu-logo top-0 position-absolute"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-middle-inner.png" class="home-menu-logo spin-logo-right-2s top-0"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-middle-outer.png" class="home-menu-logo spin-logo-left-3s top-0"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-outer.png" class="home-menu-logo spin-logo-right top-0"
+                                 alt="Smart Track" title="Smart Track">
+                            <h1 class="font-iceberg color-ottanio position-absolute top-60px">SMART STUDIO</h1>
                         </div>
 
-                        <div layout="column" id="menu-container">
+                        <div layout="column" id="menu-container" class="margin-bottom-30-px">
                             <md-list>
-                                <md-list-item ng-show="homeCtrl.isAdmin || homeCtrl.isUserManager" ng-click="openLocations()"><p>{{lang.sitesTable | uppercase}}
-                                </p><img src="img/icons/menu/add-location.png"
-                                         class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-show="homeCtrl.isUserManager" ng-click="openUserManager()"><p>{{lang.userManager | uppercase}}
-                                </p><img src="img/icons/menu/user-manager-icon.png"
-                                         class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="openSuperuserManager()"><p>{{lang.userManager | uppercase}}
-                                </p><img src="img/icons/menu/user-manager-icon.png"
-                                         class="menu-list-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="registry('home')"><p>{{lang.weTagTable | uppercase}}</p><img
-                                        src="img/icons/menu/anagrafica-icon.png" class="menu-list-icon"
+                                <md-list-item ng-show="homeCtrl.isAdmin || homeCtrl.isUserManager" ng-click="openLocations()" class="font-smal"><p>{{lang.sitesTable | uppercase}}
+                                </p><img src="img/icons/menu/add-location.ico"
+                                         class="menu-list-icon menu-icon" alt=""></md-list-item>
+                                <md-list-item ng-show="homeCtrl.isUserManager" ng-click="openUserManager()" class="font-smal"><p>{{lang.userManager | uppercase}}
+                                </p><img src="img/icons/menu/user-manager-icon.ico"
+                                         class="menu-list-icon menu-icon" alt=""></md-list-item>
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="openSuperuserManager()" class="font-smal"><p>{{lang.userManager | uppercase}}
+                                </p><img src="img/icons/menu/user-manager-icon.ico"
+                                         class="menu-list-icon menu-icon" alt=""></md-list-item>
+                                <md-list-item ng-click="registry('home')" class="font-smal"><p>{{lang.weTagTable | uppercase}}</p><img
+                                        src="img/icons/menu/anagrafica-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="tagCategories('home')"><p>{{lang.tagCategory | uppercase}}</p><img
-                                        src="img/icons/menu/tag_category.png" class="menu-list-icon"
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="tagCategories('home')" class="font-smal"><p>{{lang.tagCategory | uppercase}}</p><img
+                                        src="img/icons/menu/tag-category.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="safetyBox('home')"><p>{{lang.safetyBox | uppercase}}</p><img
-                                        src="img/icons/menu/safety_box.png" class="menu-list-icon"
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="safetyBox('home')" class="font-smal"><p>{{lang.safetyBox | uppercase}}</p><img
+                                        src="img/icons/menu/safety-box.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="viewHistory('home')"><p>{{lang.history | uppercase}}</p><img
-                                        src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
+                                <md-list-item ng-click="viewHistory('home')" class="font-smal"><p>{{lang.history | uppercase}}</p><img
+                                        src="img/icons/menu/history-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="viewTracking('home')"><p>{{lang.tracking | uppercase}}</p><img
-                                        src="img/icons/menu/tracking.png" class="menu-list-icon"
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="viewTracking('home')" class="font-smal"><p>{{lang.tracking | uppercase}}</p><img
+                                        src="img/icons/menu/tracking-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-show="false" ng-click="viewVersions()"><p>{{lang.versions | uppercase}}</p><img
-                                        src="img/icons/menu/history_icon_16.png" class="menu-list-icon"
+                                <md-list-item ng-show="true" ng-click="viewVersions()" class="font-smal"><p>{{lang.versions | uppercase}}</p><img
+                                        src="img/icons/menu/version-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="quickActions()"><p>{{lang.quickActions | uppercase}}</p><img
-                                        src="img/icons/menu/quick_action_16.png" class="menu-list-icon"
+                                <md-list-item ng-click="quickActions()" class="font-smal"><p>{{lang.quickActions | uppercase}}</p><img
+                                        src="img/icons/menu/quick-actions.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="showLegend()"><p>{{lang.legend | uppercase}}</p><img
-                                        src="img/icons/menu/legend_icon.png" class="menu-list-icon"
+                                <md-list-item ng-click="showLegend()" class="font-smal"><p>{{lang.legend | uppercase}}</p><img
+                                        src="img/icons/menu/legend-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="changePassword()"><p>{{lang.changePassword | uppercase}}</p><img
-                                        src="img/icons/menu/password_icon_16.png" class="menu-list-icon"
+                                <md-list-item ng-click="changePassword()" class="font-smal"><p>{{lang.changePassword | uppercase}}</p><img
+                                        src="img/icons/menu/password-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="logout()"><p class="color-red">{{lang.logout | uppercase}}</p><img
-                                        src="img/icons/menu/logout_icon_16.png" class="menu-list-icon"
+                                <md-list-item ng-click="logout()" class="font-smal"><p class="color-red">{{lang.logout | uppercase}}</p><img
+                                        src="img/icons/menu/logout-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                             </md-list>
 
@@ -111,7 +120,7 @@
 
                                 <md-input-container class="margin-bottom-0 margin-top-10">
                                     <label>{{lang.searchWetag}}</label>
-                                    <md-select ng-model="selectedTag">
+                                    <md-select ng-model="selectedTag"  md-on-open="getAllWetags()">
 
                                         <md-option ng-repeat="tag in menuTags" ng-value="tag.name">
                                             {{tag.name}}
@@ -155,8 +164,8 @@
                     </md-content>
                 </md-sidenav>
             </section>
-            <div ng-show="ctrlDataService.playAlarm" layout="column" layout-align="center center" class="bottom-left fadeIn">
-                <md-button ng-click="muteAlarms()" ng-class="alertButtonColor" class="md-raised color-white"><div><span class="margin-right-10-px text-bold">{{lang.muteAlarm}}</span><img class="vertical-align-middle" src="img/icons/mute_alarms.png" alt=""></div></md-button>
+            <div ng-show="ctrlDataService.playAlarm" layout="column" layout-align="center center" class="fadeIn mute-alarms">
+                <md-button ng-click="muteAlarms()" ng-class="alertButtonColor" class="md-raised color-white margin-none"><div><span class="margin-right-10-px text-bold">{{lang.muteAlarm}}</span><img class="vertical-align-middle" src="img/icons/mute_alarms.png" alt=""></div></md-button>
             </div>
         </div>
         <!--end menu container-->

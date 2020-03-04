@@ -14,7 +14,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">{{lang.history | uppercase}}</h1>
+                <h1 class=" font-iceberg color-white font-x-large">{{lang.history | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -128,8 +128,8 @@
                             {{row.man_down_cause.toString() || lang.noData}}
                         </td>
                     </tr>
-                    <tr md-row ng-show="tableEmpty">
-                        <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
+                    <tr md-row ng-show="historyRows.length === 0">
+                        <td md-cell colspan="10" class="text-center color-red">{{lang.noResultFound}}</td>
                     </tr>
                     </tbody>
                 </table>

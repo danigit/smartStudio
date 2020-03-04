@@ -10,9 +10,11 @@
         <link rel="stylesheet" href="css/custom.css">
         <link rel="stylesheet" href="css/login.css">
         <link rel="stylesheet" href="css/home.css">
+        <link rel="stylesheet" href="css/outdoor.css">
         <link rel="stylesheet" href="css/recover-password.css">
         <link rel="stylesheet" href="css/canvas.css">
         <link rel="stylesheet" href="css/menu.css">
+        <link rel="stylesheet" href="css/category-legend.css">
         <link rel="stylesheet" href="css/popup.css">
         <link rel="stylesheet" href="css/categories_legend.css">
         <link href="css/default/md-data-table.min.css" rel="stylesheet" type="text/css"/>
@@ -25,7 +27,8 @@
         <script src="js/configuration.js"></script>
 
         <!--CDN'S JS-->
-        <script src="js/default/markerclusterer.js"></script>
+<!--        <script src="js/default/markerclusterer.js"></script>-->
+        <script src="https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDRkPToSWF3vruJ_sY_OpaK15QB-pNuaZs&libraries=drawing" async defer></script>
     </head>
 
@@ -33,6 +36,7 @@
         <div ng-view id="mainContent"></div>
 
         <ui-view></ui-view>
+
 
         <!--DEFAULT JS-->
         <script src="js/default/angular.min.js"></script>
@@ -46,6 +50,7 @@
         <script src="js/default/Chart.min.js"></script>
         <script src="js/default/angular-chart.min.js"></script>
 
+
         <script src="js/default/Blob.js"></script>
         <script src="js/default/FileSaver.min.js"></script>
         <script src="js/default/angular-file-saver.min.js"></script>
@@ -58,6 +63,15 @@
         <script src="js/main.js"></script>
         <script src="resources/lang/italian.js"></script>
         <script src="js/controllers.js"></script>
+        <script src="js/login_controller.js"></script>
+        <script src="js/home_controller.js"></script>
+        <script src="js/outdoor_controller.js"></script>
+        <script src="js/canvas_controller.js"></script>
+        <script src="js/toast_controller.js"></script>
+        <script src="js/table_with_hidden_columns_controller.js"></script>
+        <script src="js/home_service.js"></script>
+        <script src="js/outdoor_service.js"></script>
+        <script src="js/canvas_service.js"></script>
         <script src="js/services.js"></script>
     </body>
 </html>

@@ -1,23 +1,35 @@
 <div ng-controller="languageController">
-    <div layout="row" layout-sm="row" layout-xs="row" layout-align="center center" layout-wrap
+    <div layout="row" layout-sm="row" layout-align="center start" layout-wrap
          class="height-100-vh zindex-100">
 
-        <div id="login-container" flex="25" flex-lg="25" flex-xl="20" flex-sm="40" flex-xs="100" class="">
+        <div id="login-container" class="">
 
             <form id="loginForm" name="loginForm">
 
-                <div layout="row" layout-align="center center">
-                    <img ng-show="showPartnerLogo" src="img/icons/rina-logo.jpg" class="margin-right-50-px"
-                         alt="Smart Track" title="Smart Track">
-                    <img src="img/icons/login-icon.png" class="avatar-image border-radius-50"
-                         alt="Smart Track" title="Smart Track">
+                <div layout="row" layout-align="center center" class="height-300px align-item-start">
+                    <div layout="row" layout-align="center center" class="position-absolute width-400px height-150px">
+                        <div ng-if="showPartner"  layout="column" layout-align="center center" class="width-50 height-80px"">
+                            <img src="img/icons/rina-logo.jpg" class="position-absolute"
+                                 alt="Smart Track" title="Smart Track">
+                        </div>
+                        <div layout="column" layout-align="center center" class="width-50 height-135px">
+                            <img src="img/icons/login-icon-inner.png" class="avatar-image border-radius-50 position-absolute"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-middle-inner.png" class="avatar-image border-radius-50 spin-logo-right-2s"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-middle-outer.png" class="avatar-image border-radius-50 spin-logo-left-3s"
+                                 alt="Smart Track" title="Smart Track">
+                            <img src="img/icons/login-icon-outer.png" class="avatar-image border-radius-50 spin-logo-right"
+                                 alt="Smart Track" title="Smart Track">
+                        </div>
+                        <div layout="row" layout-align="center center" class="padding-bottom-10 margin-top-150px position-absolute">
+                            <h1 class=" font-iceberg font-x-large margin-none margin-top-150px">SAFETY IoT PLATFORM</h1>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div layout="column">
-
-                    <div layout="row" layout-align="center center" class="padding-bottom-10 padding-top-5">
-                        <h1 class=" font-iceberg font-x-large">SAFETY IoT PLATFORM</h1>
-                    </div>
+                <div layout="column" class="width-300-px margin-auto">
 
                     <md-input-container class="margin-bottom-0">
                         <label for="usernameInput" class="font-smal">{{lang.username}}</label>
@@ -58,9 +70,17 @@
             </form>
 
             <div ng-click="recoverPassword()"
-                 class="float-right  font-smal cursor-pointer background-transparent-white padding-10-px">
-                <p class="text-underlined margin-none">{{lang.recoverPassword}}</p>
+                 class="font-smal width-200-px margin-lr-auto margin-bottom-50-px cursor-pointer background-transparent-white padding-10-px">
+                <p class="text-underlined text-center text-bold margin-none">{{lang.recoverPassword}}</p>
             </div>
+            <div class="font-smal margin-lr-auto cursor-pointer background-transparent-white padding-10-px position-fixed bottom-0 left-10 width-80">
+                <p class="text-bold font-large text-center color-black">La vostra sicurezza è la nostra priorità</p>
+                <p class="text-center text-bold margin-none">Oggi nel mondo ogni 15 secondi, 1 lavoratore muore e 153 lavoratori hanno un incidente sul lavoro,
+                    (fonte ILO, Organizzazione internazionale del lavoro). Nonostante l’adeguamento delle normative e delle leggi a tutela della sicurezza sul
+                    posto di lavoro, la salvaguardia delle risorse umane rimane uno dei primari problemi irrisolti del mondo industriale contemporaneo, una delle
+                    principali scommesse da indirizzare per l’utilizzo e il reale successo di nuovi scenari produttivi e logistici della quarta rivoluzione industriale.</p>
+            </div>
+
         </div>
     </div>
 </div>

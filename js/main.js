@@ -21,7 +21,7 @@
                 controller : 'loginController as loginCtr',
                 resolve    : {
                     goToHomeIfLoggedIn: ['$state', 'newSocketService', 'dataService', function ($state, newSocketService, dataService) {
-                        newSocketService.getData('get_user', {username: sessionStorage.user}, (response) => {
+                        newSocketService.getData('get_user', {username: cesarShift(sessionStorage.user, -CEZAR_KEY)}, (response) => {
                             if (response.result !== 'no_user')
                                 $state.go('home');
                         });
@@ -53,8 +53,7 @@
                         let promise = $q.defer();
                         let result  = {};
                         setTimeout(function () {
-                            newSocketService.getData('get_user', {username: sessionStorage.user}, (response) => {
-                                console.log(response);
+                            newSocketService.getData('get_user', {username: cesarShift(sessionStorage.user, -CEZAR_KEY)}, (response) => {
                                 if (response.result !== 'no_user') {
                                     dataService.user = response.result[0];
                                     if (response.result[0].role === 1) {
@@ -131,7 +130,7 @@
                                 } else {
                                     $state.go('home');
                                 }
-                                newSocketService.getData('get_user', {username: sessionStorage.user}, (user) => {
+                                newSocketService.getData('get_user', {username: cesarShift(sessionStorage.user, -CEZAR_KEY)}, (user) => {
                                     if (user.result[0].username !== undefined) {
 
                                         dataService.user = user.result[0];
@@ -154,7 +153,7 @@
                                             dataService.isTracker = 1;
                                         }
 
-                                        newSocketService.getData('get_tag_by_user', {user: dataService.user.username}, (userTags) => {
+                                        newSocketService.getData('get_tags_by_user', {user: dataService.user.username}, (userTags) => {
                                             dataService.userTags = userTags.result;
                                             newSocketService.getData('get_all_tags', {}, (allTags) => {
                                                 if (allTags !== null && allTags !== undefined) {
@@ -186,7 +185,7 @@
                         let result  = {};
 
                         setTimeout(function () {
-                            newSocketService.getData('get_user', {username: sessionStorage.user}, (response) => {
+                            newSocketService.getData('get_user', {username: cesarShift(sessionStorage.user, -CEZAR_KEY)}, (response) => {
                                 if (response.result[0].username !== undefined) {
                                     dataService.user = response.result[0];
                                     if (response.result[0].role === 1) {

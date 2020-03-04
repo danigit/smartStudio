@@ -14,7 +14,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">{{lang.tagCategories | uppercase}}</h1>
+                <h1 class=" font-iceberg color-white font-x-large">{{lang.tagCategories | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -63,14 +63,14 @@
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float class="md-block width-100 margin-bottom-0">
+        <md-input-container md-no-float class="md-block width-100 margin-bottom-50-px margin-top-0">
             <div layout="row" layout-align="center end" class="margin-bottom-30-px">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addTagCategory()" alt="{{lang.addTagCategory}}" title="{{lang.addTagCategory}}">
             </div>
         </md-input-container>
 
-        <md-table-pagination class="color-red" md-limit="query.limit" md-limit-options="query.limitOptions"
+        <md-table-pagination class="color-red background-white position-fixed bottom-0 width-100" md-limit="query.limit" md-limit-options="query.limitOptions"
                              md-page="query.page"
                              md-total="{{tagCategories.length}}" md-on-paginate="">
         </md-table-pagination>

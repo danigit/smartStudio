@@ -8,13 +8,20 @@
             </md-button>
         </div>
 
-        <div layout="row" layout-align="center center" class="margin-top--20-px">
-            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        <div layout="row" layout-align="center center" class="margin-top--20-px height-60px">
+            <img src="img/icons/login-icon-inner.png" class="home-menu-logo top-20px position-absolute"
+                 alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon-middle-inner.png" class="home-menu-logo spin-logo-right-2s top-20px"
+                 alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon-middle-outer.png" class="home-menu-logo spin-logo-left-3s top-20px"
+                 alt="Smart Track" title="Smart Track">
+            <img src="img/icons/login-icon-outer.png" class="home-menu-logo spin-logo-right top-20px"
+                 alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">{{lang.activeAllarms | uppercase}}</h1>
+                <h1 class="font-iceberg color-white font-x-large">{{lang.activeAllarms | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -48,7 +55,7 @@
                 <tr ng-hide="alarm.name === 'Tag fuori sito' && !outlocationTags" md-row md-select="anchor"
                     md-on-select="logItem" md-auto-select="true"
                     ng-repeat="alarm in alarms | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
-                    <td md-cell><img ng-src="{{alarm.image}}" class="md-avatar" alt="{{alarm.name}}"
+                    <td md-cell><img ng-src="{{alarm.image}}" class="md-avatar alarm-table-image" alt="{{alarm.name}}"
                                      title="{{alarm.name}}"/>
                     </td>
                     <td md-cell class="no-wrap">{{alarm.tag}}</td>
@@ -57,11 +64,14 @@
                     <td md-cell class="no-wrap">{{alarm.location}}</td>
                     <td md-cell class="no-wrap">
                         <md-button
-                                ng-click="loadLocation(alarm)"
-                                class="md-raised background-darkcyan color-white">
+                                ng-click="loadLocation(alarm.tagId)"
+                                class="md-raised background-gray color-darkcyan margin-top-5-px">
                             {{lang.openSite | uppercase}}
                         </md-button>
                     </td>
+                </tr>
+                <tr md-row ng-show="tableEmpty">
+                    <td md-cell colspan="13" class="text-center color-red">{{lang.noResultFound}}</td>
                 </tr>
                 </tbody>
             </table>

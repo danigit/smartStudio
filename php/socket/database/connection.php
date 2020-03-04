@@ -1928,7 +1928,6 @@ class Connection
                 }
             }
 
-
             mysqli_close($this->connection);
             return $array_result;
         }
@@ -2587,6 +2586,7 @@ class Connection
      */
     function get_all_tags()
     {
+        $milisec_time = strtotime("now");
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -2621,6 +2621,8 @@ class Connection
             }
 
             mysqli_close($this->connection);
+            // TODO - if I put this on the client I get an object instead of an array
+//            $result_array['server_time'] = array($milisec_time);
             return $result_array;
         }
 
@@ -3550,6 +3552,34 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    function set_zoneA_and_zoneB($work_id, $zone_id)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+
+            $this->query = "UPDATE zone SET WORK_PROCESS_ID = ? WHERE ID = ?";
+
+            $statement = $this->execute_selecting($this->query, 'ii', $work_id, $zone_id);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
+
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
     /**
      * Funzione che recupera tutti i tipi di un tag
      * @param $floor
@@ -3842,7 +3872,7 @@ class Connection
 
     /** Funzione che recupera tutti i tipi di un tag
      * @param $zone_id
-     * @return array|db_errors
+     * @return array|db_errors|int
      */
     function delete_floor_zone($zone_id)
     {

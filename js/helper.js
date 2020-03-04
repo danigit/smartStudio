@@ -426,3 +426,64 @@ function findDrawedZone(coords, zones, floor, canvasWidth, canvasHeight) {
 
     return findedZones;
 }
+
+/**
+ * Function that encode the string with the cezar code by the amount passed as parameter
+ * @param str
+ * @param amount
+ * @returns {string}
+ */
+function cesarShift(str, amount) {
+
+    // Wrap the amount
+    if (amount < 0)
+        return cesarShift(str, amount + 26);
+
+    // Make an output variable
+    let output = '';
+
+    if (str !== undefined) {
+        // Go through each character
+        for (var i = 0; i < str.length; i++) {
+
+            // Get the character we'll be appending
+            let c = str[i];
+
+            // If it's a letter...
+            if (c.match(/[a-z]/i)) {
+
+                // Get its code
+                var code = str.charCodeAt(i);
+
+                // Uppercase letters
+                if ((code >= 65) && (code <= 90))
+                    c = String.fromCharCode(((code - 65 + amount) % 26) + 65);
+
+                // Lowercase letters
+                else if ((code >= 97) && (code <= 122))
+                    c = String.fromCharCode(((code - 97 + amount) % 26) + 97);
+
+            }
+
+            // Append
+            output += c;
+
+        }
+    }
+
+    // All done!
+    return output;
+};
+
+/**
+ * @return {string}
+ */
+let lightenColor = function(color, percent) {
+    let num = parseInt(color.replace("#",""),16),
+        amt = Math.round(2.55 * percent),
+        R = (num >> 16) + amt,
+        B = (num >> 8 & 0x00FF) + amt,
+        G = (num & 0x0000FF) + amt;
+
+    return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + (B < 255 ? B < 1 ? 0 : B : 255) * 0x100 + (G < 255 ? G < 1 ? 0 : G : 255)).toString(16).slice(1);
+};
