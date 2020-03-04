@@ -333,9 +333,9 @@
                         // Setting automatically the center of the map
                         // TODO - have to set the center only when I add or remove a new tag
                         if (dataService.dynamicTags.length === 1) {
-                            map.setCenter(bounds.getCenter());
+                            // map.setCenter(bounds.getCenter());
                         } else if (dataService.dynamicTags.length > 1) {
-                            map.setCenter(bounds.getCenter());
+                            // map.setCenter(bounds.getCenter());
                         } else {
                             let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
                             map.setCenter(latLng);

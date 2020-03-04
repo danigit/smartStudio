@@ -146,22 +146,48 @@
                         // drawing the cluster of markers if any
                         homeCtrl.markerClusterer = new MarkerClusterer(map, homeCtrl.dynamicMarkers, MARKER_CLUSTER_OK_IMAGE);
 
+                        //TODO show info window on cluster mouseover
+                        // google.maps.event.addListener(homeCtrl.markerClusterer, 'mouseover', (mapCluster) => {
+                        //     let infoWindow = new google.maps.InfoWindow({
+                        //         content: '<div class="marker-info-container">' +
+                        //             '<div class="infinite-rotation"><img src="' + markersIconPath + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio"></div>' +
+                        //             '<p class="text-center font-large text-bold color-darkcyan"></p><div><p class="float-left margin-right-10-px">' +
+                        //             'Latitude: </p><p class="float-right"><b></b></p></div>' +
+                        //             '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b></b></p></div>' +
+                        //             '<div class="clear-float display-flex"><div class="width-50 margin-left-10-px"><img src="' + iconsPath + 'offline_tags_alert_32.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b></b></span>' +
+                        //             '</div><div class="width-45 "><img src="' + iconsPath + 'offline_anchors_alert_32.png" class="margin-right-10-px"><span class="font-large vertical-align-super color-red"><b></b></span></div></div>' +
+                        //             '</div>'
+                        //     });
+                        //
+                        //     infoWindow.setPosition(mapCluster.center_)
+                        //     infoWindow.open(map);
+                        // })
+
                         // changing the cloud icon if there are alarms
                         google.maps.event.addListener(homeCtrl.markerClusterer, 'clusteringend', (mapClusters) => {
+                            // getting the clusters
                             mapClusters.getClusters().forEach(cluster => {
+                                let clusterLocations = [];
+                                // getting the markers in the cluster
                                 cluster.getMarkers().forEach(l => {
-                                    markers.some(fl => {
+                                    markers.forEach(fl => {
                                         if (l.getPosition().lat() === fl.position[0] && l.getPosition().lng() === fl.position[1]){
-                                            if (!fl.is_inside) {
-                                                let tags = homeService.getOutdoorLocationTags(fl, dataService.allTags.filter(t => !t.radio_switched_off));
-                                                homeService.setClusterIcon(tags, cluster);
-                                            } else{
-                                                let tags = homeService.getIndoorLocationTags(fl, dataService.userTags.filter(t => !t.radio_switched_off));
-                                                homeService.setClusterIcon(tags, cluster);
-                                            }
+                                            clusterLocations.push(fl);
                                         }
-                                    })
+                                    });
                                 });
+                                // controlling the locations in the cluster for alarms
+                                if(homeService.hasClusterAlarms(clusterLocations)){
+                                    cluster.markerClusterer_.styles_[0].url = iconsPath + '/markers/cloud_error1.png';
+                                    cluster.markerClusterer_.options.styles[0].url = iconsPath + '/markers/cloud_error1.png';
+                                    cluster.clusterIcon_.styles_[0].url = iconsPath + '/markers/cloud_error1.png';
+                                    cluster.clusterIcon_.url_ = iconsPath + '/markers/cloud_error1.png';
+                                } else{
+                                    cluster.markerClusterer_.styles_[0].url = iconsPath + '/markers/cloud_ok1.png';
+                                    cluster.markerClusterer_.options.styles[0].url = iconsPath + '/markers/cloud_ok1.png';
+                                    cluster.clusterIcon_.styles_[0].url = iconsPath + '/markers/cloud_ok1.png';
+                                    cluster.clusterIcon_.url_ = iconsPath + '/markers/cloud_ok1.png';
+                                }
                             })
                         });
 

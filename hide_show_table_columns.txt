@@ -1,0 +1,29 @@
+var app = angular.module("myApp", []);
+app.controller("myCtrl", function($scope) {
+  $scope.firstName = "John";
+  $scope.lastName = "Doe";
+  $scope.jsonmain = ["brand", "checkstatus", "color", "fabric", "fit", "package contents", "size", "sku", "style", "title", "type", "wash care"];
+  $scope.items = $scope.jsonmain.map(function(obj) {
+    var newObj = {
+      name: obj,
+      display: true
+    };
+    return newObj;
+  });
+});
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+<div ng-app="myApp" ng-controller="myCtrl">
+  <span ng-repeat="item in items">
+	<label><input type="checkbox" ng-model="item.display" type="button" class="btn btn-success">{{item.name}}</label>
+</span>
+  <table style="border: 1px solid ;">
+    <tr>
+      <td style="border: 1px solid #dddddd;" ng-show="item.display" ng-repeat="item in items">
+        {{item.name}}
+      </td>
+    </tr>
+  </table>
+</div>
+
+Hide column dynamically depend on checkbox angular stackoverfow

@@ -8,15 +8,8 @@
             </md-button>
         </div>
 
-        <div layout="row" layout-align="center center" class="margin-top--20-px height-60px">
-            <img src="img/icons/login-icon-inner.png" class="home-menu-logo top-20px position-absolute"
-                 alt="Smart Track" title="Smart Track">
-            <img src="img/icons/login-icon-middle-inner.png" class="home-menu-logo spin-logo-right-2s top-20px"
-                 alt="Smart Track" title="Smart Track">
-            <img src="img/icons/login-icon-middle-outer.png" class="home-menu-logo spin-logo-left-3s top-20px"
-                 alt="Smart Track" title="Smart Track">
-            <img src="img/icons/login-icon-outer.png" class="home-menu-logo spin-logo-right top-20px"
-                 alt="Smart Track" title="Smart Track">
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
         </div>
 
         <div layout="column">
@@ -38,15 +31,22 @@
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
 
+                <div layout="row">
+                    <div ng-repeat="item in items track by $index" style="display: flex">
+                        <md-checkbox ng-checked="exists(item, columns)" ng-click="toggle($index, columns)"></md-checkbox>
+                        <span class="color-darkcyan">{{lang.name | uppercase}}</span>
+                    </div>
+                </div>
                 <thead md-head md-order="query.order">
+
                 <tr md-row>
-                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
-                    <th md-column md-order-by="latitude"><span
+                    <th md-column md-order-by="name" ng-if="exists(0, columns)"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column md-order-by="latitude"ng-if="exists(1, columns)"><span
                             class="color-darkcyan">{{lang.latitude | uppercase}}</span></th>
-                    <th md-column md-order-by="longitude"><span
+                    <th md-column md-order-by="longitude"ng-if="exists(2, columns)"><span
                             class="color-darkcyan">{{lang.longitude | uppercase}}</span></th>
-                    <th md-column md-order-by="radius"><span class="color-darkcyan">{{lang.radius | uppercase}} °</span>
-                    <th md-column md-order-by="radius"><span class="color-darkcyan">{{lang.radius | uppercase}} m</span>
+                    <th md-column md-order-by="radius"ng-if="exists(3, columns)"><span class="color-darkcyan">{{lang.radius | uppercase}} °</span>
+                    <th md-column md-order-by="radius"ng-if="exists(4, columns)"><span class="color-darkcyan">{{lang.radius | uppercase}} m</span>
                     </th>
                     <th ng-if="isAdmin" md-column></th>
                 </tr>
@@ -55,21 +55,21 @@
                 <tbody md-body>
                 <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
                     ng-repeat="location in locationsTable | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
-                    <td md-cell class="no-wrap" ng-click="editCell($event, location, 'name')"
+                    <td md-cell class="no-wrap" ng-if="exists(0, columns)" ng-click="editCell($event, location, 'name')"
                         ng-class="{'md-placeholder': !location.name}">
                         {{location.name || lang.insertName}}
                     </td>
-                    <td md-cell class="no-wrap" ng-click="editCell($event, location, 'latitude')"
+                    <td md-cell class="no-wrap" ng-if="exists(1, columns)" ng-click="editCell($event, location, 'latitude')"
                         ng-class="{'md-placeholder': !location.latitude}">{{location.latitude || lang.insertLatitude}}
                     </td>
-                    <td md-cell class="no-wrap" ng-click="editCell($event, location, 'longitude')"
+                    <td md-cell class="no-wrap" ng-if="exists(2, columns)" ng-click="editCell($event, location, 'longitude')"
                         ng-class="{'md-placeholder': !location.longitude}">{{location.longitude || lang.longitude}}
                     </td>
-                    <td md-cell class="no-wrap" ng-click="editCell($event, location, 'radius')"
+                    <td md-cell class="no-wrap" ng-if="exists(3, columns)" ng-click="editCell($event, location, 'radius')"
                         ng-class="{'md-placeholder': !location.radius.toString()}">{{location.radius ||
                         lang.insertRadius}}
                     </td>
-                    <td md-cell class="no-wrap" ng-click="editCell($event, location, 'meter_radius')"
+                    <td md-cell class="no-wrap" ng-if="exists(4, columns)" ng-click="editCell($event, location, 'meter_radius')"
                         ng-class="{'md-placeholder': !location.meter_radius.toString()}">{{location.meter_radius ||
                         lang.insertRadius}}
                     </td>

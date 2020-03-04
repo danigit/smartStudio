@@ -14,7 +14,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">{{lang.trackingTable | uppercase}}</h1>
+                <h1 class=" font-iceberg color-white font-x-large">{{lang.trackingTable | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -108,7 +108,7 @@
                             {{row.protocol.toString() || lang.noData}}
                         </td>
                     </tr>
-                    <tr md-row ng-show="tableEmpty">
+                    <tr md-row ng-show="trackingRows.length === 0">
                         <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
                     </tr>
                     </tbody>

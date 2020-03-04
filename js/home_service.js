@@ -134,15 +134,18 @@
 
         /**
          * Function that set the alarm icon to the cluster if there is a location in alarm inside
-         * @param tags
-         * @param cluster
+         * @param clusterLocations
          */
-        home_service.setClusterIcon = (tags, cluster) => {
-            if (dataService.checkIfTagsHaveAlarms(tags)){
-                cluster.getMarkerClusterer().getStyles()[0].url= iconsPath + '/markers/cloud_error1.png';
-            } else {
-                cluster.getMarkerClusterer().getStyles()[0].url= iconsPath + '/markers/cloud_ok1.png';
-            }
+        home_service.hasClusterAlarms = (clusterLocations) => {
+            return clusterLocations.some(cl => {
+                if (!cl.is_inside) {
+                    let tags = home_service.getOutdoorLocationTags(cl, dataService.allTags.filter(t => !t.radio_switched_off));
+                    return dataService.checkIfTagsHaveAlarms(tags)
+                } else{
+                    let tags = home_service.getIndoorLocationTags(cl, dataService.userTags.filter(t => !t.radio_switched_off));
+                    return dataService.checkIfTagsHaveAlarms(tags)
+                }
+            })
         }
     }
 })();

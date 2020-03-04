@@ -245,8 +245,8 @@
 
                                     <label>{{lang.selectFloor}}</label>
 
-                                    <md-select ng-model="canvasCtrl.floorData.defaultFloorName">
-                                        <md-option ng-repeat="floor in canvasCtrl.floors" ng-value="floor.name">
+                                    <md-select ng-model="canvasCtrl.floorData.defaultFloorName" md-on-open="getLocationFloors()">
+                                        <md-option ng-repeat="floor in menuLocationFloors" ng-value="floor.name">
                                             {{floor.name}}
                                         </md-option>
                                     </md-select>

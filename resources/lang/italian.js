@@ -373,7 +373,8 @@ function languageController($scope) {
         openLegend: 'Legenda',
         categoryLegend: 'Legenda categorie',
         manDownCause: 'Causa uomo a terra',
-        anchorMac: 'MAC anchora'
+        anchorMac: 'MAC anchora',
+        userTableTitle: 'Utenti'
     }
 };
 
@@ -477,5 +478,11 @@ let lang = {
     ble: 'BLE',
     wifi: 'WIFI',
     gprs: 'GPRS',
-    safetyBox: 'Safety Box'
+    safetyBox: 'Safety Box',
+    locationDeleted: 'Sito cancelato',
+    impossibleDeleteLocation: 'Impossibile cancellare la locazione',
+    locationFieldChanged: 'Campo sito cambiato',
+    locationFieldNotChanged: 'Campo sito non cambiato',
+    login: 'Login',
+    tagOff: 'Tag spento!',
 }

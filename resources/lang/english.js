@@ -364,7 +364,8 @@ function languageController($scope) {
         headerOrder: '',
         headerLeftSide: '',
         openLegend: '',
-        categoryLegend: ''
+        categoryLegend: '',
+        userTableTitle: ''
     }
 };
 
@@ -468,5 +469,11 @@ let lang = {
     ble: '',
     wifi: '',
     gprs: '',
-    safetyBox: ''
+    safetyBox: '',
+    locationDeleted: '',
+    impossibleDeleteLocation: '',
+    locationFieldChanged: 'Campo sito cambiato',
+    locationFieldNotChanged: 'Campo sito non cambiato',
+    login: '',
+    tagOff: ''
 }

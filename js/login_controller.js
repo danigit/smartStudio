@@ -15,7 +15,7 @@
         $scope.showPartner = SHOW_PARTNER_LOGO;
 
         // handling the login error messages
-        $scope.errorHandeling = {noConnection: false, wrongData: false, socketClosed: newSocketService.socketClosed};
+        $scope.errorHandeling = {wrongData: false, socketClosed: newSocketService.socketClosed};
 
         // function that makes the log in of the user
         $scope.login = (form) => {
@@ -34,20 +34,15 @@
                         password: $scope.user.password
                     }, (response) => {
                         // showing errors on login
-                        if (response === 'error') {
-                            $scope.errorHandeling.wrongData    = false;
-                            $scope.errorHandeling.noConnection = true;
+                        if (response.result === 'ERROR_ON_LOGIN') {
+                            $scope.errorHandeling.wrongData    = true;
+                            resetLoginButton();
                         }
                         // if the login is ok I save the username in local and redirect to home
                         else if (response.result.id !== undefined) {
                             dataService.user.username = $scope.user.username;
                             sessionStorage.user       = cesarShift($scope.user.username, CEZAR_KEY);
                             $state.go('home');
-                        }
-                        // showing errors on login
-                        else {
-                            $scope.errorHandeling.noConnection = false;
-                            $scope.errorHandeling.wrongData    = true;
                         }
                         $scope.$apply();
                     });
@@ -69,4 +64,13 @@ let loginInProgressButton = () => {
     document.querySelector('#loginButton').innerHTML = lang.entering;
     document.querySelector('#loginButton').style.color = LOGING_IN_COLOR;
     document.querySelector('#loginButton').disabled = true;
+};
+
+/**
+ * Function that reset the write on the login button and enables it
+ */
+let resetLoginButton = () => {
+    document.querySelector('#loginButton').innerHTML = lang.login;
+    document.querySelector('#loginButton').style.color = '#000000';
+    document.querySelector('#loginButton').disabled = false;
 };

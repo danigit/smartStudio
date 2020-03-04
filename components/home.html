@@ -117,7 +117,7 @@
 
                                 <md-input-container class="margin-bottom-0 margin-top-10">
                                     <label>{{lang.searchWetag}}</label>
-                                    <md-select ng-model="selectedTag">
+                                    <md-select ng-model="selectedTag"  md-on-open="getAllWetags()">
 
                                         <md-option ng-repeat="tag in menuTags" ng-value="tag.name">
                                             {{tag.name}}

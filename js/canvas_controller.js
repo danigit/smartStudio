@@ -245,7 +245,6 @@
             let tagClouds         = [];
             let singleTags        = [];
             let canvasDrawned = false;
-            let upd = true;
 
             // starting the continuous update of the canvas
             dataService.canvasInterval = $interval(function () {
@@ -296,7 +295,6 @@
 
                                 // settuing the local location floor with the ones on the database
                                 canvasCtrl.floors = floorsByLocation.result;
-                                // let tempFloors = floorsByLocation.result;
 
                                 // getting the drawings
                                 newSocketService.getData('get_drawing', {floor: canvasCtrl.defaultFloor[0].id}, (drawings) => {
@@ -357,7 +355,7 @@
                                                         if (response.result === 0) {
                                                             $mdToast.show({
                                                                 hideDelay       : TOAST_SHOWING_TIME,
-                                                                position        : 'botom center',
+                                                                position        : 'bottom center',
                                                                 controller      : 'toastController',
                                                                 bindToController: true,
                                                                 locals          : {

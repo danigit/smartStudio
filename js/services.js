@@ -66,7 +66,7 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', 'newSocketService', ($scope, newSocketService) => {
+                controller         : ['$scope', 'newSocketService', '$timeout', '$mdToast', ($scope, newSocketService, $timeout, $mdToast) => {
 
                     $scope.alarms          = [];
                     $scope.outlocationTags = service.switch.showOutrangeTags;
@@ -95,28 +95,22 @@
                         // getting all the tags
                         newSocketService.getData('get_all_tags', {}, (allTagsResult) => {
 
-                            allTags = allTagsResult.result;
+                            allTags = allTagsResult.result.filter(t => !t.radio_switched_off);
 
                             // getting all the tags of the logged user
                             // they are all the indoor tags because the tags are related to the users by the anchors and the anchors are
                             // only in indoor locations
                             newSocketService.getData('get_tags_by_user', {user: service.user.username}, (userTags) => {
-                                if (!userTags.session_state)
-                                    window.location.reload();
 
                                 // get all the locations of the logged user
                                 newSocketService.getData('get_user_locations', {user: service.user.id}, (userLocations) => {
-                                    if (!userLocations.session_state)
-                                        window.location.reload();
 
                                     // getting all the locations
                                     newSocketService.getData('get_all_locations', {}, (response) => {
-                                        if (!response.session_state)
-                                            window.location.reload();
 
                                         locations = response.result;
 
-                                        indoorLocationTags        = userTags.result;
+                                        indoorLocationTags        = userTags.result.filter(t => !t.radio_switched_off);
                                         // the dags indoor have no location if the anchor is null
                                         let indoorNoLocationTags  = allTags.filter(t => !service.isOutdoor(t) && t.anchor_id === null);
 
@@ -137,7 +131,7 @@
                                         allTagsAlarms = [];
 
                                         // getting the indoor tags with a location alarms
-                                        userTags.result.forEach(tag => {
+                                        indoorLocationTags.forEach(tag => {
                                             // getting the location of the current tag
                                             let tagLocation = userLocations.result.find(l => l.latitude === tag.location_latitude && l.longitude === tag.location_longitude);
 
@@ -180,7 +174,8 @@
                                         // getting the outdoor tags without a location alarms
                                         outdoorNoLocationTags.forEach(tag => {
                                             // show the tag as no location
-                                            if (!locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius))
+                                            if (!locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius)
+                                                && service.switch.showOutrangeTags)
                                                 allTagsAlarms.push(service.createAlarmObjectForInfoWindow(tag, lang.outOfSite, lang.outOfSiteDescription, tagsIconPath + 'tag_out_of_location.png', lang.noLocation));
 
                                             // getting tags alarms
@@ -211,8 +206,6 @@
 
                     //opening the location where the alarm is
                     $scope.loadLocation = (alarm) => {
-                        // closing the alarms table
-                        $mdDialog.hide();
 
                         // getting the tag in alarm
                         let tag = allTags.find(t => t.id === alarm);
@@ -223,6 +216,9 @@
                             if (tag.gps_north_degree === -2 && tag.gps_east_degree === -2) {
                                 showNotFountTagWindow()
                             } else {
+                                // closing the alarms table
+                                $mdDialog.hide();
+
                                 // getting the outdoor location of the tag
                                 let tagLocation = locations.find(l => (service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude])) <= l.radius);
 
@@ -261,7 +257,7 @@
                                             });
 
                                             NgMap.getMap('search-map').then((map) => {
-                                                map.set('styles', mapConfiguration);
+                                                map.set('styles', MAP_CONFIGURATION);
                                                 let latLng = new google.maps.LatLng(alarmTag.gps_north_degree, alarmTag.gps_east_degree);
 
                                                 map.setCenter(latLng);
@@ -292,6 +288,8 @@
                             }
                             //if the tag has a location then I go in the location
                             else {
+                                // closing the alarms table
+                                $mdDialog.hide();
                                 newSocketService.getData('save_location', {location: indoorTag.location_name}, (response) => {
                                     if (!response.session_state)
                                         window.location.reload();
@@ -310,25 +308,31 @@
                      * Function that shows a popup with the message that the tag has no location
                      */
                     let showNotFountTagWindow = () => {
-                        $timeout(function () {
-                            $mdDialog.show({
-                                templateUrl        : componentsPath + 'tag-not-found-alert.html',
-                                parent             : angular.element(document.body),
-                                targetEvent        : event,
-                                clickOutsideToClose: true,
-                                controller         : ['$scope', '$controller', ($scope, $controller) => {
-                                    $controller('languageController', {$scope: $scope});
-
-
-                                    $scope.title   = lang.tagNotFound.toUpperCase();
-                                    $scope.message = lang.tagNotLocation;
-
-                                    $scope.hide = () => {
-                                        $mdDialog.hide();
-                                    }
-                                }]
-                            })
-                        }, 100);
+                        service.showToast(
+                            $mdToast,
+                            'Il tag non appartiene a nessuna posizione!',
+                            'background-darkred',
+                            'color-white',
+                            'top center');
+                        // $timeout(function () {
+                        //     $mdDialog.show({
+                        //         templateUrl        : componentsPath + 'tag-not-found-alert.html',
+                        //         parent             : angular.element(document.body),
+                        //         targetEvent        : event,
+                        //         clickOutsideToClose: true,
+                        //         controller         : ['$scope', '$controller', ($scope, $controller) => {
+                        //             $controller('languageController', {$scope: $scope});
+                        //
+                        //
+                        //             $scope.title   = lang.tagNotFound.toUpperCase();
+                        //             $scope.message = lang.tagNotLocation;
+                        //
+                        //             $scope.hide = () => {
+                        //                 $mdDialog.hide();
+                        //             }
+                        //         }]
+                        //     })
+                        // }, 100);
                     };
 
                     $scope.hide = () => {
@@ -614,6 +618,10 @@
 
                     // continuously updating the tag situation
                     service.offlineTagsInterval     = $interval(function () {
+
+                        if (DEBUG){
+                            console.log('updating tags info window...')
+                        }
                         //getting all the tags
                         // TODO - maybe I have to take only the tags of the current logged user
                         newSocketService.getData('get_all_tags', {}, (response) => {
@@ -741,6 +749,68 @@
         //#####################################################################
 
 
+        service.getProtocol = (history_rows) => {
+            let historyRows = [];
+
+            history_rows.forEach(function (his) {
+                let hisRow = his;
+                switch (his.protocol) {
+                    case 0: {
+                        hisRow.protocol = lang.ble;
+                        break;
+                    }
+                    case 1: {
+                        hisRow.protocol = lang.wifi;
+                        break;
+                    }
+                    case 2: {
+                        hisRow.protocol = lang.gprs;
+                        break;
+                    }
+                    case 3: {
+                        hisRow.protocol = lang.safetyBox;
+                        break;
+                    }
+                }
+
+                switch (his.man_down_cause) {
+                    case 0: {
+                        hisRow.man_down_cause = lang.noCause;
+                        break;
+                    }
+                    case 1: {
+                        hisRow.man_down_cause = lang.freefall;
+                        break;
+                    }
+                    case 2: {
+                        hisRow.man_down_cause = lang.lndPrt;
+                        break;
+                    }
+                    case 3: {
+                        hisRow.man_down_cause = lang.noMov;
+                        break;
+                    }
+                }
+
+                historyRows.push(hisRow)
+            });
+            return historyRows;
+        };
+
+        service.showToast = ($mdToast, message, background, color, position = 'bottom center') => {
+            $mdToast.show({
+                hideDelay       : TOAST_SHOWING_TIME,
+                position        : position,
+                controller      : 'toastController',
+                bindToController: true,
+                locals          : {
+                    message   : message,
+                    background: background,
+                    color     : color
+                },
+                templateUrl     : componentsPath + 'toast.html'
+            });
+        };
 
         // remain outdoor
         /**
@@ -893,6 +963,11 @@
 
                     // getting all the anchors of the current logged user
                     service.offlineAnchorsInterval = $interval(function () {
+
+                        if (DEBUG){
+                            console.log('updating alarms info window...')
+                        }
+
                         newSocketService.getData('get_anchors_by_user', {user: service.user.username}, (response) => {
                             if (!response.session_state)
                                 window.location.reload();

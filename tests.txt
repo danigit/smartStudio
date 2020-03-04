@@ -1,3 +1,13 @@
+LOGIN
+
+- controllare avviso socket chiuso
+- controllare password o username errato
+- controllare la disabilitazione e abilitazione del pulsante login
+
+
+
+
+
 HOME
 
 - zoom in zoom out when a location has alarm
@@ -5,9 +15,69 @@ HOME
 - location in alarm alternating alarms
 - icons on right top corner showing and hiding
 - icons on right top corner working on click
+- not showing the alarm if the tag is turned off
 - alarms table showing the correct alarms
+    - non visualizzare i tag spenti
 - alarms table not showing alarm out of all sites if the quick configuration is not enabled
 - alarms table open site button must work properly
+- controllare che gli info dei tag e delle ancore vengano visualizzati corretamente
+- controllare che i timer degli update vengono fermati e fatti partire correttamente
+
+
+
+MENU
+
+- gestione siti
+    - controllare che l'inserimento dell'imagine funziona
+    - controllare che posso inserire sito senza dare immagine
+    - controllare che l'inserimento di sito indoor inserisca i valori per raggio
+    - controllare che la modifica dei campi funziona
+    - controllare che l'inserimento e la cancellazione funziona
+- gestione utenti
+    - controllare l'inserimento di un nuovo utente e la cancellazione
+    - controllare la gestione delle locations
+    - controllare la modifica dei campi
+- wetags
+    - controllare l'inserimento e la cancellazione
+    - controllare i macs le zone e i parameteri che funzionino
+    - controllare chiamami
+    - controllare la modifica campi
+- categorie tag
+    - controllare inserimento/cancellazione
+    - controllare assegnazione
+    - controllare il caricamento delle imagini sul server
+- safety box
+    - controllare inserimento/cancellazione
+    - controllare la modifica dei campi
+- storico
+    - controllare il salvataggio su file exel
+    - controllare il filtro delle date
+    - controllare la cancellazione
+    - controllare il filtro per tag ed evento
+- comandi rapidi
+    - controllare il funzionamento di ogni switch
+- cerca tag
+    - controllare che i tag spenti non vengano visualizzati
+- cerca sito
+- gestione zone outdoor
+    - inserimento/cancellazione zone rotonde e quadrate
+    - modifica campi tabella
+- gestione ancore
+    - inserimento/cancellazione
+    - modifica campi
+- gestione piani
+    - inserimento/modifica
+    - controllare che carichi il file
+    - modifica campi
+- gestione zone indoor
+    - imserimento/modifica
+    - modifica campi
+- cerca ancore
+- seleziona piano
+- spaziatura griglia
+
+
+
 
 
 
@@ -16,8 +86,13 @@ HOME
 TODO
 - zittire alarme da home mettere intervallo per zittirla(tipo per 10 min) cosi riparte se arriva un nuovo alarme
 - mettere uno switch nell quick action che abilita e disabilita il mostrare delle coordinate al click all'interno dell location outdoor
-
-
+- servono icone per wetag spenti
+- show infowindow on cluster mouseover
+- da inserire il logo che gira su tutte le tabelle
+- inserire nelle tabelle la scritta giusta per i campi che non devono avere un valore (ex locations: per le location indoor raggio non c'e)
+- inserire nuovo tasto per caricare file offline in inserimento categorie tag
+- aggiornare la legenda con le nuove icone
+- metere il nome del tag outdoor al passaggio del mouse sopra
 
 
 RESOLVED BUGS
@@ -26,9 +101,18 @@ RESOLVED BUGS
 - il numero dei tag in info window era sbagliato perche prendeva in considerazine andhe i ta spenti
 - risolto il flickering sul canvas
 - messo il colore giusto della finestra dei gruppi di tag
+- sistemata la visualizzazione dei tag nella tabella tag
 
 
+BUGS
+- se clicko sul pulsante info tags(alto destra) mentre la finestra e' apperta fa andare sia l'aggiornamento della mappa che quello del tag
+- non posso inserire tag perche ID non e autoincrement
+- gestione zone nella tabella tag non ha pulsante inserisci nuova zona, non capisco
+- quando inserisco una zona rotonda outdoor mi dice angolo alto sinistra e basso destra ma in realta e il centro
+- la scritta sui pulsanti insrire zona quadrata e rotonda deve essere nel file language
+- i permitted asets nella tabella delle ancore sembrano non funzionare bene
+- problema sul updating del canvas in indoor ( a volte parte velocemente senza motivo)
 
-AGGIUNTE
+AGGIUNTEf
 
 - nome della location outdoor
