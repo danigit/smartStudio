@@ -15,7 +15,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">{{lang.insertUser | uppercase}}</h1>
+                <h1 class=" font-iceberg color-white font-x-large">{{lang.insertUser | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -67,7 +67,9 @@
                             <input type="text" ng-model="user.emailForList" name="userEmailList"
                             placeholder="{{lang.addEmail}}" ng-pattern="/^.+@.+\..+$/" aria-label="">
                         </div>
-                        <div class="margin-left-10-px"><img class="cursor-pointer" ng-click="addEmail()" src="img/icons/add_row_24.png" alt="{{lang.addEmail}}" title="{{lang.addEmail}}"></div>
+                        <div class="margin-left-10-px"><img alt="{{lang.addEmail}}" class="cursor-pointer"
+                                                            ng-click="addEmail()" src="img/icons/add_row_32.png"
+                                                            title="{{lang.addEmail}}"></div>
                     </div>
                 </md-input-container>
 
