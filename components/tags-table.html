@@ -56,21 +56,29 @@
                         {{tag.name || lang.insertName}}
                     </td>
                     <td md-cell ng-class="{'md-placeholder': !tag.type_name}">
-                        <md-select ng-model="selectedType" ng-disabled="!isAdmin" ng-change="updateTagType(tag, selectedType)" aria-label="Seleziona tipologia">
+                        <md-select ng-model="selectedType" ng-disabled="!isAdmin"
+                                   ng-change="updateTagType(tag, selectedType)" aria-label="Seleziona tipologia">
                             <md-option><em>{{lang.nothing}}</em></md-option>
-                            <md-option ng-selected="{{tagType.id.toString() === tag.type_id.toString()}}" ng-repeat="tagType in tagTypes track by $index" ng-value="tagType.id">
+                            <md-option ng-selected="{{tagType.id.toString() === tag.type_id.toString()}}"
+                                       ng-repeat="tagType in tagTypes track by $index" ng-value="tagType.id">
                                 {{tagType.description}}
                             </md-option>
                         </md-select>
                     </td>
-                    <td md-cell><img ng-src="{{tag.battery_status ? 'img/icons/battery_empty_24.png' : 'img/icons/battery_full_24.png'}}" alt="{{lang.batteryLevel}}" title="{{lang.batteryLevel}}"></td>
+                    <td md-cell><img alt="{{lang.batteryLevel}}"
+                                     ng-src="{{tag.battery_status ? 'img/icons/battery_empty_24.png' : 'img/icons/battery_full_24.png'}}"
+                                     title="{{lang.batteryLevel}}">
+                        <span class="padding-left-5-px"><b>{{tag.battery_level}}</b>%/<b>{{tag.temperature}}</b>°C</span>
+                    </td>
                     <td md-cell ng-show="isAdmin" class="padding-right-10-px">
-                        <md-button ng-click="tagMacs(tag)" class="md-raised background-gray color-darkcyan margin-top-5-px">
+                        <md-button ng-click="tagMacs(tag)"
+                                   class="md-raised background-gray color-darkcyan margin-top-5-px">
                             {{lang.macsManaging | uppercase}}
                         </md-button>
                     </td>
                     <td md-cell ng-show="(isAdmin)" class="padding-right-10-px">
-                        <md-button ng-click="tagZones(tag)" class="md-raised background-gray color-darkcyan margin-top-5-px">
+                        <md-button ng-click="tagZones(tag)"
+                                   class="md-raised background-gray color-darkcyan margin-top-5-px">
                             {{lang.zonesManaging | uppercase}}
                         </md-button>
                     </td>

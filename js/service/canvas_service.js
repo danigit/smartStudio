@@ -80,19 +80,25 @@
 
             for (let i = 0; i < tagsDistances.length; i++){
                 cloud = tagsDistances[i].filter((d) => {
-                    if (d.dist < TAG_CLOUD_DISTANCE && !indexes.some(t => d.tag.id === t)){
+                    if (d.dist < TAG_CLOUD_DISTANCE && !indexes.some(t => d.tag.id === t)) {
                         indexes.push(d.tag.id);
                         return true;
                     }
                 });
 
+                // cloud = cloud.filter(ce => canvas_service.selectCloudTag(ce.tag));
+                // console.log(cloud)
                 if (cloud.length > 1) {
                     clouds.push(cloud.map(c => c.tag));
-                }else if (cloud.length === 1)
+                } else if (cloud.length === 1) {
                     singleTags.push(cloud[0].tag)
-
+                }
             }
             return {clouds: clouds, single: singleTags}
+        };
+
+        canvas_service.selectCloudTag = (tag) => {
+            return !dataService.hasTagSuperatedSecondDelta(tag)
         };
 
         /**
@@ -161,10 +167,13 @@
             let i, numLoading = tagClouds.length;
             const onload = () => --numLoading === 0 && onAllLoaded(images);
             const images = [];
-            for(i = 0; i < tagClouds.length; i++){
+
+            for(i = 0; i < tagClouds.length; i++) {
+
+                let tagState = canvas_service.checkTagsStateAlarmNoAlarmOffline(tagClouds[i]);
+
                 const img = new Image();
                 images.push(img);
-                let tagState = dataService.checkTagsStateAlarmNoAlarmOffline(tagClouds[i]);
 
                 if (tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
                     img.src = tagsIconPath + 'cumulative_tags_all_32.png'
@@ -181,29 +190,62 @@
                 } else if (!tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
                     img.src = tagsIconPath + 'cumulative_tags_32.png'
                 }
+
                 img.onload = onload;
             }
+
             return images;
         };
 
+        /**
+         * Function that check the situation of the tags passed as parameter (online, offline, alarm)
+         * @param tags
+         * @returns {{withoutAlarm: boolean, offline: boolean, withAlarm: boolean}}
+         */
+        canvas_service.checkTagsStateAlarmNoAlarmOffline = function (tags) {
+            let tagState = {
+                withAlarm   : false,
+                withoutAlarm: false,
+                offline     : false
+            };
+
+            tags.forEach(function (tag) {
+                if (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
+                    || tag.battery_status || tag.man_in_quote
+                    || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone) {
+                    tagState.withAlarm = true;
+                } else if (dataService.isTagOffline(tag)) {
+                    tagState.offline = true;
+                } else if (!tag.radio_switched_off) {
+                    tagState.withoutAlarm = true;
+                }
+            });
+
+            return tagState;
+        };
+
+        /**
+         * Function that load the single tags images
+         * @param singleTags
+         * @param onAllLoaded
+         * @returns {[]}
+         */
         canvas_service.loadTagSingleImages = (singleTags, onAllLoaded) => {
             if (singleTags.length === 0) {
-               onAllLoaded([])
+                onAllLoaded([])
             }
 
             let i, numLoading = singleTags.length;
-            const images = [];
-            const onload = () => --numLoading === 0 && onAllLoaded(images);
-            for(i = 0; i < singleTags.length; i++){
+            const images      = [];
+            const onload      = () => --numLoading === 0 && onAllLoaded(images);
+            for (i = 0; i < singleTags.length; i++) {
                 const img = new Image();
                 images.push(img);
                 if (dataService.checkIfTagHasAlarm(singleTags[i])) {
                     dataService.assigningTagImage(singleTags[i], img);
                 } else if (dataService.isTagOffline(singleTags[i])) {
-                    // dataService.assigningTagImage(singleTags[i], img);
                     img.src = tagsIconPath + 'offline_tag_24.png';
                 } else {
-                    // dataService.assigningTagImage(singleTags[i], img);
                     img.src = tagsIconPath + 'online_tag_24.png';
                 }
                 img.onload = onload;
@@ -298,7 +340,7 @@
         };
 
         canvas_service.isElementAtClick = (virtualTagPosition, mouseDownCoords, distance) => {
-            return ((virtualTagPosition.width - distance) < mouseDownCoords.x && mouseDownCoords.x < (virtualTagPosition.width + distance)) && ((virtualTagPosition.height - distance) < mouseDownCoords.y && mouseDownCoords.y < (virtualTagPosition.height + distance));
+            return canvas_service.calculateDistance(mouseDownCoords.x, mouseDownCoords.y, virtualTagPosition.width, virtualTagPosition.height) < distance
         };
 
         /**
@@ -579,8 +621,6 @@
                 canvas_service.drawLine(line.begin, line.end, line.type, canvasContext, showDrawing);
             });
 
-            console.log(showDrawing);
-            console.log(anchorPositioning);
             if (showDrawing && anchorPositioning) {
                 canvas_service.loadAnchorsImages(dataService.anchors, (images) => {
                     images.forEach((image, index) => {
@@ -591,15 +631,6 @@
             }
         };
 
-        // canvas_service.drawAchorsIcon = () => {
-        //     if (showDrawing && anchorPositioning) {
-        //         canvas_service.loadAnchorsImages(dataService.anchors, (images) => {
-        //             images.forEach((image, index) => {
-        //                 canvas_service.drawIcon(dataService.anchors[index], canvasContext, image, floorWidth, canvasWidth, canvasHeight, false);
-        //             })
-        //         })
-        //     }
-        // }
         /**
          * Function that clear the canvas and redraw the background and the border
          * @param canvasWidth
@@ -615,6 +646,22 @@
             }
 
             canvas_service.drawCanvasBorder(canvasWidth, canvasHeight, context);
+        };
+
+        /**
+         * Controlling if at the clicked point there is at least a single tag
+         * @param singleTags
+         * @param floorWidth
+         * @param canvas
+         * @param realHeight
+         * @param mouseDownCoords
+         * @returns {boolean}
+         */
+        canvas_service.singleTagAtPosition = (singleTags, floorWidth, canvas, realHeight, mouseDownCoords) => {
+            return singleTags.some(st => {
+                let virtualTagPosition = scaleIconSize(st.x_pos, st.y_pos, floorWidth, realHeight, canvas.width, canvas.height);
+                return canvas_service.isElementAtClick(virtualTagPosition, mouseDownCoords, CANVAS_TAG_ICON_SIZE)
+            });
         }
 
 

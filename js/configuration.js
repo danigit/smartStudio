@@ -32,22 +32,23 @@ const floorPath = 'img/floors/';
 /***************************************************************
  * CANVAS DEFAULT VARIABLES
  ***************************************************************/
-const canvasBorderSpace = 25;
-const canvasGridPattern = [5, 5];
-const CANVAS_GRID_COLOR = 'lightgray';
-const TIME_REST_COLOR_OK = '#00FF00';
-const TIME_REST_COLOR_ERROR = '#FF0000';
-const TIME_REST_DESCRIPTION_OK = 'OK';
+const canvasBorderSpace           = 25;
+const canvasGridPattern           = [5, 5];
+const CANVAS_GRID_COLOR           = 'lightgray';
+const TIME_REST_COLOR_OK          = '#00FF00';
+const TIME_REST_COLOR_ERROR       = '#FF0000';
+const TIME_REST_DESCRIPTION_OK    = 'OK';
 const TIME_REST_DESCRIPTION_ERROR = 'ERROR';
-const TIME_REST = 30;
-const TAG_CLOUD_DISTANCE = 1.0;
-const LINE_UNION_SPACE = 100;
+const TIME_REST                   = 30;
+const TAG_CLOUD_DISTANCE          = 1.0;
+const LINE_UNION_SPACE            = 100;
 const ZONE_MODIFY_POINT_DIMENSION = 10;
-const CANVAS_TAG_ICON_SIZE = 45;
-const CANVAS_ANCHOR_ICON_SIZE = 45;
-const CANVAS_CAMERA_ICON_SIZE = 45;
+const CANVAS_TAG_ICON_SIZE        = 35;
+const CANVAS_ANCHOR_ICON_SIZE     = 45;
+const CANVAS_CAMERA_ICON_SIZE     = 45;
 const CANVAS_UPDATE_TIME_INTERVAL = 1000;
 const CANVAS_DRAWING_ACTION_DELAY = 2000;
+const DELTA_FOR_OFFLINE_TAGS      = 10;
 
 /***************************************************************
  * MAPS COFIGURATIONS

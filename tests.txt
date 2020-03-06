@@ -93,6 +93,9 @@ TODO
 - inserire nuovo tasto per caricare file offline in inserimento categorie tag
 - aggiornare la legenda con le nuove icone
 - metere il nome del tag outdoor al passaggio del mouse sopra
+- pulsante carrica immagine offline nella sezione inserimento categorie tag
+- take out array.fill(0) from canvas show icons
+
 
 
 RESOLVED BUGS

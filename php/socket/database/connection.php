@@ -2586,13 +2586,12 @@ class Connection
      */
     function get_all_tags()
     {
-        $milisec_time = strtotime("now");
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
             $this->query = 'SELECT t.ID, t.NAME, tt.DESCRIPTION AS TYPE, t.X_POS, t.Y_POS, t.TIME, t.BATTERY_STATUS, t.GPS_NORTH_DEGREE, t.MAN_DOWN, t.GPS_EAST_DEGREE,
                         t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.GPS_TIME, t.ALARM_TIME, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, 
-                        t.INSIDE_ZONE, t.IS_EXIT, t.ANCHOR_ID, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
+                        t.INSIDE_ZONE, t.IS_EXIT, t.ANCHOR_ID, t.BATTERY_LEVEL, t.TEMPERATURE, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
                         dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI, c.ID AS CATEGORY_ID, c.DESCRIPTION AS CATEGORY_DESCRIPTION, 
                         c.ICON_NAME_ALARM AS ICON_NAME_ALARM, c.ICON_NAME_NO_ALARM AS ICON_NAME_NO_ALARM
                         FROM tag AS t JOIN tag_types AS tt ON t.TYPE = tt.ID JOIN dress_alarm ON t.ID = dress_alarm.TAG_ID LEFT JOIN category c on t.CATEGORY_ID = c.ID';
@@ -2614,10 +2613,11 @@ class Connection
                     'sos' => (int)$row['SOS'], 'man_in_quote' => (int)$row['MAN_IN_QUOTE'], 'call_me_alarm' => (int)$row['CALL_ME_ALARM'],
                     'diagnostic_request' => (int)$row['DIAGNOSTIC_REQUEST'], 'gps_time' => $row['GPS_TIME'],
                     'sleep_time_outdoor' => (int)$row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => (int)$row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON_NAME'],
-                    'time' => $row['TIME'], 'alarm_time' => $row['ALARM_TIME'], 'inside_zone' => (int)$row['INSIDE_ZONE'], 'is_exit' => (int)$row['IS_EXIT'], 'anchor_id' => $row['ANCHOR_ID'], 'type_id' => (int)$row['TYPE_ID'],
+                    'time' => $row['TIME'], 'alarm_time' => $row['ALARM_TIME'], 'inside_zone' => (int)$row['INSIDE_ZONE'], 'is_exit' => (int)$row['IS_EXIT'], 'anchor_id' => $row['ANCHOR_ID'],
+                    'battery_level' => $row['BATTERY_LEVEL'], 'temperature' => $row['TEMPERATURE'], 'type_id' => (int)$row['TYPE_ID'],
                     'helmet_dpi' => (int)$row['HELMET_DPI'], 'belt_dpi' => (int)$row['BELT_DPI'], 'glove_dpi' => (int)$row['GLOVE_DPI'], 'shoe_dpi' => (int)$row['SHOE_DPI'],
                     'category_id' => $row['CATEGORY_ID'], 'category_description' => $row['CATEGORY_DESCRIPTION'], 'icon_name_alarm' => $row['ICON_NAME_ALARM'],
-                    'icon_name_no_alarm' => $row['ICON_NAME_NO_ALARM']);
+                    'icon_name_no_alarm' => $row['ICON_NAME_NO_ALARM'], 'now_time' => date('Y-m-d H:i:s'));
             }
 
             mysqli_close($this->connection);
@@ -2796,8 +2796,8 @@ class Connection
         if ($this->connection) {
             $this->query = 'SELECT tag.ID, tag.NAME, tag.X_POS, tag.Y_POS, tag.TIME, tag.GPS_TIME, tag.ALARM_TIME, tag.BATTERY_STATUS, tag.GPS_NORTH_DEGREE, tag.MAN_DOWN, tag.GPS_EAST_DEGREE,
                         tag.MAN_DOWN_DISABLED, tag.MAN_DOWN_DISABLED_ALERTED, tag.MAN_DOWN_TACITATED, tag.SOS, tag.SOS_ALERTED, tag.MAN_IN_QUOTE, tag.MAN_IN_QUOTE_ALERTED,
-                        tag.CALL_ME_ALARM, tag.EVACUATION_ALARM, tag.RADIO_SWITCHED_OFF, tag.DIAGNOSTIC_REQUEST, tag.INSIDE_ZONE, tag.IS_EXIT, floor.NAME AS FLOOR_NAME, a.NAME AS ANCHOR_NAME, 
-                        tag_types.ID AS TYPE_ID, c.ID AS CATEGORY_ID, c.DESCRIPTION AS CATEGORY_DESCRIPTION, c.ICON_NAME_ALARM, c.ICON_NAME_NO_ALARM, c.ICON_NAME_OFFLINE, tag_types.DESCRIPTION AS TAG_TYPE_NAME, tag_types.SLEEP_TIME_INDOOR, dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
+                        tag.CALL_ME_ALARM, tag.EVACUATION_ALARM, tag.RADIO_SWITCHED_OFF, tag.DIAGNOSTIC_REQUEST, tag.INSIDE_ZONE, tag.IS_EXIT, tag.BATTERY_LEVEL, tag.TEMPERATURE, 
+                        floor.NAME AS FLOOR_NAME, a.NAME AS ANCHOR_NAME, tag_types.ID AS TYPE_ID, c.ID AS CATEGORY_ID, c.DESCRIPTION AS CATEGORY_DESCRIPTION, c.ICON_NAME_ALARM, c.ICON_NAME_NO_ALARM, c.ICON_NAME_OFFLINE, tag_types.DESCRIPTION AS TAG_TYPE_NAME, tag_types.SLEEP_TIME_INDOOR, dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
                         FROM tag JOIN anchor a ON tag.ANCHOR_ID = a.ID JOIN floor ON a.FLOOR_ID = floor.ID JOIN tag_types ON tag. TYPE = tag_types.ID 
                         JOIN location l ON floor.LOCATION_ID = l.ID JOIN dress_alarm ON tag.ID = dress_alarm.TAG_ID LEFT JOIN category c on tag.CATEGORY_ID = c.ID
                         WHERE floor.ID = ? AND l.NAME = ? AND tag.GPS_NORTH_DEGREE = 0 AND tag.GPS_EAST_DEGREE = 0';
@@ -2820,11 +2820,12 @@ class Connection
                     'man_down_disabled' => $row['MAN_DOWN_DISABLED'], 'man_down_disabled_alerted' => $row['MAN_DOWN_DISABLED_ALERTED'], 'man_down_tacitated' => $row['MAN_DOWN_TACITATED'],
                     'sos' => $row['SOS'], 'sos_alerted' => $row['SOS_ALERTED'], 'man_in_quote' => $row['MAN_IN_QUOTE'], 'man_in_quote_alerted' => $row['MAN_IN_QUOTE_ALERTED'],
                     'call_me_alarm' => $row['CALL_ME_ALARM'], 'evacuation_alarm' => $row['EVACUATION_ALARM'], 'radio_switched_off' => $row['RADIO_SWITCHED_OFF'],
-                    'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'inside_zone' => $row['INSIDE_ZONE'], 'is_exit' => $row['IS_EXIT'], 'floor_name' => $row['FLOOR_NAME'], 'anchor_name' => $row['ANCHOR_NAME'],
+                    'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'inside_zone' => $row['INSIDE_ZONE'], 'is_exit' => $row['IS_EXIT'], 'battery_level' => $row['BATTERY_LEVEL'],
+                    'temperature' => $row['TEMPERATURE'], 'floor_name' => $row['FLOOR_NAME'], 'anchor_name' => $row['ANCHOR_NAME'],
                     'tag_type_id' => $row['TYPE_ID'], 'tag_type_name' => $row['TAG_TYPE_NAME'], 'sleep_time_indoor' => $row['SLEEP_TIME_INDOOR'],
                     'helmet_dpi' => $row['HELMET_DPI'], 'belt_dpi' => $row['BELT_DPI'], 'glove_dpi' => $row['GLOVE_DPI'], 'shoe_dpi' => $row['SHOE_DPI'], 'category_id' => $row['CATEGORY_ID'],
                     'category_description' => $row['CATEGORY_DESCRIPTION'], 'icon_name_alarm' => $row['ICON_NAME_ALARM'], 'icon_name_no_alarm' => $row['ICON_NAME_NO_ALARM'],
-                    'icon_name_offline' => $row['ICON_NAME_OFFLINE']);
+                    'icon_name_offline' => $row['ICON_NAME_OFFLINE'], 'now_time' => date('Y-m-d H:i:s'));
             }
 
             mysqli_close($this->connection);

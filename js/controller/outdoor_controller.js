@@ -229,19 +229,18 @@
                         // playing the audio if there are alarms
                         dataService.playAlarmsAudio(tags);
 
-                        // gettin only the outdoor tags
-                        outdoorTags = response.result.filter(t => dataService.isOutdoor(t) && dataService.hasTagAValidGps(t));
+                        // gettin only the outdoor tags that have not superated the second delta
+                        outdoorTags = response.result.filter(t => dataService.isOutdoor(t) && dataService.hasTagAValidGps(t) && !dataService.hasTagSuperatedSecondDelta(t));
 
-                        // deleting markers on the map that have change position or icon
                         dataService.dynamicTags.filter(marker => !outdoorService.isMarkerStillOnMap(marker, outdoorTags))
                             .forEach(dt => {
                                 dataService.dynamicTags.forEach((tag, index) => {
-                                    if (dataService.dynamicTags[index].getPosition().equals(dt.getPosition())){
+                                    if (dataService.dynamicTags[index].getPosition().equals(dt.getPosition())) {
                                         dataService.dynamicTags[index].setMap(null);
                                         dataService.dynamicTags.splice(index, 1);
                                     }
-                            })
-                        });
+                                })
+                            });
 
                         // handling the drawing of the markers on the outdoor location
                         outdoorTags.forEach((tag, index) => {
@@ -267,7 +266,7 @@
 
                                 //controlling if the tag is online and if has to be shown (not turned off), if yes I show the tags on the map
                                 //TODO - put the server time that I get when  I get all the tags
-                                if ((new Date(Date.now()) - (new Date(tag.gps_time)) < tag.sleep_time_outdoor) && !tag.radio_switched_off) {
+                                if ((new Date(tag.now_time) - (new Date(tag.gps_time)) < tag.sleep_time_outdoor) && !tag.radio_switched_off) {
                                     // setting the icon of the created marker
                                     outdoorService.setIcon(tag, marker, false);
 
@@ -412,7 +411,7 @@
                 bounds.extend(marker.getPosition());
             }
             // removing the marker from the map if the tag is off
-            else {
+            else if (dataService.dynamicTags[mapMarker] !== undefined) {
                 dataService.dynamicTags[mapMarker].setMap(null);
                 dataService.dynamicTags.splice(mapMarker, 1);
             }

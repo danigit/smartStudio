@@ -253,40 +253,7 @@ function scaleSizeFromVirtualToReal(floorWidth, canvasWidth, canvasHeight, elemW
     return {x: reversePositionX.toFixed(2), y: reversePositionY.toFixed(2)};
 }
 
-/**
- * Function that clears the canvas and drawing the background and the grid system
- * @param dataService
- * @param lines
- * @param canvasWidth
- * @param canvasHeight
- * @param canvasContext
- * @param image
- * @param map_spacing
- * @param floorWidth
- * @param showDrawing
- * @param anchorPositioning
- */
-function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canvasContext, image, map_spacing, floorWidth, showDrawing, anchorPositioning) {
-    updateCanvas(canvasWidth, canvasHeight, canvasContext, image);
 
-    drawDashedLine(canvasWidth, canvasHeight, canvasContext, map_spacing, floorWidth, 'vertical');
-    //drawing horizontal lines
-    drawDashedLine(canvasWidth, canvasHeight, canvasContext, map_spacing, floorWidth, 'horizontal');
-
-    lines.forEach((line) => {
-        drawLine(line.begin, line.end, line.type, canvasContext, showDrawing);
-    });
-
-    if (showDrawing && anchorPositioning) {
-        dataService.loadImagesAsynchronouslyWithPromise(dataService.anchors, 'anchor').then(
-            function (allImages) {
-                allImages.forEach(function (image, index) {
-                    drawIcon(dataService.anchors[index], canvasContext, image, floorWidth, canvasWidth, canvasHeight, false);
-                })
-            }
-        )
-    }
-}
 
 /**
  * Functiont that draws a line on the canvas
@@ -296,7 +263,7 @@ function updateDrawingCanvas(dataService, lines, canvasWidth, canvasHeight, canv
  * @param drawingContext
  * @param showDrawing
  */
-function drawLine(begin, end, type, drawingContext, showDrawing) {;
+function drawLine(begin, end, type, drawingContext, showDrawing) {
     drawingContext.setLineDash([]);
     drawingContext.lineWidth   = 2;
     drawingContext.strokeStyle = 'black';
@@ -473,7 +440,7 @@ function cesarShift(str, amount) {
 
     // All done!
     return output;
-};
+}
 
 /**
  * @return {string}

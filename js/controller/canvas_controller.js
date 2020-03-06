@@ -453,11 +453,13 @@
                                                     // showing the legend button
                                                     canvasCtrl.showCategoriesButton = dataService.hasTagCategory(tagsByFloorAndLocation.result);
 
-                                                    // getting only the turned on tags
-                                                    visibleTags   = tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off);
+                                                    // getting only the turned on tags and the tags that are no superated the second delta T
+                                                    visibleTags = tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off && !dataService.hasTagSuperatedSecondDelta(t));
+
                                                     // creating the clouds
                                                     cloudAndSinle = canvasService.createClouds(visibleTags);
 
+                                                    // console.log(cloudAndSinle)
                                                     // separating the single and clouded tags
                                                     tagClouds  = cloudAndSinle.clouds;
                                                     singleTags = cloudAndSinle.single;
@@ -495,14 +497,16 @@
                                                                 singleTags.forEach((tag, index) => {
                                                                     // controlling if the tag has alarms
                                                                     if (dataService.checkIfTagHasAlarm(tag)) {
+
                                                                         // loading the tags alarm images
                                                                         canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
                                                                             if (alarmsCounts[index] > alarms.length - 1)
                                                                                 alarmsCounts[index] = 0;
+
                                                                             canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
 
-                                                                            // drawing the canvas if not already drawned
-                                                                            if (!canvasDrawned) {
+                                                                            // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
+                                                                            if (!canvasDrawned && index === singleTags.length - 1) {
                                                                                 context.drawImage(bufferCanvas, 0, 0);
                                                                                 canvasDrawned = true;
                                                                             }
@@ -510,6 +514,7 @@
                                                                     }
                                                                     // drawing the tag without alarm
                                                                     else {
+                                                                        // if (!canvasService.hasTagSuperatedSecondDelta(tag))
                                                                         canvasService.drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
                                                                     }
                                                                 })
@@ -527,7 +532,7 @@
                                                                                 canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
 
                                                                                 // drawing the tag if not already drawned
-                                                                                if (!canvasDrawned) {
+                                                                                if (!canvasDrawned && index === singleTags.length - 1) {
                                                                                     context.drawImage(bufferCanvas, 0, 0);
                                                                                     canvasDrawned = true;
                                                                                 }
@@ -1117,18 +1122,38 @@
 
             if (!canvasCtrl.switch.showDrawing) {
                 //managing the click on the tag icons
-                dataService.floorTags.filter(t => !t.radio_switched_off).forEach(function (tag) {
+                dataService.floorTags.filter(t => !t.radio_switched_off && !dataService.hasTagSuperatedSecondDelta(t)).forEach(function (tag) {
                     // getting the position of the tag
                     let virtualTagPosition = scaleIconSize(tag.x_pos, tag.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                     // getting the group of tags
                     let groupTag           = cloudAndSinle.clouds.find(tc => tc.some(t => t.id === tag.id));
 
-                    // control if at the clicked position there is a tag
-                    if (canvasService.isElementAtClick(virtualTagPosition, mouseDownCoords, CANVAS_TAG_ICON_SIZE)) {
-                        // control if at the clicked point there is a cloud
-                        if (groupTag !== undefined) {
-                            if (!dialogShown) {
-                                if (canvasCtrl.isAdmin || canvasCtrl.isTracker || (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags)) {
+                    // controlling if the tags have to be displayed
+                    if (canvasCtrl.isAdmin || canvasCtrl.isTracker || (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags)) {
+                        // getting the tags at click
+                        if (canvasService.isElementAtClick(virtualTagPosition, mouseDownCoords, CANVAS_TAG_ICON_SIZE)) {
+                            // controlling if at the click there is a single tag
+                            if (groupTag === undefined) {
+                                $mdDialog.show({
+                                    locals             : {tag: tag},
+                                    templateUrl        : componentsPath + 'tag-info.html',
+                                    parent             : angular.element(document.body),
+                                    targetEvent        : event,
+                                    clickOutsideToClose: true,
+                                    controller         : ['$scope', 'tag', function ($scope, tag) {
+                                        $scope.tag          = tag;
+                                        $scope.isTagInAlarm = 'background-red';
+                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
+
+                                        $scope.hide = () => {
+                                            $mdDialog.hide();
+                                        }
+                                    }]
+                                })
+                            }
+                            // control if at the click there is no single tag
+                            else if (!canvasService.singleTagAtPosition(cloudAndSinle.single, canvasCtrl.defaultFloor[0].width, canvas, realHeight, mouseDownCoords)) {
+                                if (!dialogShown) {
                                     $mdDialog.show({
                                         locals             : {tags: groupTag},
                                         templateUrl        : componentsPath + 'tags-info.html',
@@ -1153,36 +1178,6 @@
                                                 listState.push(COLLAPSIBLE_STATE);
                                             });
 
-                                            // $scope.tags.forEach(function (tagElem) {
-                                            //     if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
-                                            //         let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem);
-                                            //         tagAlarms.forEach(function (ta) {
-                                            //             tempAlarmTag.push(ta);
-                                            //         })
-                                            //     } else if (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) {
-                                            //         let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem);
-                                            //         tagAlarms.forEach(function (ta) {
-                                            //             tempAlarmTag.push(ta);
-                                            //         })
-                                            //     } else if (canvasCtrl.isUserManager && !dataService.switch.showOutdoorTags) {
-                                            //         if (dataService.checkIfTagHasAlarm(tagElem)) {
-                                            //             let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem, null, '');
-                                            //             tagAlarms.forEach(function (ta) {
-                                            //                 tempAlarmTag.push(ta);
-                                            //             })
-                                            //         }
-                                            //         $scope.tags = $scope.tags.filter(t => dataService.checkIfTagHasAlarm(t));
-                                            //     } else {
-                                            //         if (dataService.checkIfTagHasAlarm(tagElem)) {
-                                            //             let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem);
-                                            //             tagAlarms.forEach(function (ta) {
-                                            //                 tempAlarmTag.push(ta);
-                                            //             })
-                                            //         }
-                                            //         $scope.tags = $scope.tags.filter(t => dataService.checkIfTagHasAlarm(t));
-                                            //     }
-                                            // });
-
                                             // showing and hiding the content of the lists
                                             $scope.displayList = (tag, index) => {
                                                 if (listState[index]) {
@@ -1199,48 +1194,9 @@
                                                 $mdDialog.hide();
                                             }
                                         }]
-                                    })
+                                    });
+                                    dialogShown = true;
                                 }
-                            }
-                            dialogShown = true;
-                        } else {
-                            if (dataService.checkIfTagHasAlarm(tag)) {
-                                $mdDialog.show({
-                                    locals             : {tag: tag},
-                                    templateUrl        : componentsPath + 'tag-info.html',
-                                    parent             : angular.element(document.body),
-                                    targetEvent        : event,
-                                    clickOutsideToClose: true,
-                                    controller         : ['$scope', 'tag', function ($scope, tag) {
-                                        $scope.tag          = tag;
-                                        $scope.isTagInAlarm = 'background-red';
-                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
-
-                                        $scope.hide = () => {
-                                            $mdDialog.hide();
-                                        }
-                                    }]
-                                })
-                            } else {
-                                $mdDialog.show({
-                                    locals             : {tag: tag},
-                                    templateUrl        : componentsPath + 'tag-info.html',
-                                    parent             : angular.element(document.body),
-                                    targetEvent        : event,
-                                    clickOutsideToClose: true,
-                                    controller         : ['$scope', 'tag', function ($scope, tag) {
-                                        $scope.tag          = tag;
-                                        $scope.isTagInAlarm = 'background-gray';
-                                        $scope.alarms = [];
-
-                                        (dataService.isTagOffline(tag)) ? $scope.isTagInAlarm = 'background-darkgray'
-                                            : $scope.isTagInAlarm = 'background-green';
-
-                                        $scope.hide = () => {
-                                            $mdDialog.hide();
-                                        }
-                                    }]
-                                })
                             }
                         }
                     }

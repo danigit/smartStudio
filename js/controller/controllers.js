@@ -2127,7 +2127,7 @@
                      */
                     $scope.isTagInCategory = (category, tag) => {
                         if (category.tags !== undefined) {
-                            return category.tags.some(c => c == tag)
+                            return category.tags.some(c => c === tag)
                         }
                     };
 
@@ -3808,7 +3808,11 @@
 
                                                 let tagImg = new Image();
 
-                                                dataService.assigningTagImage(newTag, tagImg);
+                                                if (dataService.hasTagSuperatedSecondDelta(newTag)) {
+                                                    tagImg.src = tagsIconPath + 'shut_down_tag.png';
+                                                } else {
+                                                    dataService.assigningTagImage(newTag, tagImg);
+                                                }
 
                                                 tagImg.onload = function () {
                                                     drawIcon(newTag, context, tagImg, response.result.width, canvas.width, canvas.height, true);

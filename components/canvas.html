@@ -182,30 +182,42 @@
 
                         <div layout="column" id="menu-container">
                             <md-list ng-controller="menuController">
-                                <md-list-item ng-click="registry('canvas')"><p>{{lang.weTagTable | uppercase}}</p><img
+                                <md-list-item class="font-smal" ng-click="registry('canvas')"><p>{{lang.weTagTable |
+                                    uppercase}}</p><img
                                         src="img/icons/menu/anagrafica-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="showAnchorsTable()"><p>{{lang.anchorsTable | uppercase}}</p><img
+                                <md-list-item class="font-smal" ng-click="tagCategories('canvas')"
+                                              ng-show="canvasCtrl.isAdmin"><p>{{lang.tagCategory | uppercase}}</p><img
+                                        alt="" class="menu-list-icon menu-icon"
+                                        src="img/icons/menu/tag-category.ico"></md-list-item>
+                                <md-list-item class="font-smal" ng-click="showAnchorsTable()"><p>{{lang.anchorsTable |
+                                    uppercase}}</p><img
                                         src="img/icons/menu/anchor-icon.ico"
                                         class="menu-list-icon menu-icon" alt=""></md-list-item>
-                                <md-list-item ng-click="floorUpdate()"><p>{{lang.floorTable | uppercase}}</p><img
+                                <md-list-item class="font-smal" ng-click="floorUpdate()"><p>{{lang.floorTable |
+                                    uppercase}}</p><img
                                         src="img/icons/menu/floor-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="zone()"><p>{{lang.zoneTable | uppercase}}</p><img
-                                        src="img/icons/menu/outdoor-zone.ico" class="menu-list-icon menu-icon"
-                                        alt=""></md-list-item>
-                                <md-list-item ng-click="viewHistory('canvas')"><p>{{lang.history | uppercase}}</p><img
+                                <md-list-item class="font-smal" ng-click="zone()"><p>{{lang.zoneTable | uppercase}}</p>
+                                    <img
+                                            src="img/icons/menu/outdoor-zone.ico" class="menu-list-icon menu-icon"
+                                            alt=""></md-list-item>
+                                <md-list-item class="font-smal" ng-click="viewHistory('canvas')"><p>{{lang.history |
+                                    uppercase}}</p><img
                                         src="img/icons/menu/history-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="quickActions()"><p>{{lang.quickActions | uppercase}}</p><img
+                                <md-list-item class="font-smal" ng-click="quickActions()"><p>{{lang.quickActions |
+                                    uppercase}}</p><img
                                         src="img/icons/menu/quick-actions.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="changePassword()"><p>{{lang.changePassword | uppercase}}</p><img
+                                <md-list-item class="font-smal" ng-click="changePassword()"><p>{{lang.changePassword |
+                                    uppercase}}</p><img
                                         src="img/icons/menu/password-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="logout()"><p class="color-red">{{lang.logout | uppercase}}</p>
+                                <md-list-item class="font-smal" ng-click="logout()"><p class="color-red">{{lang.logout |
+                                    uppercase}}</p>
                                     <img src="img/icons/menu/logout-icon.ico" class="menu-list-icon menu-icon"
-                                            alt=""></md-list-item>
+                                         alt=""></md-list-item>
                             </md-list>
 
                             <div ng-show="isAdmin" id="search-tag-container" layout="column" class="padding-10-px"

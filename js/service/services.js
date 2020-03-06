@@ -45,16 +45,16 @@
         service.offlineTagsIsOpen    = false;
         service.offlineAnchorsIsOpen = false;
         service.defaultFloorCanceled = false;
-        service.homeMap = null;
-        service.drawingManagerRect = null;
-        service.drawingManagerRound = null;
-        service.outdoorZones = [];
-        service.outdoorZoneInserted = false;
-        service.playedTime = 0;
-        service.alarmsInterval = undefined;
-        service.reconnectSocket = null;
-        service.switch = {showFullscreen: false}
-        service.lastMessageTime = null;
+        service.homeMap              = null;
+        service.drawingManagerRect   = null;
+        service.drawingManagerRound  = null;
+        service.outdoorZones         = [];
+        service.outdoorZoneInserted  = false;
+        service.playedTime           = 0;
+        service.alarmsInterval       = undefined;
+        service.reconnectSocket      = null;
+        service.switch               = {showFullscreen: false};
+        service.lastMessageTime      = null;
 
 
 
@@ -359,7 +359,7 @@
                     }
                 }
             })
-        }
+        };
 
         // remain home
         /**
@@ -573,15 +573,15 @@
         service.checkIfTagsHavePosition = (tags) => {
             let tagOutOfLocation = false;
             tags.forEach(tag => {
-                if (service.isOutdoor(tag) && (tag.gps_north_degree === -2 && tag.gps_east_degree === -2)){
+                if (service.isOutdoor(tag) && (tag.gps_north_degree === -2 && tag.gps_east_degree === -2)) {
                     tagOutOfLocation = true;
-                } else if (!service.isOutdoor(tag) && tag.anchor_id === null){
+                } else if (!service.isOutdoor(tag) && tag.anchor_id === null) {
                     tagOutOfLocation = true;
                 }
             });
 
             return tagOutOfLocation;
-        }
+        };
 
         service.updateUserSettings = () => {
             let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, outdoor_tag_on: service.switch.showOutdoorTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};
@@ -1259,9 +1259,9 @@
          * @returns {string|*}
          */
         service.checkIfTagHasAlarm = (tag) => {
-            return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
+            return (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
                 || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
-                || tag.call_me_alarm || tag.diagnostic_request;
+                || tag.call_me_alarm || tag.diagnostic_request) === 1;
         };
 
         let isCategoryAndImageNotNull = (tag) => {
@@ -1367,15 +1367,6 @@
             return tagAlarmsImages;
         };
 
-        //calculating the distance of the tag from the location center
-        // service.getTagDistanceFromLocationOrigin = (tag, origin) => {
-        //
-        //     let distX = Math.abs(tag.gps_north_degree - origin[0]);
-        //     let distY = Math.abs(tag.gps_east_degree - origin[1]);
-        //
-        //     return Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-        // };
-
         //function that control if the tag is indoor
         service.isOutdoor = (tag) => {
             return tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0 && tag.pps_north_degree !== -2 && tag.gps_east_degree !== -2;
@@ -1388,29 +1379,6 @@
 
         service.goHome = () => {
             $state.go('home');
-        };
-
-        //check if there is at least a tag with an alarm
-        service.checkTagsStateAlarmNoAlarmOffline = function (tags) {
-            let tagState = {
-                withAlarm   : false,
-                withoutAlarm: false,
-                offline     : false
-            };
-
-            tags.forEach(function (tag) {
-                if (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                    || tag.battery_status || tag.man_in_quote
-                    || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone) {
-                    tagState.withAlarm = true;
-                } else if (service.isTagOffline(tag)){
-                    tagState.offline = true;
-                } else if(!tag.radio_switched_off){
-                    tagState.withoutAlarm = true;
-                }
-            });
-
-            return tagState;
         };
 
         service.checkIfTagOutOfLocationHasAlarm = function(tags) {
@@ -1506,107 +1474,6 @@
             }
         };
 
-        //loading all the images to be shown on the canvas asynchronously
-        service.loadImagesAsynchronouslyWithPromise = (data, image) => {
-            //if no data is passed resolving the promise with a null value
-
-            if (data.length === 0) {
-                return Promise.resolve(null);
-            } else {
-                //loading all the images asynchronously
-                return Promise.all(
-                    data.map(function (value) {
-                        return new Promise(function (resolve) {
-                            let img = new Image();
-
-                            if (image === 'anchor' && !value.is_offline)
-                                img.src = tagsIconPath + image + '_online_16.png';
-                            else if (image === 'anchor' && value.is_offline)
-                                img.src = tagsIconPath + image + '_offline_16.png';
-                            else if (image === 'camera')
-                                img.src = tagsIconPath + image + '_online_24.png';
-                            else if (image === 'tag') {
-
-                                //controling if is a cloud or a isolatedTags tag
-                                if (value.length > 1) {
-                                    // console.log(value)
-                                    let tagState = service.checkTagsStateAlarmNoAlarmOffline(value);
-                                    if (tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_all_32.png'
-                                    } else if (tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_half_alert_32.png';
-                                    } else if (tagState.withAlarm && !tagState.withoutAlarm && !tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_all_alert_32.png'
-                                    } else if (tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_offline_alert_32.png'
-                                    } else if (!tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_offline_online_32.png'
-                                    } else if (!tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_offline_32.png'
-                                    } else if (!tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
-                                        img.src = tagsIconPath + 'cumulative_tags_32.png'
-                                    } else{
-                                        resolve(null)
-                                    }
-                                } else {
-                                    if (service.checkIfTagHasAlarm(value)) {
-                                        service.assigningTagImage(value, img);
-                                    } else if (service.isTagOffline(value)) {
-                                        service.assigningTagImage(value, img);
-                                        // img.src = tagsIconPath + 'offline_tag_24.png';
-                                    } else {
-                                        service.assigningTagImage(value, img);
-                                        // img.src = tagsIconPath + 'online_tag_24.png';
-                                    }
-                                }
-                            }
-
-                            img.onload = function () {
-                                resolve(img);
-                            }
-                        })
-                    })
-                )
-            }
-        };
-
-        // service.getTagsLocation = async (tags, locations, userLocations) => {
-        //     console.log(locations);
-        //     console.log(userLocations);
-        //     let alarms = [];
-        //     let tagAlarms = [];
-        //
-        //     for (let i = 0; i < tags.length; i++) {
-        //
-        //         if (!service.isOutdoor(tags[i])) {
-        //             await socketService.sendRequest('get_indoor_tag_location', {tag: tags[i].id})
-        //                 .then((response) => {
-        //                     if (response.result.session_state)
-        //                         window.location.reload();
-        //
-        //                     console.log(response);
-        //                     if (response.result.name !== undefined)
-        //                         tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, response.result.name);
-        //                     else
-        //                         tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, lang.noLocation);
-        //                 })
-        //         }else{
-        //             let someResult = locations.filter(l => service.getTagDistanceFromLocationOrigin(tags[i], [l.latitude, l.longitude]) <= l.radius);
-        //             if (someResult.length !== 0 && userLocations !== undefined && userLocations.some(l => l.name === someResult[0].name)){
-        //                 console.log('is use location')
-        //                 tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, someResult[0].name);
-        //             } else {
-        //                 tagAlarms = service.loadTagAlarmsForInfoWindow(tags[i], locations, lang.noLocation);
-        //             }
-        //         }
-        //
-        //         alarms.push(tagAlarms);
-        //         tagAlarms = [];
-        //     }
-        //
-        //     return alarms;
-        // };
-
         service.getOutdoorTagLocation = (locations, tag) => {
             return locations.filter( l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
         };
@@ -1623,7 +1490,7 @@
                             locationTags.push(tag.name);
                         }
                     });
-                    locationsTags.push({location: marker.name, tags: locationTags.length})
+                    locationsTags.push({location: marker.name, tags: locationTags.length});
                     locationTags = [];
                 }
             });
@@ -1643,12 +1510,28 @@
         };
 
         service.isTagOffline = (tag) => {
-            return ((tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0) && !tag.radio_switched_off && (((Date.now() - new Date(tag.gps_time)) > tag.sleep_time_outdoor)))
-                || ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && !tag.radio_switched_off && (((Date.now() - new Date(tag.time)) > tag.sleep_time_indoor)));
+            return ((tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0) && !tag.radio_switched_off && (((new Date(tag.now_time) - new Date(tag.gps_time)) > tag.sleep_time_outdoor)))
+                || ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && !tag.radio_switched_off && (((new Date(tag.now_time) - new Date(tag.time)) > tag.sleep_time_indoor)));
 
         };
 
-        // service.showAlarms = () => {}
+        /**
+         * Function that controls if the tag offline has superated by sleep_time_../10 the time since he is offline
+         * In this case the tag results as turned off
+         * @param tag
+         */
+        service.hasTagSuperatedSecondDelta = (tag) => {
+            if (service.isOutdoor(tag)) {
+                let localThresholdOutdoor = (new Date(tag.now_time) - new Date(tag.gps_time));
+
+                return (localThresholdOutdoor > (tag.sleep_time_outdoor + (tag.sleep_time_outdoor / DELTA_FOR_OFFLINE_TAGS)));
+            } else {
+                // getting the local tag indoor threshold
+                let localThresholdIndoor = (new Date(tag.now_time) - new Date(tag.time));
+
+                return (localThresholdIndoor > (tag.sleep_time_indoor + (tag.sleep_time_indoor / DELTA_FOR_OFFLINE_TAGS)));
+            }
+        };
     }
 
     /**
@@ -1712,8 +1595,8 @@
             service.server.onclose = () => {
                 socketOpened = false;
                 service.reconnectSocket = $interval(function () {
-                    console.log('trying to reconect')
-                    socketServer = new WebSocket(SOCKET_PATH);
+                    console.log('trying to reconect');
+                    socketServer        = new WebSocket(SOCKET_PATH);
                     socketServer.onopen = function(){
                         socketOpened = true;
                         window.location.reload()
@@ -1749,4 +1632,5 @@
             })
         }
     }
+
 })();
