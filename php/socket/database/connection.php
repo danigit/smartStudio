@@ -752,7 +752,7 @@ class Connection
             $this->query = 'SELECT ADV_RATE, POWER_LEVEL, DISABLE_TIMING, ALARM_TIMING, NO_MOV_TIMING, MD_MODE, MAC_FILTER, PERIODIC_SOUND,
                                    KA, SCANNING_RATE, LND_PRT_TIMING, SCANNING_PKT, FREEFALL_THD, SIM_IS_HERE, WIFI_IS_HERE, PERIODIC_SOUND
                                    ADVERTISE_IS_HERE, REST_NAME, SERVER_IP, SSID_WIFI, PWD_WIFI, IP_GATEWAY_WIFI, IP_WETAG_WIFI, APN_NAME, APN_CODE, 
-                                   MAC_UWB, UDP_PORT_UWB, GEOFENCE_THD, TACITATION_MODE, LND_PRT_ANGLE, BEACON_TYPE FROM wetag_settings WHERE TAG_ID = ?';
+                                   MAC_UWB, UDP_PORT_UWB, GEOFENCE_THD, TACITATION_MODE, LND_PRT_ANGLE, BEACON_TYPE, STANDBY_MODE FROM wetag_settings WHERE TAG_ID = ?';
 
             $statement = $this->execute_selecting($this->query, 'i', $tag);
 
@@ -772,7 +772,7 @@ class Connection
                     'mac_filter' => $row['MAC_FILTER'], 'periodic_sound' => $row['PERIODIC_SOUND'], 'ka' => $row['KA'], 'scanning_rate' => $row['SCANNING_RATE'], 'lnd_prt_timing' => $row['LND_PRT_TIMING'], 'scanning_pkt' => $row['SCANNING_PKT'], 'freefall_thd' => $row['FREEFALL_THD'], 'sim_is_here' => $row['SIM_IS_HERE'],
                     'wifi_is_here' => $row['WIFI_IS_HERE'], 'advertise_is_here' => $row['ADVERTISE_IS_HERE'], 'rest_name' => $row['REST_NAME'], 'server_ip' => $row['SERVER_IP'], 'ssid_wifi' => $row['SSID_WIFI'], 'pwd_wifi' => $row['PWD_WIFI'],
                     'ip_gateway_wifi' => $row['IP_GATEWAY_WIFI'], 'ip_wetag_wifi' => $row['IP_WETAG_WIFI'], 'apn_name' => $row['APN_NAME'], 'apn_code' => $row['APN_CODE'], 'mac_uwb' => $row['MAC_UWB'], 'udp_port_uwb' => $row['UDP_PORT_UWB'], 'geofence_thd' => $row['GEOFENCE_THD'], 'tacitation_mode' => $row['TACITATION_MODE'],
-                    'lnd_prt_angle' => $row['LND_PRT_ANGLE'], 'beacon_type' => $row['BEACON_TYPE']);
+                    'lnd_prt_angle' => $row['LND_PRT_ANGLE'], 'beacon_type' => $row['BEACON_TYPE'], 'standby_mode' => $row['STANDBY_MODE']);
             }
 
             mysqli_close($this->connection);
@@ -4438,14 +4438,16 @@ class Connection
             $this->query = "UPDATE wetag_settings SET ADV_RATE = ?, ADVERTISE_IS_HERE = ?, ALARM_TIMING = ?, APN_CODE = ?, APN_NAME = ?, 
                                 DISABLE_TIMING = ?, FREEFALL_THD = ?, GEOFENCE_THD = ?, IP_GATEWAY_WIFI = ?, IP_WETAG_WIFI = ?, KA = ?, LND_PRT_TIMING = ?, 
                                 MAC_FILTER = ?, MAC_UWB = ?, MD_MODE = ?, NO_MOV_TIMING = ?, POWER_LEVEL = ?, PWD_WIFI = ?, REST_NAME = ?,
-                                SCANNING_PKT = ?, SCANNING_RATE = ?, SERVER_IP = ?, SIM_IS_HERE = ?, SSID_WIFI = ?, UDP_PORT_UWB = ?, WIFI_IS_HERE = ?, PERIODIC_SOUND = ?, TACITATION_MODE = ?, LND_PRT_ANGLE = ?, BEACON_TYPE = ? WHERE TAG_ID = ?";
+                                SCANNING_PKT = ?, SCANNING_RATE = ?, SERVER_IP = ?, SIM_IS_HERE = ?, SSID_WIFI = ?, UDP_PORT_UWB = ?, WIFI_IS_HERE = ?, 
+                                PERIODIC_SOUND = ?, TACITATION_MODE = ?, LND_PRT_ANGLE = ?, BEACON_TYPE = ?, STANDBY_MODE = ? WHERE TAG_ID = ?";
 
-            $statement = $this->execute_selecting($this->query, 'iiissiiissiissiiissiisisiiiiiii', $parameters['adv_rate'], $parameters['advertise_is_here']
+            $statement = $this->execute_selecting($this->query, 'iiissiiissiissiiissiisisiiiiiiii', $parameters['adv_rate'], $parameters['advertise_is_here']
                 , $parameters['alarm_timing'], $parameters['apn_code'], $parameters['apn_name'], $parameters['disable_timing'], $parameters['freefall_thd']
                 , $parameters['geofence_thd'], $parameters['ip_gateway_wifi'], $parameters['ip_wetag_wifi'], $parameters['ka'], $parameters['lnd_prt_timing'], $parameters['mac_filter']
                 , $parameters['mac_uwb'], $parameters['md_mode'], $parameters['no_mov_timing'], $parameters['power_level'], $parameters['pwd_wifi']
                 , $parameters['rest_name'], $parameters['scanning_pkt'], $parameters['scanning_rate'], $parameters['server_ip'], $parameters['sim_is_here']
-                , $parameters['ssid_wifi'], $parameters['udp_port_uwb'], $parameters['wifi_is_here'], $parameters['periodic_sound'], $parameters['tacitation_mode'], $parameters['lnd_prt_angle'], $parameters['beacon_type'], $parameters['tag_id']);
+                , $parameters['ssid_wifi'], $parameters['udp_port_uwb'], $parameters['wifi_is_here'], $parameters['periodic_sound'], $parameters['tacitation_mode'], $parameters['lnd_prt_angle']
+                , $parameters['beacon_type'], $parameters['standby_mode'], $parameters['tag_id']);
 
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);

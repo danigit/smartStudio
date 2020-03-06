@@ -1920,28 +1920,29 @@
                                         md_mode: $scope.tagParameters.md_mode,
                                         ka: $scope.tagParameters.ka,
                                         scanning_rate: $scope.tagParameters.scanning_rate,
-                                        lnd_prt_timing: $scope.tagParameters.lnd_prt_timing,
-                                        scanning_pkt: $scope.tagParameters.scanning_pkt,
-                                        freefall_thd: $scope.tagParameters.freefall_thd,
-                                        sim_is_here: $scope.tagParameters.sim_is_here,
-                                        wifi_is_here: $scope.tagParameters.wifi_is_here,
+                                        lnd_prt_timing   : $scope.tagParameters.lnd_prt_timing,
+                                        scanning_pkt     : $scope.tagParameters.scanning_pkt,
+                                        freefall_thd     : $scope.tagParameters.freefall_thd,
+                                        sim_is_here      : $scope.tagParameters.sim_is_here,
+                                        wifi_is_here     : $scope.tagParameters.wifi_is_here,
                                         advertise_is_here: $scope.tagParameters.advertise_is_here,
-                                        mac_filter: $scope.tagParameters.mac_filter,
-                                        apn_name: $scope.tagParameters.apn_name,
-                                        apn_code: $scope.tagParameters.apn_code,
-                                        rest_name: $scope.tagParameters.rest_name,
-                                        server_ip: $scope.tagParameters.server_ip,
-                                        ssid_wifi: $scope.tagParameters.ssid_wifi,
-                                        pwd_wifi: $scope.tagParameters.pwd_wifi,
-                                        ip_gateway_wifi: $scope.tagParameters.ip_gateway_wifi,
-                                        ip_wetag_wifi: $scope.tagParameters.ip_wetag_wifi,
-                                        geofence_thd: $scope.tagParameters.geofence_thd,
-                                        mac_uwb: $scope.tagParameters.mac_uwb,
-                                        udp_port_uwb: $scope.tagParameters.udp_port_uwb,
-                                        periodic_sound: $scope.tagParameters.periodic_sound,
-                                        tacitation_mode: $scope.tagParameters.tacitation_mode,
-                                        lnd_prt_angle: $scope.tagParameters.lnd_prt_angle,
-                                        beacon_type: $scope.tagParameters.beacon_type
+                                        mac_filter       : $scope.tagParameters.mac_filter,
+                                        apn_name         : $scope.tagParameters.apn_name,
+                                        apn_code         : $scope.tagParameters.apn_code,
+                                        rest_name        : $scope.tagParameters.rest_name,
+                                        server_ip        : $scope.tagParameters.server_ip,
+                                        ssid_wifi        : $scope.tagParameters.ssid_wifi,
+                                        pwd_wifi         : $scope.tagParameters.pwd_wifi,
+                                        ip_gateway_wifi  : $scope.tagParameters.ip_gateway_wifi,
+                                        ip_wetag_wifi    : $scope.tagParameters.ip_wetag_wifi,
+                                        geofence_thd     : $scope.tagParameters.geofence_thd,
+                                        mac_uwb          : $scope.tagParameters.mac_uwb,
+                                        udp_port_uwb     : $scope.tagParameters.udp_port_uwb,
+                                        periodic_sound   : $scope.tagParameters.periodic_sound,
+                                        tacitation_mode  : $scope.tagParameters.tacitation_mode,
+                                        standby_mode     : $scope.tagParameters.standby_mode,
+                                        lnd_prt_angle    : $scope.tagParameters.lnd_prt_angle,
+                                        beacon_type      : $scope.tagParameters.beacon_type
                                     };
 
                                     //TODO put the parameters in the language file
@@ -1961,30 +1962,64 @@
                                         lnd_prt_timing: [{label: "10 s", value: 1}, {label: "20 s", value: 2}, {label: "30 s", value: 3}, {label: "40 s", value: 4}, {label: "50 s", value: 5},
                                             {label: "60 s", value: 6}, {label: "70 s", value: 7}, {label: "80 s", value: 8}, {label: "90 s", value: 9}, {label: "120 s", value: 10}],
                                         scanning_pkt: [{label: "5 pkt", value: 1}, {label: "10 pkt", value: 2}, {label: "20 pkt", value: 3}, {label: "40 pkt", value: 4}, {label: "60 pkt", value: 5}, {label: "80 pkt", value: 6}],
-                                        freefall_thd: [{label: "40 cm", value: 1}, {label: "60 cm", value: 2}, {label: "80 cm", value: 3}, {label: "100 cm", value: 4}, {label: "120 cm", value: 5}, {label: "140 cm", value: 6},
+                                        freefall_thd     : [{label: "40 cm", value: 1}, {label: "60 cm", value: 2}, {label: "80 cm", value: 3}, {label: "100 cm", value: 4}, {label: "120 cm", value: 5}, {label: "140 cm", value: 6},
                                             {label: "160 cm", value: 7}, {label: "180 cm", value: 8}, {label: "200 cm", value: 9}],
-                                        sim_is_here: [{label: "NO", value: 0}, {label: "SI", value: 1}],
-                                        wifi_is_here: [{label: "NO", value: 0}, {label: "SI", value: 1}],
+                                        sim_is_here      : [{label: "NO", value: 0}, {label: "SI", value: 1}],
+                                        wifi_is_here     : [{label: "NO", value: 0}, {label: "SI", value: 1}],
                                         advertise_is_here: [{label: "NO", value: 0}, {label: "SI", value: 1}],
-                                        mac_filter: '',
-                                        apn_name: [{label: "VODAFONE", value: 'ep.inetd.gdsp'}, {label: "TIM", value: 'ibox.tim.it'}, {label: "FASTWEB", value: 'apn.fastweb.it'}, {label: "EMNIFY", value: 'em'}, {label: "JERSEY", value: 'JTFIXEDPUBLIC'}, {label: 'JERSEY NEW', value: 'JTM2M'}],
-                                        apn_code: [{label: "VODAFONE", value: '22210'}, {label: "TIM", value: '00001'}, {label: "FASTWEB", value: '00002'}, {label: "EMNIFY", value: '00003'}, {label: "JERSEY", value: '00004'}, {label: 'JERSEY NEW', value: '00005'}],
-                                        rest_name: '',
-                                        server_ip: '',
-                                        ssid_wifi: '',
-                                        pwd_wifi: '',
-                                        ip_gateway_wifi: '',
-                                        ip_wetag_wifi: '',
-                                        geofence_thd: [{label: "0 m", value: 1}, {label: "1 m", value: 2}, {label: "2 m", value: 3}, {label: "3 m", value: 4}, {label: "4 m", value: 5}, {label: "5 m", value: 6},
-                                                       {label: "6 m", value: 7}, {label: "7 m", value: 8}, {label: "8 m", value: 9}, {label: "9 m", value: 10}, {label: "10 m", value: 11}, {label: "11 m", value: 12}, {label: "12 m", value: 13},
-                                            {label: "13 m", value: 14}, {label: "14 m", value: 15}, {label: "15 m", value: 16}, {label: "17 m", value: 18}, {label: "18 m", value: 19}, {label: "19 m", value: 20}],
-                                        mac_uwb: '',
-                                        udp_port_uwb: '',
-                                        periodic_sound: [{label: 'SI', value: 1}, {label: 'NO', value: 0}],
-                                        tacitation_mode: [{label: 'PRESSIONE PROLUNGATA', value: 0}, {label: 'TRIPLO CLICK', value: 1}],
-                                        lnd_prt_angle: [{label: "15 °", value: 1}, {label: "20 °", value: 2}, {label: "30 °", value: 3}, {label: "35 °", value: 4}, {label: "40 °", value: 5}, {label: "45 °", value: 6},
-                                                       {label: "55 °", value: 7}, {label: "60 °", value: 8}, {label: "70 °", value: 9}, {label: "75 °", value: 10}],
-                                        beacon_type: [{label: "EMBC-02", value: 0}, {label: "EMBC-22", value: 1}]
+                                        mac_filter       : '',
+                                        apn_name         : [{label: "VODAFONE", value: 'ep.inetd.gdsp'}, {label: "TIM", value: 'ibox.tim.it'}, {label: "FASTWEB", value: 'apn.fastweb.it'}, {label: "EMNIFY", value: 'em'}, {label: "JERSEY", value: 'JTFIXEDPUBLIC'}, {label: 'JERSEY NEW', value: 'JTM2M'}],
+                                        apn_code         : [{label: "VODAFONE", value: '22210'}, {label: "TIM", value: '00001'}, {label: "FASTWEB", value: '00002'}, {label: "EMNIFY", value: '00003'}, {label: "JERSEY", value: '00004'}, {label: 'JERSEY NEW', value: '00005'}],
+                                        rest_name        : '',
+                                        server_ip        : '',
+                                        ssid_wifi        : '',
+                                        pwd_wifi         : '',
+                                        ip_gateway_wifi  : '',
+                                        ip_wetag_wifi    : '',
+                                        geofence_thd     : [{label: "0 m", value: 1}, {
+                                            label: "1 m",
+                                            value: 2
+                                        }, {label: "2 m", value: 3}, {label: "3 m", value: 4}, {
+                                            label: "4 m",
+                                            value: 5
+                                        }, {label: "5 m", value: 6},
+                                                            {label: "6 m", value: 7}, {
+                                                label: "7 m",
+                                                value: 8
+                                            }, {label: "8 m", value: 9}, {label: "9 m", value: 10}, {
+                                                label: "10 m",
+                                                value: 11
+                                            }, {label: "11 m", value: 12}, {label: "12 m", value: 13},
+                                                            {label: "13 m", value: 14}, {
+                                                label: "14 m",
+                                                value: 15
+                                            }, {label: "15 m", value: 16}, {label: "17 m", value: 18}, {
+                                                label: "18 m",
+                                                value: 19
+                                            }, {label: "19 m", value: 20}],
+                                        mac_uwb          : '',
+                                        udp_port_uwb     : '',
+                                        periodic_sound   : [{label: 'SI', value: 1}, {label: 'NO', value: 0}],
+                                        tacitation_mode  : [{
+                                            label: 'PRESSIONE PROLUNGATA',
+                                            value: 0
+                                        }, {label: 'TRIPLO CLICK', value: 1}],
+                                        standby_mode     : [{label: 'DISBILITATO', value: 0}, {
+                                            label: 'ABILITATO',
+                                            value: 1
+                                        }],
+                                        lnd_prt_angle    : [{label: "15 °", value: 1}, {
+                                            label: "20 °",
+                                            value: 2
+                                        }, {label: "30 °", value: 3}, {label: "35 °", value: 4}, {
+                                            label: "40 °",
+                                            value: 5
+                                        }, {label: "45 °", value: 6},
+                                                            {label: "55 °", value: 7}, {
+                                                label: "60 °",
+                                                value: 8
+                                            }, {label: "70 °", value: 9}, {label: "75 °", value: 10}],
+                                        beacon_type      : [{label: "EMBC-02", value: 0}, {label: "EMBC-22", value: 1}]
                                     };
 
                                     /**

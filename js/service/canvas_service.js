@@ -662,8 +662,7 @@
                 let virtualTagPosition = scaleIconSize(st.x_pos, st.y_pos, floorWidth, realHeight, canvas.width, canvas.height);
                 return canvas_service.isElementAtClick(virtualTagPosition, mouseDownCoords, CANVAS_TAG_ICON_SIZE)
             });
-        }
-
+        };
 
 
 

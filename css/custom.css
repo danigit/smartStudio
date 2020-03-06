@@ -142,31 +142,39 @@ DISPLAY
     display: flex;
 }
 
-.position-absolute{
+.position-absolute {
     position: absolute;
 }
 
-.top-0{
+.top-0 {
     top: 0;
 }
 
-.left-10{
+.top-12px {
+    top: 12px
+}
+
+.left-10 {
     left: 10%;
 }
 
-.right-0{
+.right-0 {
     right: 0;
 }
 
-.top-60px{
+.right-110px {
+    right: 110px;
+}
+
+.top-60px {
     top: 60px;
 }
 
-.bottom-0{
+.bottom-0 {
     bottom: 0;
 }
 
-.open-slide{
+.open-slide {
     display: block!important;
     -webkit-animation: slide-down .5s ease-out;
     -moz-animation: slide-down .5s ease-out;

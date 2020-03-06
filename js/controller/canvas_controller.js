@@ -459,7 +459,6 @@
                                                     // creating the clouds
                                                     cloudAndSinle = canvasService.createClouds(visibleTags);
 
-                                                    // console.log(cloudAndSinle)
                                                     // separating the single and clouded tags
                                                     tagClouds  = cloudAndSinle.clouds;
                                                     singleTags = cloudAndSinle.single;
@@ -479,7 +478,7 @@
                                                         // control if the tags have to be displayed
                                                         else if (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) {
                                                             // drawing the tags only if there is at least one in alarm
-                                                            if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
+                                                            if (dataService.checkIfTagsHaveAlarms(visibleTags)) {
                                                                 images.forEach(function (image, index) {
                                                                     if (image !== null) {
                                                                         canvasService.drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[index].length);
@@ -491,59 +490,57 @@
                                                         // loading the images for the single tags
                                                         canvasService.loadTagSingleImages(singleTags, (images) => {
 
-                                                            // controlling if the tag has to be drawned
+                                                            // controlling if the tags have to be shown
                                                             if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
-                                                                // drawing the clouds on the canvas
                                                                 singleTags.forEach((tag, index) => {
-                                                                    // controlling if the tag has alarms
                                                                     if (dataService.checkIfTagHasAlarm(tag)) {
-
-                                                                        // loading the tags alarm images
                                                                         canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
-                                                                            if (alarmsCounts[index] > alarms.length - 1)
-                                                                                alarmsCounts[index] = 0;
+                                                                            console.log(alarms);
+                                                                            if (dataService.checkIfTagHasAlarm(tag)) {
+                                                                                if (alarmsCounts[index] > alarms.length - 1)
+                                                                                    alarmsCounts[index] = 0;
 
-                                                                            canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
 
-                                                                            // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
-                                                                            if (!canvasDrawned && index === singleTags.length - 1) {
-                                                                                context.drawImage(bufferCanvas, 0, 0);
-                                                                                canvasDrawned = true;
+                                                                                // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
+                                                                                if (index === singleTags.length - 1) {
+                                                                                    context.drawImage(bufferCanvas, 0, 0);
+                                                                                    canvasDrawned = true;
+                                                                                }
                                                                             }
-                                                                        })
+                                                                        });
                                                                     }
                                                                     // drawing the tag without alarm
                                                                     else {
-                                                                        // if (!canvasService.hasTagSuperatedSecondDelta(tag))
                                                                         canvasService.drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
                                                                     }
                                                                 })
                                                             }
-                                                            // controlling if the tag has to be drawned
-                                                            else if (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) {
-                                                                // cheching if there is at least one tag with alarm
-                                                                if (dataService.checkIfTagsHaveAlarms(tagsByFloorAndLocation.result)) {
-                                                                    singleTags.forEach((tag, index) => {
-                                                                        // cheching if the tag has alarms
-                                                                        if (dataService.checkIfTagHasAlarm(tag)) {
-                                                                            canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
+                                                            // controlling if the tags have to be displayed
+                                                            else if ((canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) && dataService.checkIfTagsHaveAlarms(visibleTags)) {
+                                                                singleTags.forEach((tag, index) => {
+                                                                    if (dataService.checkIfTagHasAlarm(tag)) {
+                                                                        canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
+                                                                            console.log(alarms);
+                                                                            if (dataService.checkIfTagHasAlarm(tag)) {
                                                                                 if (alarmsCounts[index] > alarms.length - 1)
                                                                                     alarmsCounts[index] = 0;
+
                                                                                 canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
 
-                                                                                // drawing the tag if not already drawned
-                                                                                if (!canvasDrawned && index === singleTags.length - 1) {
+                                                                                // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
+                                                                                if (index === singleTags.length - 1) {
                                                                                     context.drawImage(bufferCanvas, 0, 0);
                                                                                     canvasDrawned = true;
                                                                                 }
-                                                                            })
-                                                                        }
-                                                                        // drawing the tag without alarms
-                                                                        else {
-                                                                            canvasService.drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                        }
-                                                                    })
-                                                                }
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                    // drawing the tag without alarm
+                                                                    else {
+                                                                        canvasService.drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                    }
+                                                                })
                                                             }
                                                             // controlling if the canvas has been already drawned, if not I drawn it
                                                             if (!canvasDrawned) {
@@ -1141,9 +1138,11 @@
                                     targetEvent        : event,
                                     clickOutsideToClose: true,
                                     controller         : ['$scope', 'tag', function ($scope, tag) {
-                                        $scope.tag          = tag;
-                                        $scope.isTagInAlarm = 'background-red';
-                                        $scope.alarms       = dataService.loadTagAlarmsForInfoWindow(tag);
+                                        $scope.tag    = tag;
+                                        $scope.alarms = dataService.loadTagAlarmsForInfoWindow(tag);
+
+                                        $scope.isTagInAlarm = ($scope.alarms.length !== 0) ? 'background-red' : dataService.isTagOffline(tag)
+                                            ? 'background-darkgray' : 'background-green';
 
                                         $scope.hide = () => {
                                             $mdDialog.hide();

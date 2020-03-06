@@ -196,8 +196,21 @@
                 <md-input-container md-no-float class="md-block width-200-px">
                     <label>{{lang.beaconType}}</label>
                     <md-select ng-model="sendedValues.beacon_type">
-                        <md-option ng-selected="{{beacon_type.value.toString() === tagParameters.beacon_type.toString()}}" ng-repeat="beacon_type in selectValues.beacon_type" ng-value="beacon_type.value">
+                        <md-option
+                                ng-selected="{{beacon_type.value.toString() === tagParameters.beacon_type.toString()}}"
+                                ng-repeat="beacon_type in selectValues.beacon_type" ng-value="beacon_type.value">
                             {{beacon_type.label}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+
+                <md-input-container class="md-block width-200-px" md-no-float>
+                    <label>{{lang.standByMode}}</label>
+                    <md-select ng-model="sendedValues.standby_mode">
+                        <md-option ng-repeat="standby_mode in selectValues.standby_mode"
+                                   ng-selected="{{standby_mode.value.toString() === tagParameters.standby_mode.toString()}}"
+                                   ng-value="standby_mode.value">
+                            {{standby_mode.label}}
                         </md-option>
                     </md-select>
                 </md-input-container>

@@ -225,8 +225,6 @@
                                 // if the tag has a location then I go in the outdoor location
                                 if (tagLocation !== undefined) {
                                     newSocketService.getData('save_location', {location: tagLocation.name}, (response) => {
-                                        if (!response.session_state)
-                                            window.location.reload();
 
                                         if (response.result === 'location_saved') {
                                             $state.go('outdoor-location');
@@ -250,8 +248,6 @@
                                             };
 
                                             newSocketService.getData('get_tag_outside_location_zoom', {}, (response) => {
-                                                if (!response.session_state)
-                                                    window.location.reload();
 
                                                 $scope.mapConfiguration.zoom = response.result;
                                             });
@@ -314,25 +310,6 @@
                             'background-darkred',
                             'color-white',
                             'top center');
-                        // $timeout(function () {
-                        //     $mdDialog.show({
-                        //         templateUrl        : componentsPath + 'tag-not-found-alert.html',
-                        //         parent             : angular.element(document.body),
-                        //         targetEvent        : event,
-                        //         clickOutsideToClose: true,
-                        //         controller         : ['$scope', '$controller', ($scope, $controller) => {
-                        //             $controller('languageController', {$scope: $scope});
-                        //
-                        //
-                        //             $scope.title   = lang.tagNotFound.toUpperCase();
-                        //             $scope.message = lang.tagNotLocation;
-                        //
-                        //             $scope.hide = () => {
-                        //                 $mdDialog.hide();
-                        //             }
-                        //         }]
-                        //     })
-                        // }, 100);
                     };
 
                     $scope.hide = () => {
@@ -1521,16 +1498,20 @@
          * @param tag
          */
         service.hasTagSuperatedSecondDelta = (tag) => {
-            if (service.isOutdoor(tag)) {
-                let localThresholdOutdoor = (new Date(tag.now_time) - new Date(tag.gps_time));
+            if (!service.checkIfTagHasAlarm(tag)) {
+                if (service.isOutdoor(tag)) {
+                    let localThresholdOutdoor = (new Date(tag.now_time) - new Date(tag.gps_time));
 
-                return (localThresholdOutdoor > (tag.sleep_time_outdoor + (tag.sleep_time_outdoor / DELTA_FOR_OFFLINE_TAGS)));
-            } else {
-                // getting the local tag indoor threshold
-                let localThresholdIndoor = (new Date(tag.now_time) - new Date(tag.time));
+                    return (localThresholdOutdoor > (tag.sleep_time_outdoor + (tag.sleep_time_outdoor / DELTA_FOR_OFFLINE_TAGS)));
+                } else {
+                    // getting the local tag indoor threshold
+                    let localThresholdIndoor = (new Date(tag.now_time) - new Date(tag.time));
 
-                return (localThresholdIndoor > (tag.sleep_time_indoor + (tag.sleep_time_indoor / DELTA_FOR_OFFLINE_TAGS)));
+                    return (localThresholdIndoor > (tag.sleep_time_indoor + (tag.sleep_time_indoor / DELTA_FOR_OFFLINE_TAGS)));
+                }
             }
+
+            return false;
         };
     }
 
