@@ -1181,18 +1181,20 @@
 
     newSocketService.$inject = ['$state', '$interval'];
     function newSocketService($state, $interval) {
-        let service              = this;
-        let id = 0;
-        service.server               = socketServer;
-        service.socketClosed = false;
-        service.callbacks = [];
+        let service      = this;
+        let id           = 0;
         let queueEmptied = false;
+
+        service.server       = socketServer;
+        service.socketClosed = false;
+        service.callbacks    = [];
 
         service.getData = (action, data, callback) => {
             let userData = {};
             if (action !== 'login') {
-                data.username = sessionStorage.user;
+                data.username = (sessionStorage.user !== undefined) ? sessionStorage.user : '';
             }
+
             userData = data;
             // console.log('after data: ' + userData);
             let stringifyedData = JSON.stringify({action: action, data: userData});
@@ -1216,12 +1218,12 @@
                     service.server.close();
 
                 }else {
-                    console.log(service.callbacks);
                     let result = JSON.parse(response.data);
-                    let call   = service.callbacks.shift();
-                    if (call !== undefined) {
-                        call.value(result);
+                    if (!result.session_state) {
+                        sessionStorage.clear();
                     }
+                    let call = service.callbacks.shift();
+                    call.value(result);
                 }
             };
 
@@ -1239,6 +1241,7 @@
                     socketServer        = new WebSocket(socketPath);
                     socketServer.onopen = function () {
                         socketOpened = true;
+                        socketServer.send({user: sessionStorage.user});
                         window.location.reload()
                     };
 

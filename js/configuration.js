@@ -8,7 +8,7 @@ let socketOpened = false;
 let groupTagDistance = 0.5;
 
 socketServer.onopen = function () {
-    console.log('Socket opened')
+    console.log('Socket opened');
     socketOpened = true;
 };
 
@@ -63,4 +63,4 @@ let mapConfiguration = [{
  * GENERIC CONFIGURATIONS
  *************************************************************/
 
-const showPartnerLogo = true;
+const showPartnerLogo = false;

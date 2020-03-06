@@ -60,13 +60,13 @@
                                         dataService.isAdmin       = response.result[0].role;
                                         dataService.isUserManager = 0;
                                         dataService.isTracker     = 0;
-                                        result.password_changed = response.result[0].password_changed;
+                                        result.password_changed   = response.result[0].password_changed;
                                     }else if (response.result[0].role === 2){
                                         dataService.isAdmin = 0;
                                         dataService.isTracker = 0;
                                         dataService.isUserManager      = response.result[0].role;
                                         result.password_changed = response.result[0].password_changed;
-                                    }else if (response.result[0].role === 0){
+                                    }else if (response.result[0].role === 0) {
                                         dataService.isAdmin       = 0;
                                         dataService.isUserManager = 0;
                                         dataService.isTracker     = 0;
@@ -90,7 +90,6 @@
                                                                 dataService.locationFromClick = '';
                                                                 if (locationInfo.result.is_inside)
                                                                     $state.go('canvas');
-                                                                console.log(result);
                                                                 promise.resolve(result);
                                                             })
                                                         }
@@ -107,7 +106,6 @@
                                             }
                                         })
                                     }, 1000)
-
                                 } else {
                                     $state.go('login');
                                 }

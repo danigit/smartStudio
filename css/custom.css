@@ -297,27 +297,27 @@ MARGINS
     margin-right: 10px;
 }
 
-.margin-left-10-px{
+.margin-left-10-px {
     margin-left: 10px;
 }
 
-.margin-left-20-px{
-    margin-left: 20px!important;
+.margin-left-20-px {
+    margin-left: 20px !important;
 }
 
-.margin-left-6{
+.margin-left-6 {
     margin-left: 6%;
 }
 
-.margin-left-8{
+.margin-left-8 {
     margin-left: 8%;
 }
 
-.margin-left--8-px{
+.margin-left--8-px {
     margin-left: -8px;
 }
 
-.margin-left-right-50-px{
+.margin-left-right-50-px {
     margin-left: 50px;
     margin-right: 50px;
 }
