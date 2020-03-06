@@ -160,15 +160,15 @@
         service.checkIfTagsHavePosition = (tags) => {
             let tagOutOfLocation = false;
             tags.forEach(tag => {
-                if (service.isOutdoor(tag) && (tag.gps_north_degree === -2 && tag.gps_east_degree === -2)){
+                if (service.isOutdoor(tag) && (tag.gps_north_degree === -2 && tag.gps_east_degree === -2)) {
                     tagOutOfLocation = true;
-                } else if (!service.isOutdoor(tag) && tag.anchor_id === null){
+                } else if (!service.isOutdoor(tag) && tag.anchor_id === null) {
                     tagOutOfLocation = true;
                 }
             });
 
             return tagOutOfLocation;
-        }
+        };
 
         service.updateUserSettings = () => {
             let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, outdoor_tag_on: service.switch.showOutdoorTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};
@@ -1155,7 +1155,7 @@
                             locationTags.push(tag.name);
                         }
                     });
-                    locationsTags.push({location: marker.name, tags: locationTags.length})
+                    locationsTags.push({location: marker.name, tags: locationTags.length});
                     locationTags = [];
                 }
             });
@@ -1173,7 +1173,10 @@
 
         };
 
-        service.showAlarms = () => {}
+        service.isResponseCorrect = (response, expected) => {
+            console.log(response === expected);
+            return response === expected
+        }
     }
 
     newSocketService.$inject = ['$state', '$interval'];
@@ -1183,6 +1186,7 @@
         service.server               = socketServer;
         service.socketClosed = false;
         service.callbacks = [];
+        let queueEmptied = false;
 
         service.getData = (action, data, callback) => {
             let userData = {};
@@ -1194,6 +1198,11 @@
             let stringifyedData = JSON.stringify({action: action, data: userData});
 
             if (socketOpened) {
+                if (!queueEmptied) {
+                    service.callbacks = [];
+                    queueEmptied      = true;
+                }
+
                 service.server.send(stringifyedData);
                 service.lastMessageTime = new Date();
                 service.callbacks.push({id: id, value: callback});
@@ -1207,9 +1216,12 @@
                     service.server.close();
 
                 }else {
+                    console.log(service.callbacks);
                     let result = JSON.parse(response.data);
                     let call   = service.callbacks.shift();
-                    call.value(result);
+                    if (call !== undefined) {
+                        call.value(result);
+                    }
                 }
             };
 
@@ -1220,11 +1232,12 @@
 
             service.server.onclose = () => {
                 // $state.go('login');
-                socketOpened = false;
+                socketOpened            = false;
+                service.callbacks       = [];
                 service.reconnectSocket = $interval(function () {
-                    console.log('trying to reconect')
-                    socketServer = new WebSocket(socketPath);
-                    socketServer.onopen = function(){
+                    console.log('trying to reconect');
+                    socketServer        = new WebSocket(socketPath);
+                    socketServer.onopen = function () {
                         socketOpened = true;
                         window.location.reload()
                     };
