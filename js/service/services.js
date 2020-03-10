@@ -774,7 +774,7 @@
             return historyRows;
         };
 
-        service.showToast = ($mdToast, message, background, color, position = 'bottom center') => {
+        service.showToast = ($mdToast, message, background, color, position = 'top center') => {
             $mdToast.show({
                 hideDelay       : TOAST_SHOWING_TIME,
                 position        : position,

@@ -78,20 +78,100 @@ h2 {
 }
 
 #toggle:checked + label {
-    background:#dd6149;
+    background: #dd6149;
 }
 
 #toggle:checked + label:after {
-    content:"Chiudi Legenda"
+    content: "Chiudi Legenda"
 }
 
-.top-right-center{
+.log-message {
+    background: #1e2528;
+    color: #FFF;
+    border-right: 3px #0093c4 solid;
+    border-top: 3px #0093c4 solid;
+    position: absolute;
+    left: -495px;
+    bottom: 0px;
+    width: 490px;
+    height: 100%;
+    transition: left 500ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
+    overflow: auto;
+    box-sizing: border-box;
+    z-index: 100;
+}
+
+.log-message h1 {
+    color: #FFF;
+}
+
+#log {
+    position: absolute;
+    appearance: none;
+    cursor: pointer;
+    left: -100%;
+    top: -100%;
+}
+
+#log + label {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    cursor: pointer;
+    font-weight: bold;
+    background: #0093c4;
+    width: 110px;
+    border-radius: 3px;
+    padding: 8px 10px;
+    color: #FFFFFF;
+    line-height: 20px;
+    font-size: 12px;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+    transition: all 500ms ease;
+    z-index: 200;
+}
+
+#log + label:after {
+    content: "Apri Legenda"
+}
+
+.container {
+    transition: margin 500ms cubic-bezier(0.17, 0.04, 0.03, 0.94);
+    padding: 5em 3em;
+}
+
+#log:checked ~ .log-message {
+    left: 0;
+}
+
+#log:checked ~ .container {
+    margin-top: 0px;
+}
+
+#log:checked + label {
+    background: #dd6149;
+}
+
+#log:checked + label:after {
+    content: "Chiudi Legenda"
+}
+
+.log-area {
+    background-color: #1e2528;
+    text-indent: 0;
+    color: #818181;
+    width: 98%;
+    height: 96%;
+}
+
+.top-right-center {
     top: -21px;
     right: 23px;
     z-index: 2;
 }
 
-.category-list-item{
+.category-list-item {
     display: flex;
     flex-direction: row;
     align-items: center;

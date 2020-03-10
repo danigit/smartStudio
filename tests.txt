@@ -96,6 +96,7 @@ TODO
 - pulsante carrica immagine offline nella sezione inserimento categorie tag
 - take out array.fill(0) from canvas show icons
 - da inserire i tag spenti anche nella sezione tags info in alto a destra
+- cosa puo modificare il usermanager delle tablel?
 
 
 

@@ -17,19 +17,19 @@
 
     function menuController($rootScope, $scope, $mdDialog, $mdEditDialog, $location, $state, $filter, $timeout, $mdSidenav, $interval, $mdToast, $element, NgMap, dataService, newSocketService) {
 
-        $scope.menuTags         = dataService.allTags;
-        $scope.menuLocationFloors         = [];
-        $scope.menuAnchors      = [];
-        $scope.isAdmin          = dataService.isAdmin;
-        $scope.isUserManager    = dataService.isUserManager;
-        $scope.selectedTag      = '';
-        $scope.selectedAnchor      = '';
-        $scope.selectedLocation = '';
-        $scope.zoneColor        = '';
-        $scope.userRole         = '';
-        $scope.ctrlDataService = dataService;
-        $scope.alertButtonColor = 'background-red';
-        $scope.mapFullscreen = false;
+        $scope.menuTags           = dataService.allTags;
+        $scope.menuLocationFloors = [];
+        $scope.menuAnchors        = [];
+        $scope.isAdmin            = dataService.isAdmin;
+        $scope.isUserManager      = dataService.isUserManager;
+        $scope.selectedTag        = '';
+        $scope.selectedAnchor     = '';
+        $scope.selectedLocation   = '';
+        $scope.zoneColor          = '';
+        $scope.userRole           = '';
+        $scope.ctrlDataService    = dataService;
+        $scope.alertButtonColor   = 'background-red';
+        $scope.mapFullscreen      = false;
 
         $scope.switch = {
             mapFullscreen          : false,
@@ -79,7 +79,9 @@
             });
         };
 
-        //opening and closing the menu
+        /**
+         * Function that open and close the menu
+         */
         $scope.toggleLeft = () => {
             $mdSidenav('left').toggle();
         };
@@ -90,7 +92,7 @@
         $scope.openLocations = () => {
             dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
 
-            let locationsHasChanged     = false;
+            let locationsHasChanged = false;
 
             let locationDialog = {
                 locals             : {admin: $scope.isAdmin, userManager: $scope.isUserManager},
@@ -110,26 +112,6 @@
                         page        : 1
                     };
 
-                    $scope.items = [];
-                    $scope.sel = [];
-
-                    $scope.toggle = function (item, list) {
-                        console.log('togle');
-                        console.log(list);
-                        var idx = list.indexOf(item);
-                        console.log(idx);
-                        if (idx > -1) {
-                            list.splice(idx, 1);
-                        }
-                        else {
-                            list.push(item);
-                        }
-                    };
-
-                    $scope.exists = function (item, list) {
-                        return list.indexOf(item) > -1;
-                    };
-
                     /**
                      * Function that recover the locations
                      */
@@ -137,9 +119,6 @@
                         newSocketService.getData('get_locations_by_user', {user: dataService.user.username}, (response) => {
 
                             $scope.locationsTable = response.result;
-                            $scope.items          = Array.from(Array(Object.keys(response.result[0]).length).keys());
-                            $scope.items.forEach(i => $scope.sel.push(i));
-                            console.log('list setted');
                             $scope.$apply();
                         });
                     };
@@ -171,11 +150,11 @@
                                         location_field: locationName,
                                         field_value   : input.$modelValue
                                     }, (response) => {
-                                        if (response.result !== 1){
+                                        if (response.result !== 1) {
                                             locationsHasChanged = true;
-                                            dataService.showToast($mdToast, lang.locationFieldNotChanged, 'background-darkred', 'color-white');
+                                            dataService.showToast($mdToast, lang.fieldNotChanged, 'background-darkred', 'color-white');
                                         } else {
-                                            dataService.showToast($mdToast, lang.locationFieldChanged, 'background-lightgreen', 'color-black');
+                                            dataService.showToast($mdToast, lang.fieldChanged, 'background-lightgreen', 'color-black');
                                         }
                                     });
                                 },
@@ -209,11 +188,11 @@
 
                                 if (response.result.length === 0) {
                                     $scope.locationsTable = $scope.locationsTable.filter(t => t.id !== location.id);
-                                    locationsHasChanged = true;
+                                    locationsHasChanged   = true;
                                     $scope.$apply();
-                                    dataService.showToast($mdToast, lang.locationDeleted, 'background-lightgreen', 'color-black', 'top center');
-                                } else{
-                                    dataService.showToast($mdToast, lang.imposibleDeleteLocation, 'background-darkred', 'color-white', 'top center');
+                                    dataService.showToast($mdToast, lang.elementDeleted, 'background-lightgreen', 'color-black');
+                                } else {
+                                    dataService.showToast($mdToast, lang.elementNotDeleted, 'background-darkred', 'color-white');
                                 }
                             });
                         }, function () {
@@ -237,7 +216,7 @@
                         })
                     }
                     if (locationsHasChanged) {
-                        locationsHasChanged     = false;
+                        locationsHasChanged = false;
                         window.location.reload();
                     }
                 }
@@ -310,7 +289,7 @@
                                                         image    : images
                                                     }, (savedImage) => {
                                                         if (savedImage.result === false) {
-                                                            locationsHasChanged = true;
+                                                            locationsHasChanged         = true;
                                                             $scope.location.showSuccess = false;
                                                             $scope.location.showError   = true;
                                                             $scope.location.message     = lang.positionInsertedWithoutImage;
@@ -318,19 +297,20 @@
                                                             $rootScope.$emit('updateLocationTable', {});
                                                             $scope.$apply();
 
-                                                            //TODO insert toast
+                                                            dataService.showToast($mdToast, lang.elementInserted, 'background-lightgreen', 'color-black');
                                                             $timeout(function () {
                                                                 $mdDialog.hide();
                                                             }, 1000);
                                                         } else {
-                                                            locationsHasChanged = true;
+                                                            locationsHasChanged         = true;
                                                             $scope.location.resultClass = 'background-green';
                                                             $scope.location.showSuccess = true;
                                                             $scope.location.showError   = false;
                                                             $scope.location.message     = lang.positionInserted;
                                                             $rootScope.$emit('updateLocationTable', {});
                                                             $scope.$apply();
-                                                            //TODO insert toast
+
+                                                            dataService.showToast($mdToast, lang.elementInserted, 'background-lightgreen', 'color-black');
                                                             $timeout(function () {
                                                                 $mdDialog.hide();
                                                             }, 1000);
@@ -339,14 +319,15 @@
                                                 }
                                             })
                                     } else {
-                                        locationsHasChanged = true;
+                                        locationsHasChanged         = true;
                                         $scope.location.showSuccess = true;
                                         $scope.location.showError   = false;
                                         $scope.location.message     = lang.positionInsertedWithoutImage;
                                         $scope.location.resultClass = 'background-orange';
                                         $rootScope.$emit('updateLocationTable', {});
                                         $scope.$apply();
-                                        //TODO insert toast
+
+                                        dataService.showToast($mdToast, lang.elementInserted, 'background-lightgreen', 'color-black');
                                         $timeout(function () {
                                             $mdDialog.hide();
                                         }, 1000);
@@ -357,7 +338,8 @@
                                     $scope.location.message     = lang.impossibleToInsertPosition;
                                     $scope.location.resultClass = 'background-red';
                                     $scope.$apply();
-                                    //TODO insert toast
+
+                                    dataService.showToast($mdToast, lang.elementNotInserted, 'background-darkred', 'color-white');
                                     return null
                                 }
                             });
@@ -403,8 +385,6 @@
 
                     let updateIntermediateUserTable = () => {
                         newSocketService.getData('get_generic_users', {}, (response) => {
-                            if (!response.session_state)
-                                window.location.reload();
 
                             $scope.usersTable = response.result;
                             $scope.tableEmpty = $scope.usersTable.length === 0;
@@ -437,8 +417,6 @@
                                 };
 
                                 newSocketService.getData('get_user_locations', {user: user.id}, (response) => {
-                                    if (!response.session_state)
-                                        window.location.reload();
 
                                     $scope.locations  = response.result;
                                     $scope.tableEmpty = $scope.locations.length === 0;
@@ -467,8 +445,6 @@
                                             };
 
                                             newSocketService.getData('get_all_locations', {}, (response) => {
-                                                if (!response.session_state)
-                                                    window.location.reload();
 
                                                 $scope.insertManagedLocations.allLocations = response.result;
                                             });
@@ -491,11 +467,15 @@
                                                         user     : user.id,
                                                         locations: locationsIds,
                                                     }, (response) => {
-                                                        if (!response.session_state)
-                                                            window.location.reload();
 
-                                                        $mdDialog.hide();
-                                                        $mdDialog.show(manageLocationDialog);
+                                                        if (Number.isInteger(response.result)) {
+                                                            dataService.showToast($mdToast, lang.elementInserted, 'background-lightgreen', 'color-black');
+
+                                                            $mdDialog.hide();
+                                                            $mdDialog.show(manageLocationDialog);
+                                                        } else {
+                                                            dataService.showToast($mdToast, lang.elementNotInserted, 'background-darkred', 'color-white');
+                                                        }
                                                     });
                                                 } else {
                                                     $scope.insertManagedLocations.resultClass = 'background-red';
@@ -524,12 +504,13 @@
                                             user       : user.id,
                                             location_id: location.id
                                         }, (response) => {
-                                            if (!response.session_state)
-                                                window.location.reload();
-
                                             if (response.result === 1) {
+                                                dataService.showToast($mdToast, lang.elementDeleted, 'background-lightgreen', 'color-black');
+
                                                 $scope.locations = $scope.locations.filter(l => l.id !== location.id);
                                                 $scope.$apply();
+                                            } else {
+                                                dataService.showToast($mdToast, lang.elementNotDeleted, 'background-darkred', 'color-white');
                                             }
                                         });
                                     }, function () {
@@ -561,8 +542,7 @@
                                         user_field : userName,
                                         field_value: input.$modelValue
                                     }, (response) => {
-                                        if (!response.session_state)
-                                            window.location.reload();
+                                        log(response.result);
                                     });
                                 },
                                 targetEvent: event,
@@ -689,9 +669,9 @@
         $scope.openSuperuserManager = function () {
             dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
 
-            let userId            = null;
-            let usersTable = [];
-            let superUsersDialog  = {
+            let userId           = null;
+            let usersTable       = [];
+            let superUsersDialog = {
                 locals             : {admin: $scope.isAdmin, userManager: $scope.isUserManager},
                 templateUrl        : componentsPath + 'users-table.html',
                 parent             : angular.element(document.body),
@@ -705,7 +685,7 @@
                     $scope.isAdmin       = admin;
                     $scope.userRole      = '';
                     $scope.isUserManager = userManager;
-                    $scope.showColumn = true;
+                    $scope.showColumn    = true;
                     $scope.query         = {
                         limitOptions: [5, 10, 15],
                         limit       : 5,
@@ -723,7 +703,10 @@
                      */
                     $scope.updateUserRole = (user, userRole) => {
                         if (user.role !== userRole.toString()) {
-                            newSocketService.getData('update_user_role', {user: user.id, role: userRole}, (response) => {
+                            newSocketService.getData('update_user_role', {
+                                user: user.id,
+                                role: userRole
+                            }, (response) => {
                                 //TODO add toast
                             });
                         }
@@ -971,22 +954,22 @@
                 controller         : ['$scope', function ($scope) {
                     let emailList = [];
 
-                    $scope.roles    = [lang.genericUser, lang.intermediateUser, lang.trackerUser];
+                    $scope.roles            = [lang.genericUser, lang.intermediateUser, lang.trackerUser];
                     $scope.userRoleRegister = {registerRole: ''};
-                    $scope.user     = {
-                        username   : '',
-                        name       : '',
-                        email      : '',
-                        phone: '',
-                        emailForList      : '',
-                        botUrl: '',
-                        chatId: '',
-                        webUrl: '',
-                        showSuccess: false,
-                        showError  : false,
-                        isIndoor   : false,
-                        message    : '',
-                        resultClass: ''
+                    $scope.user             = {
+                        username    : '',
+                        name        : '',
+                        email       : '',
+                        phone       : '',
+                        emailForList: '',
+                        botUrl      : '',
+                        chatId      : '',
+                        webUrl      : '',
+                        showSuccess : false,
+                        showError   : false,
+                        isIndoor    : false,
+                        message     : '',
+                        resultClass : ''
                     };
 
                     $scope.addEmail = () => {
@@ -1000,14 +983,14 @@
                         if (form.$valid) {
                             newSocketService.getData('insert_super_user', {
                                 username_reg: $scope.user.username,
-                                name    : $scope.user.name,
-                                email   : $scope.user.email,
-                                phone: $scope.user.phone,
+                                name        : $scope.user.name,
+                                email       : $scope.user.email,
+                                phone       : $scope.user.phone,
                                 emailList   : emailList,
-                                botUrl: $scope.user.botUrl,
-                                chatId: $scope.user.chatId,
-                                webUrl: $scope.user.webUrl,
-                                role    : $scope.userRoleRegister.registerRole
+                                botUrl      : $scope.user.botUrl,
+                                chatId      : $scope.user.chatId,
+                                webUrl      : $scope.user.webUrl,
+                                role        : $scope.userRoleRegister.registerRole
                             }, (response) => {
 
                                 if (response.result.length === 0) {
@@ -1081,7 +1064,7 @@
                         page        : 1
                     };
 
-                    $scope.trackingRows   = [];
+                    $scope.trackingRows = [];
 
                     $scope.$watchGroup(['tracking.fromDate', 'tracking.toDate', 'tracking.selectedTag', 'tracking.selectedEvent'], function (newValues) {
                         let fromDate = $filter('date')(newValues[0], 'yyyy-MM-dd');
@@ -1111,7 +1094,7 @@
                     }
                 }],
                 onRemoving         : function () {
-                    if (dataService.homeTimer === undefined){
+                    if (dataService.homeTimer === undefined) {
                         NgMap.getMap('main-map').then((map) => {
                             $rootScope.$emit('constantUpdateNotifications', map)
                         });
@@ -1125,7 +1108,7 @@
          * @param position
          */
         $scope.viewHistory = function (position) {
-            dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
+            dataService.homeTimer      = dataService.stopTimer(dataService.homeTimer);
             dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
 
             $mdDialog.show({
@@ -1157,7 +1140,7 @@
                         page        : 1
                     };
 
-                    $scope.historyRows   = [];
+                    $scope.historyRows = [];
 
                     /**
                      * Function that deletes the history
@@ -1202,11 +1185,11 @@
                             event   : newValues[3]
                         }, (response) => {
 
-                            $scope.historyRows = dataService.getProtocol(response.result);
+                            $scope.historyRows           = dataService.getProtocol(response.result);
                             $scope.query['limitOptions'] = [5, 10, 20, 100];
                             $scope.query['limitOptions'].push(response.result.length);
 
-                            newSocketService.getData('get_all_locations', {}, (locations) =>{
+                            newSocketService.getData('get_all_locations', {}, (locations) => {
                                 $scope.historyRows.forEach((event, index) => {
                                     if (event.tag_x_pos !== -1 && event.tag_y_pos !== -1 &&
                                         event.tag_x_pos !== -2 && event.tag_y_pos !== -2 &&
@@ -1246,14 +1229,14 @@
                 onRemoving         : function () {
                     switch (position) {
                         case 'home':
-                            if (dataService.homeTimer === undefined){
+                            if (dataService.homeTimer === undefined) {
                                 NgMap.getMap('main-map').then((map) => {
                                     $rootScope.$emit('constantUpdateNotifications', map)
                                 });
                             }
                             break;
                         case 'canvas':
-                            if (dataService.canvasInterval === undefined){
+                            if (dataService.canvasInterval === undefined) {
                                 $rootScope.$emit('constantUpdateCanvas')
                             }
                             break;
@@ -1361,7 +1344,7 @@
          * @param position
          */
         $scope.registry = (position) => {
-            dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
+            dataService.homeTimer      = dataService.stopTimer(dataService.homeTimer);
             dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
             dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
 
@@ -1448,8 +1431,8 @@
                     $scope.isUserManager = userManager;
                     $scope.selectedType  = null;
                     $scope.tagTypes      = [];
-                    $scope.tagsCallMe = {};
-                    let call_me_button = false;
+                    $scope.tagsCallMe    = {};
+                    let call_me_button   = false;
                     $scope.query         = {
                         limitOptions: [5, 10, 15],
                         order       : 'name',
@@ -1465,9 +1448,13 @@
 
                             $scope.tags = response.result;
 
-                            response.result.forEach(function(tag){
-                                let tagId = tag.id;
-                                $scope.tagsCallMe[tagId] = {background: (tag.call_me_alarm === 1) ? 'color-darkgreen': 'color-darkred', value: (tag.call_me_alarm === 1) ? lang.stopCallMe : lang.callMe, on: (tag.call_me_alarm === 1)}
+                            response.result.forEach(function (tag) {
+                                let tagId                = tag.id;
+                                $scope.tagsCallMe[tagId] = {
+                                    background: (tag.call_me_alarm === 1) ? 'color-darkgreen' : 'color-darkred',
+                                    value     : (tag.call_me_alarm === 1) ? lang.stopCallMe : lang.callMe,
+                                    on        : (tag.call_me_alarm === 1)
+                                }
                             });
                         });
 
@@ -1907,19 +1894,19 @@
                                 clickOutsideToClose: true,
                                 multiple           : true,
                                 controller         : ['$scope', 'tag', 'parameters', function ($scope, tag, parameters) {
-                                    $scope.resultClass = '';
-                                    $scope.tag = tag;
+                                    $scope.resultClass   = '';
+                                    $scope.tag           = tag;
                                     $scope.tagParameters = parameters[0];
-                                    $scope.sendedValues = {
-                                        tag_id: tag.id,
-                                        adv_rate: $scope.tagParameters.adv_rate,
-                                        power_level: $scope.tagParameters.power_level,
-                                        disable_timing: $scope.tagParameters.disable_timing,
-                                        alarm_timing: $scope.tagParameters.alarm_timing,
-                                        no_mov_timing: $scope.tagParameters.no_mov_timing,
-                                        md_mode: $scope.tagParameters.md_mode,
-                                        ka: $scope.tagParameters.ka,
-                                        scanning_rate: $scope.tagParameters.scanning_rate,
+                                    $scope.sendedValues  = {
+                                        tag_id           : tag.id,
+                                        adv_rate         : $scope.tagParameters.adv_rate,
+                                        power_level      : $scope.tagParameters.power_level,
+                                        disable_timing   : $scope.tagParameters.disable_timing,
+                                        alarm_timing     : $scope.tagParameters.alarm_timing,
+                                        no_mov_timing    : $scope.tagParameters.no_mov_timing,
+                                        md_mode          : $scope.tagParameters.md_mode,
+                                        ka               : $scope.tagParameters.ka,
+                                        scanning_rate    : $scope.tagParameters.scanning_rate,
                                         lnd_prt_timing   : $scope.tagParameters.lnd_prt_timing,
                                         scanning_pkt     : $scope.tagParameters.scanning_pkt,
                                         freefall_thd     : $scope.tagParameters.freefall_thd,
@@ -1947,29 +1934,131 @@
 
                                     //TODO put the parameters in the language file
                                     $scope.selectValues = {
-                                        adv_rate: [{label: "1 s", value: 1}, {label: "2 s", value: 2}, {label: "3 s", value: 3}, {label: "4 s", value: 4}, {label: "5 s", value: 5}],
-                                        power_level: [{label: "0 dBm", value: 0}, {label: "1 dBm", value: 1}, {label: "2 dBm", value: 2}, {label: "3 dBm", value: 3}, {label: "4 dBm", value: 4},
-                                            {label: "5 dBm", value: 5}, {label: "6 dBm", value: 6}, {label: "7 dBm", value: 7}, {label: "8 dBm", value: 8}],
-                                        disable_timing: [{label: "1 min", value: 1}, {label: "2 min", value: 2}, {label: "3 min", value: 3}, {label: "4 min", value: 4}, {label: "5 min", value: 5},
-                                            {label: "6 min", value: 6}, {label: "7 min", value: 7}, {label: "8 min", value: 8}, {label: "9 min", value: 9}, {label: "10 min", value: 10}],
-                                        alarm_timing: [{label: "10 s", value: 10}, {label: "15 s", value: 15}, {label: "20 s", value: 20}, {label: "25 s", value: 25}, {label: "30 s", value: 30}],
-                                        no_mov_timing: [{label: "1 min", value: 1}, {label: "2 min", value: 2}, {label: "3 min", value: 3}, {label: "4 min", value: 4}, {label: "5 min", value: 5},
-                                                         {label: "6 min", value: 6}, {label: "7 min", value: 7}, {label: "8 min", value: 8}, {label: "9 min", value: 9}],
-                                        md_mode: [{label: "LND/PRT", value: 0}, {label: "MOV", value: 1}, {label: "LND/PRT/MOV", value: 2}, {label: "LND/PRT L", value: 3}, {label: "LND/PRT/MOV L", value: 4},
-                                            {label: "FREEFALL", value: 5}, {label: "LND/PRT/FREEFALL L", value: 6}, {label: "LND/PRT/MOV/FREEFALL L", value: 7}],
-                                        ka: [{label: "10 min", value: 1}, {label: "15 min", value: 2}, {label: "30 min", value: 3}, {label: "60 min", value: 4}, {label: "90 min", value: 5}, {label: "120 min", value: 6}],
-                                        scanning_rate: [{label: "1 s", value: 1}, {label: "5 s", value: 2}, {label: "10 s", value: 3}, {label: "20 s", value: 4}, {label: "30 s", value: 5}, {label: "60 s", value: 6}],
-                                        lnd_prt_timing: [{label: "10 s", value: 1}, {label: "20 s", value: 2}, {label: "30 s", value: 3}, {label: "40 s", value: 4}, {label: "50 s", value: 5},
-                                            {label: "60 s", value: 6}, {label: "70 s", value: 7}, {label: "80 s", value: 8}, {label: "90 s", value: 9}, {label: "120 s", value: 10}],
-                                        scanning_pkt: [{label: "5 pkt", value: 1}, {label: "10 pkt", value: 2}, {label: "20 pkt", value: 3}, {label: "40 pkt", value: 4}, {label: "60 pkt", value: 5}, {label: "80 pkt", value: 6}],
-                                        freefall_thd     : [{label: "40 cm", value: 1}, {label: "60 cm", value: 2}, {label: "80 cm", value: 3}, {label: "100 cm", value: 4}, {label: "120 cm", value: 5}, {label: "140 cm", value: 6},
-                                            {label: "160 cm", value: 7}, {label: "180 cm", value: 8}, {label: "200 cm", value: 9}],
+                                        adv_rate         : [{label: "1 s", value: 1}, {label: "2 s", value: 2}, {
+                                            label: "3 s",
+                                            value: 3
+                                        }, {label: "4 s", value: 4}, {label: "5 s", value: 5}],
+                                        power_level      : [{label: "0 dBm", value: 0}, {
+                                            label: "1 dBm",
+                                            value: 1
+                                        }, {label: "2 dBm", value: 2}, {label: "3 dBm", value: 3}, {
+                                            label: "4 dBm",
+                                            value: 4
+                                        },
+                                                            {label: "5 dBm", value: 5}, {
+                                                label: "6 dBm",
+                                                value: 6
+                                            }, {label: "7 dBm", value: 7}, {label: "8 dBm", value: 8}],
+                                        disable_timing   : [{label: "1 min", value: 1}, {
+                                            label: "2 min",
+                                            value: 2
+                                        }, {label: "3 min", value: 3}, {label: "4 min", value: 4}, {
+                                            label: "5 min",
+                                            value: 5
+                                        },
+                                                            {label: "6 min", value: 6}, {
+                                                label: "7 min",
+                                                value: 7
+                                            }, {label: "8 min", value: 8}, {label: "9 min", value: 9}, {
+                                                label: "10 min",
+                                                value: 10
+                                            }],
+                                        alarm_timing     : [{label: "10 s", value: 10}, {
+                                            label: "15 s",
+                                            value: 15
+                                        }, {label: "20 s", value: 20}, {label: "25 s", value: 25}, {
+                                            label: "30 s",
+                                            value: 30
+                                        }],
+                                        no_mov_timing    : [{label: "1 min", value: 1}, {
+                                            label: "2 min",
+                                            value: 2
+                                        }, {label: "3 min", value: 3}, {label: "4 min", value: 4}, {
+                                            label: "5 min",
+                                            value: 5
+                                        },
+                                                            {label: "6 min", value: 6}, {
+                                                label: "7 min",
+                                                value: 7
+                                            }, {label: "8 min", value: 8}, {label: "9 min", value: 9}],
+                                        md_mode          : [{label: "LND/PRT", value: 0}, {
+                                            label: "MOV",
+                                            value: 1
+                                        }, {label: "LND/PRT/MOV", value: 2}, {
+                                            label: "LND/PRT L",
+                                            value: 3
+                                        }, {label: "LND/PRT/MOV L", value: 4},
+                                                            {label: "FREEFALL", value: 5}, {
+                                                label: "LND/PRT/FREEFALL L",
+                                                value: 6
+                                            }, {label: "LND/PRT/MOV/FREEFALL L", value: 7}],
+                                        ka               : [{label: "10 min", value: 1}, {
+                                            label: "15 min",
+                                            value: 2
+                                        }, {label: "30 min", value: 3}, {label: "60 min", value: 4}, {
+                                            label: "90 min",
+                                            value: 5
+                                        }, {label: "120 min", value: 6}],
+                                        scanning_rate    : [{label: "1 s", value: 1}, {
+                                            label: "5 s",
+                                            value: 2
+                                        }, {label: "10 s", value: 3}, {label: "20 s", value: 4}, {
+                                            label: "30 s",
+                                            value: 5
+                                        }, {label: "60 s", value: 6}],
+                                        lnd_prt_timing   : [{label: "10 s", value: 1}, {
+                                            label: "20 s",
+                                            value: 2
+                                        }, {label: "30 s", value: 3}, {label: "40 s", value: 4}, {
+                                            label: "50 s",
+                                            value: 5
+                                        },
+                                                            {label: "60 s", value: 6}, {
+                                                label: "70 s",
+                                                value: 7
+                                            }, {label: "80 s", value: 8}, {label: "90 s", value: 9}, {
+                                                label: "120 s",
+                                                value: 10
+                                            }],
+                                        scanning_pkt     : [{label: "5 pkt", value: 1}, {
+                                            label: "10 pkt",
+                                            value: 2
+                                        }, {label: "20 pkt", value: 3}, {label: "40 pkt", value: 4}, {
+                                            label: "60 pkt",
+                                            value: 5
+                                        }, {label: "80 pkt", value: 6}],
+                                        freefall_thd     : [{label: "40 cm", value: 1}, {
+                                            label: "60 cm",
+                                            value: 2
+                                        }, {label: "80 cm", value: 3}, {label: "100 cm", value: 4}, {
+                                            label: "120 cm",
+                                            value: 5
+                                        }, {label: "140 cm", value: 6},
+                                                            {label: "160 cm", value: 7}, {
+                                                label: "180 cm",
+                                                value: 8
+                                            }, {label: "200 cm", value: 9}],
                                         sim_is_here      : [{label: "NO", value: 0}, {label: "SI", value: 1}],
                                         wifi_is_here     : [{label: "NO", value: 0}, {label: "SI", value: 1}],
                                         advertise_is_here: [{label: "NO", value: 0}, {label: "SI", value: 1}],
                                         mac_filter       : '',
-                                        apn_name         : [{label: "VODAFONE", value: 'ep.inetd.gdsp'}, {label: "TIM", value: 'ibox.tim.it'}, {label: "FASTWEB", value: 'apn.fastweb.it'}, {label: "EMNIFY", value: 'em'}, {label: "JERSEY", value: 'JTFIXEDPUBLIC'}, {label: 'JERSEY NEW', value: 'JTM2M'}],
-                                        apn_code         : [{label: "VODAFONE", value: '22210'}, {label: "TIM", value: '00001'}, {label: "FASTWEB", value: '00002'}, {label: "EMNIFY", value: '00003'}, {label: "JERSEY", value: '00004'}, {label: 'JERSEY NEW', value: '00005'}],
+                                        apn_name         : [{label: "VODAFONE", value: 'ep.inetd.gdsp'}, {
+                                            label: "TIM",
+                                            value: 'ibox.tim.it'
+                                        }, {label: "FASTWEB", value: 'apn.fastweb.it'}, {
+                                            label: "EMNIFY",
+                                            value: 'em'
+                                        }, {label: "JERSEY", value: 'JTFIXEDPUBLIC'}, {
+                                            label: 'JERSEY NEW',
+                                            value: 'JTM2M'
+                                        }],
+                                        apn_code         : [{label: "VODAFONE", value: '22210'}, {
+                                            label: "TIM",
+                                            value: '00001'
+                                        }, {label: "FASTWEB", value: '00002'}, {
+                                            label: "EMNIFY",
+                                            value: '00003'
+                                        }, {label: "JERSEY", value: '00004'}, {label: 'JERSEY NEW', value: '00005'}],
                                         rest_name        : '',
                                         server_ip        : '',
                                         ssid_wifi        : '',
@@ -2039,7 +2128,7 @@
                                                     $timeout(function () {
                                                         $mdDialog.hide();
                                                     }, 1500);
-                                                }else{
+                                                } else {
                                                     $scope.resultClass = 'background-red';
                                                 }
                                             })
@@ -2062,23 +2151,23 @@
                      * Function that manage the call me button
                      * @param tag
                      */
-                    $scope.callMe = (tag) =>{
+                    $scope.callMe = (tag) => {
                         if (!$scope.tagsCallMe[tag.id]['on']) {
                             newSocketService.getData('set_call_me', {tag: tag.id}, (response) => {
                                 if (response.result > 0) {
                                     //TODO add toast
-                                    $scope.tagsCallMe[tag.id]['on']              = true;
+                                    $scope.tagsCallMe[tag.id]['on']         = true;
                                     $scope.tagsCallMe[tag.id]['background'] = 'color-darkgreen';
-                                    $scope.tagsCallMe[tag.id]['value'] = lang.stopCallMe;
+                                    $scope.tagsCallMe[tag.id]['value']      = lang.stopCallMe;
                                 }
                             });
                         } else {
-                            newSocketService.getData('stop_call_me', {tag: tag.id}, (response) =>{
+                            newSocketService.getData('stop_call_me', {tag: tag.id}, (response) => {
                                 if (response.result > 0) {
                                     //TODO add ttoast
-                                    $scope.tagsCallMe[tag.id]['on']              = false;
+                                    $scope.tagsCallMe[tag.id]['on']         = false;
                                     $scope.tagsCallMe[tag.id]['background'] = 'color-darkred';
-                                    $scope.tagsCallMe[tag.id]['value'] = lang.callMe;
+                                    $scope.tagsCallMe[tag.id]['value']      = lang.callMe;
                                 }
                             });
                         }
@@ -2129,15 +2218,15 @@
                 controller         : ['$scope', 'admin', 'userManager', function ($scope, admin, userManager) {
 
                     $scope.tagCategories = {};
-                    $scope.type_tags = dataService.allTags;
+                    $scope.type_tags     = dataService.allTags;
 
                     $scope.sendTags = () => {
                         let category_tags = [];
 
-                        $scope.tagCategories.forEach(function(category) {
-                            let cat = {};
+                        $scope.tagCategories.forEach(function (category) {
+                            let cat      = {};
                             cat.category = category.id;
-                            cat.tags = category.tags;
+                            cat.tags     = category.tags;
                             category_tags.push(cat)
                         });
 
@@ -2203,22 +2292,22 @@
                                     name       : '',
                                     resultClass: '',
                                     showSuccess: false,
-                                    showError: false,
-                                    message: ''
+                                    showError  : false,
+                                    message    : ''
                                 };
 
-                                let alarm_image = null;
+                                let alarm_image    = null;
                                 let no_alarm_image = null;
 
                                 $scope.submitTagCategory = (form) => {
-                                    form.$submitted = true;
-                                    $scope.insertTagCategory.showError = false;
+                                    form.$submitted                      = true;
+                                    $scope.insertTagCategory.showError   = false;
                                     $scope.insertTagCategory.showSuccess = false;
 
                                     if (form.$valid) {
 
-                                        let alarm_file     = null;
-                                        let alarm_fileName = '';
+                                        let alarm_file        = null;
+                                        let alarm_fileName    = '';
                                         let no_alarm_file     = null;
                                         let no_alarm_fileName = '';
 
@@ -2251,9 +2340,9 @@
                                                                         }, (no_alarm_savedImage) => {
 
                                                                             if (savedImage.result === false || no_alarm_savedImage === false) {
-                                                                                $scope.insertTag.resultClass = 'background-red';
+                                                                                $scope.insertTag.resultClass       = 'background-red';
                                                                                 $scope.insertTagCategory.showError = true;
-                                                                                $scope.insertTagCategory.message = lang.cannotConvertImage
+                                                                                $scope.insertTagCategory.message   = lang.cannotConvertImage
                                                                             } else {
                                                                                 if (alarm_fileName !== '' && no_alarm_fileName !== '') {
                                                                                     newSocketService.getData('insert_tag_category', {
@@ -2271,35 +2360,35 @@
                                                                                                 $mdDialog.hide();
                                                                                             }, 1000);
                                                                                         } else {
-                                                                                            $scope.insertTag.resultClass = 'background-red';
+                                                                                            $scope.insertTag.resultClass       = 'background-red';
                                                                                             $scope.insertTagCategory.showError = true;
-                                                                                            $scope.insertTagCategory.message = lang.cannotSaveImage
+                                                                                            $scope.insertTagCategory.message   = lang.cannotSaveImage
                                                                                         }
                                                                                     });
-                                                                                }else{
-                                                                                    $scope.insertTag.resultClass = 'background-red';
+                                                                                } else {
+                                                                                    $scope.insertTag.resultClass       = 'background-red';
                                                                                     $scope.insertTagCategory.showError = true;
-                                                                                    $scope.insertTagCategory.message = lang.cannotConvertImage
+                                                                                    $scope.insertTagCategory.message   = lang.cannotConvertImage
                                                                                 }
                                                                             }
                                                                         });
-                                                                    }else{
+                                                                    } else {
                                                                         $scope.insertTagCategory.resultClass = 'background-red';
-                                                                        $scope.insertTagCategory.showError = true;
-                                                                        $scope.insertTagCategory.message = lang.cannotConvertImage
+                                                                        $scope.insertTagCategory.showError   = true;
+                                                                        $scope.insertTagCategory.message     = lang.cannotConvertImage
                                                                     }
                                                                 })
                                                         });
-                                                    }else{
+                                                    } else {
                                                         $scope.insertTagCategory.resultClass = 'background-red';
-                                                        $scope.insertTagCategory.showError = true;
-                                                        $scope.insertTagCategory.message = lang.cannotConvertImage
+                                                        $scope.insertTagCategory.showError   = true;
+                                                        $scope.insertTagCategory.message     = lang.cannotConvertImage
                                                     }
                                                 })
                                         } else {
                                             $scope.insertTagCategory.resultClass = 'background-red';
-                                            $scope.insertTagCategory.showError = true;
-                                            $scope.insertTagCategory.message = lang.tagCategorySelectImage
+                                            $scope.insertTagCategory.showError   = true;
+                                            $scope.insertTagCategory.message     = lang.tagCategorySelectImage
                                         }
                                     } else {
                                         $scope.insertTagCategory.resultClass = 'background-red';
@@ -2337,12 +2426,12 @@
                             let editCell = {
                                 modelValue : category[categoryName],
                                 save       : function (input) {
-                                    input.$invalid = true;
-                                    category[categoryName]   = input.$modelValue;
+                                    input.$invalid         = true;
+                                    category[categoryName] = input.$modelValue;
                                     newSocketService.getData('change_tag_category_field', {
-                                        category_id     : category.id,
-                                        category_field  : categoryName,
-                                        field_value: input.$modelValue
+                                        category_id   : category.id,
+                                        category_field: categoryName,
+                                        field_value   : input.$modelValue
                                     }, (response) => {
                                         //TODO add toast
                                     });
@@ -2374,7 +2463,7 @@
 
                         $mdDialog.show(confirm).then(() => {
                             console.log('the category is: ', category);
-                            newSocketService.getData('delete_tag_category', {category_id : category.id}, (response) => {
+                            newSocketService.getData('delete_tag_category', {category_id: category.id}, (response) => {
 
                                 if (response.result === 1) {
                                     //TODO add toast
@@ -2407,7 +2496,7 @@
                 controller         : ['$scope', 'admin', 'userManager', function ($scope, admin, userManager) {
 
                     $scope.safety_boxes = {};
-                    $scope.type_tags = dataService.allTags;
+                    $scope.type_tags    = dataService.allTags;
 
                     $scope.query = {
                         limitOptions: [5, 10, 15],
@@ -2439,11 +2528,11 @@
 
                                 $scope.insertSafetyBox = {
                                     name       : '',
-                                    imei: '',
+                                    imei       : '',
                                     resultClass: '',
                                     showSuccess: false,
-                                    showError: false,
-                                    message: ''
+                                    showError  : false,
+                                    message    : ''
                                 };
 
                                 /**
@@ -2454,9 +2543,12 @@
                                     form.$submitted = true;
 
                                     if (form.$valid) {
-                                        newSocketService.getData('insert_safety_box', {name: $scope.insertSafetyBox.name, imei: $scope.insertSafetyBox.imei}, (response) => {
+                                        newSocketService.getData('insert_safety_box', {
+                                            name: $scope.insertSafetyBox.name,
+                                            imei: $scope.insertSafetyBox.imei
+                                        }, (response) => {
 
-                                            if (response.result !== 'ERROR_ON_INSERTING_SAFETY_BOX'){
+                                            if (response.result !== 'ERROR_ON_INSERTING_SAFETY_BOX') {
                                                 $scope.insertSafetyBox.resultClass = 'background-green';
                                                 //TODO add toast
                                                 $scope.$apply();
@@ -2493,12 +2585,12 @@
                             let editCell = {
                                 modelValue : safety_box[safety_box_name],
                                 save       : function (input) {
-                                    input.$invalid = true;
-                                    safety_box[safety_box_name]   = input.$modelValue;
+                                    input.$invalid              = true;
+                                    safety_box[safety_box_name] = input.$modelValue;
                                     newSocketService.getData('change_safety_box_field', {
-                                        safety_box_id     : safety_box.id,
-                                        safety_box_field  : safety_box_name,
-                                        field_value: input.$modelValue
+                                        safety_box_id   : safety_box.id,
+                                        safety_box_field: safety_box_name,
+                                        field_value     : input.$modelValue
                                     }, (response) => {
                                         //TODO add toast
                                     });
@@ -2529,7 +2621,7 @@
                             .cancel(lang.cancel);
 
                         $mdDialog.show(confirm).then(() => {
-                            newSocketService.getData('delete_safety_box', {safety_box_id : safety_box.id}, (response) => {
+                            newSocketService.getData('delete_safety_box', {safety_box_id: safety_box.id}, (response) => {
 
                                 if (response.result === 1) {
                                     //TODO add toast
@@ -2668,7 +2760,7 @@
                         }, (response) => {
                             //TODO add toast
 
-                            $scope.zonesTable          = response.result;
+                            $scope.zonesTable     = response.result;
                             $scope.tableEmptyZone = response.result.length === 0;
                             $scope.$apply();
                         });
@@ -2978,7 +3070,7 @@
                     let updateZoneOutdoorTable = () => {
                         newSocketService.getData('get_outdoor_zones', {location: dataService.location.name}, (response) => {
 
-                            $scope.zonesTable          = response.result;
+                            $scope.zonesTable = response.result;
                             $scope.$apply();
                         })
                     };
@@ -3041,8 +3133,8 @@
                             newSocketService.getData('delete_floor_zone', {zone_id: zone.id}, (response) => {
 
                                 //TODO add toast
-                                $scope.zonesTable    = $scope.zonesTable.filter(z => z.id !== zone.id);
-                                let deletedZone = dataService.outdoorZones.filter(z => z.id === zone.id)[0];
+                                $scope.zonesTable = $scope.zonesTable.filter(z => z.id !== zone.id);
+                                let deletedZone   = dataService.outdoorZones.filter(z => z.id === zone.id)[0];
                                 deletedZone.zone.setMap(null);
                                 dataService.outdoorZones = dataService.outdoorZones.filter(z => z.id !== zone.id);
                                 $scope.$apply();
@@ -3204,8 +3296,8 @@
                         tags              : dataService.allTags
                     };
                     $scope.anchors       = [];
-                    $scope.anchorTypes = [];
-                    $scope.selectedType = null;
+                    $scope.anchorTypes   = [];
+                    $scope.selectedType  = null;
 
                     $scope.query = {
                         limitOptions: [5, 10, 15],
@@ -3260,7 +3352,7 @@
                         if (selectedAnchor.anchor.permitted_asset.length === 0)
                             return true;
 
-                        let anchorPermited  = selectedAnchor.anchor.permitted_asset.split(',');
+                        let anchorPermited = selectedAnchor.anchor.permitted_asset.split(',');
 
                         let permittedsArray = anchorPermited[0] === "" ? [] : anchorPermited;
                         return !angular.equals(permitteds, permittedsArray);
@@ -3398,7 +3490,7 @@
         $scope.floorUpdate = () => {
             dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
 
-            let floorChanged           = false;
+            let floorChanged = false;
 
             let addRowDialog = {
                 templateUrl        : componentsPath + 'insert-floor-row.html',
@@ -3711,7 +3803,7 @@
                 targetEvent: event,
                 controller : ['$scope', '$interval', 'dataService', function ($scope, $interval, dataService) {
 
-                    $scope.isAdmin = dataService.isAdmin;
+                    $scope.isAdmin       = dataService.isAdmin;
                     $scope.isUserManager = dataService.isUserManager;
 
                     $scope.switch = {
@@ -3747,7 +3839,7 @@
          * Fucntion that handles the logout of the user
          */
         $scope.logout = () => {
-            dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
+            dataService.homeTimer      = dataService.stopTimer(dataService.homeTimer);
             dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
             dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
 
@@ -3781,9 +3873,9 @@
                 let newTag = dataService.allTags.find(t => t.name === newValue);
                 console.log(newTag);
                 if (newTag !== undefined) {
-                    if (newTag.radio_switched_off){
+                    if (newTag.radio_switched_off) {
                         dataService.showToast($mdToast, lang.tagOff, 'background-darkred', 'color-white', 'top center');
-                    }else if (!dataService.isOutdoor(newTag)) {
+                    } else if (!dataService.isOutdoor(newTag)) {
                         newSocketService.getData('get_tag_floor', {tag: newTag.id}, (response) => {
 
                             if (response.result.location_name === undefined || response.result.name === undefined) {
@@ -4107,7 +4199,7 @@
 
         $scope.muteAlarms = () => {
             $scope.alertButtonColor = 'background-green';
-            dataService.playAlarm = false;
+            dataService.playAlarm   = false;
             $timeout(function () {
                 $scope.alertButtonColor = 'background-red';
             }, 5000);

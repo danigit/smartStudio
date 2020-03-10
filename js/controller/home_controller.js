@@ -26,7 +26,8 @@
         // visualizing the data according if the user is admin or not
         homeCtrl.isAdmin       = dataService.isAdmin;
         homeCtrl.isUserManager = dataService.isUserManager;
-        homeCtrl.socketOpened = socketOpened;
+        homeCtrl.socketOpened  = socketOpened;
+        homeCtrl.debug         = DEBUG;
 
         homeCtrl.dynamicMarkers = [];
 
