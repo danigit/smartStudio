@@ -11663,3 +11663,8 @@ Stack trace:
 [19-Mar-2020 17:46:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 74172
 [19-Mar-2020 17:46:58 Europe/Berlin] Sessione; simone
 [19-Mar-2020 17:47:41 Europe/Berlin] Sessione; simone
+[19-Mar-2020 18:49:04 Europe/Berlin] Sessione; simone
+[19-Mar-2020 18:49:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89172
+[19-Mar-2020 18:49:16 Europe/Berlin] Sessione; simone
+[19-Mar-2020 19:02:38 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 93084
+[19-Mar-2020 19:02:39 Europe/Berlin] Sessione; simone

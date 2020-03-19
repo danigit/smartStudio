@@ -1388,8 +1388,7 @@
                                 type: $scope.insertTag.type,
                                 macs: macs
                             }, (response) => {
-                                if (!response.session_state)
-                                    window.location.reload();
+                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
 
                                 if (response.result.length === 0) {
                                     $scope.insertTag.resultClass = 'background-green';
@@ -1532,7 +1531,7 @@
                                         tag_field  : tagName,
                                         field_value: input.$modelValue
                                     }, (response) => {
-                                        //TODO add toast
+                                        dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result.length === 0);
                                     });
                                 },
                                 targetEvent: event,
@@ -1561,9 +1560,9 @@
 
                         $mdDialog.show(confirm).then(() => {
                             newSocketService.getData('delete_tag', {tag_id: tag.id}, (response) => {
+                                dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result.length === 0);
 
                                 if (response.result.length === 0) {
-                                    //TODO add toast
                                     $scope.tags = $scope.tags.filter(t => t.id !== tag.id);
                                     $scope.$apply();
                                 }
@@ -1624,9 +1623,9 @@
 
                                     $mdDialog.show(confirm).then(function () {
                                         newSocketService.getData('delete_mac', {mac_id: mac.id}, (response) => {
+                                            dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result !== 0);
 
                                             if (response.result !== 0) {
-                                                //TODO add toast
                                                 $scope.macs = $scope.macs.filter(m => m.id !== mac.id);
                                                 $scope.$apply();
                                             }
@@ -1669,9 +1668,9 @@
                                                         tag_id: tag.id
                                                     }, (response) => {
 
+                                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                                                         if (response.result !== 0) {
                                                             $scope.insertMac.resultClass = 'background-green';
-                                                            //TODO add toast
                                                             $timeout(function () {
                                                                 $mdDialog.hide();
                                                                 $mdDialog.hide(tagMacsDialog);
@@ -1715,7 +1714,7 @@
                                                     mac_field  : macName,
                                                     field_value: input.$modelValue
                                                 }, (response) => {
-                                                    //TODO add toast
+                                                    dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
                                                 });
                                             },
                                             targetEvent: event,
@@ -1824,7 +1823,7 @@
                                                         tag_id: tag.id,
                                                         zones : zonesIds,
                                                     }, (response) => {
-                                                        //TODO add toast
+                                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                                                         $mdDialog.hide();
                                                         $mdDialog.show(tagZonesDialog);
                                                     });
@@ -1860,7 +1859,7 @@
                                         }, (response) => {
 
                                             if (response.result === 1) {
-                                                //TODO add toast
+                                                dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result.length !== 0);
                                                 $scope.zones = $scope.zones.filter(z => z.zone_id !== zone.zone_id);
                                                 $scope.$apply();
                                             }
@@ -2120,10 +2119,11 @@
                                         console.log($scope.sendedValues);
                                         if (form.$valid) {
                                             newSocketService.getData('update_parameters', {data: $scope.sendedValues}, (response) => {
+                                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result === 1);
+
                                                 if (response.result === 1) {
                                                     $scope.resultClass = 'background-green';
                                                     $scope.$apply();
-                                                    //TODO add toast
                                                     $timeout(function () {
                                                         $mdDialog.hide();
                                                     }, 1500);
@@ -2153,8 +2153,10 @@
                     $scope.callMe = (tag) => {
                         if (!$scope.tagsCallMe[tag.id]['on']) {
                             newSocketService.getData('set_call_me', {tag: tag.id}, (response) => {
+                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
+
                                 if (response.result > 0) {
-                                    //TODO add toast
+
                                     $scope.tagsCallMe[tag.id]['on']         = true;
                                     $scope.tagsCallMe[tag.id]['background'] = 'color-darkgreen';
                                     $scope.tagsCallMe[tag.id]['value']      = lang.stopCallMe;
@@ -2162,8 +2164,9 @@
                             });
                         } else {
                             newSocketService.getData('stop_call_me', {tag: tag.id}, (response) => {
+                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
+
                                 if (response.result > 0) {
-                                    //TODO add ttoast
                                     $scope.tagsCallMe[tag.id]['on']         = false;
                                     $scope.tagsCallMe[tag.id]['background'] = 'color-darkred';
                                     $scope.tagsCallMe[tag.id]['value']      = lang.callMe;
@@ -2230,7 +2233,7 @@
                         });
 
                         newSocketService.getData('save_category_tags', {data: category_tags}, (response) => {
-                            //TODO add toast
+                            dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
                         });
 
                     };
@@ -2320,7 +2323,6 @@
                                             no_alarm_fileName = no_alarm_file.name;
                                         }
 
-                                        //TODO add toast
                                         if (alarm_file != null && no_alarm_file != null) {
                                             convertImageToBase64(alarm_file)
                                                 .then((images) => {
@@ -2432,7 +2434,7 @@
                                         category_field: categoryName,
                                         field_value   : input.$modelValue
                                     }, (response) => {
-                                        //TODO add toast
+                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                                     });
                                 },
                                 targetEvent: event,
@@ -2463,9 +2465,9 @@
                         $mdDialog.show(confirm).then(() => {
                             console.log('the category is: ', category);
                             newSocketService.getData('delete_tag_category', {category_id: category.id}, (response) => {
+                                dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result !== 0);
 
                                 if (response.result === 1) {
-                                    //TODO add toast
                                     $scope.tagCategories = $scope.tagCategories.filter(c => c.id !== category.id);
                                     $scope.$apply();
                                 }
@@ -2546,10 +2548,10 @@
                                             name: $scope.insertSafetyBox.name,
                                             imei: $scope.insertSafetyBox.imei
                                         }, (response) => {
+                                            dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 'ERROR_ON_INSERTING_SAFETY_BOX');
 
                                             if (response.result !== 'ERROR_ON_INSERTING_SAFETY_BOX') {
                                                 $scope.insertSafetyBox.resultClass = 'background-green';
-                                                //TODO add toast
                                                 $scope.$apply();
                                                 $timeout(function () {
                                                     $mdDialog.hide();
@@ -2591,7 +2593,7 @@
                                         safety_box_field: safety_box_name,
                                         field_value     : input.$modelValue
                                     }, (response) => {
-                                        //TODO add toast
+                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                                     });
                                 },
                                 targetEvent: event,
@@ -2622,8 +2624,8 @@
                         $mdDialog.show(confirm).then(() => {
                             newSocketService.getData('delete_safety_box', {safety_box_id: safety_box.id}, (response) => {
 
+                                dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result !== 0);
                                 if (response.result === 1) {
-                                    //TODO add toast
                                     updateSafetyBoxTable();
                                 }
                             });
@@ -2687,10 +2689,11 @@
 
                             newSocketService.getData('insert_floor_zone', {data: stringified}, (response) => {
 
+                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
+
                                 if (response.result !== 0) {
                                     $scope.insertZone.resultClass = 'background-green';
                                     $timeout(function () {
-                                        //TODO add toast
                                         $mdDialog.hide(addRowDialog);
                                         $rootScope.$emit('updateZoneTable', {});
                                     }, 1000);
@@ -2744,7 +2747,7 @@
                             zone_id   : zoneId,
                             zone_color: zoneColor,
                         }, (response) => {
-                            //TODO add toast
+                            dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                         });
                     };
 
@@ -2757,7 +2760,6 @@
                             location: dataService.location.name,
                             user    : dataService.user.username
                         }, (response) => {
-                            //TODO add toast
 
                             $scope.zonesTable     = response.result;
                             $scope.tableEmptyZone = response.result.length === 0;
@@ -2793,7 +2795,7 @@
                                         zone_field : zoneName,
                                         field_value: input.$modelValue
                                     }, (response) => {
-                                        //TODO add toast
+                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                                     });
                                 },
                                 targetEvent: event,
@@ -2822,7 +2824,7 @@
 
                         $mdDialog.show(confirm).then(() => {
                             newSocketService.getData('delete_floor_zone', {zone_id: zone.id}, (response) => {
-                                //TODO add toast
+                                dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result !== 0);
 
                                 $scope.zonesTable = $scope.zonesTable.filter(z => z.id !== zone.id);
                                 $scope.$apply();
@@ -2895,9 +2897,9 @@
                             let stringified = JSON.stringify(data);
 
                             newSocketService.getData('insert_outdoor_rect_zone', {data: stringified}, (response) => {
+                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
 
                                 if (response.result !== 0) {
-                                    //TODO add toast
                                     zoneModified = true;
                                     NgMap.getMap('outdoor-map').then((map) => {
                                         dataService.outdoorZones.push({
@@ -2976,6 +2978,7 @@
 
                             newSocketService.getData('insert_outdoor_round_zone', {data: stringified}, (response) => {
 
+                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                                 if (response.result !== 0) {
                                     NgMap.getMap('outdoor-map').then((map) => {
                                         // $rootScope.$emit('constantUpdateMapTags', map, zoneColorModified);
@@ -3053,10 +3056,10 @@
                             zone_id   : zoneId,
                             zone_color: zoneColor,
                         }, (response) => {
+                            dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
 
                             dataService.outdoorZones.forEach(zone => {
                                 if (zone.id === zoneId) {
-                                    //TODO add toast
                                     zone.zone.setOptions({fillColor: zoneColor, strokeColor: zoneColor});
                                 }
                             });
@@ -3100,8 +3103,8 @@
                                         zone_field : zoneName,
                                         field_value: input.$modelValue
                                     }, (response) => {
+                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                                         zoneModified = true;
-                                        //TODO add toast
                                     });
                                 },
                                 targetEvent: event,
@@ -3130,8 +3133,8 @@
 
                         $mdDialog.show(confirm).then(() => {
                             newSocketService.getData('delete_floor_zone', {zone_id: zone.id}, (response) => {
+                                dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result !== 0);
 
-                                //TODO add toast
                                 $scope.zonesTable = $scope.zonesTable.filter(z => z.id !== zone.id);
                                 let deletedZone   = dataService.outdoorZones.filter(z => z.id === zone.id)[0];
                                 deletedZone.zone.setMap(null);
@@ -3248,10 +3251,10 @@
                                 neighbors : neighborsString,
                                 floor     : floor.id
                             }, (response) => {
+                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
 
                                 if (response.result.length === 0) {
                                     $scope.insertAnchor.resultClass = 'background-green';
-                                    //TODO  add toast
                                     $timeout(function () {
                                         $mdDialog.hide();
                                         $rootScope.$emit('updateAnchorsTable', {});
@@ -3373,8 +3376,7 @@
                                 anchor_id : anchor,
                                 permitteds: permittedsString
                             }, (response) => {
-                                if (!response.session_state)
-                                    window.location.reload();
+                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                             });
                         }
                     };
@@ -3397,7 +3399,7 @@
                                 anchor_field: 'type',
                                 field_value : selectedType
                             }, (response) => {
-                                //TODO add toast
+                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                             });
                         }
                     };
@@ -3427,7 +3429,7 @@
                                         anchor_field: anchorName,
                                         field_value : input.$modelValue
                                     }, (response) => {
-                                        //TODO add toast
+                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                                     });
                                 },
                                 targetEvent: event,
@@ -3461,7 +3463,7 @@
                         $mdDialog.show(confirm).then(function () {
                             newSocketService.getData('delete_anchor', {anchor_id: anchor.id}, (response) => {
 
-                                //TODO add toast
+                                dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result !== 0);
                                 if (response.result > 0)
                                     $rootScope.$emit('updateAnchorsTable', {});
                             })
@@ -3667,7 +3669,7 @@
                                         field_value: input.$modelValue
                                     }, (response) => {
 
-                                        //TODO add toast
+                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                                         if (response.result === 1) {
                                             if (floorName === 'map_width')
                                                 floorChanged = true;
@@ -3708,7 +3710,7 @@
                             if ($scope.floors.length > 1) {
                                 newSocketService.getData('delete_floor', {floor_id: floor.id}, (response) => {
 
-                                    //TODO add toast
+                                    dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result !== 0);
                                     if (response.result > 0) {
                                         $scope.floors = $scope.floors.filter(a => a.id !== floor.id);
                                         if (floor.name === 'Piano di default')
@@ -3748,8 +3750,6 @@
                                         image: result,
                                         name : fileName
                                     }, (floorImage) => {
-                                        if (!floorImage.session_state)
-                                            window.location.reload();
                                     });
                                 })
                         }
