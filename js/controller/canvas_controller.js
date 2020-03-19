@@ -111,8 +111,6 @@
                 });
 
                 newSocketService.getData('get_drawing', {floor: canvasCtrl.defaultFloor[0].id}, (response) => {
-                    if (!response.session_state)
-                        window.location.reload();
 
                     let parsedResponseDrawing = JSON.parse(response.result);
                     drawedLines               = (parsedResponseDrawing === null) ? [] : parsedResponseDrawing;

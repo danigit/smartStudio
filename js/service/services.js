@@ -1513,6 +1513,17 @@
 
             return false;
         };
+
+
+        /**
+         * Function that controles if the response is the expected one
+         * @param response
+         * @param expected
+         * @returns {boolean}
+         */
+        service.isResponseCorrect = (response, expected) => {
+            return response === expected
+        }
     }
 
     /**
@@ -1522,10 +1533,10 @@
      */
     newSocketService.$inject = ['$state', '$interval'];
     function newSocketService($state, $interval) {
-        let service              = this;
-        let id = 0;
-
-        service.server               = socketServer;
+        let service       = this;
+        let id            = 0;
+        let queueEmptied  = false;
+        service.server    = socketServer;
         service.callbacks = [];
 
         /**
@@ -1541,7 +1552,7 @@
 
             //adding the user to the data sended to the server
             if (action !== 'login') {
-                data.username = cesarShift(sessionStorage.user, -CEZAR_KEY);
+                data.username = (cesarShift(sessionStorage.user, -CEZAR_KEY) !== '' ? cesarShift(sessionStorage.user, -CEZAR_KEY) : '');
             }
 
             userData = data;
@@ -1549,6 +1560,12 @@
             let stringifyedData = JSON.stringify({action: action, data: userData});
 
             if (socketOpened) {
+                // emptying the queue
+                if (!queueEmptied) {
+                    service.callbacks = [];
+                    queueEmptied      = true;
+                }
+
                 service.server.send(stringifyedData);
                 service.callbacks.push({id: id, value: callback});
                 service.lastMessageTime = new Date();
@@ -1556,36 +1573,77 @@
 
                 service.server.onmessage = (response) => {
                     let now = new Date();
-                    if (Math.abs(now.getTime() - service.lastMessageTime.getTime()) > MESSAGE_WAITING_TIME){
+                    if (Math.abs(now.getTime() - service.lastMessageTime.getTime()) > MESSAGE_WAITING_TIME) {
                         console.log('CLOSING THE SOCKET BECAUSE THE NETWORK IS TOO SLOW');
                         service.server.close();
 
                     }else {
                         let result = JSON.parse(response.data);
-                        let call   = service.callbacks.shift();
-                        call.value(result);
+
+                        // controlling if I have to make the login froom cookies
+                        // TODO - I have to make the cookies encoded with cezar
+                        if (!result.session_state && action !== 'login' && action !== 'logout') {
+                            $state.go('login');
+                            service.autologin($state);
+                        }
+                        let call = service.callbacks.shift();
+                        if (call !== undefined)
+                            call.value(result);
                     }
                 };
             }
 
             service.server.onerror = (error) => {
-                let call = service.callbacks.shift();
+                // let call = service.callbacks.shift();
                 // call.value('error');
             };
 
             service.server.onclose = () => {
-                socketOpened = false;
+                socketOpened            = false;
+                service.callbacks       = [];
                 service.reconnectSocket = $interval(function () {
-                    console.log('trying to reconect');
                     socketServer        = new WebSocket(SOCKET_PATH);
-                    socketServer.onopen = function(){
+                    socketServer.onopen = function () {
                         socketOpened = true;
+                        socketServer.send({user: cesarShift(sessionStorage.user, -CEZAR_KEY)});
                         window.location.reload()
                     };
-                    service.server = socketServer;
+                    service.server      = socketServer;
                 }, SOCKET_RECONECT_INTERVAL)
             }
         };
+
+        /**
+         * Function that get the login data from cookie
+         * @param name
+         * @param cookie
+         * @returns {string}
+         */
+        service.getCookie = (name, cookie) => {
+            let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            return (match) ? match[2] : '';
+        };
+
+        service.autologin = ($state) => {
+            sessionStorage.clear();
+            let credential = document.cookie;
+            let username   = service.getCookie('username_smart', credential);
+            let password   = service.getCookie('password_smart', credential);
+            if (username !== '' && password !== '') {
+                service.getData('login', {
+                    username: username,
+                    password: password
+                }, (response) => {
+
+                    // if the login is ok I save the username in local and redirect to home
+                    if (response.result.id !== undefined) {
+                        sessionStorage.user = cesarShift(username, CEZAR_KEY);
+                        service.callbacks   = [];
+                        $state.go('home');
+                    }
+                });
+            }
+        }
     }
 
     /**

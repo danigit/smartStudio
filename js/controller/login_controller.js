@@ -42,7 +42,14 @@
                         else if (response.result.id !== undefined) {
                             dataService.user.username = $scope.user.username;
                             sessionStorage.user       = cesarShift($scope.user.username, CEZAR_KEY);
+                            document.cookie           = 'username_smart = ' + $scope.user.username;
+                            document.cookie           = 'password_smart = ' + $scope.user.password;
                             $state.go('home');
+                        }
+                        // showing error on login
+                        else {
+                            $scope.errorHandeling.noConnection = false;
+                            $scope.errorHandeling.wrongData    = true;
                         }
                         $scope.$apply();
                     });

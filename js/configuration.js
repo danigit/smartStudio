@@ -5,7 +5,7 @@ const SOCKET_RECONECT_INTERVAL = 5000;
 const CEZAR_KEY                = 10;
 const SOCKET_PATH              = 'ws://localhost:8090';
 const LOGING_IN_COLOR          = '#1b5e20';
-const SHOW_PARTNER_LOGO        = true;
+const SHOW_PARTNER_LOGO        = false;
 const MESSAGE_WAITING_TIME     = 30000
 ;
 let socketServer               = new WebSocket(SOCKET_PATH);

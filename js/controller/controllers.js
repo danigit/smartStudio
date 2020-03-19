@@ -3845,8 +3845,11 @@
 
             newSocketService.getData('logout', {username: dataService.user.username}, (response) => {
 
-                if (response.result === 'logged_out')
+                if (response.result === 'logged_out') {
+                    document.cookie = "username_smart = ; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                    document.cookie = "password_smart = ; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
                     $state.go('login');
+                }
             });
         };
 
