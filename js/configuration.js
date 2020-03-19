@@ -48,7 +48,7 @@ const CANVAS_ANCHOR_ICON_SIZE     = 45;
 const CANVAS_CAMERA_ICON_SIZE     = 45;
 const CANVAS_UPDATE_TIME_INTERVAL = 1000;
 const CANVAS_DRAWING_ACTION_DELAY = 2000;
-const DELTA_FOR_OFFLINE_TAGS      = 10;
+const DELTA_FOR_OFFLINE_TAGS      = 5000;
 
 /***************************************************************
  * MAPS COFIGURATIONS
@@ -124,7 +124,8 @@ const MARKER_CLUSTER_ALARM_IMAGE = {
 
 // this is in function of the time of the calls, for example if I update the map every second then this is going to be
 // played every 5 seconds if the value is 4 (1 * 4 = 5)
-const AUDIO_PLAY_INTERVAL = 4;
-const TOAST_SHOWING_TIME = 5000;
-const COLLAPSIBLE_STATE = true;
-const TABLE_CELL_MAX_LENGTH = 500;
+const AUDIO_PLAY_INTERVAL     = 4;
+const TOAST_SHOWING_TIME      = 5000;
+const COLLAPSIBLE_STATE       = true;
+const TABLE_CELL_MAX_LENGTH   = 500;
+const OFFLINE_TAG_HIDDEN_TIME = 1000;

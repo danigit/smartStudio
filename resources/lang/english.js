@@ -479,5 +479,7 @@ let lang = {
     login                         : '',
     tagOff                        : '',
     elementInserted               : '',
-    elementNotInserted            : ''
+    elementNotInserted            : '',
+    userDeleted                   : '',
+    userNotDeleted                : ''
 };

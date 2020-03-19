@@ -774,6 +774,14 @@
             return historyRows;
         };
 
+        /**
+         * Function that shows a toast message
+         * @param $mdToast
+         * @param message
+         * @param background
+         * @param color
+         * @param position
+         */
         service.showToast = ($mdToast, message, background, color, position = 'top center') => {
             $mdToast.show({
                 hideDelay       : TOAST_SHOWING_TIME,
@@ -787,6 +795,22 @@
                 },
                 templateUrl     : componentsPath + 'toast.html'
             });
+        };
+
+        /**
+         * Function that shows a error/success toast message, according to the success parameter
+         * @param $mdToast
+         * @param success_message
+         * @param fail_message
+         * @param success
+         * @param position
+         */
+        service.showMessage = ($mdToast, success_message = 'success', fail_message = 'fail', success = true, position = 'top center') => {
+            if (success)
+                service.showToast($mdToast, success_message, 'background-lightgreen', 'color-black', position);
+            else
+                service.showToast($mdToast, fail_message, 'background-darkred', 'color-white', position);
+
         };
 
         // remain outdoor
@@ -1500,14 +1524,18 @@
         service.hasTagSuperatedSecondDelta = (tag) => {
             if (!service.checkIfTagHasAlarm(tag)) {
                 if (service.isOutdoor(tag)) {
-                    let localThresholdOutdoor = (new Date(tag.now_time) - new Date(tag.gps_time));
+                    let localThresholdIndoor  = new Date(tag.now_time).getTime();
+                    let offline_started       = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
+                    let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
 
-                    return (localThresholdOutdoor > (tag.sleep_time_outdoor + (tag.sleep_time_outdoor / DELTA_FOR_OFFLINE_TAGS)));
+                    return offline_started < localThresholdIndoor && localThresholdIndoor < offline_delta_started;
                 } else {
-                    // getting the local tag indoor threshold
-                    let localThresholdIndoor = (new Date(tag.now_time) - new Date(tag.time));
+                    // getting the times that are needed to make the computation
+                    let localThresholdIndoor  = new Date(tag.now_time).getTime();
+                    let offline_started       = new Date(tag.time).getTime() + tag.sleep_time_indoor;
+                    let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
 
-                    return (localThresholdIndoor > (tag.sleep_time_indoor + (tag.sleep_time_indoor / DELTA_FOR_OFFLINE_TAGS)));
+                    return offline_started < localThresholdIndoor && localThresholdIndoor < offline_delta_started;
                 }
             }
 

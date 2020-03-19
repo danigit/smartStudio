@@ -488,5 +488,7 @@ let lang = {
     login                         : 'Login',
     tagOff                        : 'Tag spento!',
     elementInserted               : 'Elemento inserito',
-    elementNotInserted            : 'Elemento non inserito'
+    elementNotInserted            : 'Elemento non inserito',
+    userDeleted                   : 'Utente cancelato',
+    userNotDeleted                : 'Utente non cancellato'
 };

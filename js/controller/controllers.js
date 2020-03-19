@@ -707,7 +707,7 @@
                                 user: user.id,
                                 role: userRole
                             }, (response) => {
-                                //TODO add toast
+                                dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result === 1);
                             });
                         }
                     };
@@ -808,7 +808,7 @@
                                                         locations: locationsIds,
 
                                                     }, (response) => {
-                                                        //TODO add toast
+                                                        dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
 
                                                         $mdDialog.hide();
                                                         $mdDialog.show(manageLocationDialog);
@@ -843,7 +843,7 @@
                                             user       : user.id,
                                             location_id: location.id
                                         }, (response) => {
-                                            //TODO add toast
+                                            dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
                                             if (response.result === 1) {
                                                 $scope.locations = $scope.locations.filter(l => l.id !== location.id);
                                                 $scope.$apply();
@@ -885,7 +885,7 @@
                                         super_user_field: superUserName,
                                         field_value     : input.$modelValue
                                     }, (response) => {
-                                        //TODO add toast
+                                        dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
                                     });
                                 },
                                 targetEvent: event,
@@ -914,11 +914,11 @@
 
                         $mdDialog.show(confirm).then(() => {
                             newSocketService.getData('delete_super_user', {user_id: user.id}, (response) => {
+                                dataService.showMessage($mdToast, lang.userDeleted, lang.userNotDeleted, response.result !== 0);
 
                                 if (response.result !== 0) {
                                     $scope.usersTable = $scope.usersTable.filter(u => u.id !== user.id);
                                     $scope.$apply();
-                                    //TODO add toast
                                 }
                             });
                         }, function () {
@@ -992,6 +992,7 @@
                                 webUrl      : $scope.user.webUrl,
                                 role        : $scope.userRoleRegister.registerRole
                             }, (response) => {
+                                dataService.showMessage($mdToast, lang.userDeleted, lang.userNotDeleted, response.result.length === 0);
 
                                 if (response.result.length === 0) {
                                     $scope.user.resultClass = 'background-green';
@@ -1002,7 +1003,6 @@
                                     $rootScope.$emit('updateSuperuserTable', {});
                                     $scope.$apply();
 
-                                    //TODO add toast
                                     $timeout(function () {
                                         $mdDialog.hide();
                                     }, 1000);
@@ -1012,7 +1012,6 @@
                                     $scope.user.message     = lang.canInsertUser;
                                     $scope.user.resultClass = 'background-red';
                                     $scope.$apply();
-                                    //TODO add toast
                                 }
                             });
                         } else {

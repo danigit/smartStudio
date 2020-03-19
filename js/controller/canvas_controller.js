@@ -493,7 +493,6 @@
                                                                 singleTags.forEach((tag, index) => {
                                                                     if (dataService.checkIfTagHasAlarm(tag)) {
                                                                         canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
-                                                                            console.log(alarms);
                                                                             if (dataService.checkIfTagHasAlarm(tag)) {
                                                                                 if (alarmsCounts[index] > alarms.length - 1)
                                                                                     alarmsCounts[index] = 0;
