@@ -20,10 +20,28 @@
                 templateUrl: componentsPath + 'login.html',
                 controller : 'loginController as loginCtr',
                 resolve    : {
-                    goToHomeIfLoggedIn: ['$state', 'newSocketService', 'dataService', function ($state, newSocketService, dataService) {
+                    goToHomeIfLoggedIn: ['$state', 'newSocketService', 'dataService', function ($state, newSocketService) {
                         newSocketService.getData('get_user', {username: sessionStorage.user}, (response) => {
                             if (response.result !== 'no_user')
                                 $state.go('home');
+                            else {
+                                let credential = document.cookie;
+                                let username   = newSocketService.getCookie('username_smart', credential);
+                                let password   = newSocketService.getCookie('password_smart', credential);
+                                if (username !== '' && password !== '') {
+                                    newSocketService.getData('login', {
+                                        username: username,
+                                        password: password
+                                    }, (response) => {
+
+                                        // if the login is ok I save the username in local and redirect to home
+                                        if (response.result.id !== undefined) {
+                                            sessionStorage.user = username;
+                                            $state.go('home');
+                                        }
+                                    });
+                                }
+                            }
                         });
                     }]
                 }

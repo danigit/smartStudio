@@ -1219,8 +1219,25 @@
 
                 }else {
                     let result = JSON.parse(response.data);
-                    if (!result.session_state) {
+                    if (!result.session_state && action !== 'login' && action !== 'logout') {
                         sessionStorage.clear();
+                        let credential = document.cookie;
+                        let username   = service.getCookie('username_smart', credential);
+                        let password   = service.getCookie('password_smart', credential);
+                        if (username !== '' && password !== '') {
+                            service.getData('login', {
+                                username: username,
+                                password: password
+                            }, (response) => {
+
+                                // if the login is ok I save the username in local and redirect to home
+                                if (response.result.id !== undefined) {
+                                    console.log('login from service');
+                                    sessionStorage.user = username;
+                                    $state.go('home');
+                                }
+                            });
+                        }
                     }
                     let call = service.callbacks.shift();
                     call.value(result);
@@ -1249,6 +1266,11 @@
                 }, 5000)
             }
         };
+
+        service.getCookie = (name, cookie) => {
+            let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            return (match) ? match[2] : '';
+        }
     }
 
     /**

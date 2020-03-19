@@ -46,6 +46,8 @@
                         else if (response.result.id !== undefined) {
                             dataService.user.username = $scope.user.username;
                             sessionStorage.user       = $scope.user.username;
+                            document.cookie           = 'username_smart = ' + $scope.user.username;
+                            document.cookie           = 'password_smart = ' + $scope.user.password;
                             $state.go('home');
                         }
                         // showing errors on login
@@ -252,6 +254,7 @@
             });
 
             NgMap.getMap('main-map').then((map) => {
+                console.log(map);
                 controllerMap       = map;
                 dataService.homeMap = map;
                 constantUpdateNotifications(map);
@@ -435,7 +438,7 @@
                                                     }
 
                                                     let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                                    $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                                    $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                                     tagAlarms.forEach(alarm => {
                                                         if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -456,7 +459,7 @@
                                                 }
 
                                                 let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                                $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                                 tagAlarms.forEach(alarm => {
                                                     if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -478,7 +481,7 @@
                                                     }
 
                                                     let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                                    $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                                    $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                                     tagAlarms.forEach(alarm => {
                                                         if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -498,12 +501,12 @@
 
                                                 let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
 
-                                                localTagAlarms = localTagAlarms.filter(lta => !(lta.tagId === alarmOut.tagId && lta.name === alarmOut.name))
+                                                localTagAlarms = localTagAlarms.filter(lta => !(lta.tagId === alarmOut.tagId && lta.name === alarmOut.name));
 
                                                 if (localTagAlarms.length === 0)
                                                     $scope.alarms = $scope.alarms.filter(a => !(a.tagId === alarmOut.tagId && a.name !== alarmOut.name));
 
-                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                                $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                                 tagAlarms.forEach(alarm => {
                                                     if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -895,7 +898,7 @@
                                                 }
 
                                                 let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                                $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                                 tagAlarms.forEach(alarm => {
                                                     if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -916,7 +919,7 @@
                                             }
 
                                             let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                            $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                            $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                             tagAlarms.forEach(alarm => {
                                                 if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -938,7 +941,7 @@
                                                 }
 
                                                 let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                                $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                                 tagAlarms.forEach(alarm => {
                                                     if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -958,12 +961,12 @@
 
                                             let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
 
-                                            localTagAlarms = localTagAlarms.filter(lta => !(lta.tagId === alarmOut.tagId && lta.name === alarmOut.name))
+                                            localTagAlarms = localTagAlarms.filter(lta => !(lta.tagId === alarmOut.tagId && lta.name === alarmOut.name));
 
                                             if (localTagAlarms.length === 0)
                                                 $scope.alarms = $scope.alarms.filter(a => !(a.tagId === alarmOut.tagId && a.name !== alarmOut.name));
 
-                                            $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                            $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                             tagAlarms.forEach(alarm => {
                                                 if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -1273,7 +1276,7 @@
                 outdoorCtrl.socketOpened = socketOpened;
                 newSocketService.getData('get_all_tags', {}, (response) => {
                     dataService.allTags = response.result;
-                    console.log(response)
+                    console.log(response);
 
                     tags                            = response.result;
                     dataService.checkIfTagsAreOutOfLocations(response.result).then(result => {
@@ -1306,7 +1309,7 @@
 
                     if(dataService.checkIfTagOutOfLocationHasAlarm(tags)){
                         tags.forEach((tag, index) => {
-                            console.log(tag)
+                            console.log(tag);
                             if (dataService.isOutdoor(tag)) {
                                 if ((dataService.getTagDistanceFromLocationOrigin(tag, [locationInfo.latitude, locationInfo.longitude])) <= locationInfo.radius) {
                                     // console.log(tag);
@@ -1786,7 +1789,7 @@
                                                 }
                                             } else {
                                                 if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
-                                                    marker.setIcon(tagsIconPath + 'offline_tag_24.png')
+                                                    marker.setIcon(tagsIconPath + 'offline_tag_24.png');
                                                     dataService.dynamicTags.forEach((insideTag, tagIndex) => {
                                                         if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
                                                             dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
@@ -1848,14 +1851,14 @@
                                                     }
                                                 } else {
                                                     if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
-                                                        marker.setIcon(tagsIconPath + 'offline_tag_24.png')
+                                                        marker.setIcon(tagsIconPath + 'offline_tag_24.png');
                                                         dataService.dynamicTags.forEach((insideTag, tagIndex) => {
                                                             if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
                                                                 dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
                                                             }
                                                         });
                                                     } else {
-                                                        marker.setIcon(tagsIconPath + 'offline_tag_24.png')
+                                                        marker.setIcon(tagsIconPath + 'offline_tag_24.png');
                                                         dataService.dynamicTags.push(marker);
                                                         marker.setMap(map);
                                                         bounds.extend(marker.getPosition());
@@ -1918,7 +1921,7 @@
                                                 }
                                             } else {
                                                 if (dataService.markerIsOnMap(dataService.dynamicTags, marker)) {
-                                                    marker.setIcon(tagsIconPath + 'offline_tag_24.png')
+                                                    marker.setIcon(tagsIconPath + 'offline_tag_24.png');
                                                     dataService.dynamicTags.forEach((insideTag, tagIndex) => {
                                                         if (dataService.dynamicTags[tagIndex].getPosition().equals(marker.getPosition())) {
                                                             dataService.dynamicTags[tagIndex].setIcon(marker.getIcon());
@@ -1972,7 +1975,7 @@
                                                         }
                                                     });
                                                 } else {
-                                                    marker.setIcon(tagsIconPath + 'offline_tag_24.png')
+                                                    marker.setIcon(tagsIconPath + 'offline_tag_24.png');
                                                     dataService.dynamicTags.push(marker);
                                                     marker.setMap(map);
                                                     bounds.extend(marker.getPosition());
@@ -2075,7 +2078,7 @@
                 newSocketService.getData('get_engine_on', {}, (response) => {
                     outdoorCtrl.showEngineOffIcon = response.result === 0;
                 });
-            }, 1000)
+            }, 1000);
 
             let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
             map.setCenter(latLng);
@@ -2138,8 +2141,8 @@
 
         $scope.showPartnerLogo = showPartnerLogo;
 
-        console.log(canvasData)
-        canvasCtrl.isAdmin = dataService.isAdmin;
+        console.log(canvasData);
+        canvasCtrl.isAdmin                = dataService.isAdmin;
         canvasCtrl.isUserManager = dataService.isUserManager;
         canvasCtrl.isTracker = dataService.isTracker;
         canvasCtrl.floors                 = dataService.floors;
@@ -2330,13 +2333,13 @@
 
             response.result.forEach((category) => {
                 canvasCtrl.legend.push({name: category.name, img: category.no_alarm_image});
-            })
+            });
             console.log(canvasCtrl.legend)
         });
 
-        canvasCtrl.changeLabel = (item) => {
+        canvasCtrl.changeLabel   = (item) => {
 
-        }
+        };
         //constantly updating the canvas with the objects position from the server
         let constantUpdateCanvas = () => {
             let alarmsCounts = new Array(500).fill(0);
@@ -2392,8 +2395,8 @@
                                     if (!floorZones.session_state)
                                         window.location.reload();
 
-                                    let workingZones = document.getElementById('working-zones');
-                                    let angularWorkingZones = angular.element(workingZones)
+                                    let workingZones        = document.getElementById('working-zones');
+                                    let angularWorkingZones = angular.element(workingZones);
 
                                     if (floorZones.result.length > 0 && dataService.switch.showZones) {
                                         canvasCtrl.floorData.floorZones = floorZones.result;
@@ -3408,7 +3411,7 @@
 
                                             // if ($scope.alarms.length === 0) {
                                             //     (!$scope.tag.radio_switched_off)
-                                                    $scope.isTagInAlarm = 'background-gray'
+                                            $scope.isTagInAlarm = 'background-gray';
                                                     // : $scope.isTagInAlarm = 'background-green';
                                             // }
 
@@ -3432,7 +3435,7 @@
                                             // if ($scope.alarms.length !== 0){
                                             //     $scope.isTagInAlarm = 'background-red'
                                             // } else if (new Date(Date.now()) - (new Date(tag.time)) < tag.sleep_time_indoor){
-                                                $scope.isTagInAlarm = 'background-green'
+                                            $scope.isTagInAlarm = 'background-green';
                                             // } else {
                                             //     $scope.isTagInAlarm = 'background-gray'
                                             // }
@@ -3595,7 +3598,7 @@
                                                 }
 
                                                 let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                                $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                                 tagAlarms.forEach(alarm => {
                                                     if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -3616,7 +3619,7 @@
                                             }
 
                                             let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                            $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                            $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                             tagAlarms.forEach(alarm => {
                                                 if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -3638,7 +3641,7 @@
                                                 }
 
                                                 let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
-                                                $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                                $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                                 tagAlarms.forEach(alarm => {
                                                     if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -3658,12 +3661,12 @@
 
                                             let localTagAlarms = $scope.alarms.filter(ta => tagAlarms.some(a => ta.tagId === a.tagId)).filter(lta => !tagAlarms.some(ta => lta.tagId === ta.tagId && lta.name === ta.name));
 
-                                            localTagAlarms = localTagAlarms.filter(lta => !(lta.tagId === alarmOut.tagId && lta.name === alarmOut.name))
+                                            localTagAlarms = localTagAlarms.filter(lta => !(lta.tagId === alarmOut.tagId && lta.name === alarmOut.name));
 
                                             if (localTagAlarms.length === 0)
                                                 $scope.alarms = $scope.alarms.filter(a => !(a.tagId === alarmOut.tagId && a.name !== alarmOut.name));
 
-                                            $scope.alarms      = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name))
+                                            $scope.alarms = $scope.alarms.filter(a => !localTagAlarms.some(lta => lta.tagId === a.tagId && lta.name === a.name));
 
                                             tagAlarms.forEach(alarm => {
                                                 if (!dataService.alarmsArrayContainAlarm($scope.alarms, alarm))
@@ -5152,7 +5155,7 @@
                             historyRows.push(hisRow)
                         });
 
-                        console.log(historyRows)
+                        console.log(historyRows);
                         return historyRows;
                     };
 
@@ -5236,7 +5239,7 @@
 
                         let date = new Date();
                         saveAs(blob, "Smart_Studio_history_" + date.getDate() + "_" + (date.getMonth() + 1) + "_" + date.getFullYear() + ".xls");
-                    }
+                    };
 
                     $scope.hide = () => {
 
@@ -5479,10 +5482,14 @@
 
                             $scope.tagsOnline = $scope.tags.filter(t => !tempOffgrid.some(to => to.id === t.id));
 
-                            console.log(response)
-                            response.result.forEach(function(tag){
-                                let tagId = tag.id;
-                                $scope.tagsCallMe[tagId] = {background: (tag.call_me_alarm === 1) ? 'background-green': 'background-red', value: (tag.call_me_alarm === 1) ? lang.stopCallMe : lang.callMe, on: (tag.call_me_alarm === 1)}
+                            console.log(response);
+                            response.result.forEach(function (tag) {
+                                let tagId                = tag.id;
+                                $scope.tagsCallMe[tagId] = {
+                                    background: (tag.call_me_alarm === 1) ? 'background-green' : 'background-red',
+                                    value     : (tag.call_me_alarm === 1) ? lang.stopCallMe : lang.callMe,
+                                    on        : (tag.call_me_alarm === 1)
+                                }
                             });
                             console.log($scope.tagsCallMe)
                         });
@@ -6056,7 +6063,7 @@
                         let category_tags = [];
 
                         $scope.tagCategories.forEach(function(category) {
-                            let cat = {}
+                            let cat = {};
                             cat.category = category.id;
                             cat.tags = category.tags;
                             category_tags.push(cat)
@@ -6321,7 +6328,7 @@
                     }
                 }]
             })
-        }
+        };
 
         $scope.safetyBox = () => {
             $mdDialog.show({
@@ -6460,7 +6467,7 @@
                     }
                 }]
             })
-        }
+        };
 
         $scope.zone = () => {
             $interval.cancel(dataService.canvasInterval);
@@ -7146,12 +7153,12 @@
                     updateAnchorsTable();
 
                     newSocketService.getData('get_anchor_types', {}, (anchor_types) => {
-                        console.log(anchor_types)
+                        console.log(anchor_types);
                         $scope.anchorTypes = anchor_types.result
                     });
 
                     $scope.updateAnchorType = (anchor, selectedType) => {
-                        console.log('updating anchors')
+                        console.log('updating anchors');
                         if (anchor.anchor.type.toString() !== selectedType.toString()) {
                             newSocketService.getData('change_anchor_field', {
                                 anchor_id   : anchor.anchor.id,
@@ -7580,11 +7587,15 @@
             dataService.updateMapTimer = dataService.stopTimer(dataService.updateMapTimer);
 
             newSocketService.getData('logout', {username: dataService.user.username}, (response) => {
-                if (!response.session_state)
-                    window.location.reload();
 
-                if (response.result === 'logged_out')
+                if (response.result === 'logged_out') {
+                    document.cookie = "username_smart = ; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                    document.cookie = "password_smart = ; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                    console.log(document.cookie);
                     $state.go('login');
+                } else {
+                    console.log('not logged out')
+                }
             });
         };
 

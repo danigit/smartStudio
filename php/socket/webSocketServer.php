@@ -20,6 +20,7 @@ class webSocketServer implements MessageComponentInterface{
     public function __construct(){
         $this->clients = [];
         $this->connection = new Connection();
+//        $this->now_time = date("Y-m-d H:i:s");
         error_reporting(E_ALL);
         ini_set('display_errors', 0);
         ini_set('log_errors', 1);
@@ -89,23 +90,28 @@ class webSocketServer implements MessageComponentInterface{
      * @param string $msg The message received
      * @throws Exception
      */
-    function onMessage(ConnectionInterface $from, $msg){
+    function onMessage(ConnectionInterface $from, $msg)
+    {
 
         $result = array();
 
         echo sprintf('Connection %d has send message: "%s"' . "\n", $from->resourceId, $msg);
 
         $decoded_message = json_decode($msg, true);
+//        error_log("message: ".$decoded_message['data']);
+        error_log("action: " . $decoded_message['action']);
 
-        switch ($decoded_message['action']){
+        switch ($decoded_message['action']) {
             //handeling login
-            case 'login':{
+            case 'login':
+            {
                 $result['action'] = 'login';
                 $query = $this->connection->login($decoded_message['data']['username'], $decoded_message['data']['password']);
 
-                if ($query instanceof db_errors){
+                if ($query instanceof db_errors) {
                     $result['result'] = $query->getErrorName();
-                }else{
+                } else {
+//                    $this->now_time = date("Y-m-d H:i:s");
                     $result['result'] = $query;
 
                     $_SESSION['username_' . $decoded_message['data']['username']] = $decoded_message['data']['username'];
@@ -122,7 +128,7 @@ class webSocketServer implements MessageComponentInterface{
             case 'logout':{
                 $result['action'] = 'logout';
 
-                if (!$this->isSessionEnded($decoded_message['data'])) {
+                if ($this->isSessionEnded($decoded_message['data']) == 1) {
                     error_log('LOGOUT MANUALE DELL\'UTENTE ' . $decoded_message['data']['username']);
                     unset($_SESSION['username_' . $decoded_message['data']['username']]);
                     session_write_close();
@@ -183,7 +189,7 @@ class webSocketServer implements MessageComponentInterface{
                 $result['action'] = 'save_location';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
 
-                if (!$this->isSessionEnded($decoded_message['data'])) {
+                if ($this->isSessionEnded($decoded_message['data']) == 1) {
                     $_SESSION['location_' . $decoded_message['data']['username']] = $decoded_message['data']['location'];
                     $result['result'] = 'location_saved';
                 } else
@@ -535,7 +541,13 @@ class webSocketServer implements MessageComponentInterface{
                 break;
             }
             //getting all the tags
-            case 'get_all_tags':{
+            case 'get_all_tags':
+            {
+
+//                if ((strtotime(date("Y-m-d H:i:s")) - strtotime($this->now_time)) > 10){
+//                    unset($_SESSION['username_' . $decoded_message['data']['username']]);
+//                    session_write_close();
+//                }
 
                 $result['action'] = 'get_all_tags';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
