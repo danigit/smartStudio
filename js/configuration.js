@@ -4,14 +4,18 @@
 const SOCKET_RECONECT_INTERVAL = 5000;
 const CEZAR_KEY                = 10;
 const SOCKET_PATH              = 'ws://localhost:8090';
+// the color of the write on the login button when is pushed
 const LOGING_IN_COLOR          = '#1b5e20';
+// show or hide the second logo
 const SHOW_PARTNER_LOGO        = false;
-const MESSAGE_WAITING_TIME     = 30000
-;
-let socketServer               = new WebSocket(SOCKET_PATH);
-let socketOpened               = false;
-let groupTagDistance           = 0.5;
-const DEBUG                    = false;
+// the time before closing the socket if no message arrives
+const MESSAGE_WAITING_TIME     = 30000;
+
+let socketServer     = new WebSocket(SOCKET_PATH);
+let socketOpened     = false;
+let groupTagDistance = 0.5;
+// show or hide the console messages
+const DEBUG          = false;
 
 socketServer.onopen = function () {
     socketOpened = true;
@@ -35,20 +39,34 @@ const floorPath = 'img/floors/';
 const canvasBorderSpace           = 25;
 const canvasGridPattern           = [5, 5];
 const CANVAS_GRID_COLOR           = 'lightgray';
+// the ok color for the central headers
 const TIME_REST_COLOR_OK          = '#00FF00';
+// the error color for the central headers
 const TIME_REST_COLOR_ERROR       = '#FF0000';
+// the text color for the central ok header
 const TIME_REST_DESCRIPTION_OK    = 'OK';
+// the error color for the central error header
 const TIME_REST_DESCRIPTION_ERROR = 'ERROR';
-const TIME_REST                   = 30;
-const TAG_CLOUD_DISTANCE          = 1.0;
-const LINE_UNION_SPACE            = 100;
+// the time before the time rest is activated
+const TIME_REST = 30;
+// the distance for grouping tags
+const TAG_CLOUD_DISTANCE = 1.0;
+// the distance for uniting two lines in the drawing
+const LINE_UNION_SPACE = 100;
+// the dimension of the corner up and down for the zone modification
 const ZONE_MODIFY_POINT_DIMENSION = 10;
-const CANVAS_TAG_ICON_SIZE        = 35;
-const CANVAS_ANCHOR_ICON_SIZE     = 45;
-const CANVAS_CAMERA_ICON_SIZE     = 45;
+// the size of the canvas tag
+const CANVAS_TAG_ICON_SIZE = 35;
+// the size of the canvas anchor
+const CANVAS_ANCHOR_ICON_SIZE = 16;
+// the size for the camera icon
+const CANVAS_CAMERA_ICON_SIZE = 45;
+// the time before the next update of the canvas
 const CANVAS_UPDATE_TIME_INTERVAL = 1000;
+// the delay before updating the anchor position
 const CANVAS_DRAWING_ACTION_DELAY = 2000;
-const DELTA_FOR_OFFLINE_TAGS      = 5000;
+// the time before the oflline tags reapear
+const DELTA_FOR_OFFLINE_TAGS = 5000;
 
 /***************************************************************
  * MAPS COFIGURATIONS
@@ -128,4 +146,3 @@ const AUDIO_PLAY_INTERVAL     = 4;
 const TOAST_SHOWING_TIME      = 5000;
 const COLLAPSIBLE_STATE       = true;
 const TABLE_CELL_MAX_LENGTH   = 500;
-const OFFLINE_TAG_HIDDEN_TIME = 1000;

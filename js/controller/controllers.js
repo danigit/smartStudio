@@ -2253,7 +2253,7 @@
                      */
                     $scope.isTagInCategory = (category, tag) => {
                         if (category.tags !== undefined) {
-                            return category.tags.some(c => c === tag)
+                            return category.tags.some(c => parseInt(c) === tag)
                         }
                     };
 
@@ -2264,7 +2264,7 @@
                         newSocketService.getData('get_tag_categories', {}, (response) => {
                             newSocketService.getData('get_categorie_tags', {}, (cat_tag) => {
                                 $scope.tagCategories = response.result;
-                                // setting the list of the tags for the category
+
                                 $scope.tagCategories.forEach(category => {
                                     Object.entries(cat_tag.result).forEach(tag => {
                                         if (tag[0] === "" + category.id) {
