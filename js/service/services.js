@@ -37,10 +37,10 @@
         service.updateMapTimer       = null;
         service.canvasInterval       = undefined;
         service.mapInterval          = undefined;
-        service.userInterval          = undefined;
-        service.superUserInterval          = undefined;
+        service.userInterval         = undefined;
+        service.superUserInterval    = undefined;
         service.playAlarm            = false;
-        service.isLocationInside = 0;
+        service.isLocationInside     = 0;
         service.isSearchingTag       = false;
         service.offlineTagsIsOpen    = false;
         service.offlineAnchorsIsOpen = false;
@@ -53,9 +53,10 @@
         service.playedTime           = 0;
         service.alarmsInterval       = undefined;
         service.reconnectSocket      = null;
-        service.switch               = {showFullscreen: false};
+        service.switch               = {
+            showFullscreen: false,
+        };
         service.lastMessageTime      = null;
-
 
 
         service.showAlarms = (constantUpdateNotifications, map, position) => {
@@ -487,16 +488,17 @@
 
                 if(response.result.length !== 0) {
                     service.switch = {
-                        showGrid   : (response.result[0].grid_on === 1),
-                        showAnchors: (response.result[0].anchors_on === 1),
-                        showCameras: (response.result[0].cameras_on === 1),
-                        showOutrangeTags: (response.result[0].outag_on === 1),
-                        showOutdoorTags: (response.result[0].outdoor_tag_on === 1),
-                        showZones: (response.result[0].zones_on === 1),
-                        playAudio  : (response.result[0].sound_on === 1),
-                        showRadius : true,
-                        showOutdoorRectDrawing: false,
-                        showOutdoorRoundDrawing: false
+                        showGrid               : (response.result[0].grid_on === 1),
+                        showAnchors            : (response.result[0].anchors_on === 1),
+                        showCameras            : (response.result[0].cameras_on === 1),
+                        showOutrangeTags       : (response.result[0].outag_on === 1),
+                        showOutdoorTags        : (response.result[0].outdoor_tag_on === 1),
+                        showZones              : (response.result[0].zones_on === 1),
+                        playAudio              : (response.result[0].sound_on === 1),
+                        showRadius             : true,
+                        showOutdoorRectDrawing : false,
+                        showOutdoorRoundDrawing: false,
+                        showTableSorting       : (response.result[0].table_sorting === 1)
                     };
 
                     // turning off the home turn off button if the audio is disabled
@@ -561,13 +563,20 @@
         };
 
         service.updateUserSettings = () => {
-            let data = {grid_on: service.switch.showGrid, anchors_on: service.switch.showAnchors, cameras_on: service.switch.showCameras, outag_on: service.switch.showOutrangeTags, outdoor_tag_on: service.switch.showOutdoorTags, zones_on: service.switch.showZones, sound_on: service.switch.playAudio};
+            let data          = {
+                grid_on       : service.switch.showGrid,
+                anchors_on    : service.switch.showAnchors,
+                cameras_on    : service.switch.showCameras,
+                outag_on      : service.switch.showOutrangeTags,
+                outdoor_tag_on: service.switch.showOutdoorTags,
+                table_sorting : service.switch.showTableSorting,
+                zones_on      : service.switch.showZones,
+                sound_on      : service.switch.playAudio
+            };
             let stringifyData = JSON.stringify(data);
 
             newSocketService.getData('update_user_settings', {username: service.user.username, data: stringifyData}, (response) => {
-                if (!response.session_state)
-                    window.location.reload();
-
+                //TODO add toast
                 service.loadUserSettings();
             });
         };
@@ -1388,11 +1397,13 @@
 
         //controlling the alarms and setting the alarm icon
         service.assigningTagImage = (tag, image) => {
-            let category_name_alarm = '';
+            let category_name_alarm    = '';
+            let category_name_offline  = '';
             let category_name_no_alarm = '';
 
             if(isCategoryAndImageNotNull(tag)){
-                category_name_alarm = tag.icon_name_alarm.split('.').slice(0, -1).join('.');
+                category_name_alarm    = tag.icon_name_alarm.split('.').slice(0, -1).join('.');
+                category_name_offline  = tag.icon_name_offline.split('.').slice(0, -1).join('.');
                 category_name_no_alarm = tag.icon_name_no_alarm.split('.').slice(0, -1).join('.');
             }
 
@@ -1463,8 +1474,12 @@
                     image.src = tagsIconPath + 'call_me_alarm_24.png';
                 }
             } else {
-                if (isCategoryAndImageNotNull(tag)){
-                    image.src = tagsIconPath + category_name_no_alarm + '.png';
+                if (isCategoryAndImageNotNull(tag)) {
+                    if (service.isTagOffline(tag)) {
+                        image.src = tagsIconPath + category_name_offline + '.png';
+                    } else {
+                        image.src = tagsIconPath + category_name_no_alarm + '.png';
+                    }
                 } else {
                     if (service.isTagOffline(tag)){
                         image.src = tagsIconPath + 'offline_tag_24.png';

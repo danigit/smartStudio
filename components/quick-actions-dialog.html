@@ -119,10 +119,25 @@
                 </div>
             </div>
 
-            <div layout="row" layout-align="center center" class="width-300-px" ng-show="isUserManager">
-
-                <div id="outdoor-tags-on-off-container" layout="column" class="padding-10-px width-50"
+            <div class="width-300-px" layout="row" layout-align="center center">
+                <div class="padding-10-px width-50" id="table-sort-on-off-container" layout="column"
                      layout-align="center center">
+
+                    <div flex="100" layout layout-align="center center">
+                        <md-subheader class="padding-0" ng-show="switch.showTableSorting">{{lang.showTableSorting}}:
+                            <b class="color-green">ON</b></md-subheader>
+                        <md-subheader class="padding-0" ng-show="!switch.showTableSorting">
+                            {{lang.showTableSorting}}: <b class="color-red">OFF</b></md-subheader>
+                    </div>
+
+                    <md-switch aria-label="Mostra/nascondi i tag" class="md-primary margin-none margin-top-10-px"
+                               md-no-ink ng-change="switchChanged"
+                               ng-model="switch.showTableSorting">
+                    </md-switch>
+                </div>
+
+                <div class="padding-10-px width-50" id="outdoor-tags-on-off-container" layout="column"
+                     layout-align="center center" ng-show="isUserManager">
 
                     <div flex="100" layout layout-align="center center">
                         <md-subheader class="padding-0" ng-show="switch.showOutdoorTags">{{lang.showOutdoorTagsLabel}}:
@@ -137,6 +152,7 @@
                     </md-switch>
                 </div>
             </div>
+
             <md-button class="md-primary md-raised background-darkcyan" ng-click="updateUserSettings()">{{lang.saveConfiguration | uppercase}}</md-button>
         </div>
     </md-content>

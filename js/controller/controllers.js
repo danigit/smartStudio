@@ -105,10 +105,11 @@
                     $scope.selected       = [];
                     $scope.locationsTable = [];
                     $scope.isAdmin        = admin;
+                    $scope.isOrdered      = dataService.switch.showTableSorting;
                     $scope.isUserManager  = userManager;
                     $scope.query          = {
-                        limitOptions: [5, 10, 15],
-                        limit       : 5,
+                        limitOptions: [500, 15, 10, 5],
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -370,7 +371,7 @@
                 targetEvent        : event,
                 clickOutsideToClose: true,
                 multiple           : true,
-                controller         : ['$scope', 'admin', 'userManager', function ($scope, admin, userManager) {
+                controller: ['$scope', 'admin', 'userManager', 'dataService', function ($scope, admin, userManager, dataService) {
                     $scope.title         = "UTENTI";
                     $scope.selected      = [];
                     $scope.usersTable    = [];
@@ -378,8 +379,8 @@
                     $scope.isUserManager = userManager;
                     $scope.tableEmpty    = false;
                     $scope.query         = {
-                        limitOptions: [5, 10, 15],
-                        limit       : 5,
+                        limitOptions: [500, 15, 10, 5],
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -411,8 +412,8 @@
                                 $scope.locations  = [];
                                 $scope.tableEmpty = false;
                                 $scope.query      = {
-                                    limitOptions: [5, 10, 15],
-                                    limit       : 5,
+                                    limitOptions: [500, 15, 10, 5],
+                                    limit       : dataService.switch.showTableSorting ? 500 : 5,
                                     page        : 1
                                 };
 
@@ -687,8 +688,8 @@
                     $scope.isUserManager = userManager;
                     $scope.showColumn    = true;
                     $scope.query         = {
-                        limitOptions: [5, 10, 15],
-                        limit       : 5,
+                        limitOptions: [500, 15, 10, 5],
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -750,8 +751,8 @@
 
                                 $scope.tableEmpty = false;
                                 $scope.query      = {
-                                    limitOptions: [5, 10, 15],
-                                    limit       : 5,
+                                    limitOptions: [500, 15, 10, 5],
+                                    limit       : dataService.switch.showTableSorting ? 500 : 5,
                                     page        : 1
                                 };
 
@@ -1057,9 +1058,9 @@
                     };
 
                     $scope.query = {
-                        limitOptions: [5, 10, 20, 50, 100],
+                        limitOptions: [500, 15, 10, 5],
                         order       : 'time',
-                        limit       : 5,
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -1133,9 +1134,9 @@
                     };
 
                     $scope.query = {
-                        limitOptions: [5, 10, 20, 50, 100],
+                        limitOptions: [500, 15, 10, 5],
                         order       : 'time',
-                        limit       : 5,
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -1185,7 +1186,7 @@
                         }, (response) => {
 
                             $scope.historyRows           = dataService.getProtocol(response.result);
-                            $scope.query['limitOptions'] = [5, 10, 20, 100];
+                            $scope.query['limitOptions'] = [500, 15, 10, 5];
                             $scope.query['limitOptions'].push(response.result.length);
 
                             newSocketService.getData('get_all_locations', {}, (locations) => {
@@ -1431,10 +1432,12 @@
                     $scope.tagTypes      = [];
                     $scope.tagsCallMe    = {};
                     let call_me_button   = false;
-                    $scope.query         = {
-                        limitOptions: [5, 10, 15],
+
+                    console.log(dataService.switch.showTableSorting);
+                    $scope.query = {
+                        limitOptions: [500, 15, 10, 5],
                         order       : 'name',
-                        limit       : 5,
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -1486,8 +1489,6 @@
                      * @returns {*}
                      */
                     $scope.isTagOffline = (tag) => {
-                        console.log(tag);
-                        console.log(dataService.isTagOffline(tag));
                         return dataService.isTagOffline(tag);
                     };
 
@@ -1596,9 +1597,9 @@
                                 $scope.tag  = tag;
 
                                 $scope.query = {
-                                    limitOptions: [5, 10, 15],
+                                    limitOptions: [500, 15, 10, 5],
                                     order       : 'name',
-                                    limit       : 5,
+                                    limit       : dataService.switch.showTableSorting ? 500 : 5,
                                     page        : 1
                                 };
 
@@ -1755,9 +1756,9 @@
                                 $scope.tableEmpty = false;
 
                                 $scope.query = {
-                                    limitOptions: [5, 10, 15],
+                                    limitOptions: [500, 15, 10, 5],
                                     order       : 'name',
-                                    limit       : 5,
+                                    limit       : dataService.switch.showTableSorting ? 500 : 5,
                                     page        : 1
                                 };
 
@@ -2239,9 +2240,9 @@
                     };
 
                     $scope.query = {
-                        limitOptions: [5, 10, 15],
+                        limitOptions: [500, 15, 10, 5],
                         order       : 'name',
-                        limit       : 5,
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -2500,9 +2501,9 @@
                     $scope.type_tags    = dataService.allTags;
 
                     $scope.query = {
-                        limitOptions: [5, 10, 15],
+                        limitOptions: [500, 15, 10, 5],
                         order       : 'name',
-                        limit       : 5,
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -2731,9 +2732,9 @@
 
                     $scope.zonesTable = [];
                     $scope.query = {
-                        limitOptions: [5, 10, 15],
+                        limitOptions: [500, 15, 10, 5],
                         order       : 'name',
-                        limit       : 5,
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -3040,9 +3041,9 @@
 
                     $scope.zonesTable = [];
                     $scope.query = {
-                        limitOptions: [5, 10, 15],
+                        limitOptions: [500, 15, 10, 5],
                         order       : 'name',
-                        limit       : 5,
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -3302,9 +3303,9 @@
                     $scope.selectedType  = null;
 
                     $scope.query = {
-                        limitOptions: [5, 10, 15],
+                        limitOptions: [500, 15, 10, 5],
                         order       : 'name',
-                        limit       : 5,
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -3393,7 +3394,7 @@
                      * @param selectedType
                      */
                     $scope.updateAnchorType = (anchor, selectedType) => {
-                        if (anchor.anchor.type.toString() !== selectedType.toString()) {
+                        if (anchor.anchor.anchor_type_id !== selectedType) {
                             newSocketService.getData('change_anchor_field', {
                                 anchor_id   : anchor.anchor.id,
                                 anchor_field: 'type',
@@ -3624,9 +3625,9 @@
                     $scope.isUserManager = dataService.isUserManager;
 
                     $scope.query = {
-                        limitOptions: [5, 10, 15],
+                        limitOptions: [500, 15, 10, 5],
                         order       : 'name',
-                        limit       : 5,
+                        limit       : dataService.switch.showTableSorting ? 500 : 5,
                         page        : 1
                     };
 
@@ -3812,6 +3813,7 @@
                         showZones       : dataService.switch.showZones,
                         showOutrangeTags: dataService.switch.showOutrangeTags,
                         showOutdoorTags : dataService.switch.showOutdoorTags,
+                        showTableSorting: dataService.switch.showTableSorting,
                         playAudio       : dataService.switch.playAudio
                     };
 
@@ -3821,14 +3823,15 @@
                         $mdDialog.hide();
                     };
 
-                    $scope.$watchGroup(['switch.showGrid', "switch.showAnchors", 'switch.showCameras', 'switch.playAudio', 'switch.showOutrangeTags', 'switch.showOutdoorTags', 'switch.showZones'], function (newValues) {
+                    $scope.$watchGroup(['switch.showGrid', "switch.showAnchors", 'switch.showCameras', 'switch.playAudio', 'switch.showOutrangeTags', 'switch.showOutdoorTags', 'switch.showTableSorting', 'switch.showZones'], function (newValues) {
                         dataService.switch.showGrid         = (newValues[0]);
                         dataService.switch.showAnchors      = (newValues[1]);
                         dataService.switch.showCameras      = (newValues[2]);
                         dataService.switch.playAudio        = (newValues[3]);
                         dataService.switch.showOutrangeTags = (newValues[4]);
                         dataService.switch.showOutdoorTags  = (newValues[5]);
-                        dataService.switch.showZones        = (newValues[6]);
+                        dataService.switch.showTableSorting = (newValues[6]);
+                        dataService.switch.showZones        = (newValues[7]);
                     })
                 }]
             });

@@ -3469,7 +3469,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT grid_on, anchors_on, cameras_on, outag_on, zones_on, sound_on, outdoor_tag_on FROM user JOIN user_settings ON USER_SETTINGS = user_settings.id WHERE NAME = ?";
+            $this->query = "SELECT grid_on, anchors_on, cameras_on, outag_on, zones_on, sound_on, outdoor_tag_on, TABLE_SORTING FROM user JOIN user_settings ON USER_SETTINGS = user_settings.id WHERE NAME = ?";
 
             $statement = $this->execute_selecting($this->query, 's', $user);
 
@@ -3486,7 +3486,7 @@ class Connection
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('grid_on' => $row['grid_on'], 'anchors_on' => $row['anchors_on'], 'cameras_on' => $row['cameras_on'],
                     'outag_on' => $row['outag_on'], 'zones_on' => $row['zones_on'], 'sound_on' => $row['sound_on'],
-                    'outdoor_tag_on' => $row['outdoor_tag_on']);
+                    'outdoor_tag_on' => $row['outdoor_tag_on'], 'table_sorting' => $row['TABLE_SORTING']);
             }
 
             mysqli_close($this->connection);
@@ -3503,10 +3503,10 @@ class Connection
         if ($this->connection) {
             $decoded = json_decode($data, true);
             $this->query = "UPDATE user_settings us JOIN user ON us.id = user.USER_SETTINGS 
-                            SET us.grid_on = ?, us.anchors_on = ?, us.cameras_on = ?, us.outag_on = ?, us.zones_on = ?, us.sound_on = ?, us.outdoor_tag_on = ? WHERE user.NAME = ?";
+                            SET us.grid_on = ?, us.anchors_on = ?, us.cameras_on = ?, us.outag_on = ?, us.zones_on = ?, us.sound_on = ?, us.outdoor_tag_on = ?, us.TABLE_SORTING = ? WHERE user.NAME = ?";
 
-            $statement = $this->execute_selecting($this->query, 'iiiiiiis', $decoded['grid_on'], $decoded['anchors_on'],
-                $decoded['cameras_on'], $decoded['outag_on'], $decoded['zones_on'], $decoded['sound_on'], $decoded['outdoor_tag_on'], $user);
+            $statement = $this->execute_selecting($this->query, 'iiiiiiiis', $decoded['grid_on'], $decoded['anchors_on'],
+                $decoded['cameras_on'], $decoded['outag_on'], $decoded['zones_on'], $decoded['sound_on'], $decoded['outdoor_tag_on'], $decoded['table_sorting'], $user);
 
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);

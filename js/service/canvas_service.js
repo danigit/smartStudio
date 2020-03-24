@@ -241,13 +241,15 @@
             for (i = 0; i < singleTags.length; i++) {
                 const img = new Image();
                 images.push(img);
-                if (dataService.checkIfTagHasAlarm(singleTags[i])) {
-                    dataService.assigningTagImage(singleTags[i], img);
-                } else if (dataService.isTagOffline(singleTags[i])) {
-                    img.src = tagsIconPath + 'offline_tag_24.png';
-                } else {
-                    img.src = tagsIconPath + 'online_tag_24.png';
-                }
+                // if (dataService.checkIfTagHasAlarm(singleTags[i])) {
+                dataService.assigningTagImage(singleTags[i], img);
+                // } else if (dataService.isTagOffline(singleTags[i])) {
+                //     dataService.assigningTagImage(singleTags[i], img);
+                //     img.src = tagsIconPath + 'offline_tag_24.png';
+                // } else {
+                //     dataService.assigningTagImage(singleTags[i], img);
+                // img.src = tagsIconPath + 'online_tag_24.png';
+                // }
                 img.onload = onload;
             }
             return images;

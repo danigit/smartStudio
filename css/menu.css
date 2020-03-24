@@ -89,25 +89,38 @@
 }
 
 #outags-on-off-container .md-subheader-inner{
-    padding: 0!important;
+    padding: 0 !important;
 }
 
-#outags-on-off-container md-switch.md-checked.md-primary .md-bar{
+#outags-on-off-container md-switch.md-checked.md-primary .md-bar {
     background-color: #4fc3f7;
 }
 
-#outags-on-off-container md-switch.md-checked.md-primary .md-thumb{
+#outags-on-off-container md-switch.md-checked.md-primary .md-thumb {
     background-color: #0093c4;
 }
-#outdoor-tags-on-off-container .md-subheader-inner{
-    padding: 0!important;
+
+#table-sort-on-off-container .md-subheader-inner {
+    padding: 0 !important;
 }
 
-#outdoor-tags-on-off-container md-switch.md-checked.md-primary .md-bar{
+#table-sort-on-off-container md-switch.md-checked.md-primary .md-bar {
     background-color: #4fc3f7;
 }
 
-#outdoor-tags-on-off-container md-switch.md-checked.md-primary .md-thumb{
+#table-sort-on-off-container md-switch.md-checked.md-primary .md-thumb {
+    background-color: #0093c4;
+}
+
+#outdoor-tags-on-off-container .md-subheader-inner {
+    padding: 0 !important;
+}
+
+#outdoor-tags-on-off-container md-switch.md-checked.md-primary .md-bar {
+    background-color: #4fc3f7;
+}
+
+#outdoor-tags-on-off-container md-switch.md-checked.md-primary .md-thumb {
     background-color: #0093c4;
 }
 #zones-on-off-container .md-subheader-inner{
