@@ -2220,6 +2220,7 @@
                 multiple           : true,
                 controller         : ['$scope', 'admin', 'userManager', function ($scope, admin, userManager) {
 
+                    $scope.isAdmin       = admin;
                     $scope.tagCategories = {};
                     $scope.type_tags     = dataService.allTags;
 
@@ -2497,6 +2498,7 @@
                 multiple           : true,
                 controller         : ['$scope', 'admin', 'userManager', function ($scope, admin, userManager) {
 
+                    $scope.isAdmin      = admin;
                     $scope.safety_boxes = {};
                     $scope.type_tags    = dataService.allTags;
 

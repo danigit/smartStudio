@@ -28,21 +28,24 @@
 <!--end popup header-->
 
 <!--popup content-->
-<md-content class="popup-padding">
+<md-content class="popup-padding padding-bottom-60px">
 
     <div layout="column" layout-align="center center" ng-controller="languageController">
 
-        <md-table-container>
+        <md-table-container class="overflow-x-none">
 
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
 
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.username | uppercase}}</span></th>
+                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.username | uppercase}}</span>
+                    </th>
                     <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
-                    <th md-column md-order-by="role" ng-show="isAdmin"><span class="color-darkcyan">{{lang.role | uppercase}}</span></th>
-                    <th md-column md-order-by="telephone_number" ng-show="isAdmin"><span class="color-darkcyan">{{lang.phone | uppercase}}</span></th>
+                    <th md-column md-order-by="role" ng-show="isAdmin"><span class="color-darkcyan">{{lang.role | uppercase}}</span>
+                    </th>
+                    <th md-column md-order-by="telephone_number" ng-show="isAdmin"><span class="color-darkcyan">{{lang.phone | uppercase}}</span>
+                    </th>
                     <th md-column md-order-by="bot_url" ng-show="isAdmin"><span class="color-darkcyan">{{lang.urlBot | uppercase}}</span></th>
                     <th md-column md-order-by="bot_chat_id" ng-show="isAdmin"><span class="color-darkcyan">{{lang.botId | uppercase}}</span></th>
                     <th md-column md-order-by="email_alert" ng-show="isAdmin"><span class="color-darkcyan">{{lang.emailAlert | uppercase}}</span></th>
@@ -93,7 +96,8 @@
                         </md-button>
                     </td>
                     <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="deleteRow(user)"><img
-                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteUser}}" title="{{lang.delteUser}}"></td>
+                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteUser}}" title="{{lang.delteUser}}">
+                    </td>
                 </tr>
                 <tr md-row ng-show="usersTable.length === 0">
                     <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
@@ -102,16 +106,20 @@
             </table>
         </md-table-container>
 
-        <md-input-container ng-show="isAdmin || isUserManager" md-no-float class="md-block width-100 margin-top-bottom-25-px">
-            <div layout="row" layout-align="center end" class="margin-bottom-30-px">
+        <md-input-container
+                class="md-block position-fixed bottom-0 margin-none margin-bottom-23-px zindex-100 width-100"
+                md-no-float ng-show="isAdmin || isUserManager">
+            <div class="" layout="row" layout-align="center end">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="{{lang.addSite}}" title="{{lang.addSite}}">
             </div>
         </md-input-container>
 
-        <md-table-pagination class="color-red background-white position-fixed bottom-0 width-100" md-limit="query.limit" md-limit-options="query.limitOptions"
-                             md-page="query.page"
-                             md-total="{{usersTable.length}}" md-on-paginate="">
+        <md-table-pagination
+                class="color-red background-white position-fixed bottom-0 margin-bottom-15-px width-100 padding-0 padding-right-24-px"
+                md-limit="query.limit" md-limit-options="query.limitOptions"
+                md-page="query.page"
+                md-total="{{usersTable.length}}" md-on-paginate="">
         </md-table-pagination>
     </div>
 </md-content>

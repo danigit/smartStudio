@@ -1191,38 +1191,39 @@
             tags.forEach(function (tag) {
                 if (tag.battery_status) {
                     // control if the alarm is already considered, if not I add it to the allarms to play
-                    if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'battery')) {
-                        service.alarmsSounds.push({tag: tag.name, alarm: 'battery'});
+                    // here I am using tag name because if I use the id then if I have more than
+                    if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.id, 'battery')) {
+                        service.alarmsSounds.push({tag: tag.id, alarm: 'battery'});
                         service.playAlarm = true;
                     }
                 }
                 // if the alarm is no more active I remove it
                 else {
-                    service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.name, 'battery');
+                    service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.id, 'battery');
                 }
 
                 if (tag.man_down) {
                     // control if the alarm is already considered, if not I add it to the allarms to play
-                    if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'mandown')) {
-                        service.alarmsSounds.push({tag: tag.name, alarm: 'mandown'});
+                    if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.id, 'mandown')) {
+                        service.alarmsSounds.push({tag: tag.id, alarm: 'mandown'});
                         service.playAlarm = true;
                     }
                 }
                 // if the alarm is no more active I remove it
                 else {
-                    service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.name, 'mandown');
+                    service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.id, 'mandown');
                 }
 
                 if (tag.sos) {
                     // control if the alarm is already considered, if not I add it to the allarms to play
-                    if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.name, 'sos')) {
-                        service.alarmsSounds.push({tag: tag.name, alarm: 'sos'});
+                    if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.id, 'sos')) {
+                        service.alarmsSounds.push({tag: tag.id, alarm: 'sos'});
                         service.playAlarm = true;
                     }
                 }
                 // if the alarm is no more active I remove it
                 else {
-                    service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.name, 'sos');
+                    service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.id, 'sos');
                 }
             });
 

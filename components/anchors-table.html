@@ -22,11 +22,11 @@
 <!--end popup header-->
 
 <!--popup content-->
-<md-content class="popup-padding">
+<md-content class="popup-padding padding-bottom-60px">
 
     <div layout="column" layout-align="center center" ng-controller="languageController">
 
-        <md-table-container class="margin-bottom-40-px">
+        <md-table-container class="overflow-x-none">
 
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
@@ -146,16 +146,20 @@
             </table>
         </md-table-container>
 
-        <md-input-container md-no-float ng-show="isAdmin" class="md-block width-100 margin-bottom-50-px margin-top-0">
+        <md-input-container
+                class="md-block position-fixed bottom-0 margin-none margin-bottom-23-px zindex-100 width-100 margin-bottom-50-px margin-top-0"
+                md-no-float ng-show="isAdmin">
             <div layout="row" layout-align="center end">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="addNewRow()" alt="{{lang.addAnchor}}" title="{{lang.addAnchor}}">
             </div>
         </md-input-container>
 
-        <md-table-pagination class="color-red background-white position-fixed bottom-0 width-100" md-limit="query.limit" md-limit-options="query.limitOptions"
-                             md-page="query.page"
-                             md-total="{{anchors.length}}" md-on-paginate="getAnchors">
+        <md-table-pagination
+                class="color-red background-white position-fixed bottom-0 margin-bottom-15-px width-100 padding-0 padding-right-24-px"
+                md-limit="query.limit" md-limit-options="query.limitOptions"
+                md-page="query.page"
+                md-total="{{anchors.length}}" md-on-paginate="getAnchors">
         </md-table-pagination>
     </div>
 </md-content>

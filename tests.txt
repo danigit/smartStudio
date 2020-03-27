@@ -117,6 +117,8 @@ BUGS
 - la scritta sui pulsanti insrire zona quadrata e rotonda deve essere nel file language
 - i permitted asets nella tabella delle ancore sembrano non funzionare bene
 - problema sul updating del canvas in indoor ( a volte parte velocemente senza motivo)
+- when I open the alarms window again the previous one doesn't close
+- when I open alarms window if tags window is opened it doesn't close
 
 AGGIUNTEf
 

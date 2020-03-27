@@ -347,23 +347,31 @@ MARGINS
     margin-top: 5px!important;
 }
 
-.margin-bottom-10{
+.margin-bottom-10 {
     margin-bottom: 10% !important;
 }
 
-.margin-bottom-10-px{
-    margin-bottom: 10px!important;
+.margin-bottom-10-px {
+    margin-bottom: 10px !important;
 }
 
-.margin-bottom-0{
+.margin-bottom-15-px {
+    margin-bottom: 15px !important;
+}
+
+.margin-bottom-23-px {
+    margin-bottom: 23px !important;
+}
+
+.margin-bottom-0 {
     margin-bottom: 0;
 }
 
-.margin-bottom-5-px{
+.margin-bottom-5-px {
     margin-bottom: 5px;
 }
 
-.margin-bottom-30-px{
+.margin-bottom-30-px {
     margin-bottom: 30px!important;
 }
 
@@ -452,23 +460,32 @@ PADDING
 .padding-top-bottom-6px{
     padding: 6px 0;
 }
-.padding-top-bottom-35px{
+
+.padding-top-bottom-35px {
     padding: 35px 0;
 }
 
-.padding-bottom-none{
+.padding-bottom-none {
     padding-bottom: 0;
 }
 
-.padding-bottom-10{
+.padding-bottom-10px {
+    padding-bottom: 10px !important;
+}
+
+.padding-bottom-60px {
+    padding-bottom: 60px !important;
+}
+
+.padding-bottom-10 {
     padding-bottom: 10%;
 }
 
-.padding-0{
-    padding: 0!important;
+.padding-0 {
+    padding: 0 !important;
 }
 
-.padding-40-px{
+.padding-40-px {
     padding: 40px;
 }
 
@@ -500,14 +517,13 @@ PADDING
     padding: 0 15px 0 15px!important;
 }
 
-.padding-bottom-10px{
-    padding-bottom: 10px!important;
-}
-
 .popup-padding{
     padding: 5px 20px 20px 20px;
 }
 
+.padding-right-24-px {
+    padding-right: 24px !important;
+}
 
 
 
@@ -642,8 +658,11 @@ COLOR
 /******************************************************************
 OTHER
 *******************************************************************/
+.overflow-x-none {
+    overflow-x: unset !important;
+}
 
-.cursor-pointer{
+.cursor-pointer {
     cursor: pointer;
 }
 
