@@ -2593,7 +2593,7 @@ class Connection
                         t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.GPS_TIME, t.ALARM_TIME, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, 
                         t.INSIDE_ZONE, t.IS_EXIT, t.ANCHOR_ID, t.BATTERY_LEVEL, t.TEMPERATURE, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
                         dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI, c.ID AS CATEGORY_ID, c.DESCRIPTION AS CATEGORY_DESCRIPTION, 
-                        c.ICON_NAME_ALARM AS ICON_NAME_ALARM, c.ICON_NAME_NO_ALARM AS ICON_NAME_NO_ALARM
+                        c.ICON_NAME_ALARM AS ICON_NAME_ALARM, c.ICON_NAME_NO_ALARM AS ICON_NAME_NO_ALARM, c.ICON_NAME_OFFLINE
                         FROM tag AS t JOIN tag_types AS tt ON t.TYPE = tt.ID JOIN dress_alarm ON t.ID = dress_alarm.TAG_ID LEFT JOIN category c on t.CATEGORY_ID = c.ID';
 
             $this->result = $this->connection->query($this->query);
@@ -2617,7 +2617,7 @@ class Connection
                     'battery_level' => $row['BATTERY_LEVEL'], 'temperature' => $row['TEMPERATURE'], 'type_id' => (int)$row['TYPE_ID'],
                     'helmet_dpi' => (int)$row['HELMET_DPI'], 'belt_dpi' => (int)$row['BELT_DPI'], 'glove_dpi' => (int)$row['GLOVE_DPI'], 'shoe_dpi' => (int)$row['SHOE_DPI'],
                     'category_id' => $row['CATEGORY_ID'], 'category_description' => $row['CATEGORY_DESCRIPTION'], 'icon_name_alarm' => $row['ICON_NAME_ALARM'],
-                    'icon_name_no_alarm' => $row['ICON_NAME_NO_ALARM'], 'now_time' => date('Y-m-d H:i:s'));
+                    'icon_name_no_alarm' => $row['ICON_NAME_NO_ALARM'], 'icon_name_offline' => $row['ICON_NAME_OFFLINE'], 'now_time' => date('Y-m-d H:i:s'));
             }
 
             mysqli_close($this->connection);

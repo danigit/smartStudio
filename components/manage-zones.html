@@ -21,11 +21,11 @@
 </div>
 <!--popup content-->
 
-<md-content class="popup-padding width-500-px">
+<md-content class="popup-padding width-500-px padding-bottom-70px">
 
     <div layout="column" layout-align="center center" ng-controller="languageController">
 
-        <md-table-container>
+        <md-table-container class="overflow-x-none">
 
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
@@ -56,16 +56,20 @@
 
         <div ng-if="position" class="margin-bottom-40-px"></div>
 
-        <md-input-container ng-if="!position" md-no-float class="md-block width-100 margin-top-bottom-25-px">
-            <div layout="row" layout-align="center end" class="margin-bottom-30-px">
+        <md-input-container
+                class="md-block position-fixed bottom-0 margin-none margin-bottom-23-px zindex-100 width-100 margin-bottom-50-px margin-top-0"
+                md-no-float ng-if="!position">
+            <div class="width-120-px" layout="row" layout-align="center end">
                 <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
                      ng-click="manageNewZone()" alt="{{lang.addZone}}" title="{{lang.addZone}}">
             </div>
         </md-input-container>
 
-        <md-table-pagination class="color-red background-white position-fixed bottom-0 width-100" md-limit="query.limit" md-limit-options="query.limitOptions"
-                             md-page="query.page"
-                             md-total="{{zones.length}}" md-on-paginate="">
+        <md-table-pagination
+                class="color-red background-white position-fixed bottom-0 margin-bottom-15-px width-100 padding-0 padding-right-24-px"
+                md-limit="query.limit" md-limit-options="query.limitOptions"
+                md-page="query.page"
+                md-total="{{zones.length}}" md-on-paginate="">
         </md-table-pagination>
     </div>
 </md-content>

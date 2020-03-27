@@ -3878,7 +3878,6 @@
             if (newStringValue !== '') {
 
                 let newTag = dataService.allTags.find(t => t.name === newValue);
-                console.log(newTag);
                 if (newTag !== undefined) {
                     if (newTag.radio_switched_off) {
                         dataService.showToast($mdToast, lang.tagOff, 'background-darkred', 'color-white', 'top center');
@@ -3937,20 +3936,34 @@
                                                 canvas.width  = this.naturalWidth;
                                                 canvas.height = this.naturalHeight;
 
-                                                //updating the canvas and drawing border
-                                                updateCanvas(canvas.width, canvas.height, context, img);
+                                                let round = true;
+                                                $interval(function () {
 
-                                                let tagImg = new Image();
+                                                    console.log('redrawing the canvas');
+                                                    //updating the canvas and drawing border
+                                                    updateCanvas(canvas.width, canvas.height, context, img);
 
-                                                if (dataService.hasTagSuperatedSecondDelta(newTag)) {
-                                                    tagImg.src = tagsIconPath + 'shut_down_tag.png';
-                                                } else {
-                                                    dataService.assigningTagImage(newTag, tagImg);
-                                                }
+                                                    let tagImg = new Image();
 
-                                                tagImg.onload = function () {
-                                                    drawIcon(newTag, context, tagImg, response.result.width, canvas.width, canvas.height, true);
-                                                }
+                                                    if (dataService.hasTagSuperatedSecondDelta(newTag)) {
+                                                        tagImg.src = tagsIconPath + 'shut_down_tag.png';
+                                                    } else {
+                                                        dataService.assigningTagImage(newTag, tagImg);
+                                                    }
+
+                                                    if (round) {
+                                                        tagImg = null;
+                                                        round  = false;
+                                                    } else {
+                                                        round = true;
+                                                    }
+
+                                                    if (tagImg != null) {
+                                                        tagImg.onload = function () {
+                                                            drawIcon(newTag, context, tagImg, response.result.width, canvas.width, canvas.height, true);
+                                                        }
+                                                    }
+                                                }, 500);
                                             };
                                             img.src    = imagePath + 'floors/' + response.result.image_map;
                                         }, 0);
@@ -4001,29 +4014,45 @@
                                     let latLng = new google.maps.LatLng(tag.gps_north_degree, tag.gps_east_degree);
 
                                     map.setCenter(latLng);
+                                    let round     = false;
+                                    let oldMarker = null;
+                                    let marker    = null;
+                                    $interval(function () {
+                                        let tagImg = new Image();
+                                        dataService.assigningTagImage(tag, tagImg);
+                                        let name = tagImg.src.split('/');
 
-                                    let marker = new google.maps.Marker({
-                                        position: latLng,
-                                        map     : map,
-                                        icon    : tagsIconPath + 'search-tag.png'
-                                    });
+                                        if (round) {
+                                            marker = new google.maps.Marker({
+                                                position: latLng,
+                                                map     : map,
+                                                icon    : tagsIconPath + name[name.length - 1]
+                                            });
 
-                                    let infoWindow = new google.maps.InfoWindow({
-                                        content: '<div class="marker-info-container">' +
-                                            '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
-                                            '<p class="text-center font-large font-bold color-darkcyan">' + tagName.toUpperCase() + '</p>' +
-                                            '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + tag.gps_north_degree + '</b></p></div>' +
-                                            '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + tag.gps_east_degree + '</b></p></div>' +
-                                            '</div>'
-                                    });
+                                            let infoWindow = new google.maps.InfoWindow({
+                                                content: '<div class="marker-info-container">' +
+                                                    '<img src="' + iconsPath + 'login-icon.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio">' +
+                                                    '<p class="text-center font-large font-bold color-darkcyan">' + tagName.toUpperCase() + '</p>' +
+                                                    '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + tag.gps_north_degree + '</b></p></div>' +
+                                                    '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + tag.gps_east_degree + '</b></p></div>' +
+                                                    '</div>'
+                                            });
 
-                                    marker.addListener('mouseover', function () {
-                                        infoWindow.open(map, this);
-                                    });
+                                            marker.addListener('mouseover', function () {
+                                                infoWindow.open(map, this);
+                                            });
 
-                                    marker.addListener('mouseout', function () {
-                                        infoWindow.close(map, this);
-                                    });
+                                            marker.addListener('mouseout', function () {
+                                                infoWindow.close(map, this);
+                                            });
+
+                                            round = false;
+                                        } else {
+                                            if (marker !== null)
+                                                marker.setMap(null);
+                                            round = true;
+                                        }
+                                    }, 500);
                                 });
 
                                 $scope.hide = () => {
