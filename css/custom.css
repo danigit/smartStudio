@@ -162,6 +162,10 @@ DISPLAY
     right: 0;
 }
 
+.left-0 {
+    left: 0;
+}
+
 .right-110px {
     right: 110px;
 }

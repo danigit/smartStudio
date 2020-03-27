@@ -4112,15 +4112,27 @@
                                         canvas.width  = this.naturalWidth;
                                         canvas.height = this.naturalHeight;
 
-                                        //updating the canvas and drawing border
-                                        updateCanvas(canvas.width, canvas.height, context, img);
+                                        let round = true;
+                                        $interval(function () {
+                                            //updating the canvas and drawing border
+                                            updateCanvas(canvas.width, canvas.height, context, img);
 
-                                        let anchorImg = new Image();
-                                        anchorImg.src = './img/icons/tags/anchor_online_24.png';
+                                            let anchorImg = new Image();
+                                            anchorImg.src = './img/icons/tags/anchor_online_24.png';
 
-                                        anchorImg.onload = function () {
-                                            drawIcon(newAnchor, context, anchorImg, response.result[0].width, canvas.width, canvas.height, false);
-                                        }
+                                            if (round) {
+                                                anchorImg = null;
+                                                round     = false;
+                                            } else {
+                                                round = true;
+                                            }
+
+                                            if (anchorImg !== null) {
+                                                anchorImg.onload = function () {
+                                                    drawIcon(newAnchor, context, anchorImg, response.result[0].width, canvas.width, canvas.height, false);
+                                                }
+                                            }
+                                        }, 500);
                                     };
 
                                     img.src = imagePath + 'floors/' + response.result[0].image_map;
