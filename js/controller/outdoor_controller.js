@@ -379,7 +379,7 @@
                 setMarkerInfoWindow(dataService.dynamicTags[mapMarker], tag, locationName);
 
                 // control if the tag has alarms so that I show the alarm tag
-                if (dataService.checkIfTagHasAlarm(tag)) {
+                if (dataService.checkIfTagHasAlarmNoBattery(tag)) {
 
                     // resetting the alarm alternation
                     if (alarmsCounts[index] > tagAlarms.length - 1) {
@@ -392,10 +392,13 @@
                 // controlling if the tag is not off
                 else if (!tag.radio_switched_off) {
                     // control if the tag is online or offline
-                    if (online)
+                    if (tag.battery_status && !dataService.hasTagReaperedAfterOffline(tag)) {
+                        dataService.dynamicTags[mapMarker].setIcon(tagsIconPath + 'battery_low_24.png');
+                    } else if (online) {
                         dataService.setMarkerOnlineIcon(dataService.dynamicTags[mapMarker]);
-                    else
+                    } else {
                         dataService.setMarkerOfflineIcon(dataService.dynamicTags[mapMarker])
+                    }
 
                 }
                 // removing the tag from the map if is turned off

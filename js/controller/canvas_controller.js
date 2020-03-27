@@ -491,25 +491,29 @@
                                                             // controlling if the tags have to be shown
                                                             if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
                                                                 singleTags.forEach((tag, index) => {
-                                                                    if (dataService.checkIfTagHasAlarm(tag)) {
+                                                                    if (dataService.checkIfTagHasAlarmNoBattery(tag)) {
                                                                         canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
-                                                                            if (dataService.checkIfTagHasAlarm(tag)) {
-                                                                                if (alarmsCounts[index] > alarms.length - 1)
-                                                                                    alarmsCounts[index] = 0;
+                                                                            if (alarmsCounts[index] > alarms.length - 1)
+                                                                                alarmsCounts[index] = 0;
 
-                                                                                canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                            canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
 
-                                                                                // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
-                                                                                if (index === singleTags.length - 1) {
-                                                                                    context.drawImage(bufferCanvas, 0, 0);
-                                                                                    canvasDrawned = true;
-                                                                                }
+                                                                            // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
+                                                                            if (index === singleTags.length - 1) {
+                                                                                context.drawImage(bufferCanvas, 0, 0);
+                                                                                canvasDrawned = true;
                                                                             }
                                                                         });
                                                                     }
                                                                     // drawing the tag without alarm
                                                                     else {
-                                                                        canvasService.drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                        if (tag.battery_status && dataService.hasTagReaperedAfterOffline(tag)) {
+                                                                            let img = new Image();
+                                                                            img.src = tagsIconPath + 'offline_tag_24.png';
+                                                                            canvasService.drawIcon(tag, bufferContext, img, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                        } else {
+                                                                            canvasService.drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                        }
                                                                     }
                                                                 })
                                                             }
@@ -518,18 +522,15 @@
                                                                 singleTags.forEach((tag, index) => {
                                                                     if (dataService.checkIfTagHasAlarm(tag)) {
                                                                         canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
-                                                                            console.log(alarms);
-                                                                            if (dataService.checkIfTagHasAlarm(tag)) {
-                                                                                if (alarmsCounts[index] > alarms.length - 1)
-                                                                                    alarmsCounts[index] = 0;
+                                                                            if (alarmsCounts[index] > alarms.length - 1)
+                                                                                alarmsCounts[index] = 0;
 
-                                                                                canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                            canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
 
-                                                                                // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
-                                                                                if (index === singleTags.length - 1) {
-                                                                                    context.drawImage(bufferCanvas, 0, 0);
-                                                                                    canvasDrawned = true;
-                                                                                }
+                                                                            // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
+                                                                            if (index === singleTags.length - 1) {
+                                                                                context.drawImage(bufferCanvas, 0, 0);
+                                                                                canvasDrawned = true;
                                                                             }
                                                                         });
                                                                     }

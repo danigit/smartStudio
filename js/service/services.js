@@ -58,6 +58,16 @@
         };
         service.lastMessageTime      = null;
 
+        service.haveToShowBatteryEmpty = (tag) => {
+            console.log('verify alamr');
+            console.log(tag);
+            if (tag.battery_status && !service.hasTagSuperatedSecondDelta(tag)) {
+                console.log('show alarm');
+                return true;
+            }
+
+            return false;
+        };
 
         service.showAlarms = (constantUpdateNotifications, map, position) => {
             // showing the table with the alarms
@@ -96,7 +106,7 @@
                         // getting all the tags
                         newSocketService.getData('get_all_tags', {}, (allTagsResult) => {
 
-                            allTags = allTagsResult.result.filter(t => !t.radio_switched_off);
+                            allTags = allTagsResult.result.filter(t => !t.radio_switched_off && service.haveToShowBatteryEmpty(t));
 
                             // getting all the tags of the logged user
                             // they are all the indoor tags because the tags are related to the users by the anchors and the anchors are
@@ -1275,6 +1285,12 @@
                 || tag.call_me_alarm || tag.diagnostic_request) === 1;
         };
 
+        service.checkIfTagHasAlarmNoBattery = (tag) => {
+            return (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
+                || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
+                || tag.call_me_alarm || tag.diagnostic_request) === 1;
+        };
+
         let isCategoryAndImageNotNull = (tag) => {
             return tag.category_id !== null && tag.icon_name_alarm && tag.icon_name_no_alarm !== null;
         };
@@ -1538,7 +1554,7 @@
          * @param tag
          */
         service.hasTagSuperatedSecondDelta = (tag) => {
-            if (!service.checkIfTagHasAlarm(tag)) {
+            if (!service.checkIfTagHasAlarmNoBattery(tag)) {
                 if (service.isOutdoor(tag)) {
                     let localThresholdIndoor  = new Date(tag.now_time).getTime();
                     let offline_started       = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
@@ -1558,6 +1574,27 @@
             return false;
         };
 
+        /**
+         * Function that controls if the tag has superated the second time so it has to be shown again
+         * @param tag
+         * @returns {boolean}
+         */
+        service.hasTagReaperedAfterOffline = (tag) => {
+            if (service.isOutdoor(tag)) {
+                let localThresholdIndoor  = new Date(tag.now_time).getTime();
+                let offline_started       = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
+                let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
+
+                return localThresholdIndoor > offline_delta_started;
+            } else {
+                // getting the times that are needed to make the computation
+                let localThresholdIndoor  = new Date(tag.now_time).getTime();
+                let offline_started       = new Date(tag.time).getTime() + tag.sleep_time_indoor;
+                let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
+
+                return localThresholdIndoor > offline_delta_started;
+            }
+        };
 
         /**
          * Function that controles if the response is the expected one
