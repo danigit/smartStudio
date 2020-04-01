@@ -31,23 +31,43 @@
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
 
+                <md-select class="width-200-px float-right background-darkcyan color-white text-center"
+                           md-selected-text="getName()" multiple ng-model="columns"
+                           placeholder="Select columns">
+                    <md-option ng-repeat="item in items" ng-selected="{{true}}" ng-value="item">
+                        {{item}}
+                    </md-option>
+                </md-select>
+
                 <thead md-head md-order="query.order">
                 <tr md-row>
                     <th md-column><span class="color-darkcyan"></span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
-                    <th md-column md-numeric><span class="color-darkcyan">{{lang.xPos | uppercase}}</span></th>
-                    <th md-column md-numeric><span class="color-darkcyan">{{lang.yPos | uppercase}}</span></th>
-                    <th md-column md-numeric><span class="color-darkcyan">{{lang.zPos | uppercase}}</span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.floor | uppercase}}</span></th>
-                    <th md-column md-numeric><span class="color-darkcyan">{{lang.radius | uppercase}}</span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.ip}}</span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.anchorState | uppercase}}</span></th>
-                    <th md-column md-numeric=""><span class="color-darkcyan">{{lang.rssi | uppercase}}</span></th>
-                    <th md-column md-numeric><span class="color-darkcyan">{{lang.proximity | uppercase}}</span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.type}}</span></th>
-                    <th md-column md-numeric><span class="color-darkcyan">{{lang.anchorMac | uppercase}}</span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.permittedAssets | uppercase}}</span></th>
+                    <th md-column ng-if="exists('name', columns)"><span
+                            class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column md-numeric ng-if="exists('x_pos', columns)"><span class="color-darkcyan">{{lang.xPos | uppercase}}</span>
+                    </th>
+                    <th md-column md-numeric ng-if="exists('y_pos', columns)"><span class="color-darkcyan">{{lang.yPos | uppercase}}</span>
+                    </th>
+                    <th md-column md-numeric ng-if="exists('z_pos', columns)"><span class="color-darkcyan">{{lang.zPos | uppercase}}</span>
+                    </th>
+                    <th md-column ng-if="exists('floor', columns)"><span class="color-darkcyan">{{lang.floor | uppercase}}</span>
+                    </th>
+                    <th md-column md-numeric ng-if="exists('radius', columns)"><span class="color-darkcyan">{{lang.radius | uppercase}}</span>
+                    </th>
+                    <th md-column ng-if="exists('ip', columns)"><span class="color-darkcyan">{{lang.ip}}</span></th>
+                    <th md-column ng-if="exists('battery', columns)"><span class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span>
+                    </th>
+                    <th md-column ng-if="exists('state', columns)"><span class="color-darkcyan">{{lang.anchorState | uppercase}}</span>
+                    </th>
+                    <th md-column md-numeric="" ng-if="exists('rssi', columns)"><span class="color-darkcyan">{{lang.rssi | uppercase}}</span>
+                    </th>
+                    <th md-column md-numeric ng-if="exists('proximity', columns)"><span class="color-darkcyan">{{lang.proximity | uppercase}}</span>
+                    </th>
+                    <th md-column ng-if="exists('type', columns)"><span class="color-darkcyan">{{lang.type}}</span></th>
+                    <th md-column md-numeric ng-if="exists('mac', columns)"><span class="color-darkcyan">{{lang.anchorMac | uppercase}}</span>
+                    </th>
+                    <th md-column ng-if="exists('permiteds', columns)"><span class="color-darkcyan">{{lang.permittedAssets | uppercase}}</span>
+                    </th>
                     <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
@@ -61,70 +81,86 @@
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'name')"
-                        ng-class="{'md-placeholder': !anchor.anchor.name}">{{anchor.anchor.name || lang.insertName}}
+                        ng-class="{'md-placeholder': !anchor.anchor.name}" ng-if="exists('name', columns)">
+                        {{anchor.anchor.name || lang.insertName}}
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'x_pos')"
-                        ng-class="{'md-placeholder': !anchor.anchor.x_pos.toString()}">{{anchor.anchor.x_pos.toString() ||
+                        ng-class="{'md-placeholder': !anchor.anchor.x_pos.toString()}" ng-if="exists('x_pos', columns)">
+                        {{anchor.anchor.x_pos.toString() ||
                         lang.insertXPos}}
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'y_pos')"
-                        ng-class="{'md-placeholder': !anchor.anchor.y_pos.toString()}">{{anchor.anchor.y_pos.toString() ||
+                        ng-class="{'md-placeholder': !anchor.anchor.y_pos.toString()}" ng-if="exists('y_pos', columns)">
+                        {{anchor.anchor.y_pos.toString() ||
                         lang.insertYPos}}
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'z_pos')"
-                        ng-class="{'md-placeholder': !anchor.anchor.z_pos.toString()}">{{anchor.anchor.z_pos.toString() ||
+                        ng-class="{'md-placeholder': !anchor.anchor.z_pos.toString()}" ng-if="exists('z_pos', columns)">
+                        {{anchor.anchor.z_pos.toString() ||
                         lang.insertZPos}}
                     </td>
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'floor_name')"
-                        ng-class="{'md-placeholder': !anchor.anchor.floor_name.toString()}">{{anchor.anchor.floor_name.toString()
+                        ng-class="{'md-placeholder': !anchor.anchor.floor_name.toString()}"
+                        ng-if="exists('floor', columns)">{{anchor.anchor.floor_name.toString()
                         || lang.insertFloor}}
                     </td>
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'radius')"
-                        ng-class="{'md-placeholder': !anchor.anchor.radius.toString()}">{{anchor.anchor.radius.toString() ||
+                        ng-class="{'md-placeholder': !anchor.anchor.radius.toString()}"
+                        ng-if="exists('radius', columns)">{{anchor.anchor.radius.toString() ||
                         lang.insertRadius}}
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'ip')"
-                        ng-class="{'md-placeholder': !anchor.anchor.ip}">
+                        ng-class="{'md-placeholder': !anchor.anchor.ip}" ng-if="exists('ip', columns)">
                         {{anchor.anchor.ip || lang.insertIp}}
                     </td>
 
-                    <td md-cell class="no-wrap"><img alt="{{lang.bateryStatus}}" ng-src="{{anchor.anchor.battery_status ? 'img/icons/battery_empty_24.png'
+                    <td class="no-wrap" md-cell ng-if="exists('battery', columns)"><img alt="{{lang.bateryStatus}}"
+                                                                                        ng-src="{{anchor.anchor.battery_status ? 'img/icons/battery_empty_24.png'
                                                             : 'img/icons/battery_full_24.png'}}">
                     </td>
 
-                    <td md-cell class="no-wrap" ><span ng-class="{'color-green': !anchor.anchor.is_offline, 'color-red': anchor.anchor.is_offline}">{{(anchor.anchor.is_offline ? (lang.offline | uppercase) : (lang.online | uppercase))}}</span>
+                    <td class="no-wrap" md-cell ng-if="exists('state', columns)"><span
+                            ng-class="{'color-green': !anchor.anchor.is_offline, 'color-red': anchor.anchor.is_offline}">{{(anchor.anchor.is_offline ? (lang.offline | uppercase) : (lang.online | uppercase))}}</span>
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'rssi')"
-                        ng-class="{'md-placeholder': !anchor.anchor.rssi.toString()}">{{anchor.anchor.rssi.toString() ||
+                        ng-class="{'md-placeholder': !anchor.anchor.rssi.toString()}" ng-if="exists('rssi', columns)">
+                        {{anchor.anchor.rssi.toString() ||
                         lang.insertRssi}}
                     </td>
 
                     <td class="no-wrap" md-cell ng-click="editCell($event, anchor.anchor, 'proximity')"
-                        ng-class="{'md-placeholder': !anchor.anchor.proximity.toString()}">
+                        ng-class="{'md-placeholder': !anchor.anchor.proximity.toString()}"
+                        ng-if="exists('proximity', columns)">
                         {{anchor.anchor.proximity.toString() ||
                         lang.insertProximity}}
                     </td>
 
-                    <td md-cell ng-class="{'md-placeholder': !anchor.anchor.type}">
-                        <md-select ng-model="selectedAnchor" ng-disabled="!isAdmin" ng-change="updateAnchorType(anchor, selectedAnchor)" aria-label="Seleziona tipologia">
+                    <td md-cell ng-class="{'md-placeholder': !anchor.anchor.type}" ng-if="exists('type', columns)">
+                        <md-select ng-model="selectedAnchor" ng-disabled="!isAdmin"
+                                   ng-change="updateAnchorType(anchor, selectedAnchor)"
+                                   aria-label="Seleziona tipologia">
                             <md-option><em>{{lang.nothing}}</em></md-option>
-                            <md-option ng-selected="{{anchorType.id.toString() === anchor.anchor.anchor_type_id.toString()}}" ng-repeat="anchorType in anchorTypes track by $index" ng-value="anchorType.id">
+                            <md-option
+                                    ng-selected="{{anchorType.id.toString() === anchor.anchor.anchor_type_id.toString()}}"
+                                    ng-repeat="anchorType in anchorTypes track by $index" ng-value="anchorType.id">
                                 {{anchorType.description}}
                             </md-option>
                         </md-select>
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'mac')"
-                        ng-class="{'md-placeholder': !anchor.anchor.mac.toString()}">{{anchor.anchor.mac.toString() ||
+                        ng-class="{'md-placeholder': !anchor.anchor.mac.toString()}" ng-if="exists('mac', columns)">
+                        {{anchor.anchor.mac.toString() ||
                         lang.insertMac}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !anchor.permitted_asset}">
+                    <td class="no-wrap" md-cell ng-class="{'md-placeholder': !anchor.permitted_asset}"
+                        ng-if="exists('permiteds', columns)">
                         <md-select class="width-200-px margin-right-10-px"
                                    ng-change="updatePermitteds(anchor.anchor.id, anchor.permitteds)"
                                    ng-disabled="!isAdmin" ng-model="anchor.permitteds" placeholder="{{lang.permitted}}"

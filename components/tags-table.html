@@ -31,17 +31,26 @@
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
 
+                <md-select class="width-200-px float-right background-darkcyan color-white text-center"
+                           md-selected-text="getName()" multiple ng-model="columns"
+                           placeholder="Select columns">
+                    <md-option ng-repeat="item in items" ng-selected="{{true}}" ng-value="item">
+                        {{item}}
+                    </md-option>
+                </md-select>
+
                 <thead md-head md-order="query.order">
                 <tr md-row>
                     <th md-column></th>
-                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
-                    <th md-column md-order-by="type_name"><span class="color-darkcyan">{{lang.type | uppercase}}</span>
-                    <th md-column md-order-by="type_name"><span
+                    <th md-column md-order-by="name" ng-if="exists('name', columns)"><span class="color-darkcyan">{{lang.name | uppercase}}</span>
+                    </th>
+                    <th md-column md-order-by="type_name" ng-if="exists('type', columns)"><span class="color-darkcyan">{{lang.type | uppercase}}</span>
+                    <th md-column md-order-by="type_name" ng-if="exists('battery', columns)"><span
                             class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span></th>
-                    <th ng-if="isAdmin" md-column></th>
-                    <th ng-if="isAdmin" md-column></th>
-                    <th ng-if="isAdmin" md-column></th>
-                    <th ng-if="isAdmin" md-column></th>
+                    <th md-column ng-if="isAdmin && exists('macs', columns)"></th>
+                    <th md-column ng-if="isAdmin && exists('zones', columns)"></th>
+                    <th md-column ng-if="isAdmin && exists('parameters', columns)"></th>
+                    <th md-column ng-if="isAdmin && exists('callme', columns)"></th>
                     <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
@@ -53,10 +62,11 @@
                         <img class="width-30px" ng-src="{{isTagOff(tag) ? 'img/icons/tags/shut_down_tag.png' :
                            tagHasAlarm(tag) ? 'img/icons/tags/unknown_alarm.png' : isTagOffline(tag) ? 'img/icons/tags/offline_tag_24.png' :
                            'img/icons/tags/online_tag_24.png'}}">
-                    <td md-cell ng-click="editCell($event, tag, 'name')" ng-class="{'md-placeholder': !tag.name}">
+                    <td md-cell ng-class="{'md-placeholder': !tag.name}" ng-click="editCell($event, tag, 'name')"
+                        ng-if="exists('name', columns)">
                         {{tag.name || lang.insertName}}
                     </td>
-                    <td md-cell ng-class="{'md-placeholder': !tag.type_name}">
+                    <td md-cell ng-class="{'md-placeholder': !tag.type_name}" ng-if="exists('type', columns)">
                         <md-select ng-model="selectedType" ng-disabled="!isAdmin"
                                    ng-change="updateTagType(tag, selectedType)" aria-label="Seleziona tipologia">
                             <md-option><em>{{lang.nothing}}</em></md-option>
@@ -66,30 +76,34 @@
                             </md-option>
                         </md-select>
                     </td>
-                    <td md-cell><img alt="{{lang.batteryLevel}}"
-                                     ng-src="{{tag.battery_status ? 'img/icons/battery_empty_24.png' : 'img/icons/battery_full_24.png'}}"
-                                     title="{{lang.batteryLevel}}">
+                    <td md-cell ng-if="exists('battery', columns)"><img alt="{{lang.batteryLevel}}"
+                                                                        ng-src="{{tag.battery_status ? 'img/icons/battery_empty_24.png' : 'img/icons/battery_full_24.png'}}"
+                                                                        title="{{lang.batteryLevel}}">
                         <span class="padding-left-5-px"><b>{{tag.battery_level}}</b>%/<b>{{tag.temperature}}</b>°C</span>
                     </td>
                     <td md-cell ng-show="isAdmin" class="padding-right-10-px">
                         <md-button ng-click="tagMacs(tag)"
-                                   class="md-raised background-gray color-darkcyan margin-top-5-px">
+                                   class="md-raised background-gray color-darkcyan margin-top-5-px"
+                                   ng-if="exists('macs', columns)">
                             {{lang.macsManaging | uppercase}}
                         </md-button>
                     </td>
-                    <td md-cell ng-show="(isAdmin)" class="padding-right-10-px">
+                    <td class="padding-right-10-px" md-cell ng-if="exists('zones', columns)" ng-show="(isAdmin)">
                         <md-button ng-click="tagZones(tag)"
                                    class="md-raised background-gray color-darkcyan margin-top-5-px">
                             {{lang.zonesManaging | uppercase}}
                         </md-button>
                     </td>
-                    <td md-cell ng-show="(isAdmin)" class="padding-right-10-px">
-                        <md-button ng-click="tagParameters(tag)" class="md-raised background-gray color-darkcyan margin-top-5-px">
+                    <td class="padding-right-10-px" md-cell ng-if="exists('parameters', columns)" ng-show="(isAdmin)">
+                        <md-button ng-click="tagParameters(tag)"
+                                   class="md-raised background-gray color-darkcyan margin-top-5-px">
                             {{lang.parameters | uppercase}}
                         </md-button>
                     </td>
-                    <td md-cell ng-show="isAdmin" ng-click="callMe(tag)">
-                        <md-button ng-class="tagsCallMe[tag.id]['background']" class="md-raised background-gray margin-top-5-px">{{tagsCallMe[tag.id]['value']}}</md-button>
+                    <td md-cell ng-click="callMe(tag)" ng-if="exists('callme', columns)" ng-show="isAdmin">
+                        <md-button ng-class="tagsCallMe[tag.id]['background']"
+                                   class="md-raised background-gray margin-top-5-px">{{tagsCallMe[tag.id]['value']}}
+                        </md-button>
                     </td>
                     <td md-cell ng-show="isAdmin" ng-click="deleteRow(tag)"><img src="img/icons/delete_trash_24.png"
                                                                alt="{{lang.deleteTag}}" title="{{lang.deleteTag}}"></td>

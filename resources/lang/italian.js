@@ -491,5 +491,6 @@ let lang = {
     elementInserted               : 'Elemento inserito',
     elementNotInserted            : 'Elemento non inserito',
     userDeleted                   : 'Utente cancelato',
-    userNotDeleted                : 'Utente non cancellato'
+    userNotDeleted                : 'Utente non cancellato',
+    columns                       : 'Colonne'
 };

@@ -37,20 +37,40 @@
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
 
+                <md-select class="width-200-px float-right background-darkcyan color-white text-center"
+                           md-selected-text="getName()" multiple ng-model="columns"
+                           placeholder="Select columns">
+                    <md-option ng-repeat="item in items" ng-selected="{{true}}" ng-value="item">
+                        {{item}}
+                    </md-option>
+                </md-select>
+
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name}}</span></th>
-                    <th md-column md-order-by="x_left"><span class="color-darkcyan">{{lang.xLeft}}</span></th>
-                    <th md-column md-order-by="x_right"><span class="color-darkcyan">{{lang.xRight}}</span></th>
-                    <th md-column md-order-by="y_up"><span class="color-darkcyan">{{lang.yUp}}</span></th>
-                    <th md-column md-order-by="y_down"><span class="color-darkcyan">{{lang.yDown}}</span></th>
-                    <th ng-show="isOutdoor" md-column md-order-by="radius"><span class="color-darkcyan">{{lang.radius}}</span></th>
-                    <th ng-show="isOutdoor" md-column md-order-by="gps_north"><span class="color-darkcyan">{{lang.xCenter}}</span></th>
-                    <th ng-show="isOutdoor" md-column md-order-by="gps_east"><span class="color-darkcyan">{{lang.yCenter}}</span></th>
-                    <th ng-if="isAdmin" md-column md-order-by="color"><span class="color-darkcyan">{{lang.color}}</span></th>
-                    <th ng-if="isAdmin" md-column md-order-by="priority"><span class="color-darkcyan">{{lang.priority}}</span></th>
-                    <th ng-if="isAdmin" md-column md-order-by="header_order"><span class="color-darkcyan">{{lang.headerOrder}}</span></th>
-                    <th ng-if="isAdmin" md-column md-order-by="header_left_side"><span class="color-darkcyan">{{lang.headerLeftSide}}</span></th>
+                    <th md-column md-order-by="name" ng-if="exists('name', columns)"><span class="color-darkcyan">{{lang.name}}</span>
+                    </th>
+                    <th md-column md-order-by="x_left" ng-if="exists('x_left', columns)"><span class="color-darkcyan">{{lang.xLeft}}</span>
+                    </th>
+                    <th md-column md-order-by="x_right" ng-if="exists('x_right', columns)"><span class="color-darkcyan">{{lang.xRight}}</span>
+                    </th>
+                    <th md-column md-order-by="y_up" ng-if="exists('y_up', columns)"><span class="color-darkcyan">{{lang.yUp}}</span>
+                    </th>
+                    <th md-column md-order-by="y_down" ng-if="exists('y_down', columns)"><span class="color-darkcyan">{{lang.yDown}}</span>
+                    </th>
+                    <th md-column md-order-by="radius" ng-if="exists('radius', columns)" ng-show="isOutdoor"><span
+                            class="color-darkcyan">{{lang.radius}}</span></th>
+                    <th md-column md-order-by="gps_north" ng-if="exists('gps_north', columns)" ng-show="isOutdoor"><span
+                            class="color-darkcyan">{{lang.xCenter}}</span></th>
+                    <th md-column md-order-by="gps_east" ng-if="exists('gps_east', columns)" ng-show="isOutdoor"><span
+                            class="color-darkcyan">{{lang.yCenter}}</span></th>
+                    <th md-column md-order-by="color" ng-if="isAdmin && exists('color', columns)"><span
+                            class="color-darkcyan">{{lang.color}}</span></th>
+                    <th md-column md-order-by="priority" ng-if="isAdmin && exists('priority', columns)"><span
+                            class="color-darkcyan">{{lang.priority}}</span></th>
+                    <th md-column md-order-by="header_order" ng-if="isAdmin && exists('header_order', columns)"><span
+                            class="color-darkcyan">{{lang.headerOrder}}</span></th>
+                    <th md-column md-order-by="header_left_side" ng-if="isAdmin && exists('header_left_side', columns)">
+                        <span class="color-darkcyan">{{lang.headerLeftSide}}</span></th>
                     <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
@@ -58,40 +78,57 @@
                 <tbody md-body>
                 <tr md-row md-select="tag" md-on-select="logItem" md-auto-select="true"
                     ng-repeat="zone in zonesTable | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
-                    <td md-cell ng-click="editCell($event, zone, 'name')" ng-class="{'md-placeholder': !zone.name}">
+                    <td md-cell ng-class="{'md-placeholder': !zone.name}" ng-click="editCell($event, zone, 'name')"
+                        ng-if="exists('name', columns)">
                         {{zone.name || lang.insertName}}
                     </td>
                     <td md-cell ng-click="zone.x_left !== null ? editCell($event, zone, 'x_left') : null"
-                        ng-class="{'md-placeholder': !zone.x_left}">{{zone.x_left === null ? 'Valore non necessario' : zone.x_left || lang.insertValue}}
+                        ng-class="{'md-placeholder': !zone.x_left}" ng-if="exists('x_left', columns)">{{zone.x_left ===
+                        null ? 'Valore non necessario' : zone.x_left || lang.insertValue}}
                     </td>
                     <td md-cell ng-click="zone.x_right !== null ? editCell($event, zone, 'x_right') : null"
-                        ng-class="{'md-placeholder': !zone.x_right}">{{zone.x_right === null ? "Valore non necessario" : zone.x_right || lang.insertValue}}
+                        ng-class="{'md-placeholder': !zone.x_right}" ng-if="exists('x_right', columns)">{{zone.x_right
+                        === null ? "Valore non necessario" : zone.x_right || lang.insertValue}}
                     </td>
                     <td md-cell ng-click="zone.y_up !== null ? editCell($event, zone, 'y_up') : null"
-                        ng-class="{'md-placeholder': !zone.y_up}">{{zone.y_up === null ? "Valore non necessario" : zone.y_up || lang.insertValue}}
+                        ng-class="{'md-placeholder': !zone.y_up}" ng-if="exists('y_up', columns)">{{zone.y_up === null ?
+                        "Valore non necessario" : zone.y_up || lang.insertValue}}
                     </td>
                     <td md-cell ng-click="zone.y_down !== null ? editCell($event, zone, 'y_down') : null"
-                        ng-class="{'md-placeholder': !zone.y_down}">{{zone.y_down === null ? "Valore non necessario" : zone.y_down|| lang.insertValue}}
+                        ng-class="{'md-placeholder': !zone.y_down}" ng-if="exists('y_down', columns)">{{zone.y_down ===
+                        null ? "Valore non necessario" : zone.y_down|| lang.insertValue}}
                     </td>
-                    <td ng-show="isOutdoor" md-cell ng-click="zone.radius !== null ? editCell($event, zone, 'radius') : null"
-                        ng-class="{'md-placeholder': !zone.radius}">{{zone.radius === null ? "Valore non necessario" : zone.radius || lang.insertRadius}}
+                    <td ng-show="isOutdoor" md-cell
+                        ng-click="zone.radius !== null ? editCell($event, zone, 'radius') : null"
+                        ng-class="{'md-placeholder': !zone.radius}" ng-if="exists('radius', columns)">{{zone.radius ===
+                        null ? "Valore non necessario" : zone.radius || lang.insertRadius}}
                     </td>
-                    <td ng-show="isOutdoor" md-cell ng-click="zone.gps_north !== null ? editCell($event, zone, 'gps_north') : null"
-                        ng-class="{'md-placeholder': !zone.gps_north}">{{zone.gps_north === null ? "Valore non necessario" : zone.gps_north || lang.insertValue}}
+                    <td ng-show="isOutdoor" md-cell
+                        ng-click="zone.gps_north !== null ? editCell($event, zone, 'gps_north') : null"
+                        ng-class="{'md-placeholder': !zone.gps_north}" ng-if="exists('gps_north', columns)">
+                        {{zone.gps_north === null ? "Valore non necessario" : zone.gps_north || lang.insertValue}}
                     </td>
-                    <td ng-show="isOutdoor" md-cell ng-click="zone.gps_east !== null ? editCell($event, zone, 'gps_east') : null"
-                        ng-class="{'md-placeholder': !zone.gps_east}">{{zone.gps_east === null ? "Valore non necessario" :  zone.gps_east|| lang.insertValue}}
+                    <td ng-show="isOutdoor" md-cell
+                        ng-click="zone.gps_east !== null ? editCell($event, zone, 'gps_east') : null"
+                        ng-class="{'md-placeholder': !zone.gps_east}" ng-if="exists('gps_east', columns)">
+                        {{zone.gps_east === null ? "Valore non necessario" : zone.gps_east|| lang.insertValue}}
                     </td>
-                    <td ng-if="isAdmin" md-cell><input ng-change="changeColor(zone.id, zone.color)" type="color" value="zone.color" ng-model="zone.color"
-                                                                          colorpick-eyedropper-active="true">
+                    <td md-cell ng-if="isAdmin && exists('color', columns)"><input
+                            ng-change="changeColor(zone.id, zone.color)" ng-model="zone.color" type="color"
+                            value="zone.color"
+                            colorpick-eyedropper-active="true">
                     </td>
-                    <td md-cell ng-click="editCell($event, zone, 'priority')" ng-class="{'md-placeholder': !zone.priority}">
+                    <td md-cell ng-class="{'md-placeholder': !zone.priority}"
+                        ng-click="editCell($event, zone, 'priority')" ng-if="exists('priority', columns)">
                         {{zone.priority || lang.insertName}}
                     </td>
-                    <td md-cell ng-click="editCell($event, zone, 'header_order')" ng-class="{'md-placeholder': !zone.header_order}">
+                    <td md-cell ng-class="{'md-placeholder': !zone.header_order}"
+                        ng-click="editCell($event, zone, 'header_order')" ng-if="exists('header_order', columns)">
                         {{zone.header_order || lang.insertName}}
                     </td>
-                    <td md-cell ng-click="editCell($event, zone, 'header_left_side')" ng-class="{'md-placeholder': !zone.header_left_side}">
+                    <td md-cell ng-class="{'md-placeholder': !zone.header_left_side}"
+                        ng-click="editCell($event, zone, 'header_left_side')"
+                        ng-if="exists('header_left_side', columns)">
                         {{zone.header_left_side || lang.insertName}}
                     </td>
                     <td md-cell ng-show="isAdmin" ng-click="deleteRow(zone)"><img src="img/icons/delete_trash_24.png" alt="{{lang.deleteTag}}"

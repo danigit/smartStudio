@@ -38,15 +38,25 @@
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
 
+                <md-select class="width-200-px float-right background-darkcyan color-white text-center"
+                           md-selected-text="getName()" multiple ng-model="columns"
+                           placeholder="Select columns">
+                    <md-option ng-repeat="item in items" ng-selected="{{true}}" ng-value="item">
+                        {{item}}
+                    </md-option>
+                </md-select>
+
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
-                    <th md-column md-order-by="latitude"><span
+                    <th md-column md-order-by="name" ng-if="exists('name', columns)"><span class="color-darkcyan">{{lang.name | uppercase}}</span>
+                    </th>
+                    <th md-column md-order-by="latitude" ng-if="exists('latitude', columns)"><span
                             class="color-darkcyan">{{lang.latitude | uppercase}}</span></th>
-                    <th md-column md-order-by="longitude"><span
+                    <th md-column md-order-by="longitude" ng-if="exists('longitude', columns)"><span
                             class="color-darkcyan">{{lang.longitude | uppercase}}</span></th>
-                    <th md-column md-order-by="radius"><span class="color-darkcyan">{{lang.radius | uppercase}} °</span>
-                    <th md-column md-order-by="radius"><span class="color-darkcyan">{{lang.radius | uppercase}} m</span>
+                    <th md-column md-order-by="radius" ng-if="exists('radius', columns)"><span class="color-darkcyan">{{lang.radius | uppercase}} °</span>
+                    <th md-column md-order-by="radius" ng-if="exists('meter_radius', columns)"><span
+                            class="color-darkcyan">{{lang.radius | uppercase}} m</span>
                     </th>
                     <th ng-if="isAdmin" md-column></th>
                 </tr>
@@ -56,21 +66,25 @@
                 <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
                     ng-repeat="location in locationsTable | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell class="no-wrap" ng-click="editCell($event, location, 'name')"
-                        ng-class="{'md-placeholder': !location.name}">
+                        ng-class="{'md-placeholder': !location.name}" ng-if="exists('name', columns)">
                         {{location.name || lang.insertName}}
                     </td>
                     <td md-cell class="no-wrap" ng-click="editCell($event, location, 'latitude')"
-                        ng-class="{'md-placeholder': !location.latitude}">{{location.latitude || lang.insertLatitude}}
+                        ng-class="{'md-placeholder': !location.latitude}" ng-if="exists('latitude', columns)">
+                        {{location.latitude || lang.insertLatitude}}
                     </td>
                     <td md-cell class="no-wrap" ng-click="editCell($event, location, 'longitude')"
-                        ng-class="{'md-placeholder': !location.longitude}">{{location.longitude || lang.longitude}}
+                        ng-class="{'md-placeholder': !location.longitude}" ng-if="exists('longitude', columns)">
+                        {{location.longitude || lang.longitude}}
                     </td>
                     <td md-cell class="no-wrap" ng-click="editCell($event, location, 'radius')"
-                        ng-class="{'md-placeholder': !location.radius.toString()}">{{location.radius ||
+                        ng-class="{'md-placeholder': !location.radius.toString()}" ng-if="exists('radius', columns)">
+                        {{location.radius ||
                         lang.insertRadius}}
                     </td>
                     <td md-cell class="no-wrap" ng-click="editCell($event, location, 'meter_radius')"
-                        ng-class="{'md-placeholder': !location.meter_radius.toString()}">{{location.meter_radius ||
+                        ng-class="{'md-placeholder': !location.meter_radius.toString()}"
+                        ng-if="exists('meter_radius', columns)">{{location.meter_radius ||
                         lang.insertRadius}}
                     </td>
                     <td md-cell class="no-wrap" ng-if="isAdmin" ng-click="deleteRow(location)"><img

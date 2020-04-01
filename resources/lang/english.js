@@ -482,5 +482,6 @@ let lang = {
     elementInserted               : '',
     elementNotInserted            : '',
     userDeleted                   : '',
-    userNotDeleted                : ''
+    userNotDeleted                : '',
+    columns                       : ''
 };

@@ -113,6 +113,9 @@
                         page        : 1
                     };
 
+                    $scope.items   = ['name', 'latitude', 'longitude', 'radius', 'meter_radius'];
+                    $scope.columns = [];
+
                     /**
                      * Function that recover the locations
                      */
@@ -204,6 +207,39 @@
                     //adding a location
                     $scope.addNewRow = () => {
                         $mdDialog.show(addLocationDialog);
+                    };
+
+                    /**
+                     * Function that show hide the columns of the table
+                     * @param item
+                     * @param list
+                     */
+                    $scope.toggle = function (item, list) {
+                        console.log(list);
+                        let idx = list.indexOf(item);
+                        if (idx > -1) {
+                            list.splice(idx, 1);
+                        } else {
+                            list.push(item);
+                        }
+                    };
+
+                    /**
+                     * Function that sets the label of the select column field
+                     * @returns {string}
+                     */
+                    $scope.getName = () => {
+                        return lang.columns
+                    };
+
+                    /**
+                     * Function that control if a column must be displayed
+                     * @param item
+                     * @param list
+                     * @returns {boolean}
+                     */
+                    $scope.exists = function (item, list) {
+                        return list.indexOf(item) > -1;
                     };
 
                     $scope.hide = () => {
@@ -687,6 +723,8 @@
                     $scope.userRole      = '';
                     $scope.isUserManager = userManager;
                     $scope.showColumn    = true;
+                    $scope.items         = ['username', 'name', 'role', 'phone', 'url_bot', 'bot_id', 'email_alert', 'webservice_url'];
+                    $scope.columns       = [];
                     $scope.query         = {
                         limitOptions: [500, 15, 10, 5],
                         limit       : dataService.switch.showTableSorting ? 500 : 5,
@@ -930,6 +968,39 @@
                     //adding a location
                     $scope.addNewRow = () => {
                         $mdDialog.show(addSuperUserDialog);
+                    };
+
+                    /**
+                     * Function that show hide the columns of the table
+                     * @param item
+                     * @param list
+                     */
+                    $scope.toggle = function (item, list) {
+                        console.log(list);
+                        let idx = list.indexOf(item);
+                        if (idx > -1) {
+                            list.splice(idx, 1);
+                        } else {
+                            list.push(item);
+                        }
+                    };
+
+                    /**
+                     * Function that sets the label of the select column field
+                     * @returns {string}
+                     */
+                    $scope.getName = () => {
+                        return lang.columns
+                    };
+
+                    /**
+                     * Function that control if a column must be displayed
+                     * @param item
+                     * @param list
+                     * @returns {boolean}
+                     */
+                    $scope.exists = function (item, list) {
+                        return list.indexOf(item) > -1;
                     };
 
                     $scope.hide = () => {
@@ -1431,6 +1502,8 @@
                     $scope.selectedType  = null;
                     $scope.tagTypes      = [];
                     $scope.tagsCallMe    = {};
+                    $scope.items         = ['name', 'type', 'battery', 'macs', 'zones', 'parameters', 'callme'];
+                    $scope.columns       = [];
                     let call_me_button   = false;
 
                     console.log(dataService.switch.showTableSorting);
@@ -2176,6 +2249,39 @@
                         }
                     };
 
+                    /**
+                     * Function that show hide the columns of the table
+                     * @param item
+                     * @param list
+                     */
+                    $scope.toggle = function (item, list) {
+                        console.log(list);
+                        let idx = list.indexOf(item);
+                        if (idx > -1) {
+                            list.splice(idx, 1);
+                        } else {
+                            list.push(item);
+                        }
+                    };
+
+                    /**
+                     * Function that sets the label of the select column field
+                     * @returns {string}
+                     */
+                    $scope.getName = () => {
+                        return lang.columns
+                    };
+
+                    /**
+                     * Function that control if a column must be displayed
+                     * @param item
+                     * @param list
+                     * @returns {boolean}
+                     */
+                    $scope.exists = function (item, list) {
+                        return list.indexOf(item) > -1;
+                    };
+
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
@@ -2731,9 +2837,10 @@
                     $scope.isOutdoor      = false;
                     $scope.tableEmptyZone = false;
                     $scope.isUserManager  = dataService.isUserManager;
-
-                    $scope.zonesTable = [];
-                    $scope.query = {
+                    $scope.items          = ['name', 'x_left', 'x_right', 'y_up', 'y_down', 'color', 'priority', 'header_order', 'header_left_side'];
+                    $scope.columns        = [];
+                    $scope.zonesTable     = [];
+                    $scope.query          = {
                         limitOptions: [500, 15, 10, 5],
                         order       : 'name',
                         limit       : dataService.switch.showTableSorting ? 500 : 5,
@@ -2840,6 +2947,39 @@
                     //inserting tag
                     $scope.addNewRow = () => {
                         $mdDialog.show(addRowDialog);
+                    };
+
+                    /**
+                     * Function that show hide the columns of the table
+                     * @param item
+                     * @param list
+                     */
+                    $scope.toggle = function (item, list) {
+                        console.log(list);
+                        let idx = list.indexOf(item);
+                        if (idx > -1) {
+                            list.splice(idx, 1);
+                        } else {
+                            list.push(item);
+                        }
+                    };
+
+                    /**
+                     * Function that sets the label of the select column field
+                     * @returns {string}
+                     */
+                    $scope.getName = () => {
+                        return lang.columns
+                    };
+
+                    /**
+                     * Function that control if a column must be displayed
+                     * @param item
+                     * @param list
+                     * @returns {boolean}
+                     */
+                    $scope.exists = function (item, list) {
+                        return list.indexOf(item) > -1;
                     };
 
                     $scope.hide = () => {
@@ -3304,6 +3444,8 @@
                     $scope.permitteds    = [];
                     $scope.anchorTypes   = [];
                     $scope.selectedType  = null;
+                    $scope.items         = ['name', 'x_pos', 'y_pos', 'z_pos', 'floor', 'radius', 'ip', 'battery', 'state', 'rssi', 'proximity', 'type', 'mac', 'permiteds'];
+                    $scope.columns       = [];
 
                     $scope.query = {
                         limitOptions: [500, 15, 10, 5],
@@ -3479,6 +3621,39 @@
                         }, function () {
                             console.log('CANCELLATO!!!!');
                         });
+                    };
+
+                    /**
+                     * Function that show hide the columns of the table
+                     * @param item
+                     * @param list
+                     */
+                    $scope.toggle = function (item, list) {
+                        console.log(list);
+                        let idx = list.indexOf(item);
+                        if (idx > -1) {
+                            list.splice(idx, 1);
+                        } else {
+                            list.push(item);
+                        }
+                    };
+
+                    /**
+                     * Function that sets the label of the select column field
+                     * @returns {string}
+                     */
+                    $scope.getName = () => {
+                        return lang.columns
+                    };
+
+                    /**
+                     * Function that control if a column must be displayed
+                     * @param item
+                     * @param list
+                     * @returns {boolean}
+                     */
+                    $scope.exists = function (item, list) {
+                        return list.indexOf(item) > -1;
                     };
 
                     $scope.hideAnchors = () => {

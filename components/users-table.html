@@ -37,20 +37,36 @@
             <table md-table md-row-select="options.rowSelection" ng-model="selected"
                    md-progress="promise">
 
+                <md-select class="width-200-px float-right background-darkcyan color-white text-center"
+                           md-selected-text="getName()" multiple ng-model="columns"
+                           placeholder="Select columns">
+                    <md-option ng-repeat="item in items" ng-selected="{{true}}" ng-value="item">
+                        {{item}}
+                    </md-option>
+                </md-select>
+
                 <thead md-head md-order="query.order">
                 <tr md-row>
-                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.username | uppercase}}</span>
+                    <th md-column md-order-by="name" ng-if="exists('username', columns)"><span class="color-darkcyan">{{lang.username | uppercase}}</span>
                     </th>
-                    <th md-column md-order-by="name"><span class="color-darkcyan">{{lang.name | uppercase}}</span></th>
-                    <th md-column md-order-by="role" ng-show="isAdmin"><span class="color-darkcyan">{{lang.role | uppercase}}</span>
+                    <th md-column md-order-by="name" ng-if="exists('name', columns)"><span class="color-darkcyan">{{lang.name | uppercase}}</span>
                     </th>
-                    <th md-column md-order-by="telephone_number" ng-show="isAdmin"><span class="color-darkcyan">{{lang.phone | uppercase}}</span>
+                    <th md-column md-order-by="role" ng-if="exists('role', columns)" ng-show="isAdmin"><span
+                            class="color-darkcyan">{{lang.role | uppercase}}</span>
                     </th>
-                    <th md-column md-order-by="bot_url" ng-show="isAdmin"><span class="color-darkcyan">{{lang.urlBot | uppercase}}</span></th>
-                    <th md-column md-order-by="bot_chat_id" ng-show="isAdmin"><span class="color-darkcyan">{{lang.botId | uppercase}}</span></th>
-                    <th md-column md-order-by="email_alert" ng-show="isAdmin"><span class="color-darkcyan">{{lang.emailAlert | uppercase}}</span></th>
-                    <th md-column md-order-by="web_service_url" ng-show="isAdmin"><span class="color-darkcyan">{{lang.webserviceUrl | uppercase}}</span></th>
-                    <th md-column md-order-by="manage_locations" ng-show="isAdmin || isUserManager"><span class="color-darkcyan">{{lang.manageLocation | uppercase}}</span></th>
+                    <th md-column md-order-by="telephone_number" ng-if="exists('phone', columns)" ng-show="isAdmin">
+                        <span class="color-darkcyan">{{lang.phone | uppercase}}</span>
+                    </th>
+                    <th md-column md-order-by="bot_url" ng-if="exists('url_bot', columns)" ng-show="isAdmin"><span
+                            class="color-darkcyan">{{lang.urlBot | uppercase}}</span></th>
+                    <th md-column md-order-by="bot_chat_id" ng-if="exists('bot_id', columns)" ng-show="isAdmin"><span
+                            class="color-darkcyan">{{lang.botId | uppercase}}</span></th>
+                    <th md-column md-order-by="email_alert" ng-if="exists('email_alert', columns)" ng-show="isAdmin">
+                        <span class="color-darkcyan">{{lang.emailAlert | uppercase}}</span></th>
+                    <th md-column md-order-by="web_service_url" ng-if="exists('webservice_url', columns)"
+                        ng-show="isAdmin"><span class="color-darkcyan">{{lang.webserviceUrl | uppercase}}</span></th>
+                    <th md-column md-order-by="manage_locations" ng-show="isAdmin || isUserManager"><span
+                            class="color-darkcyan">{{lang.manageLocation | uppercase}}</span></th>
                     <th md-column ng-show="isAdmin || isUserManager"></th>
                 </tr>
                 </thead>
@@ -59,36 +75,51 @@
                 <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
                     ng-repeat="user in usersTable | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell class="no-wrap" ng-click="editCell($event, user, 'username')"
-                        ng-class="{'md-placeholder': !user.username}">
+                        ng-class="{'md-placeholder': !user.username}" ng-if="exists('username', columns)">
                         {{user.username || 'Inserire username'}}
                     </td>
                     <td md-cell class="no-wrap" ng-click="editCell($event, user, 'name')"
-                        ng-class="{'md-placeholder': !user.name}">{{user.name || 'Inserire nome'}}
+                        ng-class="{'md-placeholder': !user.name}" ng-if="exists('name', columns)">{{user.name ||
+                        'Inserire nome'}}
                     </td>
-                    <td md-cell ng-show="isAdmin" class="no-wrap">
+                    <td class="no-wrap" md-cell ng-if="exists('role', columns)" ng-show="isAdmin">
                         <md-input-container md-no-float class="md-block">
-                            <md-select ng-model="userRole" ng-change="updateUserRole(user, userRole)" aria-label="Seleziona ruolo">
-                                <md-option ng-selected="{{user.role === '1'}}" ng-value=1>{{lang.adminUser | uppercase}}</md-option>
-                                <md-option ng-selected="{{user.role === '2'}}" ng-value=2>{{lang.intermediateUser | uppercase}}</md-option>
-                                <md-option ng-selected="{{user.role === '0'}}" ng-value=0>{{lang.genericUser | uppercase}}</md-option>
-                                <md-option ng-selected="{{user.role === '3'}}" ng-value=3>{{lang.trackerUser | uppercase}}</md-option>
+                            <md-select ng-model="userRole" ng-change="updateUserRole(user, userRole)"
+                                       aria-label="Seleziona ruolo">
+                                <md-option ng-selected="{{user.role === '1'}}" ng-value=1>{{lang.adminUser |
+                                    uppercase}}
+                                </md-option>
+                                <md-option ng-selected="{{user.role === '2'}}" ng-value=2>{{lang.intermediateUser |
+                                    uppercase}}
+                                </md-option>
+                                <md-option ng-selected="{{user.role === '0'}}" ng-value=0>{{lang.genericUser |
+                                    uppercase}}
+                                </md-option>
+                                <md-option ng-selected="{{user.role === '3'}}" ng-value=3>{{lang.trackerUser |
+                                    uppercase}}
+                                </md-option>
                             </md-select>
                         </md-input-container>
                     </td>
                     <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'telephone_number')"
-                        ng-class="{'md-placeholder': !user.telephone_number}">{{user.telephone_number || 'Inserire telefono'}}
+                        ng-class="{'md-placeholder': !user.telephone_number}" ng-if="exists('phone', columns)">
+                        {{user.telephone_number || 'Inserire telefono'}}
                     </td>
                     <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'bot_url')"
-                        ng-class="{'md-placeholder': !user.bot_url}">{{user.bot_url || 'Inserire url bot'}}
+                        ng-class="{'md-placeholder': !user.bot_url}" ng-if="exists('url_bot', columns)">{{user.bot_url
+                        || 'Inserire url bot'}}
                     </td>
                     <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'bot_chat_id')"
-                        ng-class="{'md-placeholder': !user.bot_chat_id}">{{user.bot_chat_id || 'Inserire bot chat id'}}
+                        ng-class="{'md-placeholder': !user.bot_chat_id}" ng-if="exists('bot_id', columns)">
+                        {{user.bot_chat_id || 'Inserire bot chat id'}}
                     </td>
                     <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'email_alert')"
-                        ng-class="{'md-placeholder': !user.email_alert}">{{user.email_alert || 'Inserire email di alerta'}}
+                        ng-class="{'md-placeholder': !user.email_alert}" ng-if="exists('email_alert', columns)">
+                        {{user.email_alert || 'Inserire email di alerta'}}
                     </td>
                     <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'web_service_url')"
-                        ng-class="{'md-placeholder': !user.web_service_url}">{{user.web_service_url || 'Inserire url del webservice'}}
+                        ng-class="{'md-placeholder': !user.web_service_url}" ng-if="exists('webservice_url', columns)">
+                        {{user.web_service_url || 'Inserire url del webservice'}}
                     </td>
                     <td md-cell>
                         <md-button ng-click="manageLocations(user)" class="md-raised background-darkcyan color-white">
