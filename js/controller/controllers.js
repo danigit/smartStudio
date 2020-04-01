@@ -3301,6 +3301,7 @@
                         tags              : dataService.allTags
                     };
                     $scope.anchors       = [];
+                    $scope.permitteds    = [];
                     $scope.anchorTypes   = [];
                     $scope.selectedType  = null;
 
@@ -3317,24 +3318,28 @@
                     let updateAnchorsTable = () => {
                         $scope.anchors = [];
 
+                        // getting all the anchors
                         newSocketService.getData('get_anchors_by_floor_and_location', {
                             floor   : (floor.name !== undefined) ? floor.name : '',
                             location: dataService.location.name
                         }, (response) => {
 
+                            // setting the permiteds in an array
                             response.result.forEach(anchor => {
-                                let anchorPermitteds = anchor.permitted_asset.split(',');
+                                let anchorPermitteds = anchor.permitted_asset !== null ? anchor.permitted_asset.split(',') : [];
                                 $scope.anchors.push({
                                     anchor    : anchor,
                                     permitteds: anchorPermitteds[0] === "" ? [] : anchorPermitteds
                                 });
                             });
 
+                            console.log($scope.anchors);
                             $scope.$apply();
                         });
 
                         newSocketService.getData('get_all_tags_macs', {}, (response) => {
 
+                            // getting for each tag all his permitteds
                             dataService.allTags.forEach(tag => {
                                 response.result.forEach(mac => {
                                     if (mac.tag_name === tag.name) {
@@ -3352,7 +3357,7 @@
                      * @returns {boolean}
                      */
                     let isPermittedChanged = (anchor, permitteds) => {
-                        let selectedAnchor = $scope.anchors.filter(a => a.anchor.id === anchor)[0];
+                        let selectedAnchor = $scope.anchors.find(a => a.anchor.id === anchor);
 
                         if (selectedAnchor.anchor.permitted_asset.length === 0)
                             return true;
@@ -3369,6 +3374,7 @@
                      * @param permitteds
                      */
                     $scope.updatePermitteds = (anchor, permitteds) => {
+
                         if (isPermittedChanged(anchor, permitteds)) {
                             let permittedsString = '';
                             permitteds.forEach(permitted => {

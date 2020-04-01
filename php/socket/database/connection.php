@@ -1380,7 +1380,7 @@ class Connection
             if ($image_name === '' && $is_indoor === true)
                 $image_name = 'location-marker.png';
             else if ($image_name === '')
-                $image_name = 'mountain.png';
+                $image_name = 'outdoor-location.png';
 
             $this->query = "INSERT INTO location (NAME, DESCRIPTION, LATITUDE, LONGITUDE, ICON, RADIUS, METER_RADIUS, IS_INSIDE) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             $statement = $this->execute_inserting($this->query, 'sssssddi', $name, $description, $latitude, $longitude, $image_name, $radius, $meter_radius, (int)$is_indoor);

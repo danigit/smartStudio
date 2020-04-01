@@ -104,8 +104,9 @@
                         lang.insertRssi}}
                     </td>
 
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor.anchorInfo, 'proximity')"
-                        ng-class="{'md-placeholder': !anchor.anchor.proximity.toString()}">{{anchor.anchor.proximity.toString() ||
+                    <td class="no-wrap" md-cell ng-click="editCell($event, anchor.anchor, 'proximity')"
+                        ng-class="{'md-placeholder': !anchor.anchor.proximity.toString()}">
+                        {{anchor.anchor.proximity.toString() ||
                         lang.insertProximity}}
                     </td>
 
@@ -124,10 +125,13 @@
                     </td>
 
                     <td md-cell class="no-wrap" ng-class="{'md-placeholder': !anchor.permitted_asset}">
-                        <md-select ng-model="anchor.permitteds" placeholder="{{lang.permitted}}" ng-disabled="!isAdmin" ng-change="updatePermitteds(anchor.anchor.id, anchor.permitteds)"
+                        <md-select class="width-200-px margin-right-10-px"
+                                   ng-change="updatePermitteds(anchor.anchor.id, anchor.permitteds)"
+                                   ng-disabled="!isAdmin" ng-model="anchor.permitteds" placeholder="{{lang.permitted}}"
                                    multiple>
                             <md-optgroup label="{{tag.name}}" ng-repeat="tag in anchorTable.tags">
-                                <md-option ng-value="permitted.mac" ng-repeat="permitted in anchorTable.permittedAssets | filter: {tag: tag.name}">
+                                <md-option ng-repeat="permitted in anchorTable.permittedAssets | filter: tag.name: true"
+                                           ng-value="permitted.mac">
                                     {{permitted.mac}}
                                 </md-option>
                             </md-optgroup>

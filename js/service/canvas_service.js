@@ -211,9 +211,11 @@
 
             tags.forEach(function (tag) {
                 if (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                    || tag.battery_status || tag.man_in_quote
+                    || tag.man_in_quote
                     || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone) {
                     tagState.withAlarm = true;
+                } else if (tag.battery_status && !dataService.hasTagReaperedAfterOffline(tag)) {
+                    tagState.withAlarm = true
                 } else if (dataService.isTagOffline(tag)) {
                     tagState.offline = true;
                 } else if (!tag.radio_switched_off) {
