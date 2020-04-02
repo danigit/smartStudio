@@ -478,3 +478,14 @@ let lightenColor = function (color, percent) {
 
     return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + (B < 255 ? B < 1 ? 0 : B : 255) * 0x100 + (G < 255 ? G < 1 ? 0 : G : 255)).toString(16).slice(1);
 };
+
+let listState = [];
+
+// showing and hiding the content of the lists
+displayListCluster = (tag, index) => {
+    if (document.getElementById(tag + '_id').style.display === 'none') {
+        document.getElementById(tag + '_id').style.display = 'block';
+    } else {
+        document.getElementById(tag + '_id').style.display = 'none';
+    }
+};

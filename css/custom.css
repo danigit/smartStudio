@@ -69,23 +69,27 @@ DIMENSIONS
     width: 80%;
 }
 
-.width-30px{
+.width-30px {
     width: 30px;
 }
 
-.width-40px{
+.width-40px {
     width: 40px;
 }
 
-.width-60px{
-    width: 60px!important;
+.width-55px {
+    width: 55px;
 }
 
-.width-120-px{
+.width-60px {
+    width: 60px !important;
+}
+
+.width-120-px {
     width: 120px;
 }
 
-.width-200-px{
+.width-200-px {
     width: 200px!important;
 }
 
@@ -160,6 +164,10 @@ DISPLAY
 
 .right-0 {
     right: 0;
+}
+
+.right-20-px {
+    right: 20px;
 }
 
 .left-0 {
@@ -391,23 +399,27 @@ MARGINS
     margin-right: 50px;
 }
 
-.margin-right-5-px{
+.margin-right-5-px {
     margin-right: 5px;
 }
 
-.margin-right-10-px{
+.margin-right-10-px {
     margin-right: 10px;
 }
 
-.margin-left-6{
+.margin-right-25-px {
+    margin-right: 25px;
+}
+
+.margin-left-6 {
     margin-left: 6%;
 }
 
-.margin-left-8{
+.margin-left-8 {
     margin-left: 8%;
 }
 
-.margin-left-10-px{
+.margin-left-10-px {
     margin-left: 10px;
 }
 
@@ -446,22 +458,19 @@ MARGINS
 }
 
 
-
-
-
-
-
-
-
 /******************************************************************
 PADDING
 *******************************************************************/
 
-.padding-top-5{
+.padding-top-5 {
     padding-top: 5%;
 }
 
-.padding-top-bottom-6px{
+.padding-top-15-px {
+    padding-top: 15px;
+}
+
+.padding-top-bottom-6px {
     padding: 6px 0;
 }
 
@@ -580,7 +589,7 @@ BORDER
     border-radius: 0!important;
 }
 
-border-radius-20-px{
+.border-radius-20-px {
     border-radius: 20px;
 }
 
@@ -596,6 +605,9 @@ border-radius-20-px{
     border-top: 3px solid #FFFFFF;
 }
 
+.border-1-top-red {
+    border-top: 1px solid #E12315;;
+}
 
 /******************************************************************
 COLOR
@@ -654,11 +666,6 @@ COLOR
 }
 
 
-
-
-
-
-
 /******************************************************************
 OTHER
 *******************************************************************/
@@ -666,15 +673,19 @@ OTHER
     overflow-x: unset !important;
 }
 
+.overflow-auto {
+    overflow: auto !important;
+}
+
 .cursor-pointer {
     cursor: pointer;
 }
 
-.outline-none{
+.outline-none {
     outline: none;
 }
 
-.zindex-0{
+.zindex-0 {
     z-index: 0!important;
 }
 

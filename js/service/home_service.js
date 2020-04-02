@@ -22,6 +22,35 @@
             //getting the current marker anchors
             let locationAnchors = home_service.getLocationAnchors(marker, userAnchors);
 
+            let alarmsString = '<div class="margin-top-10-px padding-10-px border-1-top-red">';
+
+            // getting tags alarms
+            locationTags.forEach(t => {
+                let alarms = dataService.loadTagAlarmsForInfoWindow(t, '');
+                alarms.forEach(a => {
+                    alarmsString += '<div class="display-flex margin-bottom-10-px"><div>' +
+                        '<img src="' + a.image + '"class="width-55px margin-right-10-px" alt="' + a.name + '"/>' +
+                        '</div>' +
+                        '<div>' +
+                        '   <h3 class="margin-none">' + a.tag + '</h3>' +
+                        '   <h4 class="margin-none">' + a.name + '</h4>' +
+                        '</div></div>'
+                });
+            });
+
+            locationAnchors.forEach(a => {
+                if (a.battery_status) {
+                    alarmsString += '<div class="display-flex margin-bottom-10-px"><div>' +
+                        '<img src="img/icons/anchor_battery_empty_24.png"class="width-40px margin-right-25-px" alt="' + a.name + '"/>' +
+                        '</div>' +
+                        '<div>' +
+                        '   <h3 class="margin-none">' + a.name + '</h3>' +
+                        '   <h4 class="margin-none">' + lang.batteryEmpty + '</h4>' +
+                        '</div></div>'
+                }
+            });
+
+            alarmsString += '</div>';
             // creating the content of the window
             return new google.maps.InfoWindow({
                 content: '<div class="marker-info-container">' +
@@ -31,7 +60,7 @@
                     '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
                     '<div class="clear-float display-flex"><div class="width-50 margin-left-10-px"><img src="' + iconsPath + 'offline_tags_alert_32.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
                     '</div><div class="width-45 "><img src="' + iconsPath + 'offline_anchors_alert_32.png" class="margin-right-10-px"><span class="font-large vertical-align-super color-red"><b>' + locationAnchors.length + '</b></span></div></div>' +
-                    '</div>'
+                    alarmsString + '</div>'
             });
         };
 
@@ -45,6 +74,24 @@
             // getting the current marker tags
             let locationTags = home_service.getOutdoorLocationTags(marker, userTags);
 
+            let alarmsString = '<div class="margin-top-10-px padding-10-px border-1-top-red">';
+
+            // getting tags alarms
+            locationTags.forEach(t => {
+                let alarms = dataService.loadTagAlarmsForInfoWindow(t, '');
+                alarms.forEach(a => {
+                    alarmsString += '<div class="display-flex margin-bottom-10-px"><div>' +
+                        '<img src="' + a.image + '"class="width-55px margin-right-10-px" alt="' + a.name + '"/>' +
+                        '</div>' +
+                        '<div>' +
+                        '   <h3 class="margin-none">' + a.tag + '</h3>' +
+                        '   <h4 class="margin-none">' + a.name + '</h4>' +
+                        '</div></div>'
+                });
+            });
+
+            alarmsString += '</div>';
+
             // filling the info window
             return new google.maps.InfoWindow({
                 content: '<div class="marker-info-container">' +
@@ -53,8 +100,102 @@
                     '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + marker.position[0] + '</b></p></div>' +
                     '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + marker.position[1] + '</b></p></div>' +
                     '<div class="clear-float display-flex"><div class="margin-auto"><img src="' + iconsPath + 'offline_tags_alert_32.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b>' + locationTags.length + '</b></span>' +
-                    '</div></div' +
-                    '</div>'
+                    '</div></div>' +
+                    alarmsString + '</div>'
+            });
+        };
+
+        /**
+         * Function that create the info windoe for the cluster
+         * @param cluster
+         * @param markers
+         * @param allTags
+         * @param userTags
+         * @param userAnchors
+         */
+        home_service.fillInfoWindowCluster = (cluster, markers, allTags, userTags, userAnchors) => {
+
+            let locationTags    = [];
+            let locationAnchors = [];
+            let clusterString   = '<div class="margin-top-10-px"><md-list>';
+
+            cluster.markers_.forEach(m => {
+                markers.forEach((l, idx) => {
+                    listState.push(l.name);
+                    // getting the current marker tags
+                    if (l.is_inside) {
+                        locationTags    = home_service.getIndoorLocationTags(l, userTags);
+                        locationAnchors = home_service.getLocationAnchors(l, userAnchors);
+                    } else {
+                        //getting the current marker anchors
+                        locationTags = home_service.getOutdoorLocationTags(l, allTags);
+                    }
+
+                    if (m.getPosition().lat() === l.position[0] && m.getPosition().lng() === l.position[1]) {
+                        clusterString += '<div>' +
+                            '<div onclick="displayListCluster(listState[' + idx + '], ' + idx + ')" class="cursor-pointer outline-none padding-top-bottom-6px">' +
+                            '<p class="text-center text-bold color-darkcyan">' + l.name +
+                            '<span><img class="position-absolute right-20-px" src="img/icons/open-list-icon.ico"></span></p>' +
+                            '</div>' +
+                            '<md-list id="' + l.name + '_id" style="display: none">' +
+                            '<md-list-item class="">' +
+                            '<p class="float-left text-bold">' + lang.tags + ':</p>' +
+                            '<p class="float-right text-right">' + locationTags.length + '</p>' +
+                            '</md-list-item>' +
+                            '<md-list-item>' +
+                            '<p class="float-right text-bold">' + lang.latitude + '</p>' +
+                            '<p class="float-left text-right">' + l.position[0] + '</p>' +
+                            '</md-list-item>' +
+                            '<md-list-item>' +
+                            '<p class="float-left text-bold">' + lang.longitude + '</p>' +
+                            '<p class="float-right text-right">' + l.position[1] + '</p>' +
+                            '</md-list-item>';
+                        if (l.is_inside) {
+                            clusterString += '<md-list-item class="" ng-if="l.is_inside">' +
+                                '<p class="float-left text-bold">' + lang.anchors + ':</p>' +
+                                '<p class="float-right text-right">' + locationAnchors.length + '</p>' +
+                                '</md-list-item>'
+                        }
+                        clusterString += '</md-list></div>'
+                        // clusterString += '<md-list-item><div>' + l.name + '</div><md-button ' +
+                        //     'class="md-raised background-gray color-darkcyan margin-top-5-px">' + lang.openSite + '</md-button></md-list-item>'
+                    }
+                })
+            });
+
+            clusterString += '</md-list><div class="margin-top-20-px height-135px overflow-auto padding-top-15-px border-1-top-red">';
+
+            markers.forEach(l => {
+                let locationTags = [];
+
+                if (l.is_inside) {
+                    locationTags = home_service.getIndoorLocationTags(l, userTags);
+                } else {
+                    locationTags = home_service.getOutdoorLocationTags(l, allTags);
+                }
+
+                // getting tags alarms
+                locationTags.forEach(t => {
+                    let alarms = dataService.loadTagAlarmsForInfoWindow(t, '');
+                    alarms.forEach(a => {
+                        clusterString += '<div class="display-flex margin-bottom-10-px"><div>' +
+                            '<img src="' + a.image + '"class="width-55px margin-right-10-px" alt="' + a.name + '"/>' +
+                            '</div>' +
+                            '<div>' +
+                            '   <h3 class="margin-none">' + a.tag + '</h3>' +
+                            '   <h4 class="margin-none">' + a.name + '</h4>' +
+                            '</div></div>'
+                    });
+                });
+            });
+
+            clusterString += '</div></div>';
+
+            // filling the info window
+            return new google.maps.InfoWindow({
+                content: angular.element('<div class="marker-info-container">' +
+                    '<div class="width-100 text-center"><h2>' + lang.locations + '</h2></div>' +
+                    clusterString + '</div>')[0]
             });
         };
 

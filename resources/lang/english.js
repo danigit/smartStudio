@@ -483,5 +483,11 @@ let lang = {
     elementNotInserted            : '',
     userDeleted                   : '',
     userNotDeleted                : '',
-    columns                       : ''
+    columns                       : '',
+    locations                     : '',
+    openSite                      : '',
+    tags                          : '',
+    anchors                       : '',
+    latitude                      : '',
+    longitude                     : ''
 };

@@ -492,5 +492,11 @@ let lang = {
     elementNotInserted            : 'Elemento non inserito',
     userDeleted                   : 'Utente cancelato',
     userNotDeleted                : 'Utente non cancellato',
-    columns                       : 'Colonne'
+    columns                       : 'Colonne',
+    locations                     : 'Siti',
+    openSite                      : 'Apri sito',
+    tags                          : 'Tag',
+    anchors                       : 'Ancore',
+    latitude                      : 'Latitudine',
+    longitude                     : 'Longitudine'
 };

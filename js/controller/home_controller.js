@@ -14,10 +14,11 @@
     function homeController($rootScope, $scope, $state, $mdDialog, $interval, $timeout, NgMap, homeData, dataService, newSocketService, homeService, $mdToast) {
         let homeCtrl = this;
 
-        let markers              = homeData.markers;
-        let bounds               = new google.maps.LatLngBounds();
-        let alarmLocations       = [];
-        let imageIndex           = 0;
+        let markers           = homeData.markers;
+        let bounds            = new google.maps.LatLngBounds();
+        let alarmLocations    = [];
+        let imageIndex        = 0;
+        let infoWindowCluster = null;
 
         // I use this variable so that the zoom is done only at the firs circle, so that I can zoom out after automatic zoom
         let zoomSetter           = false;
@@ -147,32 +148,33 @@
                         // drawing the cluster of markers if any
                         homeCtrl.markerClusterer = new MarkerClusterer(map, homeCtrl.dynamicMarkers, MARKER_CLUSTER_OK_IMAGE);
 
-                        //TODO show info window on cluster mouseover
-                        // google.maps.event.addListener(homeCtrl.markerClusterer, 'mouseover', (mapCluster) => {
-                        //     let infoWindow = new google.maps.InfoWindow({
-                        //         content: '<div class="marker-info-container">' +
-                        //             '<div class="infinite-rotation"><img src="' + markersIconPath + '" class="tag-info-icon" alt="Smart Studio" title="Smart Studio"></div>' +
-                        //             '<p class="text-center font-large text-bold color-darkcyan"></p><div><p class="float-left margin-right-10-px">' +
-                        //             'Latitude: </p><p class="float-right"><b></b></p></div>' +
-                        //             '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b></b></p></div>' +
-                        //             '<div class="clear-float display-flex"><div class="width-50 margin-left-10-px"><img src="' + iconsPath + 'offline_tags_alert_32.png" class="margin-right-5-px"><span class="font-large vertical-align-super color-red"><b></b></span>' +
-                        //             '</div><div class="width-45 "><img src="' + iconsPath + 'offline_anchors_alert_32.png" class="margin-right-10-px"><span class="font-large vertical-align-super color-red"><b></b></span></div></div>' +
-                        //             '</div>'
-                        //     });
-                        //
-                        //     infoWindow.setPosition(mapCluster.center_)
-                        //     infoWindow.open(map);
-                        // })
+                        // setting the cloud info window
+                        google.maps.event.addListener(homeCtrl.markerClusterer, 'mouseover', (mapCluster) => {
+                            if (infoWindowCluster === null) {
+                                infoWindowCluster = homeService.fillInfoWindowCluster(mapCluster, markers, dataService.allTags, onTags, response.result);
+
+                                infoWindowCluster.setPosition(mapCluster.center_);
+                                infoWindowCluster.open(map);
+                                google.maps.event.addListener(infoWindowCluster, 'closeclick', function () {
+                                    infoWindowCluster = null;
+                                });
+                                google.maps.event.addDomListener(window, 'load', homeService.fillInfoWindowCluster);
+                            }
+                        });
 
                         // changing the cloud icon if there are alarms
                         google.maps.event.addListener(homeCtrl.markerClusterer, 'clusteringend', (mapClusters) => {
+                            if (infoWindowCluster !== null) {
+                                infoWindowCluster.close(map);
+                                infoWindowCluster = null;
+                            }
                             // getting the clusters
                             mapClusters.getClusters().forEach(cluster => {
                                 let clusterLocations = [];
                                 // getting the markers in the cluster
                                 cluster.getMarkers().forEach(l => {
                                     markers.forEach(fl => {
-                                        if (l.getPosition().lat() === fl.position[0] && l.getPosition().lng() === fl.position[1]){
+                                        if (l.getPosition().lat() === fl.position[0] && l.getPosition().lng() === fl.position[1]) {
                                             clusterLocations.push(fl);
                                         }
                                     });
@@ -191,6 +193,7 @@
                                 }
                             })
                         });
+
 
                         // if there are no markers I set the map to italy with default zoom
                         if (homeCtrl.dynamicMarkers.length === 0 && !zoomSetter) {
