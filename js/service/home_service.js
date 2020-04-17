@@ -156,9 +156,13 @@
                                 '<p class="float-right text-right">' + locationAnchors.length + '</p>' +
                                 '</md-list-item>'
                         }
+
+                        // clusterString += '<md-button ' +
+                        //         'onclick="loadLocation(locationTagsCluster[' + idx + '])" ' +
+                        //         'class="md-raised background-gray color-darkcyan margin-top-5-px">' + lang.openSite +
+                        // '</md-button>';
+
                         clusterString += '</md-list></div>'
-                        // clusterString += '<md-list-item><div>' + l.name + '</div><md-button ' +
-                        //     'class="md-raised background-gray color-darkcyan margin-top-5-px">' + lang.openSite + '</md-button></md-list-item>'
                     }
                 })
             });
@@ -182,7 +186,7 @@
                             '<img src="' + a.image + '"class="width-55px margin-right-10-px" alt="' + a.name + '"/>' +
                             '</div>' +
                             '<div>' +
-                            '   <h3 class="margin-none">' + a.tag + '</h3>' +
+                            '   <h3 class="margin-none">' + a.tag + ' - ' + l.name + '</h3>' +
                             '   <h4 class="margin-none">' + a.name + '</h4>' +
                             '</div></div>'
                     });

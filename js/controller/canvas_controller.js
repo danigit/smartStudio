@@ -272,7 +272,7 @@
 
                     newSocketService.getData('get_all_locations', {}, (locations) => {
 
-                        canvasCtrl.showAlarmsIcon = (dataService.showAlarmForOutOfLocationTags(response.result.filter(t => dataService.isOutdoor(t) && !t.radio_switched_off), locations.result)
+                        canvasCtrl.showAlarmsIcon = response.result.some(t => dataService.haveToShowBatteryEmpty(t)) && (dataService.showAlarmForOutOfLocationTags(response.result.filter(t => dataService.isOutdoor(t) && !t.radio_switched_off), locations.result)
                             || dataService.checkIfTagsHaveAlarms(response.result.filter(t => !t.radio_switched_off)));
 
                         //showing the offline tags alarm icon

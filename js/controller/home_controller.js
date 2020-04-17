@@ -47,11 +47,12 @@
 
             // enabling the call of constantUpdateNotifications from a different controller ( service )
             $rootScope.$on('constantUpdateNotifications', function (event, map) {
+                if (map )
                 constantUpdateNotifications(map);
             });
 
             // recovering the map object
-            NgMap.getMap('main-map').then((map) => {
+            NgMap.getMap('main-map', {timeout: 20000}).then((map) => {
 
                 let onTags = [];
 
@@ -79,7 +80,15 @@
                             let markerObject = new google.maps.Marker({
                                 position : new google.maps.LatLng(marker.position[0], marker.position[1]),
                                 animation: google.maps.Animation.DROP,
-                                icon     : markersIconPath + ((marker.icon) ? marker.icon : (marker.is_inside) ? INDOOR_LOCATION_ICON : OUTDDOR_LOCATION_ICON)
+                                icon     : {
+                                    url: markersIconPath + ((marker.icon) ? marker.icon : (marker.is_inside) ? INDOOR_LOCATION_ICON : OUTDDOR_LOCATION_ICON),
+                                },
+                                label: {
+                                    text: marker.name.toUpperCase(),
+                                    color: "#263238",
+                                    fontWeight: "bold",
+                                    fontSize: "18px",
+                                },
                             });
 
                             // handling only the indoor locations
@@ -382,7 +391,7 @@
 
                             // controlling if there are tags out off all the locations
                             // showing the home alarm icons if there are tags in alarm
-                            homeCtrl.showAlarmsIcon = (dataService.showAlarmForOutOfLocationTags(onTags.filter(t => dataService.isOutdoor(t))
+                            homeCtrl.showAlarmsIcon =  response.result.some(t => dataService.haveToShowBatteryEmpty(t)) && (dataService.showAlarmForOutOfLocationTags(onTags.filter(t => dataService.isOutdoor(t))
                                 , locations.result) || dataService.checkIfTagsHaveAlarmsInfo(onTags))
                         });
 

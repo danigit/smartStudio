@@ -104,7 +104,7 @@
         };
 
         // getting the map variable
-        NgMap.getMap('outdoor-map').then((map) => {
+        NgMap.getMap('outdoor-map', {timeout: 20000}).then((map) => {
             outdoorMap = map;
 
             // setting the map style
@@ -220,7 +220,7 @@
 
                         // showing the alarm icon if there are tags out of location and the quick action is setted
                         // showing the alarm icon if there are tags with alarms
-                        outdoorCtrl.showAlarmsIcon = (dataService.showAlarmForOutOfLocationTags(tags.filter(t => dataService.isOutdoor(t)), locations.result.filter(l => !l.is_inside))
+                        outdoorCtrl.showAlarmsIcon =  response.result.some(t => dataService.haveToShowBatteryEmpty(t)) && (dataService.showAlarmForOutOfLocationTags(tags.filter(t => dataService.isOutdoor(t)), locations.result.filter(l => !l.is_inside))
                             || dataService.checkIfTagsHaveAlarmsInfo(tags));
 
                         // showing tags alarm icon if there are tags offline

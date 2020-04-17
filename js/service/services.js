@@ -59,10 +59,7 @@
         service.lastMessageTime      = null;
 
         service.haveToShowBatteryEmpty = (tag) => {
-            console.log('verify alamr');
-            console.log(tag);
-            if (tag.battery_status && !service.hasTagSuperatedSecondDelta(tag)) {
-                console.log('show alarm');
+            if (service.checkIfTagHasAlarmNoBattery(tag) || (tag.battery_status && service.hasTagSuperatedSecondDeltaAlarms(tag))) {
                 return true;
             }
 
@@ -177,6 +174,7 @@
                                                 //getting the tags alarms
                                                 service.loadTagAlarmsForInfoWindow(tag, tagLocation.name)
                                                     .forEach(alarm => {
+                                                        console.log(alarm)
                                                         allTagsAlarms.push(alarm);
                                                     })
                                             }
@@ -1030,7 +1028,7 @@
                 },
             })
         };
-        
+
         //creating the informations to be shown on the info window of the canvas objects
         service.createAlarmObjectForInfoWindow = (tag, name, description, image, location) => {
             return {
@@ -1574,18 +1572,47 @@
             return false;
         };
 
+        /** Function that controls if the tag has superated by sleep_time_../10 the time since he is offline
+         * In this case the tag results as turned off
+         * @param tag
+         */
+        service.hasTagSuperatedSecondDeltaAlarms = (tag) => {
+
+            if (service.isOutdoor(tag)) {
+                let localThresholdIndoor  = new Date(tag.now_time).getTime();
+                let offline_started       = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
+                let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
+
+                return localThresholdIndoor < offline_delta_started;
+            } else {
+                // getting the times that are needed to make the computation
+                let localThresholdIndoor  = new Date(tag.now_time).getTime();
+                let offline_started       = new Date(tag.time).getTime() + tag.sleep_time_indoor;
+                let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
+
+                return localThresholdIndoor < offline_delta_started;
+            }
+
+            return false;
+        };
         /**
          * Function that controls if the tag has superated the second time so it has to be shown again
          * @param tag
          * @returns {boolean}
          */
         service.hasTagReaperedAfterOffline = (tag) => {
+
+            if(tag.name === 'WT25')
+                console.log(tag)
+
             if (service.isOutdoor(tag)) {
-                let localThresholdIndoor  = new Date(tag.now_time).getTime();
+                let localThresholdOutdoor  = new Date(tag.now_time).getTime();
                 let offline_started       = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
                 let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
 
-                return localThresholdIndoor > offline_delta_started;
+                console.log(localThresholdOutdoor)
+                console.log(offline_delta_started)
+                return localThresholdOutdoor > offline_delta_started;
             } else {
                 // getting the times that are needed to make the computation
                 let localThresholdIndoor  = new Date(tag.now_time).getTime();

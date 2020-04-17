@@ -482,7 +482,7 @@ let lightenColor = function (color, percent) {
 let listState = [];
 
 // showing and hiding the content of the lists
-displayListCluster = (tag, index) => {
+let displayListCluster = (tag, index) => {
     if (document.getElementById(tag + '_id').style.display === 'none') {
         document.getElementById(tag + '_id').style.display = 'block';
     } else {
