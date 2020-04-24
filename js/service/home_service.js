@@ -169,27 +169,31 @@
 
             clusterString += '</md-list><div class="margin-top-20-px height-135px overflow-auto padding-top-15-px border-1-top-red">';
 
-            markers.forEach(l => {
-                let locationTags = [];
+            cluster.markers_.forEach(m => {
+                markers.forEach(l => {
+                    let locationTags = [];
 
-                if (l.is_inside) {
-                    locationTags = home_service.getIndoorLocationTags(l, userTags);
-                } else {
-                    locationTags = home_service.getOutdoorLocationTags(l, allTags);
-                }
+                    if (l.is_inside) {
+                        locationTags = home_service.getIndoorLocationTags(l, userTags);
+                    } else {
+                        locationTags = home_service.getOutdoorLocationTags(l, allTags);
+                    }
 
-                // getting tags alarms
-                locationTags.forEach(t => {
-                    let alarms = dataService.loadTagAlarmsForInfoWindow(t, '');
-                    alarms.forEach(a => {
-                        clusterString += '<div class="display-flex margin-bottom-10-px"><div>' +
-                            '<img src="' + a.image + '"class="width-55px margin-right-10-px" alt="' + a.name + '"/>' +
-                            '</div>' +
-                            '<div>' +
-                            '   <h3 class="margin-none">' + a.tag + ' - ' + l.name + '</h3>' +
-                            '   <h4 class="margin-none">' + a.name + '</h4>' +
-                            '</div></div>'
-                    });
+                    if (m.getPosition().lat() === l.position[0] && m.getPosition().lng() === l.position[1]) {
+                        // getting tags alarms
+                        locationTags.forEach(t => {
+                            let alarms = dataService.loadTagAlarmsForInfoWindow(t, '');
+                            alarms.forEach(a => {
+                                clusterString += '<div class="display-flex margin-bottom-10-px"><div>' +
+                                    '<img src="' + a.image + '"class="width-55px margin-right-10-px" alt="' + a.name + '"/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                    '   <h3 class="margin-none">' + a.tag + ' - ' + l.name + '</h3>' +
+                                    '   <h4 class="margin-none">' + a.name + '</h4>' +
+                                    '</div></div>'
+                            });
+                        });
+                    }
                 });
             });
 

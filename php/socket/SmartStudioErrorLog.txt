@@ -13321,3 +13321,167 @@ Stack trace:
 [17-Apr-2020 16:32:25 Europe/Berlin] Sessione; simone
 [17-Apr-2020 16:33:28 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42752
 [17-Apr-2020 16:33:29 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:13:28 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-04-22 13:13:28
+[22-Apr-2020 13:13:52 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Apr-2020 13:13:52 Europe/Berlin] PHP Notice:  Undefined variable: _SESSION in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[22-Apr-2020 13:13:52 Europe/Berlin] Sessione; 
+[22-Apr-2020 13:13:52 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Apr-2020 13:13:52 Europe/Berlin] PHP Notice:  Undefined variable: _SESSION in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[22-Apr-2020 13:13:52 Europe/Berlin] Sessione; 
+[22-Apr-2020 13:13:52 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Apr-2020 13:14:07 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Apr-2020 13:14:08 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:19:20 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1641
+[22-Apr-2020 13:19:21 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:20:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2060
+[22-Apr-2020 13:20:46 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:22:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2624
+[22-Apr-2020 13:22:40 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:22:51 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:22:55 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:22:57 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:23:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2940
+[22-Apr-2020 13:23:38 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:23:50 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:23:58 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:24:48 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3285
+[22-Apr-2020 13:24:49 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:26:30 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3789
+[22-Apr-2020 13:26:31 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:28:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4943
+[22-Apr-2020 13:28:58 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:29:23 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:29:27 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:29:52 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:32:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 5823
+[22-Apr-2020 13:32:17 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:34:13 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:35:40 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6727
+[22-Apr-2020 13:35:41 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:35:58 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6811
+[22-Apr-2020 13:35:59 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:36:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 7050
+[22-Apr-2020 13:36:48 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:37:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 7184
+[22-Apr-2020 13:37:16 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:38:00 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:39:20 Europe/Berlin] Sessione; simone
+[22-Apr-2020 13:48:53 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:34:33 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-04-22 15:34:33
+[22-Apr-2020 15:34:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Apr-2020 15:34:47 Europe/Berlin] PHP Notice:  Undefined variable: _SESSION in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[22-Apr-2020 15:34:47 Europe/Berlin] Sessione; 
+[22-Apr-2020 15:34:47 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Apr-2020 15:34:47 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Apr-2020 15:34:47 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:34:47 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Apr-2020 15:34:47 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Apr-2020 15:34:48 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:34:58 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:35:09 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:35:13 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:37:02 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:38:00 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:45:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 5821
+[22-Apr-2020 15:45:25 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:50:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9019
+[22-Apr-2020 15:50:23 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:52:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9241
+[22-Apr-2020 15:52:53 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:54:34 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9383
+[22-Apr-2020 15:54:35 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:55:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9503
+[22-Apr-2020 15:55:54 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:56:27 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9567
+[22-Apr-2020 15:56:28 Europe/Berlin] Sessione; simone
+[22-Apr-2020 15:57:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9683
+[22-Apr-2020 15:57:43 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:31:57 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-04-24 14:31:57
+[24-Apr-2020 14:32:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[24-Apr-2020 14:32:23 Europe/Berlin] PHP Notice:  Undefined variable: _SESSION in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[24-Apr-2020 14:32:23 Europe/Berlin] Sessione; 
+[24-Apr-2020 14:32:23 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[24-Apr-2020 14:32:23 Europe/Berlin] PHP Notice:  Undefined variable: _SESSION in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[24-Apr-2020 14:32:23 Europe/Berlin] Sessione; 
+[24-Apr-2020 14:32:23 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[24-Apr-2020 14:34:20 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[24-Apr-2020 14:34:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 87
+[24-Apr-2020 14:34:26 Europe/Berlin] PHP Notice:  Undefined variable: _SESSION in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[24-Apr-2020 14:34:26 Europe/Berlin] Sessione; 
+[24-Apr-2020 14:34:26 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[24-Apr-2020 14:34:30 Europe/Berlin] UTENTE simone SI E LOGGATO
+[24-Apr-2020 14:34:31 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:34:45 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-04-24 14:34:45
+[24-Apr-2020 14:34:48 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[24-Apr-2020 14:34:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[24-Apr-2020 14:34:49 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[24-Apr-2020 14:34:49 Europe/Berlin] PHP Notice:  Undefined variable: _SESSION in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[24-Apr-2020 14:34:49 Europe/Berlin] Sessione; 
+[24-Apr-2020 14:34:49 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[24-Apr-2020 14:34:49 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[24-Apr-2020 14:34:50 Europe/Berlin] UTENTE simone SI E LOGGATO
+[24-Apr-2020 14:34:50 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:34:50 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[24-Apr-2020 14:34:50 Europe/Berlin] UTENTE simone SI E LOGGATO
+[24-Apr-2020 14:34:50 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:34:57 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:36:09 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 914
+[24-Apr-2020 14:36:10 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:37:31 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:41:46 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:42:37 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:44:22 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:46:58 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 5494
+[24-Apr-2020 14:46:58 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:53:25 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9753
+[24-Apr-2020 14:53:26 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:53:38 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9887
+[24-Apr-2020 14:53:39 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:54:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10230
+[24-Apr-2020 14:54:12 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:55:29 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11079
+[24-Apr-2020 14:55:30 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:56:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11587
+[24-Apr-2020 14:56:17 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:56:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11688
+[24-Apr-2020 14:56:27 Europe/Berlin] Sessione; simone
+[24-Apr-2020 14:57:05 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12108
+[24-Apr-2020 14:57:06 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:03:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 16092
+[24-Apr-2020 15:03:08 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:05:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 17315
+[24-Apr-2020 15:05:01 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:05:41 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 17757
+[24-Apr-2020 15:05:42 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:06:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 18353
+[24-Apr-2020 15:06:37 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:06:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 18577
+[24-Apr-2020 15:06:58 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:07:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19088
+[24-Apr-2020 15:07:45 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:08:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19387
+[24-Apr-2020 15:08:14 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:08:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19466
+[24-Apr-2020 15:08:22 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:09:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 20172
+[24-Apr-2020 15:09:27 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:09:48 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 20405
+[24-Apr-2020 15:09:49 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:10:05 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 20583
+[24-Apr-2020 15:10:05 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:11:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 21212
+[24-Apr-2020 15:11:03 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:11:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 21698
+[24-Apr-2020 15:11:48 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:12:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 21891
+[24-Apr-2020 15:12:06 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:13:27 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 22784
+[24-Apr-2020 15:13:28 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:15:10 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 23908
+[24-Apr-2020 15:15:11 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:16:05 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 24504
+[24-Apr-2020 15:16:06 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:16:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 24781
+[24-Apr-2020 15:16:32 Europe/Berlin] Sessione; simone
+[24-Apr-2020 15:17:05 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 25146
+[24-Apr-2020 15:17:06 Europe/Berlin] Sessione; simone

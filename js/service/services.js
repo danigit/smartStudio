@@ -619,15 +619,12 @@
                         //getting all the tags
                         // TODO - maybe I have to take only the tags of the current logged user
                         newSocketService.getData('get_all_tags', {}, (response) => {
-                            // control if teh session is still active, if not reload the page
-                            if (!response.session_state)
-                                window.location.reload();
 
                             // getting the offline tags indoor
                             $scope.tagsStateIndoorOffGrid = response.result
                                 .filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && !t.radio_switched_off && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
 
-                            // getting teh offline tags outdoor
+                            // getting the offline tags outdoor
                             $scope.tagsStateOffGrid = response.result
                                 .filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor))
                                 .concat($scope.tagsStateIndoorOffGrid);
@@ -636,7 +633,7 @@
                             $scope.tagsStateIndoorOffTags = response.result.filter(t => t.radio_switched_off);
 
                             // getting the online tags
-                            $scope.tagsStateIndoorOnline  = response.result.length - $scope.tagsStateIndoorOffGrid.length - $scope.tagsStateIndoorOffTags.length;
+                            $scope.tagsStateIndoorOnline  = response.result.length - $scope.tagsStateOffGrid.length - $scope.tagsStateIndoorOffTags.length;
 
                             // setting the data for the visualization
                             $scope.data = [$scope.tagsStateIndoorOnline, $scope.tagsStateIndoorOffTags.length, $scope.tagsStateIndoorOffGrid.length];

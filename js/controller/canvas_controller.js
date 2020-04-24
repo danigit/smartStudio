@@ -490,6 +490,7 @@
 
                                                             // controlling if the tags have to be shown
                                                             if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
+                                                                console.log(singleTags)
                                                                 singleTags.forEach((tag, index) => {
                                                                     if (dataService.checkIfTagHasAlarmNoBattery(tag)) {
                                                                         canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
@@ -499,10 +500,8 @@
                                                                             canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
 
                                                                             // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
-                                                                            if (index === singleTags.length - 1) {
-                                                                                context.drawImage(bufferCanvas, 0, 0);
-                                                                                canvasDrawned = true;
-                                                                            }
+                                                                            context.drawImage(bufferCanvas, 0, 0);
+                                                                            canvasDrawned = true;
                                                                         });
                                                                     }
                                                                     // drawing the tag without alarm
