@@ -45,6 +45,7 @@
             // loading the user settings
             dataService.loadUserSettings();
 
+
             // enabling the call of constantUpdateNotifications from a different controller ( service )
             $rootScope.$on('constantUpdateNotifications', function (event, map) {
                 if (map )
@@ -52,7 +53,10 @@
             });
 
             // recovering the map object
-            NgMap.getMap('main-map', {timeout: 20000}).then((map) => {
+            NgMap.getMap({id: 'main-map', timeout: 30000}).then((map) => {
+
+                if (map === undefined || map === null )
+                    window.location.reload(true)
 
                 let onTags = [];
 
@@ -224,6 +228,10 @@
                         }
                     })
                 });
+            }).catch(function(error){
+                console.log(error);
+                console.log('reloading the page because the map is broken')
+                window.location.reload(true)
             });
 
             /**
@@ -368,6 +376,7 @@
              */
             let constantUpdateNotifications = (map) => {
                 let onTags = [];
+
                 // controlling if there are alarm for the tags and anchors
                 dataService.homeTimer = $interval(() => {
 

@@ -56,7 +56,9 @@
                         let promise = $q.defer();
                         let result  = {};
                         setTimeout(function () {
+
                             newSocketService.getData('get_user', {username: cesarShift(sessionStorage.user, -CEZAR_KEY)}, (response) => {
+
                                 if (response.result !== 'no_user') {
                                     dataService.user = response.result[0];
                                     if (response.result[0].role === 1) {
@@ -114,7 +116,8 @@
                                 }
                             });
 
-                        }, 500);
+                        }, RESOLVE_ROUTING_TIME);
+
                         return promise.promise;
                     }],
                 }

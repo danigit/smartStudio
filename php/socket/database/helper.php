@@ -51,23 +51,21 @@ function sendEmail($email, $code){
         $mail->Port = 587; //587; // 465;
         $mail->SMTPSecure = 'tls';
         $mail->SMTPAuth = true;
-        $mail->Username = "";
-        $mail->Password = "";
+        $mail->Username = "clienti.assoantincendio@gmail.com";
+        $mail->Password = "clientiasso";
         $mail->setFrom('', 'Smart Studio');
         $mail->addAddress($email);
         $mail->Subject = "Recupero password";
         $mail->msgHTML("Sei stato contattato da Smart Track per la creazione di un nuovo account riguardante Smart Studio<br><br>
                                   La tua password provisoria e' : <b class='color-ottanio'>" . $code . "</b><br><br>");
         if (!$mail->send()) //telnet smtp.aruba.it 587
-            return null;
-//            return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
+            return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
     }catch (Exception $e){
-        return null;
-//        return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
+        return new db_errors(db_errors::$ERROR_ON_SENDING_EMAIL);
     }
 }
 
-//
+
 ///**
 // * Function that generates a random code of 6 characters, that has letters an numbers in it
 // * @return string - the generated code
