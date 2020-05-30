@@ -158,7 +158,7 @@ function languageController($scope) {
 		from                            : 'Dal',
         to                              : 'al',
         eventType                       : 'Tipo evento',
-        version                         : 'Versione',
+        version: 'Versione ',
         drawZone: 'Disegna zona',
         deleteZone: 'Cancella zona',
         modifyZone: 'Modifica zona',
@@ -376,7 +376,7 @@ function languageController($scope) {
         manDownCause        : 'Causa uomo a terra',
         anchorMac           : 'MAC anchora',
         userTableTitle      : 'Utenti',
-        standByMode         : 'Standby Mode'
+        standByMode: 'Standby Mode',
     }
 }
 

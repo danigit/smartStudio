@@ -56,7 +56,6 @@
                         let promise = $q.defer();
                         let result  = {};
                         setTimeout(function () {
-
                             newSocketService.getData('get_user', {username: cesarShift(sessionStorage.user, -CEZAR_KEY)}, (response) => {
 
                                 if (response.result !== 'no_user') {
@@ -116,7 +115,15 @@
                                 }
                             });
 
-                        }, RESOLVE_ROUTING_TIME);
+                            let goToHomeInterval = $interval(() => {
+                                if (!dataService.isInHome) {
+                                    window.location.reload();
+                                } else {
+                                    $interval.cancel(goToHomeInterval);
+                                    dataService.isInHome = true;
+                                }
+                            }, REFRESH_PAGE_IF_NOT_HOME_INTERVAL)
+                        }, 0);
 
                         return promise.promise;
                     }],

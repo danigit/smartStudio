@@ -39,6 +39,7 @@
             center  : mapCenter
         };
 
+        dataService.isInHome = true;
         //controlling if the user has already changed the default password, if yes I show the home screen
         if (homeData.password_changed) {
 
@@ -56,7 +57,7 @@
             NgMap.getMap({id: 'main-map', timeout: 30000}).then((map) => {
 
                 if (map === undefined || map === null )
-                    window.location.reload(true)
+                    window.location.reload(true);
 
                 let onTags = [];
 
@@ -230,7 +231,7 @@
                 });
             }).catch(function(error){
                 console.log(error);
-                console.log('reloading the page because the map is broken')
+                console.log('reloading the page because the map is broken');
                 window.location.reload(true)
             });
 

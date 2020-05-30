@@ -53,6 +53,7 @@
         service.playedTime           = 0;
         service.alarmsInterval       = undefined;
         service.reconnectSocket      = null;
+        service.isInHome = false;
         service.switch               = {
             showFullscreen: false,
         };
@@ -174,7 +175,7 @@
                                                 //getting the tags alarms
                                                 service.loadTagAlarmsForInfoWindow(tag, tagLocation.name)
                                                     .forEach(alarm => {
-                                                        console.log(alarm)
+                                                        console.log(alarm);
                                                         allTagsAlarms.push(alarm);
                                                     })
                                             }
@@ -1600,15 +1601,15 @@
         service.hasTagReaperedAfterOffline = (tag) => {
 
             if(tag.name === 'WT25')
-                console.log(tag)
+                console.log(tag);
 
             if (service.isOutdoor(tag)) {
                 let localThresholdOutdoor  = new Date(tag.now_time).getTime();
                 let offline_started       = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
                 let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
 
-                console.log(localThresholdOutdoor)
-                console.log(offline_delta_started)
+                console.log(localThresholdOutdoor);
+                console.log(offline_delta_started);
                 return localThresholdOutdoor > offline_delta_started;
             } else {
                 // getting the times that are needed to make the computation
