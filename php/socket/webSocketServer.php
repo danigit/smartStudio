@@ -140,7 +140,7 @@ class webSocketServer implements MessageComponentInterface{
                 $result['action'] = 'get_user';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
 
-                error_log('Sessione; ' . $_SESSION['username_simone']);
+                error_log('Sessione: ' . $_SESSION['username_' . $decoded_message['data']['username']]);
                 if ($this->isSessionEnded($decoded_message['data'])) {
                     $query = $this->connection->get_user($_SESSION['username_' . $decoded_message['data']['username']]);
 
