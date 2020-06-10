@@ -1,4 +1,4 @@
-(function () {
+(function() {
     'use strict';
 
     angular.module('main').controller('canvasController', canvasController);
@@ -14,37 +14,38 @@
     canvasController.$inject = ['$rootScope', '$scope', '$state', '$mdDialog', '$timeout', '$interval', '$mdSidenav', 'canvasData', 'dataService', 'newSocketService', '$mdToast', 'canvasService'];
 
     function canvasController($rootScope, $scope, $state, $mdDialog, $timeout, $interval, $mdSidenav, canvasData, dataService, newSocketService, $mdToast, canvasService) {
-        let canvasCtrl         = this;
-        let canvas             = document.querySelector('#canvas-id');
-        let context            = canvas.getContext('2d');
-        let bufferCanvas       = document.createElement('canvas');
-        let bufferContext      = bufferCanvas.getContext('2d');
-        let canvasImage        = new Image();
-        let tags               = [];
-        let mouseDownCoords    = null;
-        let prevClick          = null;
-        let drawAnchorImage    = null;
+        let canvasCtrl = this;
+        let canvas = document.querySelector('#canvas-id');
+        let context = canvas.getContext('2d');
+        let bufferCanvas = document.createElement('canvas');
+        let bufferContext = bufferCanvas.getContext('2d');
+        let canvasImage = new Image();
+        let tags = [];
+        let mouseDownCoords = null;
+        let prevClick = null;
+        let drawAnchorImage = null;
         let dropAnchorPosition = null;
-        let dragingStarted     = 0;
-        let drawedLines        = [];
-        let drawedZones        = [];
-        let zones              = null;
-        let newBegin           = [];
-        let newEnd             = [];
-        let anchorToDrop       = '';
-        let zoneToModify       = undefined;
-        let alpha              = canvasData.alpha;
-        let cloudAndSinle     = [];
+        let dragingStarted = 0;
+        let drawedLines = [];
+        let drawedZones = [];
+        let zones = null;
+        let newBegin = [];
+        let newEnd = [];
+        let anchorToDrop = '';
+        let zoneToModify = undefined;
+        let alpha = canvasData.alpha;
+        let cloudAndSinle = [];
 
+        $scope.showPartnerLogo = SHOW_PARTNER_LOGO;
 
-        canvasCtrl.isAdmin                = dataService.isAdmin;
-        canvasCtrl.isUserManager          = dataService.isUserManager;
-        canvasCtrl.isTracker              = dataService.isTracker;
-        canvasCtrl.floors                 = dataService.floors;
-        canvasCtrl.showAlarmsIcon         = false;
-        canvasCtrl.showOfflineTagsIcon    = false;
+        canvasCtrl.isAdmin = dataService.isAdmin;
+        canvasCtrl.isUserManager = dataService.isUserManager;
+        canvasCtrl.isTracker = dataService.isTracker;
+        canvasCtrl.floors = dataService.floors;
+        canvasCtrl.showAlarmsIcon = false;
+        canvasCtrl.showOfflineTagsIcon = false;
         canvasCtrl.showOfflineAnchorsIcon = false;
-        canvasCtrl.drawingImage           = 'horizontal-line.png';
+        canvasCtrl.drawingImage = 'horizontal-line.png';
         canvasCtrl.legend = [];
         canvasCtrl.socketOpened = socketOpened;
 
@@ -54,23 +55,23 @@
         //floor initial data
         canvasCtrl.floorData = {
             defaultFloorName: canvasCtrl.defaultFloor[0].name,
-            gridSpacing     : canvasCtrl.defaultFloor[0].map_spacing,
-            location        : (dataService.locationFromClick === '') ? dataService.location.name : dataService.locationFromClick,
-            floor_image_map : canvasCtrl.defaultFloor[0].image_map,
-            floorZones      : []
+            gridSpacing: canvasCtrl.defaultFloor[0].map_spacing,
+            location: (dataService.locationFromClick === '') ? dataService.location.name : dataService.locationFromClick,
+            floor_image_map: canvasCtrl.defaultFloor[0].image_map,
+            floorZones: []
         };
 
         // setting the actions button (draw, delete, etc.)
         canvasCtrl.speedDial = {
-            isOpen           : false,
+            isOpen: false,
             selectedDirection: 'left',
-            mode             : 'md-scale',
-            clickedButton    : 'horizontal'
+            mode: 'md-scale',
+            clickedButton: 'horizontal'
         };
 
         // setting the menu switch buttons
         canvasCtrl.switch = {
-            showDrawing   : false,
+            showDrawing: false,
         };
 
         // loading the image for the default floor
@@ -80,7 +81,7 @@
         dataService.loadUserSettings();
 
         //watching for changes in switch buttons in menu
-        $scope.$watchGroup(['canvasCtrl.floorData.gridSpacing', 'canvasCtrl.switch.showDrawing'], function (newValues) {
+        $scope.$watchGroup(['canvasCtrl.floorData.gridSpacing', 'canvasCtrl.switch.showDrawing'], function(newValues) {
 
             //setting the floor spacing in the slider
             if (canvasCtrl.defaultFloor[0].map_spacing !== newValues[0])
@@ -88,32 +89,32 @@
 
             //showing drawing mode
             if (newValues[1] === true) {
-                dataService.switch.showAnchors     = false;
-                dataService.switch.showCameras     = false;
-                canvasCtrl.showAlarmsIcon          = false;
-                canvasCtrl.showOfflineTagsIcon     = false;
-                canvasCtrl.showOfflineAnchorsIcon  = false;
-                canvasCtrl.showEngineOffIcon       = false;
+                dataService.switch.showAnchors = false;
+                dataService.switch.showCameras = false;
+                canvasCtrl.showAlarmsIcon = false;
+                canvasCtrl.showOfflineTagsIcon = false;
+                canvasCtrl.showOfflineAnchorsIcon = false;
+                canvasCtrl.showEngineOffIcon = false;
                 canvasCtrl.speedDial.clickedButton = 'horizontal';
-                canvasCtrl.drawingImage            = 'horizontal-line.png';
-                drawedZones                        = [];
+                canvasCtrl.drawingImage = 'horizontal-line.png';
+                drawedZones = [];
 
                 $mdSidenav('left').close();
 
                 dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
 
                 newSocketService.getData('get_floor_zones', {
-                    floor   : canvasCtrl.floorData.defaultFloorName,
+                    floor: canvasCtrl.floorData.defaultFloorName,
                     location: canvasCtrl.floorData.location,
-                    user    : dataService.user.username
+                    user: dataService.user.username
                 }, (response) => {
                     zones = response.result;
                 });
 
-                newSocketService.getData('get_drawing', {floor: canvasCtrl.defaultFloor[0].id}, (response) => {
+                newSocketService.getData('get_drawing', { floor: canvasCtrl.defaultFloor[0].id }, (response) => {
 
                     let parsedResponseDrawing = JSON.parse(response.result);
-                    drawedLines               = (parsedResponseDrawing === null) ? [] : parsedResponseDrawing;
+                    drawedLines = (parsedResponseDrawing === null) ? [] : parsedResponseDrawing;
 
                     if (drawedLines !== null)
                         updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
@@ -121,8 +122,8 @@
                     if (zones !== null)
                         zones.forEach((zone) => {
                             drawZoneRect({
-                                x : zone.x_left,
-                                y : zone.y_up,
+                                x: zone.x_left,
+                                y: zone.y_up,
                                 xx: zone.x_right,
                                 yy: zone.y_down
                             }, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.color, true, alpha);
@@ -138,13 +139,13 @@
         //watching the floor selection button
         $scope.$watch('canvasCtrl.floorData.defaultFloorName', (newValue) => {
             if (newValue !== undefined)
-                canvasCtrl.defaultFloor = [dataService.userFloors.find(f =>  f.name === newValue)];
+                canvasCtrl.defaultFloor = [dataService.userFloors.find(f => f.name === newValue)];
 
             canvasCtrl.floorData.defaultFloorName = canvasCtrl.defaultFloor[0].name;
-            dataService.defaultFloorName          = canvasCtrl.defaultFloor[0].name;
-            canvasCtrl.floorData.gridSpacing      = canvasCtrl.defaultFloor[0].map_spacing;
-            canvasCtrl.floorData.floor_image_map  = canvasCtrl.defaultFloor[0].image_map;
-            canvasImage.src                       = floorPath + canvasCtrl.floorData.floor_image_map;
+            dataService.defaultFloorName = canvasCtrl.defaultFloor[0].name;
+            canvasCtrl.floorData.gridSpacing = canvasCtrl.defaultFloor[0].map_spacing;
+            canvasCtrl.floorData.floor_image_map = canvasCtrl.defaultFloor[0].image_map;
+            canvasImage.src = floorPath + canvasCtrl.floorData.floor_image_map;
 
             context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -159,34 +160,49 @@
          */
         canvasCtrl.speedDialClicked = (button) => {
             switch (button) {
-                case 'drop_anchor':{
-                    canvasCtrl.drawingImage = 'tags/online_anchor_24.png';
+                case 'drop_anchor':
+                    {
+                        canvasCtrl.drawingImage = 'tags/online_anchor_24.png';
 
-                    // updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, false);
-                    canvasService.updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, true);
+                        // updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, false);
+                        canvasService.updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, true);
 
-                } break;
-                case 'vertical': {
-                    canvasCtrl.drawingImage = 'vertical-line.png';
-                } break;
-                case 'horizontal': {
-                    canvasCtrl.drawingImage = 'horizontal-line.png';
-                } break;
-                case 'inclined': {
-                    canvasCtrl.drawingImage = 'inclined_line.png';
-                } break;
-                case 'delete': {
-                    canvasCtrl.drawingImage = 'erase_line.png';
-                } break;
-                case 'draw_zone': {
-                    canvasCtrl.drawingImage = 'draw_zone.png'
-                } break;
-                case 'delete_zone': {
-                    canvasCtrl.drawingImage = 'delete_zone.png'
-                } break;
-                case 'modify_zone': {
-                    canvasCtrl.drawingImage = 'modify_zone.png'
-                }
+                    }
+                    break;
+                case 'vertical':
+                    {
+                        canvasCtrl.drawingImage = 'vertical-line.png';
+                    }
+                    break;
+                case 'horizontal':
+                    {
+                        canvasCtrl.drawingImage = 'horizontal-line.png';
+                    }
+                    break;
+                case 'inclined':
+                    {
+                        canvasCtrl.drawingImage = 'inclined_line.png';
+                    }
+                    break;
+                case 'delete':
+                    {
+                        canvasCtrl.drawingImage = 'erase_line.png';
+                    }
+                    break;
+                case 'draw_zone':
+                    {
+                        canvasCtrl.drawingImage = 'draw_zone.png'
+                    }
+                    break;
+                case 'delete_zone':
+                    {
+                        canvasCtrl.drawingImage = 'delete_zone.png'
+                    }
+                    break;
+                case 'modify_zone':
+                    {
+                        canvasCtrl.drawingImage = 'modify_zone.png'
+                    }
 
             }
 
@@ -196,8 +212,8 @@
         //function that loads the floor map and starts the constant update of the floor
         canvasCtrl.loadFloor = () => {
 
-            canvasImage.onload = function () {
-                canvas.width  = this.naturalWidth;
+            canvasImage.onload = function() {
+                canvas.width = this.naturalWidth;
                 canvas.height = this.naturalHeight;
 
                 //updating the canvas and drawing border
@@ -214,38 +230,38 @@
 
             if (response.result.length > 0) {
                 response.result.forEach((category) => {
-                    canvasCtrl.legend.push({name: category.name, img: category.no_alarm_image});
+                    canvasCtrl.legend.push({ name: category.name, img: category.no_alarm_image });
                 });
-            } else{
+            } else {
                 $mdToast.show({
-                    hideDelay       : TOAST_SHOWING_TIME,
-                    position        : 'botom center',
-                    controller      : 'toastController',
+                    hideDelay: TOAST_SHOWING_TIME,
+                    position: 'botom center',
+                    controller: 'toastController',
                     bindToController: true,
-                    locals          : {
-                        message   : lang.impossibleRecoverTagCategories,
+                    locals: {
+                        message: lang.impossibleRecoverTagCategories,
                         background: 'background-darkred',
-                        color     : 'color-white'
+                        color: 'color-white'
                     },
-                    templateUrl     : componentsPath + 'toast.html'
+                    templateUrl: componentsPath + 'toast.html'
                 });
             }
         });
 
         //constantly updating the canvas with the objects position from the server
         let constantUpdateCanvas = () => {
-            let alarmsCounts      = new Array(100).fill(0);
+            let alarmsCounts = new Array(100).fill(0);
             let isTimeRestInError = false;
-            let newLavoration     = null;
-            let color             = TIME_REST_COLOR_OK;
-            let description       = TIME_REST_DESCRIPTION_OK;
-            let visibleTags       = [];
-            let tagClouds         = [];
-            let singleTags        = [];
+            let newLavoration = null;
+            let color = TIME_REST_COLOR_OK;
+            let description = TIME_REST_DESCRIPTION_OK;
+            let visibleTags = [];
+            let tagClouds = [];
+            let singleTags = [];
             let canvasDrawned = false;
 
             // starting the continuous update of the canvas
-            dataService.canvasInterval = $interval(function () {
+            dataService.canvasInterval = $interval(function() {
 
                 if (DEBUG)
                     console.log('updating the canvas...');
@@ -254,7 +270,7 @@
                 canvasCtrl.socketOpened = socketOpened;
 
                 // setting the canvas width and height
-                bufferCanvas.width  = canvasImage.naturalWidth;
+                bufferCanvas.width = canvasImage.naturalWidth;
                 bufferCanvas.height = canvasImage.naturalHeight;
 
                 // deleting the previous canvas, drawing a new one  and drawing border
@@ -272,8 +288,8 @@
 
                     newSocketService.getData('get_all_locations', {}, (locations) => {
 
-                        canvasCtrl.showAlarmsIcon = response.result.some(t => dataService.haveToShowBatteryEmpty(t)) && (dataService.showAlarmForOutOfLocationTags(response.result.filter(t => dataService.isOutdoor(t) && !t.radio_switched_off), locations.result)
-                            || dataService.checkIfTagsHaveAlarms(response.result.filter(t => !t.radio_switched_off)));
+                        canvasCtrl.showAlarmsIcon = response.result.some(t => dataService.haveToShowBatteryEmpty(t)) && (dataService.showAlarmForOutOfLocationTags(response.result.filter(t => dataService.isOutdoor(t) && !t.radio_switched_off), locations.result) ||
+                            dataService.checkIfTagsHaveAlarms(response.result.filter(t => !t.radio_switched_off)));
 
                         //showing the offline tags alarm icon
                         canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
@@ -284,18 +300,18 @@
                         dataService.playAlarmsAudio(response.result);
 
                         // getting all the floors of the logged user
-                        newSocketService.getData('get_floors_by_user', {user: dataService.user.username}, (floorsByUser) => {
+                        newSocketService.getData('get_floors_by_user', { user: dataService.user.username }, (floorsByUser) => {
 
                             dataService.userFloors = floorsByUser.result;
 
                             // getting all the floors of the location
-                            newSocketService.getData('get_floors_by_location', {location: canvasCtrl.floorData.location}, (floorsByLocation) => {
+                            newSocketService.getData('get_floors_by_location', { location: canvasCtrl.floorData.location }, (floorsByLocation) => {
 
                                 // settuing the local location floor with the ones on the database
                                 canvasCtrl.floors = floorsByLocation.result;
 
                                 // getting the drawings
-                                newSocketService.getData('get_drawing', {floor: canvasCtrl.defaultFloor[0].id}, (drawings) => {
+                                newSocketService.getData('get_drawing', { floor: canvasCtrl.defaultFloor[0].id }, (drawings) => {
 
                                     // parsing the draw format
                                     let parsedDraw = JSON.parse(drawings.result);
@@ -311,12 +327,12 @@
 
                                     // getting the floor zones
                                     newSocketService.getData('get_floor_zones', {
-                                        floor   : canvasCtrl.floorData.defaultFloorName,
+                                        floor: canvasCtrl.floorData.defaultFloorName,
                                         location: canvasCtrl.floorData.location,
-                                        user    : dataService.user.username
+                                        user: dataService.user.username
                                     }, (floorZones) => {
                                         // getting the div where to show the headers of the working zones
-                                        let workingZones        = document.getElementById('working-zones');
+                                        let workingZones = document.getElementById('working-zones');
                                         let angularWorkingZones = angular.element(workingZones);
 
                                         // controlling if there are zones to be drawned
@@ -328,8 +344,8 @@
                                             // drawing the zones
                                             orderedZones.forEach((zone) => {
                                                 drawZoneRect({
-                                                    x : zone.x_left,
-                                                    y : zone.y_up,
+                                                    x: zone.x_left,
+                                                    y: zone.y_up,
                                                     xx: zone.x_right,
                                                     yy: zone.y_down
                                                 }, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, zone.color, false, alpha);
@@ -352,21 +368,21 @@
                                                     }, (response) => {
                                                         if (response.result === 0) {
                                                             $mdToast.show({
-                                                                hideDelay       : TOAST_SHOWING_TIME,
-                                                                position        : 'bottom center',
-                                                                controller      : 'toastController',
+                                                                hideDelay: TOAST_SHOWING_TIME,
+                                                                position: 'bottom center',
+                                                                controller: 'toastController',
                                                                 bindToController: true,
-                                                                locals          : {
-                                                                    message   : lang.headerZonesNotSetted,
+                                                                locals: {
+                                                                    message: lang.headerZonesNotSetted,
                                                                     background: 'background-darkred',
-                                                                    color     : 'color-white'
+                                                                    color: 'color-white'
                                                                 },
-                                                                templateUrl     : componentsPath + 'toast.html'
+                                                                templateUrl: componentsPath + 'toast.html'
                                                             });
                                                         }
                                                     });
                                                 }
-                                                let side          = zone.header_left_side ? "left; margin-left: 35px;" : "right; margin-right: 90px";
+                                                let side = zone.header_left_side ? "left; margin-left: 35px;" : "right; margin-right: 90px";
                                                 let newLavoration = angular.element('<div class="lavoration" style="font-size: small; bottom: 0; padding: 10px 10px 0 10px; ' +
                                                     'background: ' + zone.process_color + '; border-radius: 10px 10px 0 0; float: ' + side + '; text-align: center; color:' + zone.font_color + '">' +
                                                     '<span style="font-weight: bold; text-decoration: underline; color:' + zone.font_color + '">' + zone.name.toUpperCase() + '</span>' +
@@ -399,11 +415,11 @@
                                             if (response.result.is_active_time_rest === '1') {
                                                 // controlling if the time rest is expired
                                                 if ((response.result.now_time - response.result.data_time) > TIME_REST) {
-                                                    color       = TIME_REST_COLOR_ERROR;
+                                                    color = TIME_REST_COLOR_ERROR;
                                                     description = TIME_REST_DESCRIPTION_ERROR;
                                                     isTimeRestInError = true;
                                                 } else {
-                                                    color       = TIME_REST_COLOR_OK;
+                                                    color = TIME_REST_COLOR_OK;
                                                     description = TIME_REST_DESCRIPTION_OK;
                                                     isTimeRestInError = false;
                                                 }
@@ -416,7 +432,7 @@
 
                                         // getting all the anchors of the floor and the current location
                                         newSocketService.getData('get_anchors_by_floor_and_location', {
-                                            floor   : canvasCtrl.floorData.defaultFloorName,
+                                            floor: canvasCtrl.floorData.defaultFloorName,
                                             location: canvasCtrl.floorData.location
                                         }, (anchorsByFloorAndLocation) => {
 
@@ -430,7 +446,7 @@
 
                                             // getting the cameras for the floor and the location
                                             newSocketService.getData('get_cameras_by_floor_and_location', {
-                                                floor   : canvasCtrl.floorData.defaultFloorName,
+                                                floor: canvasCtrl.floorData.defaultFloorName,
                                                 location: canvasCtrl.floorData.location
                                             }, (camerasByFloorAndLocation) => {
 
@@ -442,7 +458,7 @@
 
                                                 // getting the tags of the floor and the location
                                                 newSocketService.getData('get_tags_by_floor_and_location', {
-                                                    floor   : canvasCtrl.defaultFloor[0].id,
+                                                    floor: canvasCtrl.defaultFloor[0].id,
                                                     location: canvasCtrl.floorData.location
                                                 }, (tagsByFloorAndLocation) => {
 
@@ -458,7 +474,7 @@
                                                     cloudAndSinle = canvasService.createClouds(visibleTags);
 
                                                     // separating the single and clouded tags
-                                                    tagClouds  = cloudAndSinle.clouds;
+                                                    tagClouds = cloudAndSinle.clouds;
                                                     singleTags = cloudAndSinle.single;
 
                                                     // loading the images for the clouds
@@ -467,7 +483,7 @@
                                                         // control if the tags have to be displayed
                                                         if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
                                                             // drawing the clouds on the canvas
-                                                            images.forEach(function (image, index) {
+                                                            images.forEach(function(image, index) {
                                                                 if (image !== null) {
                                                                     canvasService.drawCloudIcon(tagClouds[index][0], bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[index].length);
                                                                 }
@@ -477,7 +493,7 @@
                                                         else if (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) {
                                                             // drawing the tags only if there is at least one in alarm
                                                             if (dataService.checkIfTagsHaveAlarms(visibleTags)) {
-                                                                images.forEach(function (image, index) {
+                                                                images.forEach(function(image, index) {
                                                                     if (image !== null) {
                                                                         canvasService.drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[index].length);
                                                                     }
@@ -563,7 +579,7 @@
             }, CANVAS_UPDATE_TIME_INTERVAL);
         };
 
-        $rootScope.$on('constantUpdateCanvas', function () {
+        $rootScope.$on('constantUpdateCanvas', function() {
             constantUpdateCanvas();
         });
 
@@ -584,16 +600,16 @@
                 if (objectType === 'anchors') {
                     // loading anchors images
                     canvasService.loadAnchorsImages(objects, (images) => {
-                        images.forEach(function (image, index) {
+                        images.forEach(function(image, index) {
                             canvasService.drawIcon(objects[index], context, image, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, false);
                         })
                     });
                 }
                 // controlling if I have to draw cameras
-                else if(objectType === 'cameras'){
+                else if (objectType === 'cameras') {
                     // loading the cameras images
                     canvasService.loadCamerasImages(objects, (images) => {
-                        images.forEach(function (image, index) {
+                        images.forEach(function(image, index) {
                             canvasService.drawIcon(objects[index], context, image, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, false);
                         })
                     });
@@ -602,9 +618,9 @@
         };
 
         //getting the coordinate of the click within respect the canvas
-        HTMLCanvasElement.prototype.canvasMouseClickCoords = function (event) {
-            let totalOffsetX   = 0;
-            let totalOffsetY   = 0;
+        HTMLCanvasElement.prototype.canvasMouseClickCoords = function(event) {
+            let totalOffsetX = 0;
+            let totalOffsetY = 0;
             let canvasX, canvasY;
             let currentElement = this;
 
@@ -620,7 +636,7 @@
             canvasX = Math.round(canvasX * (this.width / this.offsetWidth));
             canvasY = Math.round(canvasY * (this.height / this.offsetHeight));
 
-            return {x: canvasX, y: canvasY}
+            return { x: canvasX, y: canvasY }
         };
 
         //function that save the canvas drawing
@@ -629,15 +645,15 @@
 
             drawedZones.forEach((zone) => {
                 // getting the position of the zone
-                let topLeft       = canvasService.scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.topLeft.x, zone.topLeft.y);
-                let bottomRight   = canvasService.scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.bottomRight.x, zone.bottomRight.y);
+                let topLeft = canvasService.scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.topLeft.x, zone.topLeft.y);
+                let bottomRight = canvasService.scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, zone.bottomRight.x, zone.bottomRight.y);
 
                 // getting the zones that have been drawned
                 let zonesModified = canvasCtrl.floorData.floorZones.some(z => zone.id === z.id);
 
                 // adding the zone to the other zones that have to be saved on the database
                 if (!zonesModified)
-                    tempDrawZones.push({topLeft: topLeft, bottomRight: bottomRight, floor: zone.floor});
+                    tempDrawZones.push({ topLeft: topLeft, bottomRight: bottomRight, floor: zone.floor });
             });
 
             // saving the drawings (lines)
@@ -654,7 +670,7 @@
                         position: 'botom center',
                         controller: 'toastController',
                         bindToController: true,
-                        locals: {message: lang.drawingNotSaved, background: 'background-darkred', color: 'color-white'},
+                        locals: { message: lang.drawingNotSaved, background: 'background-darkred', color: 'color-white' },
                         templateUrl: componentsPath + 'toast.html'
                     });
                 }
@@ -662,11 +678,11 @@
                 else {
 
                     let scaledAnchorPosition = [];
-                    let drawAnchor           = [];
+                    let drawAnchor = [];
 
                     //TODO update anchors only if there is at least one anchor modified
                     dataService.anchorsToUpdate.forEach((anchor) => {
-                        let scaledSize = {width: anchor.x_pos, height: anchor.y_pos};
+                        let scaledSize = { width: anchor.x_pos, height: anchor.y_pos };
                         scaledAnchorPosition.push(scaledSize);
                         drawAnchor.push(anchor.id);
                     });
@@ -674,8 +690,8 @@
                     // saving the modified anchors on the database
                     newSocketService.getData('update_anchor_position', {
                         position: scaledAnchorPosition,
-                        id      : drawAnchor,
-                        floor   : canvasCtrl.floorData.defaultFloorName
+                        id: drawAnchor,
+                        floor: canvasCtrl.floorData.defaultFloorName
                     }, (updatedAnchors) => {
                         // controlling if the updating generated errors
                         if (updatedAnchors.result.length === 0) {
@@ -684,17 +700,17 @@
                                 position: 'bottom center',
                                 controller: 'toastController',
                                 bindToController: true,
-                                locals: {message: lang.drawingSaved, background: 'background-lightgreen', color: 'color-black'},
+                                locals: { message: lang.drawingSaved, background: 'background-lightgreen', color: 'color-black' },
                                 templateUrl: componentsPath + 'toast.html'
                             });
 
-                            $timeout(function () {
+                            $timeout(function() {
                                 dataService.switch.showAnchors = true;
                                 dataService.switch.showCameras = true;
-                                canvasCtrl.switch.showDrawing  = false;
+                                canvasCtrl.switch.showDrawing = false;
 
-                                dropAnchorPosition                 = null;
-                                drawAnchorImage                    = null;
+                                dropAnchorPosition = null;
+                                drawAnchorImage = null;
                                 canvasCtrl.speedDial.clickedButton = '';
 
                                 dataService.anchorsToUpdate = [];
@@ -706,7 +722,7 @@
                                 position: 'bottom center',
                                 controller: 'toastController',
                                 bindToController: true,
-                                locals: {message: lang.drawingNotSaved, background: 'background-darkred', color: 'color-white'},
+                                locals: { message: lang.drawingNotSaved, background: 'background-darkred', color: 'color-white' },
                                 templateUrl: componentsPath + 'toast.html'
                             });
                         }
@@ -721,17 +737,17 @@
                 position: 'bottom center',
                 controller: 'toastController',
                 bindToController: true,
-                locals: {message: lang.actionCanceled, background: 'background-darkred', color: 'color-white'},
+                locals: { message: lang.actionCanceled, background: 'background-darkred', color: 'color-white' },
                 templateUrl: componentsPath + 'toast.html'
             });
 
-            $timeout(function () {
+            $timeout(function() {
                 dataService.switch.showAnchors = true;
                 dataService.switch.showCameras = true;
-                canvasCtrl.switch.showDrawing  = false;
+                canvasCtrl.switch.showDrawing = false;
 
-                dropAnchorPosition                 = null;
-                drawAnchorImage                    = null;
+                dropAnchorPosition = null;
+                drawAnchorImage = null;
                 canvasCtrl.speedDial.clickedButton = '';
                 if (dataService.canvasInterval === undefined) constantUpdateCanvas();
             }, CANVAS_DRAWING_ACTION_DELAY);
@@ -753,48 +769,53 @@
                     // drawing the lines
                     case 'horizontal':
                     case 'vertical':
-                    case 'inclined': {
+                    case 'inclined':
+                        {
 
-                        if (dragingStarted === 1) {
+                            if (dragingStarted === 1) {
 
-                            newBegin = canvasService.uniteLinesIfClose(drawedLines, prevClick);
+                                newBegin = canvasService.uniteLinesIfClose(drawedLines, prevClick);
 
-                            canvasService.drawLine(newBegin, canvas.canvasMouseClickCoords(event), canvasCtrl.speedDial.clickedButton, context);
+                                canvasService.drawLine(newBegin, canvas.canvasMouseClickCoords(event), canvasCtrl.speedDial.clickedButton, context);
+                            }
                         }
-                    } break;
-                    // drawing the new zones
-                    case 'draw_zone': {
-                        if (dragingStarted === 1){
-                            drawZoneRectFromDrawing({
-                                x : prevClick.x,
-                                y : prevClick.y,
-                                xx: canvas.canvasMouseClickCoords(event).x,
-                                yy: canvas.canvasMouseClickCoords(event).y
-                            }, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', alpha);
+                        break;
+                        // drawing the new zones
+                    case 'draw_zone':
+                        {
+                            if (dragingStarted === 1) {
+                                drawZoneRectFromDrawing({
+                                    x: prevClick.x,
+                                    y: prevClick.y,
+                                    xx: canvas.canvasMouseClickCoords(event).x,
+                                    yy: canvas.canvasMouseClickCoords(event).y
+                                }, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', alpha);
+                            }
                         }
-                    } break;
-                    case 'modify_zone':{
-                        // drawing the modified zones
-                        if (zoneToModify !== undefined) {
-                            drawedZones = drawedZones.filter(z => !angular.equals(zoneToModify, z));
-                            zones       = zones.filter(z => z.id !== zoneToModify.id);
-                            drawZoneRectFromDrawing({
-                                x : zoneToModify.bottomRight.x,
-                                y : zoneToModify.bottomRight.y,
-                                xx: canvas.canvasMouseClickCoords(event).x,
-                                yy: canvas.canvasMouseClickCoords(event).y
-                            }, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', alpha);
+                        break;
+                    case 'modify_zone':
+                        {
+                            // drawing the modified zones
+                            if (zoneToModify !== undefined) {
+                                drawedZones = drawedZones.filter(z => !angular.equals(zoneToModify, z));
+                                zones = zones.filter(z => z.id !== zoneToModify.id);
+                                drawZoneRectFromDrawing({
+                                    x: zoneToModify.bottomRight.x,
+                                    y: zoneToModify.bottomRight.y,
+                                    xx: canvas.canvasMouseClickCoords(event).x,
+                                    yy: canvas.canvasMouseClickCoords(event).y
+                                }, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, 'red', alpha);
+                            }
                         }
-                    }
                 }
             }
         });
 
         //handeling the mouse move on the canvas
-        canvas.addEventListener('mousedown', function (event) {
-            let tagCloud    = null;
+        canvas.addEventListener('mousedown', function(event) {
+            let tagCloud = null;
             let dialogShown = false;
-            let realHeight  = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
+            let realHeight = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
 
             // getting the click coordinates
             mouseDownCoords = canvas.canvasMouseClickCoords(event);
@@ -803,324 +824,341 @@
             switch (canvasCtrl.speedDial.clickedButton) {
                 case 'vertical':
                 case 'horizontal':
-                case 'inclined': {
-                    if (canvasCtrl.switch.showDrawing){
-                        dragingStarted++;
+                case 'inclined':
+                    {
+                        if (canvasCtrl.switch.showDrawing) {
+                            dragingStarted++;
 
+                            if (dragingStarted === 1) {
+                                // uniting the line with another one if close enoght
+                                prevClick = canvasService.uniteLinesIfClose(drawedLines, canvas.canvasMouseClickCoords(event));
+                            } else if (dragingStarted === 2) {
+                                // setting the line parameters
+                                switch (canvasCtrl.speedDial.clickedButton) {
+                                    case 'vertical':
+                                        {
+                                            drawedLines.push({
+                                                begin: prevClick,
+                                                end: { x: prevClick.x, y: mouseDownCoords.y },
+                                                type: canvasCtrl.speedDial.clickedButton
+                                            });
+                                        }
+                                        break;
+                                    case 'horizontal':
+                                        {
+                                            drawedLines.push({
+                                                begin: prevClick,
+                                                end: { x: mouseDownCoords.x, y: prevClick.y },
+                                                type: canvasCtrl.speedDial.clickedButton
+                                            });
+                                        }
+                                        break;
+                                    case 'inclined':
+                                        {
+                                            drawedLines.push({
+                                                begin: prevClick,
+                                                end: mouseDownCoords,
+                                                type: canvasCtrl.speedDial.clickedButton
+                                            });
+                                        }
+                                        break;
+                                }
+                                dragingStarted = 0;
+                            }
+                        }
+                    }
+                    break;
+                case 'drop_anchor':
+                    {
+                        $mdDialog.show({
+                            templateUrl: componentsPath + 'select_drop_anchor.html',
+                            parent: angular.element(document.body),
+                            targetEvent: event,
+                            clickOutsideToClose: true,
+                            controller: ['$scope', 'dataService', ($scope, dataService) => {
+                                $scope.dropAnchor = {
+                                    selectedAnchor: ''
+                                };
+
+                                newSocketService.getData('get_anchors_by_location', { location: dataService.location.name }, (response) => {
+
+                                    $scope.anchors = response.result;
+                                    dataService.locationAnchors = response.result;
+                                    $scope.$apply();
+                                });
+
+                                $scope.$watch('dropAnchor.selectedAnchor', (newValue) => {
+                                    let currentValue = "" + newValue;
+                                    if (currentValue !== '') {
+                                        anchorToDrop = currentValue;
+                                        $mdDialog.hide();
+
+                                        let scaledSize = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, mouseDownCoords.x, mouseDownCoords.y);
+
+                                        let index = dataService.locationAnchors.findIndex(a => a.name === newValue);
+                                        let floorAnchorIndex = dataService.anchors.findIndex(a => a.name === newValue);
+
+                                        // controlling if I find the anchor on the floor
+                                        if (floorAnchorIndex !== -1) {
+                                            dataService.anchors[floorAnchorIndex].x_pos = parseFloat(scaledSize.x);
+                                            dataService.anchors[floorAnchorIndex].y_pos = parseFloat(scaledSize.y);
+                                            dataService.anchors[floorAnchorIndex].floor_id = canvasCtrl.defaultFloor[0].id;
+                                            dataService.anchorsToUpdate.push(dataService.anchors[floorAnchorIndex]);
+                                        }
+                                        // if the anchor is not on this floor I get it from another floor
+                                        else {
+                                            dataService.locationAnchors[index].x_pos = parseFloat(scaledSize.x);
+                                            dataService.locationAnchors[index].y_pos = parseFloat(scaledSize.y);
+                                            dataService.locationAnchors[index].floor_id = canvasCtrl.defaultFloor[0].id;
+
+                                            dataService.anchors.push(dataService.locationAnchors[index]);
+                                            dataService.anchorsToUpdate.push(dataService.locationAnchors[index]);
+                                        }
+
+                                        updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
+                                    }
+                                });
+                            }]
+                        });
+                    }
+                    break;
+                case 'delete':
+                    {
+                        // selecting the lines to be removed
+                        let toBeRemoved = drawedLines.filter(l => (canvasService.calculateDistance(l.begin.x, l.begin.y, mouseDownCoords.x, mouseDownCoords.y) < LINE_UNION_SPACE) ||
+                            (canvasService.calculateDistance(l.end.x, l.end.y, mouseDownCoords.x, mouseDownCoords.y) < LINE_UNION_SPACE));
+
+                        // if there are lines to be removed I remove them
+                        if (toBeRemoved.length > 0) {
+                            drawedLines = drawedLines.filter(l => !toBeRemoved.some(r => r.begin.x === l.begin.x && r.begin.y === l.begin.y &&
+                                r.end.x === l.end.x && r.end.y === l.end.y));
+
+                            updateDrawingCanvas([], drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
+
+                            // drawing the old zones
+                            canvasService.drawZones(zones, drawedZones, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, true, alpha);
+                        }
+                    }
+                    break;
+                case 'draw_zone':
+                    {
+                        dragingStarted++;
                         if (dragingStarted === 1) {
-                            // uniting the line with another one if close enoght
-                            prevClick = canvasService.uniteLinesIfClose(drawedLines, canvas.canvasMouseClickCoords(event));
-                        } else if (dragingStarted === 2){
-                            // setting the line parameters
-                            switch (canvasCtrl.speedDial.clickedButton) {
-                                case 'vertical': {
-                                    drawedLines.push({
-                                        begin: prevClick,
-                                        end  : {x: prevClick.x, y: mouseDownCoords.y},
-                                        type : canvasCtrl.speedDial.clickedButton
-                                    });
-                                } break;
-                                case 'horizontal': {
-                                    drawedLines.push({
-                                        begin: prevClick,
-                                        end  : {x: mouseDownCoords.x, y: prevClick.y},
-                                        type : canvasCtrl.speedDial.clickedButton
-                                    });
-                                } break;
-                                case 'inclined': {
-                                    drawedLines.push({
-                                        begin: prevClick,
-                                        end  : mouseDownCoords,
-                                        type : canvasCtrl.speedDial.clickedButton
-                                    });
-                                } break;
+                            prevClick = canvas.canvasMouseClickCoords(event);
+                        } else if (dragingStarted === 2) {
+                            let topLeft = null;
+                            let bottomRight = null;
+                            //up left
+                            if (prevClick.x < mouseDownCoords.x && prevClick.y < mouseDownCoords.y) {
+                                drawedZones.push({
+                                    topLeft: prevClick,
+                                    bottomRight: mouseDownCoords,
+                                    floor: canvasCtrl.defaultFloor[0].id
+                                });
+                            } //up right
+                            else if (prevClick.x > mouseDownCoords.x && prevClick.y < mouseDownCoords.y) {
+                                topLeft = { x: mouseDownCoords.x, y: prevClick.y };
+                                bottomRight = { x: prevClick.x, y: mouseDownCoords.y };
+                                drawedZones.push({
+                                    topLeft: topLeft,
+                                    bottomRight: bottomRight,
+                                    floor: canvasCtrl.defaultFloor[0].id
+                                });
+                            } //down left
+                            else if (prevClick.x < mouseDownCoords.x && prevClick.y > mouseDownCoords.y) {
+                                topLeft = { x: prevClick.x, y: mouseDownCoords.y };
+                                bottomRight = { x: mouseDownCoords.x, y: prevClick.y };
+                                drawedZones.push({
+                                    topLeft: topLeft,
+                                    bottomRight: bottomRight,
+                                    floor: canvasCtrl.defaultFloor[0].id
+                                });
+                            } //down right
+                            else if (prevClick.x > mouseDownCoords.x && prevClick.y > mouseDownCoords.y) {
+                                drawedZones.push({
+                                    topLeft: mouseDownCoords,
+                                    bottomRight: prevClick,
+                                    floor: canvasCtrl.defaultFloor[0].id
+                                });
+                            } else {
+                                console.log('no case finded');
                             }
                             dragingStarted = 0;
                         }
                     }
-                } break;
-                case 'drop_anchor': {
-                    $mdDialog.show({
-                        templateUrl        : componentsPath + 'select_drop_anchor.html',
-                        parent             : angular.element(document.body),
-                        targetEvent        : event,
-                        clickOutsideToClose: true,
-                        controller         : ['$scope', 'dataService', ($scope, dataService) => {
-                            $scope.dropAnchor = {
-                                selectedAnchor: ''
-                            };
+                    break;
+                case 'modify_zone':
+                    {
+                        dragingStarted++;
 
-                            newSocketService.getData('get_anchors_by_location', {location: dataService.location.name}, (response) => {
+                        if (dragingStarted === 1) {
+                            prevClick = canvas.canvasMouseClickCoords(event);
+                            zoneToModify = drawedZones.find(z => canvasService.calculateDistance(prevClick.x, prevClick.y, z.topLeft.x, z.topLeft.y) < ZONE_MODIFY_POINT_DIMENSION);
 
-                                $scope.anchors              = response.result;
-                                dataService.locationAnchors = response.result;
-                                $scope.$apply();
+                            let realHeight = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
+
+                            let virtualPositionTop = null;
+                            let virtualPositionBottom = null;
+
+                            let selectedZone = zones.find(z => {
+                                virtualPositionTop = scaleIconSize(z.x_left, z.y_up, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
+                                virtualPositionBottom = scaleIconSize(z.x_right, z.y_down, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
+
+                                return (canvasService.calculateDistance(prevClick.x, prevClick.y, virtualPositionTop.width, virtualPositionTop.height) < ZONE_MODIFY_POINT_DIMENSION)
                             });
 
-                            $scope.$watch('dropAnchor.selectedAnchor', (newValue) => {
-                                let currentValue = "" + newValue;
-                                if (currentValue !== '') {
-                                    anchorToDrop = currentValue;
-                                    $mdDialog.hide();
+                            if (selectedZone !== undefined) {
 
-                                    let scaledSize                              = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, mouseDownCoords.x, mouseDownCoords.y);
-
-                                    let index = dataService.locationAnchors.findIndex( a => a.name === newValue);
-                                    let floorAnchorIndex = dataService.anchors.findIndex (a => a.name === newValue);
-
-                                    // controlling if I find the anchor on the floor
-                                    if (floorAnchorIndex !== -1) {
-                                        dataService.anchors[floorAnchorIndex].x_pos    = parseFloat(scaledSize.x);
-                                        dataService.anchors[floorAnchorIndex].y_pos    = parseFloat(scaledSize.y);
-                                        dataService.anchors[floorAnchorIndex].floor_id = canvasCtrl.defaultFloor[0].id;
-                                        dataService.anchorsToUpdate.push(dataService.anchors[floorAnchorIndex]);
-                                    }
-                                    // if the anchor is not on this floor I get it from another floor
-                                    else{
-                                        dataService.locationAnchors[index].x_pos    = parseFloat(scaledSize.x);
-                                        dataService.locationAnchors[index].y_pos    = parseFloat(scaledSize.y);
-                                        dataService.locationAnchors[index].floor_id = canvasCtrl.defaultFloor[0].id;
-
-                                        dataService.anchors.push(dataService.locationAnchors[index]);
-                                        dataService.anchorsToUpdate.push(dataService.locationAnchors[index]);
-                                    }
-
-                                    updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
-                                }
-                            });
-                        }]
-                    });
-                } break;
-                case 'delete': {
-                    // selecting the lines to be removed
-                    let toBeRemoved = drawedLines.filter(l => (canvasService.calculateDistance(l.begin.x, l.begin.y, mouseDownCoords.x, mouseDownCoords.y) < LINE_UNION_SPACE)
-                        || (canvasService.calculateDistance(l.end.x, l.end.y, mouseDownCoords.x, mouseDownCoords.y) < LINE_UNION_SPACE));
-
-                    // if there are lines to be removed I remove them
-                    if (toBeRemoved.length > 0) {
-                        drawedLines = drawedLines.filter(l => !toBeRemoved.some(r => r.begin.x === l.begin.x && r.begin.y === l.begin.y
-                            && r.end.x === l.end.x && r.end.y === l.end.y));
-
-                        updateDrawingCanvas([], drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
-
-                        // drawing the old zones
-                        canvasService.drawZones(zones, drawedZones, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, true, alpha);
-                    }
-                } break;
-                case 'draw_zone': {
-                    dragingStarted++;
-                    if (dragingStarted === 1) {
-                        prevClick = canvas.canvasMouseClickCoords(event);
-                    } else if (dragingStarted === 2) {
-                        let topLeft     = null;
-                        let bottomRight = null;
-                        //up left
-                        if (prevClick.x < mouseDownCoords.x && prevClick.y < mouseDownCoords.y) {
-                            drawedZones.push({
-                                topLeft    : prevClick,
-                                bottomRight: mouseDownCoords,
-                                floor      : canvasCtrl.defaultFloor[0].id
-                            });
-                        }//up right
-                        else if (prevClick.x > mouseDownCoords.x && prevClick.y < mouseDownCoords.y) {
-                            topLeft     = {x: mouseDownCoords.x, y: prevClick.y};
-                            bottomRight = {x: prevClick.x, y: mouseDownCoords.y};
-                            drawedZones.push({
-                                topLeft    : topLeft,
-                                bottomRight: bottomRight,
-                                floor      : canvasCtrl.defaultFloor[0].id
-                            });
-                        }//down left
-                        else if (prevClick.x < mouseDownCoords.x && prevClick.y > mouseDownCoords.y) {
-                            topLeft     = {x: prevClick.x, y: mouseDownCoords.y};
-                            bottomRight = {x: mouseDownCoords.x, y: prevClick.y};
-                            drawedZones.push({
-                                topLeft    : topLeft,
-                                bottomRight: bottomRight,
-                                floor      : canvasCtrl.defaultFloor[0].id
-                            });
-                        }//down right
-                        else if (prevClick.x > mouseDownCoords.x && prevClick.y > mouseDownCoords.y) {
-                            drawedZones.push({
-                                topLeft    : mouseDownCoords,
-                                bottomRight: prevClick,
-                                floor      : canvasCtrl.defaultFloor[0].id
-                            });
-                        } else {
-                            console.log('no case finded');
-                        }
-                        dragingStarted = 0;
-                    }
-                } break;
-                case 'modify_zone': {
-                    dragingStarted++;
-
-                    if (dragingStarted === 1){
-                        prevClick = canvas.canvasMouseClickCoords(event);
-                        zoneToModify = drawedZones.find(z => canvasService.calculateDistance(prevClick.x, prevClick.y, z.topLeft.x, z.topLeft.y) < ZONE_MODIFY_POINT_DIMENSION);
-
-                        let realHeight = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
-
-                        let virtualPositionTop = null;
-                        let virtualPositionBottom =  null;
-
-                        let selectedZone = zones.find(z => {
-                            virtualPositionTop    = scaleIconSize(z.x_left, z.y_up, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
-                            virtualPositionBottom = scaleIconSize(z.x_right, z.y_down, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
-
-                            return (canvasService.calculateDistance(prevClick.x, prevClick.y, virtualPositionTop.width, virtualPositionTop.height) < ZONE_MODIFY_POINT_DIMENSION)
-                        });
-
-                        if (selectedZone !== undefined) {
-
-                            zoneToModify = {
-                                id         : selectedZone.id,
-                                topLeft    : {x: virtualPositionTop.width, y: virtualPositionTop.height},
-                                bottomRight: {x: virtualPositionBottom.width, y: virtualPositionBottom.height},
-                                floor      : canvasCtrl.defaultFloor[0].id
-                            };
-                        }
-                    }
-
-                    if (zoneToModify === undefined){
-                        dragingStarted = 0;
-                    }
-
-                    if (dragingStarted === 2) {
-                        if (zoneToModify !== undefined) {
-                            if (zoneToModify.id !== undefined) {
-                                let topLeft     = null;
-                                let bottomRight = null;
-                                let zoneToLoad = {id: zoneToModify.id, floor: canvasCtrl.defaultFloor[0].id};
-                                if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
-                                    drawedZones.push(canvasService.createZoneObject(zoneToLoad, mouseDownCoords, zoneToModify.bottomRight))
-                                } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
-                                    topLeft     = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
-                                    bottomRight = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
-                                    drawedZones.push(canvasService.createZoneObject(zoneToLoad, topLeft, bottomRight));
-                                } else if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
-                                    topLeft     = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
-                                    bottomRight = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
-                                    drawedZones.push(canvasService.createZoneObject(zoneToLoad, topLeft, bottomRight));
-                                } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
-                                    drawedZones.push(canvasService.createZoneObject(zoneToLoad, zoneToModify.bottomRight, mouseDownCoords, bottomRight));
-                                }
-
-                                let modifiedZone = drawedZones.find(z => z.id === zoneToModify.id);
-
-                                let topLeftScaled     = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, modifiedZone.topLeft.x, modifiedZone.topLeft.y);
-                                let bottomDownScalled = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, modifiedZone.bottomRight.x, modifiedZone.bottomRight.y);
-
-                                newSocketService.getData('update_floor_zone', {
-                                    zone_id: zoneToModify.id,
-                                    x_left : topLeftScaled.x,
-                                    x_right: bottomDownScalled.x,
-                                    y_up   : topLeftScaled.y,
-                                    y_down : bottomDownScalled.y
-                                }, (response) => {
-                                    if (response.result !== 1) {
-                                        $mdToast.show({
-                                            hideDelay       : TOAST_SHOWING_TIME,
-                                            position        : 'bottom center',
-                                            controller      : 'toastController',
-                                            bindToController: true,
-                                            locals          : {
-                                                message   : lang.zoneFloorUpdated,
-                                                background: 'background-lightgreen',
-                                                color     : 'color-black'
-                                            },
-                                            templateUrl     : componentsPath + 'toast.html'
-                                        });
-                                    } else{
-                                        // TODO show all the toast from a function
-                                        $mdToast.show({
-                                            hideDelay       : TOAST_SHOWING_TIME,
-                                            position        : 'bottom center',
-                                            controller      : 'toastController',
-                                            bindToController: true,
-                                            locals          : {
-                                                message   : lang.zoneFloorNotUpdated,
-                                                background: 'background-darkred',
-                                                color     : 'color-white'
-                                            },
-                                            templateUrl     : componentsPath + 'toast.html'
-                                        });
-                                    }
-                                });
-                            } else {
-                                let topLeft     = null;
-                                let bottomRight = null;
-                                let zoneToLoad  = {floor: canvasCtrl.defaultFloor[0].id};
-                                if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
-                                    drawedZones.push(canvasService.createZoneObject(zoneToLoad, mouseDownCoords, zoneToModify.bottomRight))
-                                } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
-                                    topLeft     = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
-                                    bottomRight = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
-                                    drawedZones.push(canvasService.createZoneObject(zoneToLoad, topLeft, bottomRight))
-                                } else if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
-                                    topLeft     = {x: mouseDownCoords.x, y: zoneToModify.bottomRight.y};
-                                    bottomRight = {x: zoneToModify.bottomRight.x, y: mouseDownCoords.y};
-                                    drawedZones.push(canvasService.createZoneObject(zoneToLoad, topLeft, bottomRight))
-                                } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
-                                    drawedZones.push(canvasService.createZoneObject(zoneToLoad, zoneToModify.bottomRight, mouseDownCoords))
-                                }
+                                zoneToModify = {
+                                    id: selectedZone.id,
+                                    topLeft: { x: virtualPositionTop.width, y: virtualPositionTop.height },
+                                    bottomRight: { x: virtualPositionBottom.width, y: virtualPositionBottom.height },
+                                    floor: canvasCtrl.defaultFloor[0].id
+                                };
                             }
-                            zoneToModify   = undefined;
                         }
-                        dragingStarted = 0;
-                    }
-                } break;
-                case 'delete_zone':{
-                    let findedZones       = canvasService.findZones(zones, mouseDownCoords, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height);
-                    let findedDrawedZones = canvasService.findDrawedZones(drawedZones, mouseDownCoords);
 
-                    if (findedDrawedZones.length !== 0) {
-                        drawedZones = drawedZones.filter(z => !findedDrawedZones.some(fz => angular.equals(z, fz)));
-                    }
+                        if (zoneToModify === undefined) {
+                            dragingStarted = 0;
+                        }
 
-                    if (findedZones.length !== 0) {
-                        newSocketService.getData('delete_floor_zones', {zones: findedZones}, (response) => {
+                        if (dragingStarted === 2) {
+                            if (zoneToModify !== undefined) {
+                                if (zoneToModify.id !== undefined) {
+                                    let topLeft = null;
+                                    let bottomRight = null;
+                                    let zoneToLoad = { id: zoneToModify.id, floor: canvasCtrl.defaultFloor[0].id };
+                                    if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
+                                        drawedZones.push(canvasService.createZoneObject(zoneToLoad, mouseDownCoords, zoneToModify.bottomRight))
+                                    } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
+                                        topLeft = { x: zoneToModify.bottomRight.x, y: mouseDownCoords.y };
+                                        bottomRight = { x: mouseDownCoords.x, y: zoneToModify.bottomRight.y };
+                                        drawedZones.push(canvasService.createZoneObject(zoneToLoad, topLeft, bottomRight));
+                                    } else if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
+                                        topLeft = { x: mouseDownCoords.x, y: zoneToModify.bottomRight.y };
+                                        bottomRight = { x: zoneToModify.bottomRight.x, y: mouseDownCoords.y };
+                                        drawedZones.push(canvasService.createZoneObject(zoneToLoad, topLeft, bottomRight));
+                                    } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
+                                        drawedZones.push(canvasService.createZoneObject(zoneToLoad, zoneToModify.bottomRight, mouseDownCoords, bottomRight));
+                                    }
 
-                            if (response.result.length === 0) {
-                                $mdToast.show({
-                                    hideDelay       : TOAST_SHOWING_TIME,
-                                    position        : 'bottom center',
-                                    controller      : 'toastController',
-                                    bindToController: true,
-                                    locals          : {
-                                        message   : lang.zoneFloorDeleted,
-                                        background: 'background-lightgreen',
-                                        color     : 'color-black'
-                                    },
-                                    templateUrl     : componentsPath + 'toast.html'
-                                });
-                                zones = zones.filter(z => !findedZones.some(fz => fz === z.id));
-                            } else{
-                                $mdToast.show({
-                                    hideDelay       : TOAST_SHOWING_TIME,
-                                    position        : 'bottom center',
-                                    controller      : 'toastController',
-                                    bindToController: true,
-                                    locals          : {
-                                        message   : lang.zoneFloorNotDeleted,
-                                        background: 'background-darkred',
-                                        color     : 'color-white'
-                                    },
-                                    templateUrl     : componentsPath + 'toast.html'
-                                });
+                                    let modifiedZone = drawedZones.find(z => z.id === zoneToModify.id);
+
+                                    let topLeftScaled = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, modifiedZone.topLeft.x, modifiedZone.topLeft.y);
+                                    let bottomDownScalled = scaleSizeFromVirtualToReal(canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, modifiedZone.bottomRight.x, modifiedZone.bottomRight.y);
+
+                                    newSocketService.getData('update_floor_zone', {
+                                        zone_id: zoneToModify.id,
+                                        x_left: topLeftScaled.x,
+                                        x_right: bottomDownScalled.x,
+                                        y_up: topLeftScaled.y,
+                                        y_down: bottomDownScalled.y
+                                    }, (response) => {
+                                        if (response.result !== 1) {
+                                            $mdToast.show({
+                                                hideDelay: TOAST_SHOWING_TIME,
+                                                position: 'bottom center',
+                                                controller: 'toastController',
+                                                bindToController: true,
+                                                locals: {
+                                                    message: lang.zoneFloorUpdated,
+                                                    background: 'background-lightgreen',
+                                                    color: 'color-black'
+                                                },
+                                                templateUrl: componentsPath + 'toast.html'
+                                            });
+                                        } else {
+                                            // TODO show all the toast from a function
+                                            $mdToast.show({
+                                                hideDelay: TOAST_SHOWING_TIME,
+                                                position: 'bottom center',
+                                                controller: 'toastController',
+                                                bindToController: true,
+                                                locals: {
+                                                    message: lang.zoneFloorNotUpdated,
+                                                    background: 'background-darkred',
+                                                    color: 'color-white'
+                                                },
+                                                templateUrl: componentsPath + 'toast.html'
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    let topLeft = null;
+                                    let bottomRight = null;
+                                    let zoneToLoad = { floor: canvasCtrl.defaultFloor[0].id };
+                                    if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
+                                        drawedZones.push(canvasService.createZoneObject(zoneToLoad, mouseDownCoords, zoneToModify.bottomRight))
+                                    } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y < zoneToModify.bottomRight.y) {
+                                        topLeft = { x: zoneToModify.bottomRight.x, y: mouseDownCoords.y };
+                                        bottomRight = { x: mouseDownCoords.x, y: zoneToModify.bottomRight.y };
+                                        drawedZones.push(canvasService.createZoneObject(zoneToLoad, topLeft, bottomRight))
+                                    } else if (mouseDownCoords.x < zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
+                                        topLeft = { x: mouseDownCoords.x, y: zoneToModify.bottomRight.y };
+                                        bottomRight = { x: zoneToModify.bottomRight.x, y: mouseDownCoords.y };
+                                        drawedZones.push(canvasService.createZoneObject(zoneToLoad, topLeft, bottomRight))
+                                    } else if (mouseDownCoords.x > zoneToModify.bottomRight.x && mouseDownCoords.y > zoneToModify.bottomRight.y) {
+                                        drawedZones.push(canvasService.createZoneObject(zoneToLoad, zoneToModify.bottomRight, mouseDownCoords))
+                                    }
+                                }
+                                zoneToModify = undefined;
                             }
-                        });
+                            dragingStarted = 0;
+                        }
                     }
-                }
+                    break;
+                case 'delete_zone':
+                    {
+                        let findedZones = canvasService.findZones(zones, mouseDownCoords, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height);
+                        let findedDrawedZones = canvasService.findDrawedZones(drawedZones, mouseDownCoords);
+
+                        if (findedDrawedZones.length !== 0) {
+                            drawedZones = drawedZones.filter(z => !findedDrawedZones.some(fz => angular.equals(z, fz)));
+                        }
+
+                        if (findedZones.length !== 0) {
+                            newSocketService.getData('delete_floor_zones', { zones: findedZones }, (response) => {
+
+                                if (response.result.length === 0) {
+                                    $mdToast.show({
+                                        hideDelay: TOAST_SHOWING_TIME,
+                                        position: 'bottom center',
+                                        controller: 'toastController',
+                                        bindToController: true,
+                                        locals: {
+                                            message: lang.zoneFloorDeleted,
+                                            background: 'background-lightgreen',
+                                            color: 'color-black'
+                                        },
+                                        templateUrl: componentsPath + 'toast.html'
+                                    });
+                                    zones = zones.filter(z => !findedZones.some(fz => fz === z.id));
+                                } else {
+                                    $mdToast.show({
+                                        hideDelay: TOAST_SHOWING_TIME,
+                                        position: 'bottom center',
+                                        controller: 'toastController',
+                                        bindToController: true,
+                                        locals: {
+                                            message: lang.zoneFloorNotDeleted,
+                                            background: 'background-darkred',
+                                            color: 'color-white'
+                                        },
+                                        templateUrl: componentsPath + 'toast.html'
+                                    });
+                                }
+                            });
+                        }
+                    }
             }
 
             if (!canvasCtrl.switch.showDrawing) {
                 //managing the click on the tag icons
-                dataService.floorTags.filter(t => !t.radio_switched_off && !dataService.hasTagSuperatedSecondDelta(t)).forEach(function (tag) {
+                dataService.floorTags.filter(t => !t.radio_switched_off && !dataService.hasTagSuperatedSecondDelta(t)).forEach(function(tag) {
                     // getting the position of the tag
                     let virtualTagPosition = scaleIconSize(tag.x_pos, tag.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                     // getting the group of tags
-                    let groupTag           = cloudAndSinle.clouds.find(tc => tc.some(t => t.id === tag.id));
+                    let groupTag = cloudAndSinle.clouds.find(tc => tc.some(t => t.id === tag.id));
 
                     // controlling if the tags have to be displayed
                     if (canvasCtrl.isAdmin || canvasCtrl.isTracker || (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags)) {
@@ -1129,17 +1167,17 @@
                             // controlling if at the click there is a single tag
                             if (groupTag === undefined) {
                                 $mdDialog.show({
-                                    locals             : {tag: tag},
-                                    templateUrl        : componentsPath + 'tag-info.html',
-                                    parent             : angular.element(document.body),
-                                    targetEvent        : event,
+                                    locals: { tag: tag },
+                                    templateUrl: componentsPath + 'tag-info.html',
+                                    parent: angular.element(document.body),
+                                    targetEvent: event,
                                     clickOutsideToClose: true,
-                                    controller         : ['$scope', 'tag', function ($scope, tag) {
-                                        $scope.tag    = tag;
+                                    controller: ['$scope', 'tag', function($scope, tag) {
+                                        $scope.tag = tag;
                                         $scope.alarms = dataService.loadTagAlarmsForInfoWindow(tag);
 
-                                        $scope.isTagInAlarm = ($scope.alarms.length !== 0) ? 'background-red' : dataService.isTagOffline(tag)
-                                            ? 'background-darkgray' : 'background-green';
+                                        $scope.isTagInAlarm = ($scope.alarms.length !== 0) ? 'background-red' : dataService.isTagOffline(tag) ?
+                                            'background-darkgray' : 'background-green';
 
                                         $scope.hide = () => {
                                             $mdDialog.hide();
@@ -1151,24 +1189,24 @@
                             else if (!canvasService.singleTagAtPosition(cloudAndSinle.single, canvasCtrl.defaultFloor[0].width, canvas, realHeight, mouseDownCoords)) {
                                 if (!dialogShown) {
                                     $mdDialog.show({
-                                        locals             : {tags: groupTag},
-                                        templateUrl        : componentsPath + 'tags-info.html',
-                                        parent             : angular.element(document.body),
-                                        targetEvent        : event,
+                                        locals: { tags: groupTag },
+                                        templateUrl: componentsPath + 'tags-info.html',
+                                        parent: angular.element(document.body),
+                                        targetEvent: event,
                                         clickOutsideToClose: true,
-                                        controller         : ['$scope', 'tags', function ($scope, tags) {
-                                            $scope.tags             = tags;
-                                            $scope.isTagInAlarm     = (dataService.checkIfTagsHaveAlarms(tags)) ? 'background-red'
-                                                : (dataService.checkIfTagsAreOffline(tags)) ? 'background-darkgray' : 'background-green';
-                                            $scope.iconPath         = {icon: iconsPath};
+                                        controller: ['$scope', 'tags', function($scope, tags) {
+                                            $scope.tags = tags;
+                                            $scope.isTagInAlarm = (dataService.checkIfTagsHaveAlarms(tags)) ? 'background-red' :
+                                                (dataService.checkIfTagsAreOffline(tags)) ? 'background-darkgray' : 'background-green';
+                                            $scope.iconPath = { icon: iconsPath };
                                             $scope.collapsibleState = COLLAPSIBLE_STATE;
-                                            let tempAlarmTag        = [];
-                                            let listState           = [];
+                                            let tempAlarmTag = [];
+                                            let listState = [];
 
                                             // getting the alarms for each tag
                                             $scope.tags.forEach(tagElem => {
                                                 let tagAlarms = dataService.loadTagAlarmsForInfoWindow(tagElem);
-                                                tagAlarms.forEach(function (ta) {
+                                                tagAlarms.forEach(function(ta) {
                                                     tempAlarmTag.push(ta);
                                                 });
                                                 listState.push(COLLAPSIBLE_STATE);
@@ -1199,19 +1237,19 @@
                 });
             }
             //managing the click on the anchor icons
-            dataService.anchors.forEach(function (anchor) {
+            dataService.anchors.forEach(function(anchor) {
                 if (!isTagAtCoords(mouseDownCoords, CANVAS_TAG_ICON_SIZE) && !canvasCtrl.switch.showDrawing) {
                     let virtualAnchorPosition = scaleIconSize(anchor.x_pos, anchor.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                     if (dataService.isElementAtClick(virtualAnchorPosition, mouseDownCoords, CANVAS_ANCHOR_ICON_SIZE)) {
 
                         $mdDialog.show({
-                            locals             : {anchor: anchor},
-                            templateUrl        : componentsPath + 'anchor-info.html',
-                            parent             : angular.element(document.body),
-                            targetEvent        : event,
+                            locals: { anchor: anchor },
+                            templateUrl: componentsPath + 'anchor-info.html',
+                            parent: angular.element(document.body),
+                            targetEvent: event,
                             clickOutsideToClose: true,
-                            controller         : ['$scope', 'anchor', function ($scope, anchor) {
-                                $scope.anchor         = anchor;
+                            controller: ['$scope', 'anchor', function($scope, anchor) {
+                                $scope.anchor = anchor;
                                 $scope.isAnchorOnline = 'background-green';
 
                                 if (anchor.is_offline) {
@@ -1228,16 +1266,16 @@
             });
 
             //listen for the cameras click events
-            dataService.cameras.forEach(function (camera) {
+            dataService.cameras.forEach(function(camera) {
                 if (!isTagAtCoords(mouseDownCoords, CANVAS_TAG_ICON_SIZE) && !canvasCtrl.switch.showDrawing) {
                     let virtualCamerasPosition = scaleIconSize(camera.x_pos, camera.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                     if (dataService.isElementAtClick(virtualCamerasPosition, mouseDownCoords, CANVAS_CAMERA_ICON_SIZE)) {
                         $mdDialog.show({
-                            templateUrl        : componentsPath + 'video-camera.html',
-                            parent             : angular.element(document.body),
-                            targetEvent        : event,
+                            templateUrl: componentsPath + 'video-camera.html',
+                            parent: angular.element(document.body),
+                            targetEvent: event,
                             clickOutsideToClose: true,
-                            controller         : ['$scope', function ($scope) {
+                            controller: ['$scope', function($scope) {
                                 $scope.camera = camera;
 
                                 $scope.hide = () => {
@@ -1251,7 +1289,7 @@
         }, false);
 
         //showing the info window with all the alarms
-        $scope.showAlarms = function () {
+        $scope.showAlarms = function() {
             dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
 
             // showing the alarm table
@@ -1265,8 +1303,8 @@
          * @returns {*}
          */
         let isTagAtCoords = (coords, distance) => {
-            return dataService.floorTags.some(function (tag) {
-                let realHeight         = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
+            return dataService.floorTags.some(function(tag) {
+                let realHeight = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
                 let virtualTagPosition = scaleIconSize(tag.x_pos, tag.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                 return canvasService.isElementAtClick(virtualTagPosition, coords, distance)
             })
@@ -1285,7 +1323,7 @@
          */
         $scope.showOfflineAnchorsIndoor = () => {
             dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
-            dataService.showOfflineAnchorsIndoor('canvas', constantUpdateCanvas, null);
+            dataService.showOfflineAnchors('canvas', constantUpdateCanvas, null);
         };
 
         /**
@@ -1293,21 +1331,21 @@
          */
         $scope.showEmergencyZone = () => {
             $mdDialog.show({
-                locals             : {floor: canvasCtrl.defaultFloor[0].name, tags: dataService.floorTags},
-                templateUrl        : componentsPath + 'emergency-alarm-info.html',
-                parent             : angular.element(document.body),
-                targetEvent        : event,
+                locals: { floor: canvasCtrl.defaultFloor[0].name, tags: dataService.floorTags },
+                templateUrl: componentsPath + 'emergency-alarm-info.html',
+                parent: angular.element(document.body),
+                targetEvent: event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', 'floor', 'tags', function ($scope, floor, tags) {
-                    $scope.safeTags          = null;
-                    $scope.unsafeTags        = [];
-                    $scope.data              = [];
-                    $scope.evacuation_value  = lang.initEvacuation;
+                controller: ['$scope', 'floor', 'tags', function($scope, floor, tags) {
+                    $scope.safeTags = null;
+                    $scope.unsafeTags = [];
+                    $scope.data = [];
+                    $scope.evacuation_value = lang.initEvacuation;
                     $scope.evacuation_button = 'background-red';
-                    let evacuation_on        = false;
+                    let evacuation_on = false;
 
                     $scope.men = {
-                        safe  : 0,
+                        safe: 0,
                         unsafe: 0
                     };
 
@@ -1316,15 +1354,15 @@
 
                     newSocketService.getData('get_emergency_info', {
                         location: dataService.location.name,
-                        floor   : floor
+                        floor: floor
                     }, (response) => {
                         if (!response.session_state)
                             window.location.reload();
 
-                        $scope.safeTags   = response.result;
+                        $scope.safeTags = response.result;
                         $scope.unsafeTags = tags.filter(t => !response.result.some(i => i.tag_name === t.name));
 
-                        $scope.men.safe   = response.result.length;
+                        $scope.men.safe = response.result.length;
                         $scope.men.unsafe = tags.length - response.result.length;
 
                         $scope.data = [$scope.men.safe, $scope.men.unsafe];
@@ -1333,13 +1371,13 @@
                     newSocketService.getData('get_evacuation', {}, (response) => {
                         console.log(response);
                         if (response.result == 1) {
-                            evacuation_on            = true;
+                            evacuation_on = true;
                             $scope.evacuation_button = 'background-green';
-                            $scope.evacuation_value  = lang.reset;
+                            $scope.evacuation_value = lang.reset;
                         } else {
-                            $scope.evacuation_on     = false;
+                            $scope.evacuation_on = false;
                             $scope.evacuation_button = 'background-red';
-                            $scope.evacuation_value  = lang.initEvacuation;
+                            $scope.evacuation_value = lang.initEvacuation;
                         }
                     });
 
@@ -1348,17 +1386,17 @@
                         if (evacuation_on == false) {
                             newSocketService.getData('set_evacuation', {}, (response) => {
                                 if (response.result > 0) {
-                                    evacuation_on            = true;
+                                    evacuation_on = true;
                                     $scope.evacuation_button = 'background-green';
-                                    $scope.evacuation_value  = lang.reset;
+                                    $scope.evacuation_value = lang.reset;
                                 }
                             });
                         } else {
                             newSocketService.getData('stop_evacuation', {}, (response) => {
                                 if (response.result > 0) {
-                                    evacuation_on            = false;
+                                    evacuation_on = false;
                                     $scope.evacuation_button = 'background-red';
-                                    $scope.evacuation_value  = lang.initEvacuation;
+                                    $scope.evacuation_value = lang.initEvacuation;
                                 }
                             })
                         }
@@ -1377,7 +1415,7 @@
         };
 
         //freeing the resources on page destroy
-        $scope.$on("$destroy", function () {
+        $scope.$on("$destroy", function() {
             $mdDialog.hide();
             dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
         });

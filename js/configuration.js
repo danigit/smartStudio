@@ -2,22 +2,22 @@
  * SOCKET COFIGURATIONS
  ***************************************************************/
 const SOCKET_RECONECT_INTERVAL = 5000;
-const CEZAR_KEY                = 10;
-const SOCKET_PATH              = 'ws://localhost:8090';
+const CEZAR_KEY = 10;
+const SOCKET_PATH = 'ws://localhost:8090';
 // the color of the write on the login button when is pushed
-const LOGING_IN_COLOR          = '#1b5e20';
+const LOGING_IN_COLOR = '#1b5e20';
 // show or hide the second logo
-const SHOW_PARTNER_LOGO        = false;
+const SHOW_PARTNER_LOGO = true;
 // the time before closing the socket if no message arrives
-const MESSAGE_WAITING_TIME     = 30000;
+const MESSAGE_WAITING_TIME = 30000;
 
-let socketServer     = new WebSocket(SOCKET_PATH);
-let socketOpened     = false;
+let socketServer = new WebSocket(SOCKET_PATH);
+let socketOpened = false;
 let groupTagDistance = 0.5;
 // show or hide the console messages
-const DEBUG          = false;
+const DEBUG = false;
 
-socketServer.onopen = function () {
+socketServer.onopen = function() {
     socketOpened = true;
 };
 
@@ -36,15 +36,15 @@ const floorPath = 'img/floors/';
 /***************************************************************
  * CANVAS DEFAULT VARIABLES
  ***************************************************************/
-const canvasBorderSpace           = 25;
-const canvasGridPattern           = [5, 5];
-const CANVAS_GRID_COLOR           = 'lightgray';
+const canvasBorderSpace = 25;
+const canvasGridPattern = [5, 5];
+const CANVAS_GRID_COLOR = 'lightgray';
 // the ok color for the central headers
-const TIME_REST_COLOR_OK          = '#00FF00';
+const TIME_REST_COLOR_OK = '#00FF00';
 // the error color for the central headers
-const TIME_REST_COLOR_ERROR       = '#FF0000';
+const TIME_REST_COLOR_ERROR = '#FF0000';
 // the text color for the central ok header
-const TIME_REST_DESCRIPTION_OK    = 'OK';
+const TIME_REST_DESCRIPTION_OK = 'OK';
 // the error color for the central error header
 const TIME_REST_DESCRIPTION_ERROR = 'ERROR';
 // the time before the time rest is activated
@@ -84,26 +84,26 @@ const CIRCLE_STROKE_OPACITY = 0.8;
 const MAP_CONFIGURATION = [{
     featureType: "poi",
     elementType: "labels",
-    stylers    : [
-        {visibility: "off"}
+    stylers: [
+        { visibility: "off" }
     ]
 }, {
     featureType: "water",
     elementType: "labels",
-    stylers    : [
-        {visibility: "off"}
+    stylers: [
+        { visibility: "off" }
     ]
 }, {
     featureType: "road",
     elementType: "labels",
-    stylers    : [
-        {visibility: "off"}
+    stylers: [
+        { visibility: "off" }
     ]
 }];
 
 /***************************************************************
-* HOME COFIGURATIONS
-***************************************************************/
+ * HOME COFIGURATIONS
+ ***************************************************************/
 
 const HOME_ALARM_UPDATE_TIME = 1000;
 const OUTDOOR_ALARM_UPDATE_TIME = 1000;
@@ -119,32 +119,28 @@ const REFRESH_PAGE_IF_NOT_HOME_INTERVAL = 5000;
 // const MARKER_CLUSTER_IMAGE = "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m";
 // const MARKER_CLUSTER_IMAGE = iconsPath + '/markers/cloud_ok';
 const MARKER_CLUSTER_OK_IMAGE = {
-    styles: [
-        {
-            url: iconsPath + '/markers/cloud_ok1.png',
-            width: 55,
-            height: 55,
-            textSize: 20,
-            textColor:"white",
-        }
-    ]
+    styles: [{
+        url: iconsPath + '/markers/cloud_ok1.png',
+        width: 55,
+        height: 55,
+        textSize: 20,
+        textColor: "white",
+    }]
 };
 
 const MARKER_CLUSTER_ALARM_IMAGE = {
-    styles: [
-        {
-            url: iconsPath + '/markers/cloud_error1.png',
-            width: 55,
-            height: 55,
-            textSize: 20,
-            textColor:"white",
-        }
-    ]
+    styles: [{
+        url: iconsPath + '/markers/cloud_error1.png',
+        width: 55,
+        height: 55,
+        textSize: 20,
+        textColor: "white",
+    }]
 };
 
 // this is in function of the time of the calls, for example if I update the map every second then this is going to be
 // played every 5 seconds if the value is 4 (1 * 4 = 5)
-const AUDIO_PLAY_INTERVAL     = 4;
-const TOAST_SHOWING_TIME      = 5000;
-const COLLAPSIBLE_STATE       = true;
-const TABLE_CELL_MAX_LENGTH   = 500;
+const AUDIO_PLAY_INTERVAL = 4;
+const TOAST_SHOWING_TIME = 5000;
+const COLLAPSIBLE_STATE = true;
+const TABLE_CELL_MAX_LENGTH = 500;

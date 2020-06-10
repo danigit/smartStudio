@@ -1,4 +1,4 @@
-(function () {
+(function() {
     'use strict';
 
     //reloading angular module
@@ -16,48 +16,48 @@
     function dataService($mdDialog, $interval, $state, newSocketService) {
         let service = this;
 
-        service.user             = {};
-        service.location             = '';
-        service.locationFromClick    = '';
-        service.isAdmin              = '';
-        service.isUserManager              = '';
-        service.isTracker              = '';
-        service.defaultFloorName     = '';
-        service.tags                 = [];
-        service.userTags                 = [];
-        service.floorTags            = [];
-        service.anchors              = [];
-        service.locationAnchors              = [];
-        service.anchorsToUpdate              = [];
-        service.floors               = [];
-        service.userFloors           = [];
-        service.cameras              = [];
-        service.alarmsSounds         = [];
-        service.dynamicTags          = [];
-        service.updateMapTimer       = null;
-        service.canvasInterval       = undefined;
-        service.mapInterval          = undefined;
-        service.userInterval         = undefined;
-        service.superUserInterval    = undefined;
-        service.playAlarm            = false;
-        service.isLocationInside     = 0;
-        service.isSearchingTag       = false;
-        service.offlineTagsIsOpen    = false;
+        service.user = {};
+        service.location = '';
+        service.locationFromClick = '';
+        service.isAdmin = '';
+        service.isUserManager = '';
+        service.isTracker = '';
+        service.defaultFloorName = '';
+        service.tags = [];
+        service.userTags = [];
+        service.floorTags = [];
+        service.anchors = [];
+        service.locationAnchors = [];
+        service.anchorsToUpdate = [];
+        service.floors = [];
+        service.userFloors = [];
+        service.cameras = [];
+        service.alarmsSounds = [];
+        service.dynamicTags = [];
+        service.updateMapTimer = null;
+        service.canvasInterval = undefined;
+        service.mapInterval = undefined;
+        service.userInterval = undefined;
+        service.superUserInterval = undefined;
+        service.playAlarm = false;
+        service.isLocationInside = 0;
+        service.isSearchingTag = false;
+        service.offlineTagsIsOpen = false;
         service.offlineAnchorsIsOpen = false;
         service.defaultFloorCanceled = false;
-        service.homeMap              = null;
-        service.drawingManagerRect   = null;
-        service.drawingManagerRound  = null;
-        service.outdoorZones         = [];
-        service.outdoorZoneInserted  = false;
-        service.playedTime           = 0;
-        service.alarmsInterval       = undefined;
-        service.reconnectSocket      = null;
+        service.homeMap = null;
+        service.drawingManagerRect = null;
+        service.drawingManagerRound = null;
+        service.outdoorZones = [];
+        service.outdoorZoneInserted = false;
+        service.playedTime = 0;
+        service.alarmsInterval = undefined;
+        service.reconnectSocket = null;
         service.isInHome = false;
-        service.switch               = {
+        service.switch = {
             showFullscreen: false,
         };
-        service.lastMessageTime      = null;
+        service.lastMessageTime = null;
 
         service.haveToShowBatteryEmpty = (tag) => {
             if (service.checkIfTagHasAlarmNoBattery(tag) || (tag.battery_status && service.hasTagSuperatedSecondDeltaAlarms(tag))) {
@@ -70,18 +70,18 @@
         service.showAlarms = (constantUpdateNotifications, map, position) => {
             // showing the table with the alarms
             $mdDialog.show({
-                templateUrl        : componentsPath + 'indoor-alarms-info.html',
-                parent             : angular.element(document.body),
-                targetEvent        : event,
+                templateUrl: componentsPath + 'indoor-alarms-info.html',
+                parent: angular.element(document.body),
+                targetEvent: event,
                 clickOutsideToClose: true,
-                multiple           : true,
-                controller         : ['$scope', 'newSocketService', '$timeout', '$mdToast', ($scope, newSocketService, $timeout, $mdToast) => {
+                multiple: true,
+                controller: ['$scope', 'newSocketService', '$timeout', '$mdToast', ($scope, newSocketService, $timeout, $mdToast) => {
 
-                    $scope.alarms          = [];
+                    $scope.alarms = [];
                     $scope.outlocationTags = service.switch.showOutrangeTags;
                     $scope.tableEmpty = true;
 
-                    let locations          = [];
+                    let locations = [];
                     // noinspection JSMismatchedCollectionQueryUpdate
                     let indoorLocationTags = [];
                     // noinspection JSMismatchedCollectionQueryUpdate
@@ -91,9 +91,9 @@
 
                     $scope.query = {
                         limitOptions: [5, 10, 15],
-                        order       : 'name',
-                        limit       : 5,
-                        page        : 1
+                        order: 'name',
+                        limit: 5,
+                        page: 1
                     };
 
                     // starting the interval for updating the alarms in the table
@@ -109,27 +109,27 @@
                             // getting all the tags of the logged user
                             // they are all the indoor tags because the tags are related to the users by the anchors and the anchors are
                             // only in indoor locations
-                            newSocketService.getData('get_tags_by_user', {user: service.user.username}, (userTags) => {
+                            newSocketService.getData('get_tags_by_user', { user: service.user.username }, (userTags) => {
 
                                 // get all the locations of the logged user
-                                newSocketService.getData('get_user_locations', {user: service.user.id}, (userLocations) => {
+                                newSocketService.getData('get_user_locations', { user: service.user.id }, (userLocations) => {
 
                                     // getting all the locations
                                     newSocketService.getData('get_all_locations', {}, (response) => {
 
                                         locations = response.result;
 
-                                        indoorLocationTags        = userTags.result.filter(t => !t.radio_switched_off);
+                                        indoorLocationTags = userTags.result.filter(t => !t.radio_switched_off);
                                         // the dags indoor have no location if the anchor is null
-                                        let indoorNoLocationTags  = allTags.filter(t => !service.isOutdoor(t) && t.anchor_id === null);
+                                        let indoorNoLocationTags = allTags.filter(t => !service.isOutdoor(t) && t.anchor_id === null);
 
                                         // getting the tags outdoor that have a location
                                         //TODO - the hasTagAValidGps is superflous because I control already in isOutdoor but I have to understand if isOutdoor
                                         // should controll ongli gps != 0
-                                        let outdoorLocationTags   = allTags.filter(t => service.isOutdoor(t) && service.hasTagAValidGps(t));
+                                        let outdoorLocationTags = allTags.filter(t => service.isOutdoor(t) && service.hasTagAValidGps(t));
 
                                         // getting the tags outdoor that have no site setted
-                                        let outdoorNoSiteTags     = allTags.filter(t => (service.hasTagAnInvalidGps(t)));
+                                        let outdoorNoSiteTags = allTags.filter(t => (service.hasTagAnInvalidGps(t)));
 
                                         // getting the outdoor tags without any location
                                         let outdoorNoLocationTags = service.getTagsWithoutAnyLocation(outdoorLocationTags, locations);
@@ -184,8 +184,8 @@
                                         // getting the outdoor tags without a location alarms
                                         outdoorNoLocationTags.forEach(tag => {
                                             // show the tag as no location
-                                            if (!locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius)
-                                                && service.switch.showOutrangeTags)
+                                            if (!locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius) &&
+                                                service.switch.showOutrangeTags)
                                                 allTagsAlarms.push(service.createAlarmObjectForInfoWindow(tag, lang.outOfSite, lang.outOfSiteDescription, tagsIconPath + 'tag_out_of_location.png', lang.noLocation));
 
                                             // getting tags alarms
@@ -234,7 +234,7 @@
 
                                 // if the tag has a location then I go in the outdoor location
                                 if (tagLocation !== undefined) {
-                                    newSocketService.getData('save_location', {location: tagLocation.name}, (response) => {
+                                    newSocketService.getData('save_location', { location: tagLocation.name }, (response) => {
 
                                         if (response.result === 'location_saved') {
                                             $state.go('outdoor-location');
@@ -244,16 +244,16 @@
                                 //if the tag is out of all the locations the I show the message tag out of locations
                                 else {
                                     $mdDialog.show({
-                                        locals             : {alarmTag: tag},
-                                        templateUrl        : componentsPath + 'search-tag-outside.html',
-                                        parent             : angular.element(document.body),
-                                        targetEvent        : event,
+                                        locals: { alarmTag: tag },
+                                        templateUrl: componentsPath + 'search-tag-outside.html',
+                                        parent: angular.element(document.body),
+                                        targetEvent: event,
                                         clickOutsideToClose: true,
-                                        controller         : ['$scope', 'NgMap', 'alarmTag', function ($scope, NgMap, alarmTag) {
+                                        controller: ['$scope', 'NgMap', 'alarmTag', function($scope, NgMap, alarmTag) {
                                             $scope.isTagOutOfLocation = 'background-red';
-                                            $scope.locationName       = alarmTag.name + ' ' + lang.tagOutSite.toUpperCase();
-                                            $scope.mapConfiguration   = {
-                                                zoom    : 8,
+                                            $scope.locationName = alarmTag.name + ' ' + lang.tagOutSite.toUpperCase();
+                                            $scope.mapConfiguration = {
+                                                zoom: 8,
                                                 map_type: mapType,
                                             };
 
@@ -270,8 +270,8 @@
 
                                                 new google.maps.Marker({
                                                     position: latLng,
-                                                    map     : map,
-                                                    icon    : tagsIconPath + 'search-tag.png'
+                                                    map: map,
+                                                    icon: tagsIconPath + 'search-tag.png'
                                                 });
                                             });
 
@@ -296,12 +296,12 @@
                             else {
                                 // closing the alarms table
                                 $mdDialog.hide();
-                                newSocketService.getData('save_location', {location: indoorTag.location_name}, (response) => {
+                                newSocketService.getData('save_location', { location: indoorTag.location_name }, (response) => {
                                     if (!response.session_state)
                                         window.location.reload();
 
                                     if (response.result === 'location_saved') {
-                                        service.defaultFloorName  = indoorTag.floor_name;
+                                        service.defaultFloorName = indoorTag.floor_name;
                                         service.locationFromClick = indoorTag.location_name;
                                         $state.go('canvas');
                                     }
@@ -326,7 +326,7 @@
                         $mdDialog.hide();
                     }
                 }],
-                onRemoving         : function () {
+                onRemoving: function() {
                     service.alarmsInterval = service.stopTimer(service.alarmsInterval);
 
                     // starting the appropriate interval
@@ -374,7 +374,7 @@
          * @param tag
          * @returns {boolean|boolean}
          */
-        service.hasTagAValidGps= (tag) => {
+        service.hasTagAValidGps = (tag) => {
             return tag.gps_north_degree !== -2 && tag.gps_east_degree !== -2;
         };
 
@@ -405,7 +405,7 @@
          * @returns {boolean}
          */
         service.showAlarmForOutOfLocationTags = (tags, locations) => {
-            return tags.some(t => { return !service.checkIfAnyTagOutOfLocation(locations, t)}) && service.switch.showOutrangeTags
+            return tags.some(t => { return !service.checkIfAnyTagOutOfLocation(locations, t) }) && service.switch.showOutrangeTags
         };
 
         //remain home
@@ -481,7 +481,7 @@
                 let distY = Math.abs(tag.gps_east_degree - origin[1]);
 
                 return Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-            }else {
+            } else {
                 return Number.MAX_VALUE;
             }
         };
@@ -493,21 +493,21 @@
 
         // function that loads the user setting (the ones that go in quick actions)
         service.loadUserSettings = () => {
-            newSocketService.getData('get_user_settings', {username: service.user.username}, (response) => {
+            newSocketService.getData('get_user_settings', { username: service.user.username }, (response) => {
 
-                if(response.result.length !== 0) {
+                if (response.result.length !== 0) {
                     service.switch = {
-                        showGrid               : (response.result[0].grid_on === 1),
-                        showAnchors            : (response.result[0].anchors_on === 1),
-                        showCameras            : (response.result[0].cameras_on === 1),
-                        showOutrangeTags       : (response.result[0].outag_on === 1),
-                        showOutdoorTags        : (response.result[0].outdoor_tag_on === 1),
-                        showZones              : (response.result[0].zones_on === 1),
-                        playAudio              : (response.result[0].sound_on === 1),
-                        showRadius             : true,
-                        showOutdoorRectDrawing : false,
+                        showGrid: (response.result[0].grid_on === 1),
+                        showAnchors: (response.result[0].anchors_on === 1),
+                        showCameras: (response.result[0].cameras_on === 1),
+                        showOutrangeTags: (response.result[0].outag_on === 1),
+                        showOutdoorTags: (response.result[0].outdoor_tag_on === 1),
+                        showZones: (response.result[0].zones_on === 1),
+                        playAudio: (response.result[0].sound_on === 1),
+                        showRadius: true,
+                        showOutdoorRectDrawing: false,
                         showOutdoorRoundDrawing: false,
-                        showTableSorting       : (response.result[0].table_sorting === 1)
+                        showTableSorting: (response.result[0].table_sorting === 1)
                     };
 
                     // turning off the home turn off button if the audio is disabled
@@ -518,7 +518,7 @@
 
         //stopping the passed interval timer and resetting it
         service.stopTimer = (timer) => {
-            if (timer !== undefined){
+            if (timer !== undefined) {
                 $interval.cancel(timer);
             }
 
@@ -539,8 +539,8 @@
         service.checkIfTagsAreOutOfLocations = (tags) => {
 
             return Promise.all(
-                tags.map(function (tag) {
-                    return new Promise(function (resolve) {
+                tags.map(function(tag) {
+                    return new Promise(function(resolve) {
                         if (service.isOutdoor(tag)) {
                             newSocketService.getData('get_all_locations', {}, (response) => {
                                 // console.log('GETTING ALL THE LOCATIONS')
@@ -572,19 +572,19 @@
         };
 
         service.updateUserSettings = () => {
-            let data          = {
-                grid_on       : service.switch.showGrid,
-                anchors_on    : service.switch.showAnchors,
-                cameras_on    : service.switch.showCameras,
-                outag_on      : service.switch.showOutrangeTags,
+            let data = {
+                grid_on: service.switch.showGrid,
+                anchors_on: service.switch.showAnchors,
+                cameras_on: service.switch.showCameras,
+                outag_on: service.switch.showOutrangeTags,
                 outdoor_tag_on: service.switch.showOutdoorTags,
-                table_sorting : service.switch.showTableSorting,
-                zones_on      : service.switch.showZones,
-                sound_on      : service.switch.playAudio
+                table_sorting: service.switch.showTableSorting,
+                zones_on: service.switch.showZones,
+                sound_on: service.switch.playAudio
             };
             let stringifyData = JSON.stringify(data);
 
-            newSocketService.getData('update_user_settings', {username: service.user.username, data: stringifyData}, (response) => {
+            newSocketService.getData('update_user_settings', { username: service.user.username, data: stringifyData }, (response) => {
                 //TODO add toast
                 service.loadUserSettings();
             });
@@ -594,12 +594,12 @@
         //function that show a window with the tags state
         service.showOfflineTags = (position, constantUpdateNotifications, map) => {
             $mdDialog.show({
-                templateUrl        : componentsPath + 'indoor_offline_tags_info.html',
-                parent             : angular.element(document.body),
-                targetEvent        : event,
+                templateUrl: componentsPath + 'indoor_offline_tags_info.html',
+                parent: angular.element(document.body),
+                targetEvent: event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', '$controller', function ($scope) {
-                    $scope.data              = [];
+                controller: ['$scope', '$controller', function($scope) {
+                    $scope.data = [];
 
                     // saving the number of tags in different states
                     $scope.tagsStateIndoorOnline = 0;
@@ -612,9 +612,9 @@
                     $scope.labels = [lang.activeTags, lang.shutDownTags, lang.disabledTags];
 
                     // continuously updating the tag situation
-                    service.offlineTagsInterval     = $interval(function () {
+                    service.offlineTagsInterval = $interval(function() {
 
-                        if (DEBUG){
+                        if (DEBUG) {
                             console.log('updating tags info window...')
                         }
                         //getting all the tags
@@ -634,7 +634,7 @@
                             $scope.tagsStateIndoorOffTags = response.result.filter(t => t.radio_switched_off);
 
                             // getting the online tags
-                            $scope.tagsStateIndoorOnline  = response.result.length - $scope.tagsStateOffGrid.length - $scope.tagsStateIndoorOffTags.length;
+                            $scope.tagsStateIndoorOnline = response.result.length - $scope.tagsStateOffGrid.length - $scope.tagsStateIndoorOffTags.length;
 
                             // setting the data for the visualization
                             $scope.data = [$scope.tagsStateIndoorOnline, $scope.tagsStateIndoorOffTags.length, $scope.tagsStateIndoorOffGrid.length];
@@ -647,7 +647,7 @@
                     }
                 }],
                 // stoping the interva (request for data) when the window closes
-                onRemoving: function(){
+                onRemoving: function() {
                     service.offlineTagsInterval = service.stopTimer(service.offlineTagsInterval);
 
                     // starting the appropriate interval
@@ -687,12 +687,12 @@
          * @returns {*}
          */
         service.checkIfAnchorsAreOffline = (anchors) => {
-            return anchors.some(a => {return (a.is_offline || a.battery_status)});
+            return anchors.some(a => { return (a.is_offline || a.battery_status) });
         };
 
         //checking if there is at least an anchor offline
         service.checkIfAreAnchorsOffline = (anchors) => {
-            return anchors.some(function (anchor) {
+            return anchors.some(function(anchor) {
                 return anchor.is_offline === 1;
             });
         };
@@ -744,44 +744,52 @@
         service.getProtocol = (history_rows) => {
             let historyRows = [];
 
-            history_rows.forEach(function (his) {
+            history_rows.forEach(function(his) {
                 let hisRow = his;
                 switch (his.protocol) {
-                    case 0: {
-                        hisRow.protocol = lang.ble;
-                        break;
-                    }
-                    case 1: {
-                        hisRow.protocol = lang.wifi;
-                        break;
-                    }
-                    case 2: {
-                        hisRow.protocol = lang.gprs;
-                        break;
-                    }
-                    case 3: {
-                        hisRow.protocol = lang.safetyBox;
-                        break;
-                    }
+                    case 0:
+                        {
+                            hisRow.protocol = lang.ble;
+                            break;
+                        }
+                    case 1:
+                        {
+                            hisRow.protocol = lang.wifi;
+                            break;
+                        }
+                    case 2:
+                        {
+                            hisRow.protocol = lang.gprs;
+                            break;
+                        }
+                    case 3:
+                        {
+                            hisRow.protocol = lang.safetyBox;
+                            break;
+                        }
                 }
 
                 switch (his.man_down_cause) {
-                    case 0: {
-                        hisRow.man_down_cause = lang.noCause;
-                        break;
-                    }
-                    case 1: {
-                        hisRow.man_down_cause = lang.freefall;
-                        break;
-                    }
-                    case 2: {
-                        hisRow.man_down_cause = lang.lndPrt;
-                        break;
-                    }
-                    case 3: {
-                        hisRow.man_down_cause = lang.noMov;
-                        break;
-                    }
+                    case 0:
+                        {
+                            hisRow.man_down_cause = lang.noCause;
+                            break;
+                        }
+                    case 1:
+                        {
+                            hisRow.man_down_cause = lang.freefall;
+                            break;
+                        }
+                    case 2:
+                        {
+                            hisRow.man_down_cause = lang.lndPrt;
+                            break;
+                        }
+                    case 3:
+                        {
+                            hisRow.man_down_cause = lang.noMov;
+                            break;
+                        }
                 }
 
                 historyRows.push(hisRow)
@@ -799,16 +807,16 @@
          */
         service.showToast = ($mdToast, message, background, color, position = 'top center') => {
             $mdToast.show({
-                hideDelay       : TOAST_SHOWING_TIME,
-                position        : position,
-                controller      : 'toastController',
+                hideDelay: TOAST_SHOWING_TIME,
+                position: position,
+                controller: 'toastController',
                 bindToController: true,
-                locals          : {
-                    message   : message,
+                locals: {
+                    message: message,
                     background: background,
-                    color     : color
+                    color: color
                 },
-                templateUrl     : componentsPath + 'toast.html'
+                templateUrl: componentsPath + 'toast.html'
             });
         };
 
@@ -914,12 +922,12 @@
         //function that loads all the images passed as parameter
         service.loadAlarmsImagesWithPromise = (images) => {
             return Promise.all(
-                images.map(function (image) {
-                    return new Promise(function (resolve) {
+                images.map(function(image) {
+                    return new Promise(function(resolve) {
                         let localImage = new Image();
 
-                        localImage.src    = image;
-                        localImage.onload = function () {
+                        localImage.src = image;
+                        localImage.onload = function() {
                             resolve(localImage);
                         }
                     })
@@ -930,15 +938,15 @@
         //grouping the tags in one object divided by clouds of tags and single tags
         service.groupNearTags = (tags, tag) => {
             let tagsGrouping = {
-                groupTags : [],
+                groupTags: [],
                 singleTags: []
             };
 
-            tags.forEach(function (tagElement) {
+            tags.forEach(function(tagElement) {
                 if (tag.id !== tagElement.id) {
-                    if ((Math.abs(tagElement.x_pos - groupTagDistance) < tag.x_pos && tag.x_pos < Math.abs(tagElement.x_pos + groupTagDistance)
-                        && (Math.abs(tagElement.y_pos - groupTagDistance) < tag.y_pos && tag.y_pos < Math.abs(tagElement.y_pos + groupTagDistance)))) {
-                        if (service.checkIfTagHasAlarm(tag) || !tag.radio_switched_off){
+                    if ((Math.abs(tagElement.x_pos - groupTagDistance) < tag.x_pos && tag.x_pos < Math.abs(tagElement.x_pos + groupTagDistance) &&
+                            (Math.abs(tagElement.y_pos - groupTagDistance) < tag.y_pos && tag.y_pos < Math.abs(tagElement.y_pos + groupTagDistance)))) {
+                        if (service.checkIfTagHasAlarm(tag) || !tag.radio_switched_off) {
 
                             if (!tagsGrouping.groupTags.some(t => t.id === tag.id)) {
                                 tagsGrouping.groupTags.push(tag);
@@ -962,15 +970,15 @@
         // showing the info window with the online/offline anchors
         service.showOfflineAnchors = (position, constantUpdateNotifications, map) => {
             $mdDialog.show({
-                templateUrl        : componentsPath + 'indoor_offline_anchors_info.html',
-                parent             : angular.element(document.body),
-                targetEvent        : event,
+                templateUrl: componentsPath + 'indoor_offline_anchors_info.html',
+                parent: angular.element(document.body),
+                targetEvent: event,
                 clickOutsideToClose: true,
-                controller         : ['$scope', function ($scope) {
+                controller: ['$scope', function($scope) {
                     $scope.offlineAnchors = 0;
                     $scope.shutDownAnchors = 0;
                     $scope.onlineAnchors = 0;
-                    $scope.data           = [];
+                    $scope.data = [];
 
                     // setting the color for each category
                     $scope.colors = ["#D3D3D3", "#4BAE5A", "#E12315"];
@@ -978,13 +986,13 @@
                     $scope.labels = [lang.disabledAnchors, lang.enabledAnchors, lang.shutDownAnchors];
 
                     // getting all the anchors of the current logged user
-                    service.offlineAnchorsInterval = $interval(function () {
+                    service.offlineAnchorsInterval = $interval(function() {
 
-                        if (DEBUG){
+                        if (DEBUG) {
                             console.log('updating alarms info window...')
                         }
 
-                        newSocketService.getData('get_anchors_by_user', {user: service.user.username}, (response) => {
+                        newSocketService.getData('get_anchors_by_user', { user: service.user.username }, (response) => {
                             if (!response.session_state)
                                 window.location.reload();
 
@@ -1006,7 +1014,7 @@
                     }
                 }],
                 // stoping the interval (request for data) when the window closes
-                onRemoving: function(){
+                onRemoving: function() {
                     service.offlineAnchorsInterval = service.stopTimer(service.offlineAnchorsInterval);
 
                     // restarting the appropriate interval
@@ -1030,11 +1038,11 @@
         //creating the informations to be shown on the info window of the canvas objects
         service.createAlarmObjectForInfoWindow = (tag, name, description, image, location) => {
             return {
-                tagId      : tag.id,
-                tag        : tag.name,
-                name       : name,
+                tagId: tag.id,
+                tag: tag.name,
+                name: name,
                 description: description,
-                image      : image,
+                image: image,
                 location: location
             };
         };
@@ -1049,7 +1057,7 @@
             let alarms = [];
 
             if (tag.sos) {
-                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.sos, lang.helpRequest,tagsIconPath + 'sos_24.png', tagLocation));
+                alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.sos, lang.helpRequest, tagsIconPath + 'sos_24.png', tagLocation));
             }
             if (tag.man_down) {
                 alarms.push(service.createAlarmObjectForInfoWindow(tag, lang.manDown, lang.manDown, tagsIconPath + 'man_down_24.png', tagLocation));
@@ -1118,7 +1126,7 @@
         //function that controls if the passed array has the passed alarm
         let controlIfArrayHasAlarm = (alarms, alarmType) => {
             let result = false;
-            alarms.forEach(function (alarm) {
+            alarms.forEach(function(alarm) {
                 if (alarm.alarm === alarmType)
                     result = true
             });
@@ -1134,10 +1142,10 @@
         //function that checks if at least one tag has an alarm
         // remain canvas
         service.checkIfTagsHaveAlarms = (tags) => {
-            return tags.some(function (tag) {
-                return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                    || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
-                    || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone;
+            return tags.some(function(tag) {
+                return tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi ||
+                    tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote ||
+                    tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone;
             })
         };
 
@@ -1149,8 +1157,8 @@
          * @returns {boolean}
          */
         service.checkIfTagsHaveAlarmsInfo = (tags) => {
-            return tags.some(tag => tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                    || tag.battery_status || tag.man_in_quote || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone)
+            return tags.some(tag => tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi ||
+                tag.battery_status || tag.man_in_quote || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone)
         };
 
         // remain outdoor
@@ -1160,9 +1168,9 @@
          * @returns {*}
          */
         service.checkIfTagsHaveAlarmsOutdoor = (tags) => {
-            return tags.some(tag => service.isOutdoor(tag) && service.isTagInLocation(tag, {radius: service.location.radius, position: [service.location.latitude, service.location.longitude]}) && (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
-                || tag.call_me_alarm || tag.diagnostic_request));
+            return tags.some(tag => service.isOutdoor(tag) && service.isTagInLocation(tag, { radius: service.location.radius, position: [service.location.latitude, service.location.longitude] }) && (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi ||
+                tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote ||
+                tag.call_me_alarm || tag.diagnostic_request));
         };
 
         // checking if at least one of the passed anchors has an alarm
@@ -1185,7 +1193,7 @@
             let audio;
 
             // reseting the alarms if there are no tags
-            if (tags.length === 0){
+            if (tags.length === 0) {
                 service.alarmsSounds = [];
                 service.playAlarm = false;
             }
@@ -1194,12 +1202,12 @@
             service.playedTime++;
 
             // getting the allarms to be played
-            tags.forEach(function (tag) {
+            tags.forEach(function(tag) {
                 if (tag.battery_status) {
                     // control if the alarm is already considered, if not I add it to the allarms to play
                     // here I am using tag name because if I use the id then if I have more than
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.id, 'battery')) {
-                        service.alarmsSounds.push({tag: tag.id, alarm: 'battery'});
+                        service.alarmsSounds.push({ tag: tag.id, alarm: 'battery' });
                         service.playAlarm = true;
                     }
                 }
@@ -1211,7 +1219,7 @@
                 if (tag.man_down) {
                     // control if the alarm is already considered, if not I add it to the allarms to play
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.id, 'mandown')) {
-                        service.alarmsSounds.push({tag: tag.id, alarm: 'mandown'});
+                        service.alarmsSounds.push({ tag: tag.id, alarm: 'mandown' });
                         service.playAlarm = true;
                     }
                 }
@@ -1223,7 +1231,7 @@
                 if (tag.sos) {
                     // control if the alarm is already considered, if not I add it to the allarms to play
                     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.id, 'sos')) {
-                        service.alarmsSounds.push({tag: tag.id, alarm: 'sos'});
+                        service.alarmsSounds.push({ tag: tag.id, alarm: 'sos' });
                         service.playAlarm = true;
                     }
                 }
@@ -1234,7 +1242,7 @@
             });
 
             // control if there are allarm to be played
-            if (service.alarmsSounds.length !== 0){
+            if (service.alarmsSounds.length !== 0) {
                 // control what type of alarm I have to play set the audio
                 if (service.alarmsSounds.length > 1 && (service.switch && service.switch.playAudio)) {
                     audio = new Audio(audioPath + 'sndMultipleAlarm.mp3');
@@ -1249,12 +1257,12 @@
                         audio = new Audio(audioPath + 'indila-sos.mp3');
                     }
                 }
-            } else{
+            } else {
                 service.playAlarm = false;
             }
 
             // play the alarm
-            if (audio !== undefined && service.playedTime > AUDIO_PLAY_INTERVAL && (service.switch && service.switch.playAudio) && service.playAlarm){
+            if (audio !== undefined && service.playedTime > AUDIO_PLAY_INTERVAL && (service.switch && service.switch.playAudio) && service.playAlarm) {
                 // waiting for the audio to load
                 audio.addEventListener('loadeddata', () => {
                     audio.play();
@@ -1276,15 +1284,15 @@
          * @returns {string|*}
          */
         service.checkIfTagHasAlarm = (tag) => {
-            return (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                || tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
-                || tag.call_me_alarm || tag.diagnostic_request) === 1;
+            return (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi ||
+                tag.battery_status || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote ||
+                tag.call_me_alarm || tag.diagnostic_request) === 1;
         };
 
         service.checkIfTagHasAlarmNoBattery = (tag) => {
-            return (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi
-                || tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote
-                || tag.call_me_alarm || tag.diagnostic_request) === 1;
+            return (tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi ||
+                tag.man_down_disabled || tag.man_down_tacitated || tag.man_in_quote ||
+                tag.call_me_alarm || tag.diagnostic_request) === 1;
         };
 
         let isCategoryAndImageNotNull = (tag) => {
@@ -1304,83 +1312,83 @@
             let category_name_alarm = '';
             let category_name_no_alarm = '';
 
-            if(isCategoryAndImageNotNull(tag)){
+            if (isCategoryAndImageNotNull(tag)) {
                 category_name_alarm = tag.icon_name_alarm.split('.').slice(0, -1).join('.');
                 category_name_no_alarm = tag.icon_name_no_alarm.split('.').slice(0, -1).join('.');
             }
 
             if (tag.sos) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + '_sos.png');
-                }else {
+                } else {
                     tagAlarmsImages.push(tagsIconPath + 'sos_24.png');
                 }
             }
             if (tag.man_down) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + '_man_down.png')
                 } else {
                     tagAlarmsImages.push(tagsIconPath + 'man_down_24.png');
                 }
             }
             if (tag.battery_status) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + '_battery_low.png')
                 } else {
                     tagAlarmsImages.push(tagsIconPath + 'battery_low_24.png');
                 }
             }
             if (tag.helmet_dpi) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'helmet_dpi.png')
                 } else {
                     tagAlarmsImages.push(tagsIconPath + 'helmet_dpi_24.png');
                 }
             }
             if (tag.belt_dpi) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'belt_dpi.png')
                 } else {
                     tagAlarmsImages.push(tagsIconPath + 'belt_dpi_24.png');
                 }
             }
             if (tag.glove_dpi) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'glove_dpi.png')
                 } else {
                     tagAlarmsImages.push(tagsIconPath + 'glove_dpi_24.png');
                 }
             }
             if (tag.shoe_dpi) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'shoe_dpi.png')
                 } else {
                     tagAlarmsImages.push(tagsIconPath + 'shoe_dpi_24.png');
                 }
             }
             if (tag.man_down_disabled) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'man_down_dpi.png')
                 } else {
                     tagAlarmsImages.push(tagsIconPath + 'man-down-disabled_24.png');
                 }
             }
             if (tag.man_down_tacitated) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'man_down_tacitated.png')
                 } else {
                     tagAlarmsImages.push(tagsIconPath + 'man-down-tacitated_24.png');
                 }
             }
             if (tag.man_in_quote) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + 'man_in_quote.png')
                 } else {
                     tagAlarmsImages.push(tagsIconPath + 'man_in_quote_24.png');
                 }
             }
             if (tag.call_me_alarm) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_no_alarm + 'call_me_alarm.png')
                 } else {
                     tagAlarmsImages.push(tagsIconPath + 'call_me_alarm_24.png');
@@ -1410,78 +1418,78 @@
 
         //controlling the alarms and setting the alarm icon
         service.assigningTagImage = (tag, image) => {
-            let category_name_alarm    = '';
-            let category_name_offline  = '';
+            let category_name_alarm = '';
+            let category_name_offline = '';
             let category_name_no_alarm = '';
 
-            if(isCategoryAndImageNotNull(tag)){
-                category_name_alarm    = tag.icon_name_alarm.split('.').slice(0, -1).join('.');
-                category_name_offline  = tag.icon_name_offline.split('.').slice(0, -1).join('.');
+            if (isCategoryAndImageNotNull(tag)) {
+                category_name_alarm = tag.icon_name_alarm.split('.').slice(0, -1).join('.');
+                category_name_offline = tag.icon_name_offline.split('.').slice(0, -1).join('.');
                 category_name_no_alarm = tag.icon_name_no_alarm.split('.').slice(0, -1).join('.');
             }
 
             if (tag.sos) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     image.src = tagsIconPath + category_name_alarm + '_sos.png';
                 } else {
                     image.src = tagsIconPath + 'sos_24.png';
                 }
             } else if (tag.man_down) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     image.src = tagsIconPath + category_name_alarm + '.png';
                 } else {
                     image.src = tagsIconPath + 'man_down_24.png';
                 }
             } else if (tag.battery_status) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     image.src = tagsIconPath + category_name_alarm + '.png';
                 } else {
                     image.src = tagsIconPath + 'battery_low_24.png';
                 }
             } else if (tag.helmet_dpi) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     image.src = tagsIconPath + category_name_alarm + '.png';
                 } else {
                     image.src = tagsIconPath + 'helmet_dpi_24.png';
                 }
             } else if (tag.belt_dpi) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     image.src = tagsIconPath + category_name_alarm + '.png';
                 } else {
                     image.src = tagsIconPath + 'belt_dpi_24.png';
                 }
             } else if (tag.glove_dpi) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     image.src = tagsIconPath + category_name_alarm + '.png';
                 } else {
                     image.src = tagsIconPath + 'glove_dpi_24.png';
                 }
             } else if (tag.shoe_dpi) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     image.src = tagsIconPath + category_name_alarm + '.png';
                 } else {
                     image.src = tagsIconPath + 'shoe_dpi_24.png';
                 }
             } else if (tag.man_down_disabled) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     image.src = tagsIconPath + category_name_alarm + '.png';
                 } else {
                     image.src = tagsIconPath + 'man_down_disabled_24.png';
                 }
             } else if (tag.man_down_tacitated) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     image.src = tagsIconPath + category_name_alarm + '.png';
                 } else {
                     image.src = tagsIconPath + 'man_down_tacitated_24.png';
                 }
             } else if (tag.man_in_quote) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     image.src = tagsIconPath + category_name_alarm + '.png';
                 } else {
                     image.src = tagsIconPath + 'man_in_quote_24.png';
                 }
             } else if (tag.call_me_alarm) {
-                if (isCategoryAndImageNotNull(tag)){
+                if (isCategoryAndImageNotNull(tag)) {
                     image.src = tagsIconPath + category_name_alarm + '.png';
                 } else {
                     image.src = tagsIconPath + 'call_me_alarm_24.png';
@@ -1494,9 +1502,9 @@
                         image.src = tagsIconPath + category_name_no_alarm + '.png';
                     }
                 } else {
-                    if (service.isTagOffline(tag)){
+                    if (service.isTagOffline(tag)) {
                         image.src = tagsIconPath + 'offline_tag_24.png';
-                    }else{
+                    } else {
                         image.src = tagsIconPath + 'online_tag_24.png';
                     }
                 }
@@ -1504,7 +1512,7 @@
         };
 
         service.getOutdoorTagLocation = (locations, tag) => {
-            return locations.filter( l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
+            return locations.filter(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) < l.radius);
         };
 
         //getting the tags that are in an outdoor location passed as parameter
@@ -1519,7 +1527,7 @@
                             locationTags.push(tag.name);
                         }
                     });
-                    locationsTags.push({location: marker.name, tags: locationTags.length});
+                    locationsTags.push({ location: marker.name, tags: locationTags.length });
                     locationTags = [];
                 }
             });
@@ -1539,8 +1547,8 @@
         };
 
         service.isTagOffline = (tag) => {
-            return ((tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0) && !tag.radio_switched_off && (((new Date(tag.now_time) - new Date(tag.gps_time)) > tag.sleep_time_outdoor)))
-                || ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && !tag.radio_switched_off && (((new Date(tag.now_time) - new Date(tag.time)) > tag.sleep_time_indoor)));
+            return ((tag.gps_north_degree !== 0 && tag.gps_east_degree !== 0) && !tag.radio_switched_off && (((new Date(tag.now_time) - new Date(tag.gps_time)) > tag.sleep_time_outdoor))) ||
+                ((tag.gps_north_degree === 0 && tag.gps_east_degree === 0) && !tag.radio_switched_off && (((new Date(tag.now_time) - new Date(tag.time)) > tag.sleep_time_indoor)));
 
         };
 
@@ -1552,15 +1560,15 @@
         service.hasTagSuperatedSecondDelta = (tag) => {
             if (!service.checkIfTagHasAlarmNoBattery(tag)) {
                 if (service.isOutdoor(tag)) {
-                    let localThresholdIndoor  = new Date(tag.now_time).getTime();
-                    let offline_started       = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
+                    let localThresholdIndoor = new Date(tag.now_time).getTime();
+                    let offline_started = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
                     let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
 
                     return offline_started < localThresholdIndoor && localThresholdIndoor < offline_delta_started;
                 } else {
                     // getting the times that are needed to make the computation
-                    let localThresholdIndoor  = new Date(tag.now_time).getTime();
-                    let offline_started       = new Date(tag.time).getTime() + tag.sleep_time_indoor;
+                    let localThresholdIndoor = new Date(tag.now_time).getTime();
+                    let offline_started = new Date(tag.time).getTime() + tag.sleep_time_indoor;
                     let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
 
                     return offline_started < localThresholdIndoor && localThresholdIndoor < offline_delta_started;
@@ -1577,15 +1585,15 @@
         service.hasTagSuperatedSecondDeltaAlarms = (tag) => {
 
             if (service.isOutdoor(tag)) {
-                let localThresholdIndoor  = new Date(tag.now_time).getTime();
-                let offline_started       = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
+                let localThresholdIndoor = new Date(tag.now_time).getTime();
+                let offline_started = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
                 let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
 
                 return localThresholdIndoor < offline_delta_started;
             } else {
                 // getting the times that are needed to make the computation
-                let localThresholdIndoor  = new Date(tag.now_time).getTime();
-                let offline_started       = new Date(tag.time).getTime() + tag.sleep_time_indoor;
+                let localThresholdIndoor = new Date(tag.now_time).getTime();
+                let offline_started = new Date(tag.time).getTime() + tag.sleep_time_indoor;
                 let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
 
                 return localThresholdIndoor < offline_delta_started;
@@ -1600,12 +1608,12 @@
          */
         service.hasTagReaperedAfterOffline = (tag) => {
 
-            if(tag.name === 'WT25')
+            if (tag.name === 'WT25')
                 console.log(tag);
 
             if (service.isOutdoor(tag)) {
-                let localThresholdOutdoor  = new Date(tag.now_time).getTime();
-                let offline_started       = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
+                let localThresholdOutdoor = new Date(tag.now_time).getTime();
+                let offline_started = new Date(tag.gps_time).getTime() + tag.sleep_time_outdoor;
                 let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
 
                 console.log(localThresholdOutdoor);
@@ -1613,8 +1621,8 @@
                 return localThresholdOutdoor > offline_delta_started;
             } else {
                 // getting the times that are needed to make the computation
-                let localThresholdIndoor  = new Date(tag.now_time).getTime();
-                let offline_started       = new Date(tag.time).getTime() + tag.sleep_time_indoor;
+                let localThresholdIndoor = new Date(tag.now_time).getTime();
+                let offline_started = new Date(tag.time).getTime() + tag.sleep_time_indoor;
                 let offline_delta_started = offline_started + DELTA_FOR_OFFLINE_TAGS;
 
                 return localThresholdIndoor > offline_delta_started;
@@ -1638,11 +1646,12 @@
      * @type {string[]}
      */
     newSocketService.$inject = ['$state', '$interval'];
+
     function newSocketService($state, $interval) {
-        let service       = this;
-        let id            = 0;
-        let queueEmptied  = false;
-        service.server    = socketServer;
+        let service = this;
+        let id = 0;
+        let queueEmptied = false;
+        service.server = socketServer;
         service.callbacks = [];
 
         /**
@@ -1663,17 +1672,17 @@
 
             userData = data;
             // console.log('after data: ' + userData);
-            let stringifyedData = JSON.stringify({action: action, data: userData});
+            let stringifyedData = JSON.stringify({ action: action, data: userData });
 
             if (socketOpened) {
                 // emptying the queue
                 if (!queueEmptied) {
                     service.callbacks = [];
-                    queueEmptied      = true;
+                    queueEmptied = true;
                 }
 
                 service.server.send(stringifyedData);
-                service.callbacks.push({id: id, value: callback});
+                service.callbacks.push({ id: id, value: callback });
                 service.lastMessageTime = new Date();
                 $interval.cancel(service.reconnectSocket);
 
@@ -1683,7 +1692,7 @@
                         console.log('CLOSING THE SOCKET BECAUSE THE NETWORK IS TOO SLOW');
                         service.server.close();
 
-                    }else {
+                    } else {
                         let result = JSON.parse(response.data);
 
                         // controlling if I have to make the login froom cookies
@@ -1702,19 +1711,20 @@
             service.server.onerror = (error) => {
                 // let call = service.callbacks.shift();
                 // call.value('error');
+                console.error("There was an error with the server: " + error);
             };
 
             service.server.onclose = () => {
-                socketOpened            = false;
-                service.callbacks       = [];
-                service.reconnectSocket = $interval(function () {
-                    socketServer        = new WebSocket(SOCKET_PATH);
-                    socketServer.onopen = function () {
+                socketOpened = false;
+                service.callbacks = [];
+                service.reconnectSocket = $interval(function() {
+                    socketServer = new WebSocket(SOCKET_PATH);
+                    socketServer.onopen = function() {
                         socketOpened = true;
-                        socketServer.send({user: cesarShift(sessionStorage.user, -CEZAR_KEY)});
-                        window.location.reload()
+                        socketServer.send({ user: cesarShift(sessionStorage.user, -CEZAR_KEY) });
+                        window.location.reload(true)
                     };
-                    service.server      = socketServer;
+                    service.server = socketServer;
                 }, SOCKET_RECONECT_INTERVAL)
             }
         };
@@ -1733,8 +1743,8 @@
         service.autologin = ($state) => {
             sessionStorage.clear();
             let credential = document.cookie;
-            let username   = service.getCookie('username_smart', credential);
-            let password   = service.getCookie('password_smart', credential);
+            let username = service.getCookie('username_smart', credential);
+            let password = service.getCookie('password_smart', credential);
             if (username !== '' && password !== '') {
                 service.getData('login', {
                     username: username,
@@ -1744,7 +1754,7 @@
                     // if the login is ok I save the username in local and redirect to home
                     if (response.result.id !== undefined) {
                         sessionStorage.user = cesarShift(username, CEZAR_KEY);
-                        service.callbacks   = [];
+                        service.callbacks = [];
                         $state.go('home');
                     }
                 });
@@ -1764,16 +1774,16 @@
         service.recoverPassword = (email) => {
             return $http({
                 method: 'POST',
-                url   : mainPath + 'php/server/ajax/recover_password.php',
-                params: {email: email}
+                url: mainPath + 'php/server/ajax/recover_password.php',
+                params: { email: email }
             })
         };
 
         service.resetPassword = (code, username, password, repassword) => {
             return $http({
                 method: 'POST',
-                url   : mainPath + 'php/server/ajax/reset_password.php',
-                params: {code: code, username: username, password: password, repassword: repassword}
+                url: mainPath + 'php/server/ajax/reset_password.php',
+                params: { code: code, username: username, password: password, repassword: repassword }
             })
         }
     }

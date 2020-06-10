@@ -15193,3 +15193,45 @@ Stack trace:
 [30-May-2020 13:00:24 Europe/Berlin] Sessione; simone
 [30-May-2020 13:01:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2469
 [30-May-2020 13:01:24 Europe/Berlin] Sessione; simone
+[03-Jun-2020 20:21:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6774
+[03-Jun-2020 20:21:52 Europe/Berlin] Sessione; simone
+[03-Jun-2020 20:22:09 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simoneq
+[03-Jun-2020 20:22:09 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simoneq
+[03-Jun-2020 20:22:10 Europe/Berlin] UTENTE simone SI E LOGGATO
+[03-Jun-2020 20:22:10 Europe/Berlin] UTENTE simone SI E LOGGATO
+[03-Jun-2020 20:22:10 Europe/Berlin] PHP Notice:  Undefined index: username_ in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[03-Jun-2020 20:22:10 Europe/Berlin] Sessione; 
+[03-Jun-2020 20:22:10 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[03-Jun-2020 20:22:10 Europe/Berlin] UTENTE simone SI E LOGGATO
+[03-Jun-2020 20:22:10 Europe/Berlin] Sessione; simone
+[10-Jun-2020 17:31:53 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-10 17:31:53
+[10-Jun-2020 17:32:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[10-Jun-2020 17:32:07 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[10-Jun-2020 17:32:07 Europe/Berlin] PHP Notice:  Undefined variable: _SESSION in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[10-Jun-2020 17:32:07 Europe/Berlin] Sessione: 
+[10-Jun-2020 17:32:07 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[10-Jun-2020 17:32:07 Europe/Berlin] PHP Notice:  Undefined variable: _SESSION in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[10-Jun-2020 17:32:07 Europe/Berlin] Sessione: 
+[10-Jun-2020 17:32:07 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[10-Jun-2020 17:32:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 87
+[10-Jun-2020 17:32:27 Europe/Berlin] UTENTE simone SI E LOGGATO
+[10-Jun-2020 17:32:27 Europe/Berlin] Sessione: simone
+[10-Jun-2020 17:35:06 Europe/Berlin] LOGOUT MANUALE DELL'UTENTE simone
+[10-Jun-2020 17:35:06 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[10-Jun-2020 17:35:06 Europe/Berlin] PHP Notice:  Undefined index: username_simone in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[10-Jun-2020 17:35:06 Europe/Berlin] Sessione: 
+[10-Jun-2020 17:35:06 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[10-Jun-2020 17:35:06 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[10-Jun-2020 17:35:10 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 632
+[10-Jun-2020 17:35:10 Europe/Berlin] PHP Notice:  Undefined index: username_ in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 143
+[10-Jun-2020 17:35:10 Europe/Berlin] Sessione: 
+[10-Jun-2020 17:35:10 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[10-Jun-2020 17:35:18 Europe/Berlin] UTENTE simone SI E LOGGATO
+[10-Jun-2020 17:35:18 Europe/Berlin] Sessione: simone
+[10-Jun-2020 17:35:46 Europe/Berlin] Sessione: simone
+[10-Jun-2020 17:40:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2589
+[10-Jun-2020 17:40:50 Europe/Berlin] Sessione: simone
+[10-Jun-2020 17:41:24 Europe/Berlin] Sessione: simone
+[10-Jun-2020 17:41:36 Europe/Berlin] Sessione: simone
+[10-Jun-2020 17:43:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2983
+[10-Jun-2020 17:43:52 Europe/Berlin] Sessione: simone
