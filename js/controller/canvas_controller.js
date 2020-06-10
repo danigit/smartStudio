@@ -573,8 +573,9 @@
                 });
 
                 newSocketService.getData('get_engine_on', {}, (response) => {
-
-                    canvasCtrl.showEngineOffIcon = response.result === 0;
+                    if (response.result.version != undefined)
+                        dataService.controlVersion(response.result.version)
+                    canvasCtrl.showEngineOffIcon = response.result.time_le === undefined;
                 });
             }, CANVAS_UPDATE_TIME_INTERVAL);
         };

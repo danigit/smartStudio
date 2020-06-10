@@ -11,9 +11,9 @@
     // main.service('socketService', socketService);
     main.service('newSocketService', newSocketService);
 
-    dataService.$inject = ['$mdDialog', '$interval', '$state', 'newSocketService'];
+    dataService.$inject = ['$mdDialog', '$interval', '$timeout', '$state', 'newSocketService'];
 
-    function dataService($mdDialog, $interval, $state, newSocketService) {
+    function dataService($mdDialog, $interval, $timeout, $state, newSocketService) {
         let service = this;
 
         service.user = {};
@@ -1637,6 +1637,18 @@
          */
         service.isResponseCorrect = (response, expected) => {
             return response === expected
+        }
+
+        /**
+         * Function that controls if the application is updated
+         * @param remoteVersion
+         */
+        service.controlVersion = (remoteVersion) => {
+            if (remoteVersion !== UPDATE_VERSION) {
+                $timeout(function() {
+                    window.location.reload(true)
+                }, TIME_BEFORE_RELOAD_VERSION)
+            }
         }
     }
 

@@ -123,7 +123,7 @@
                                 dataService.isInHome = true;
                             }
                         }, REFRESH_PAGE_IF_NOT_HOME_INTERVAL)
-                    }, 0);
+                    }, RESOLVE_ROUTING_TIME);
 
                     return promise.promise;
                 }],

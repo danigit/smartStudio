@@ -1,4 +1,4 @@
-(function(){
+(function() {
     'use strict';
 
     angular.module('main').controller('outdoorController', outdoorController);
@@ -14,11 +14,11 @@
     outdoorController.$inject = ['$scope', '$rootScope', '$state', '$interval', '$mdDialog', '$timeout', 'NgMap', 'dataService', 'newSocketService', 'outdoorService'];
 
     function outdoorController($scope, $rootScope, $state, $interval, $mdDialog, $timeout, NgMap, dataService, newSocketService, outdoorService) {
-        let outdoorCtrl                = this;
-        let tags                       = null;
-        let bounds                     = new google.maps.LatLngBounds();
-        let locationInfo               = dataService.location;
-        let outdoorMap              = null;
+        let outdoorCtrl = this;
+        let tags = null;
+        let bounds = new google.maps.LatLngBounds();
+        let locationInfo = dataService.location;
+        let outdoorMap = null;
         let insideCircleInfoWindow = null;
         let outsideCircleInfoWindow = null;
         let outdoorTags = [];
@@ -36,16 +36,16 @@
         });
 
         dataService.updateMapTimer = null;
-        dataService.dynamicTags    = [];
+        dataService.dynamicTags = [];
 
         outdoorCtrl.isAdmin = dataService.isAdmin;
         outdoorCtrl.isUserManager = dataService.isUserManager;
         outdoorCtrl.isTracker = dataService.isTracker;
 
         outdoorCtrl.mapConfiguration = {
-            zoom    : OUTDOOR_LOCATION_ZOOM,
+            zoom: OUTDOOR_LOCATION_ZOOM,
             map_type: mapType,
-            center  : mapCenter
+            center: mapCenter
         };
 
         dataService.loadUserSettings();
@@ -86,7 +86,7 @@
         let showCoordinatesOnClick = (map, event) => {
             if (outsideCircleInfoWindow !== null) {
                 outsideCircleInfoWindow.close();
-                if (insideCircleInfoWindow !== null){
+                if (insideCircleInfoWindow !== null) {
                     insideCircleInfoWindow.close();
                 }
             }
@@ -104,7 +104,7 @@
         };
 
         // getting the map variable
-        NgMap.getMap('outdoor-map', {timeout: 20000}).then((map) => {
+        NgMap.getMap('outdoor-map', { timeout: 20000 }).then((map) => {
             outdoorMap = map;
 
             // setting the map style
@@ -127,8 +127,8 @@
          * @param updateZones
          */
         let constantUpdateMapTags = (map, updateZones) => {
-            let tagAlarms       = [];
-            let alarmsCounts    = [];
+            let tagAlarms = [];
+            let alarmsCounts = [];
             let prevAlarmCounts = [];
 
             // this is the marker corresponding to the tag I am working with
@@ -136,24 +136,24 @@
 
             // drawing the circle that defines the location area
             let circle = new google.maps.Circle({
-                strokeColor  : '#0093c4',
+                strokeColor: '#0093c4',
                 strokeOpacity: CIRCLE_STROKE_OPACITY,
-                strokeWeight : CIRCLE_WEIGHT,
-                fillColor    : '#0093c4',
-                fillOpacity  : CIRCLE_OPACITY,
-                map          : map,
-                center       : new google.maps.LatLng(locationInfo.latitude, locationInfo.longitude),
-                radius       : locationInfo.meter_radius,
+                strokeWeight: CIRCLE_WEIGHT,
+                fillColor: '#0093c4',
+                fillOpacity: CIRCLE_OPACITY,
+                map: map,
+                center: new google.maps.LatLng(locationInfo.latitude, locationInfo.longitude),
+                radius: locationInfo.meter_radius,
             });
 
             //showing the info window with the coordinates when I click inside the circle
-            circle.addListener('click', function (event) {
+            circle.addListener('click', function(event) {
                 showCoordinatesOnClick(map, event)
             });
 
             // controlling if I have to update the zones
             if (updateZones) {
-                newSocketService.getData('get_outdoor_zones', {location: dataService.location.name}, (response) => {
+                newSocketService.getData('get_outdoor_zones', { location: dataService.location.name }, (response) => {
 
                     //updating the forbidden zones position
                     response.result.forEach(zone => {
@@ -163,17 +163,17 @@
                             dataService.outdoorZones.push({
                                 id: zone.id,
                                 zone: new google.maps.Rectangle({
-                                    strokeColor  : zone.color,
+                                    strokeColor: zone.color,
                                     strokeOpacity: CIRCLE_STROKE_OPACITY,
-                                    strokeWeight : CIRCLE_WEIGHT,
-                                    fillColor    : zone.color,
-                                    fillOpacity  : RECTANGLE_ZONE_OPACITY,
-                                    map          : map,
-                                    bounds       : {
+                                    strokeWeight: CIRCLE_WEIGHT,
+                                    fillColor: zone.color,
+                                    fillOpacity: RECTANGLE_ZONE_OPACITY,
+                                    map: map,
+                                    bounds: {
                                         north: zone.x_left,
                                         south: zone.x_right,
-                                        east : zone.y_up,
-                                        west : zone.y_down
+                                        east: zone.y_up,
+                                        west: zone.y_down
                                     }
                                 })
                             });
@@ -183,17 +183,17 @@
                             dataService.outdoorZones.push({
                                 id: zone.id,
                                 zone: new google.maps.Circle({
-                                    strokeColor  : zone.color,
+                                    strokeColor: zone.color,
                                     strokeOpacity: CIRCLE_STROKE_OPACITY,
-                                    strokeWeight : CIRCLE_WEIGHT,
-                                    fillColor    : zone.color,
-                                    fillOpacity  : CIRCLE_ZONE_OPACITY,
-                                    map          : map,
-                                    center       : {
+                                    strokeWeight: CIRCLE_WEIGHT,
+                                    fillColor: zone.color,
+                                    fillOpacity: CIRCLE_ZONE_OPACITY,
+                                    map: map,
+                                    center: {
                                         lat: parseFloat(zone.gps_north),
                                         lng: parseFloat(zone.gps_east)
                                     },
-                                    radius       : zone.radius * 111000
+                                    radius: zone.radius * 111000
                                 })
                             });
                         }
@@ -220,8 +220,8 @@
 
                         // showing the alarm icon if there are tags out of location and the quick action is setted
                         // showing the alarm icon if there are tags with alarms
-                        outdoorCtrl.showAlarmsIcon =  response.result.some(t => dataService.haveToShowBatteryEmpty(t)) && (dataService.showAlarmForOutOfLocationTags(tags.filter(t => dataService.isOutdoor(t)), locations.result.filter(l => !l.is_inside))
-                            || dataService.checkIfTagsHaveAlarmsInfo(tags));
+                        outdoorCtrl.showAlarmsIcon = response.result.some(t => dataService.haveToShowBatteryEmpty(t)) && (dataService.showAlarmForOutOfLocationTags(tags.filter(t => dataService.isOutdoor(t)), locations.result.filter(l => !l.is_inside)) ||
+                            dataService.checkIfTagsHaveAlarmsInfo(tags));
 
                         // showing tags alarm icon if there are tags offline
                         outdoorCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
@@ -248,7 +248,7 @@
                             prevAlarmCounts.push(0);
 
                             // controlling if the tag is in the location
-                            if (dataService.isTagInLocation(tag, {radius: locationInfo.radius, position: [locationInfo.latitude, locationInfo.longitude]})) {
+                            if (dataService.isTagInLocation(tag, { radius: locationInfo.radius, position: [locationInfo.latitude, locationInfo.longitude] })) {
 
                                 // getting the alarms of the tag
                                 tagAlarms = dataService.getTagAlarms(tag);
@@ -283,7 +283,7 @@
                                             setOutdoorMarker(mapMarker, marker, tag, alarmsCounts, index, tagAlarms, prevAlarmCounts, map, true, locationInfo.name);
                                         }
                                         // if there are no tags with alarms then I don't show anything
-                                        else{
+                                        else {
                                             if (dataService.dynamicTags.length > 0) {
                                                 dataService.dynamicTags.forEach(marker => marker.setMap(null));
                                                 dataService.dynamicTags = [];
@@ -309,7 +309,7 @@
                                     } else if (outdoorCtrl.isUserManager && dataService.switch.showOutdoorTags) {
                                         if (dataService.checkIfTagsHaveAlarmsOutdoor(tags)) {
                                             setOutdoorMarker(mapMarker, marker, tag, alarmsCounts, index, tagAlarms, prevAlarmCounts, map, false, locationInfo.name);
-                                        } else{
+                                        } else {
                                             if (dataService.dynamicTags.length > 0) {
                                                 dataService.dynamicTags.forEach(marker => marker.setMap(null));
                                                 dataService.dynamicTags = [];
@@ -343,13 +343,15 @@
                 });
 
                 // showing or not the alarm anchors icon
-                newSocketService.getData('get_anchors_by_user', {user: dataService.user.username}, (response) => {
+                newSocketService.getData('get_anchors_by_user', { user: dataService.user.username }, (response) => {
                     outdoorCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(response.result);
                 });
 
                 // showing or not the engine icon
                 newSocketService.getData('get_engine_on', {}, (response) => {
-                    outdoorCtrl.showEngineOffIcon = response.result === 0;
+                    if (response.result.version != undefined)
+                        dataService.controlVersion(response.result.version)
+                    outdoorCtrl.showEngineOffIcon = response.result.time_le === undefined;
                 });
             }, OUTDOOR_ALARM_UPDATE_TIME);
 
@@ -429,22 +431,21 @@
         let setMarkerInfoWindow = (marker, tag, locationName) => {
             marker.addListener('click', () => {
                 $mdDialog.show({
-                    locals             : {tag: tag},
-                    templateUrl        : componentsPath + 'tag-info-outdoor.html',
-                    parent             : angular.element(document.body),
-                    targetEvent        : event,
+                    locals: { tag: tag },
+                    templateUrl: componentsPath + 'tag-info-outdoor.html',
+                    parent: angular.element(document.body),
+                    targetEvent: event,
                     clickOutsideToClose: true,
-                    controller         : ['$scope', 'tag', ($scope, tag) => {
-                        $scope.tag          = tag;
+                    controller: ['$scope', 'tag', ($scope, tag) => {
+                        $scope.tag = tag;
                         $scope.isTagInAlarm = 'background-red';
-                        $scope.alarms       = [];
+                        $scope.alarms = [];
 
                         $scope.alarms = dataService.loadTagAlarmsForInfoWindow(tag, locationName);
 
                         if ($scope.alarms.length === 0) {
-                            (dataService.isTagOffline(tag))
-                                ? $scope.isTagInAlarm = 'background-darkgray'
-                                : $scope.isTagInAlarm = 'background-green';
+                            (dataService.isTagOffline(tag)) ?
+                            $scope.isTagInAlarm = 'background-darkgray': $scope.isTagInAlarm = 'background-green';
                         }
 
                         $scope.hide = () => {
@@ -463,7 +464,7 @@
             outdoorMap.setCenter(latLng);
         };
 
-        $rootScope.$on('constantUpdateMapTags', function (event, map) {
+        $rootScope.$on('constantUpdateMapTags', function(event, map) {
             constantUpdateMapTags(map);
         });
 

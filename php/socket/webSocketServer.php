@@ -57,6 +57,7 @@ class webSocketServer implements MessageComponentInterface{
      */
     function onClose(ConnectionInterface $conn){
         unset($this->clients[$conn->resourceId]);
+        error_log('IL SOCKET SI E CHIUSO!!!');
     }
 
     /**
@@ -66,14 +67,13 @@ class webSocketServer implements MessageComponentInterface{
      * @param Exception $e
      * @throws Exception
      */
-    function onError(ConnectionInterface $conn, Exception $e)
-    {
+    function onError(ConnectionInterface $conn, Exception $e){
         // TODO: Implement onError() method.
+        error_log("C'E STATO UN ERRORE CON IL SOCKET");
         $conn->close();
     }
 
-    function isSessionEnded($username)
-    {
+    function isSessionEnded($username){
         if (count($username) !== 0) {
             $session_ended = isset($_SESSION['id'], $_SESSION['is_admin'], $_SESSION['username_' . $username['username']]);
             if (!$session_ended && $username['username'] !== '')
@@ -536,14 +536,7 @@ class webSocketServer implements MessageComponentInterface{
                 break;
             }
             //getting all the tags
-            case 'get_all_tags':
-            {
-
-//                if ((strtotime(date("Y-m-d H:i:s")) - strtotime($this->now_time)) > 10){
-//                    unset($_SESSION['username_' . $decoded_message['data']['username']]);
-//                    session_write_close();
-//                }
-
+            case 'get_all_tags':{
                 $result['action'] = 'get_all_tags';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
 

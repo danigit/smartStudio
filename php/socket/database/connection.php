@@ -4374,7 +4374,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT TIME_LE FROM rtls WHERE TIMESTAMPDIFF(SECOND, TIME_LE, CURRENT_TIMESTAMP) <= 60';
+            $this->query = 'SELECT TIME_LE, VERSION FROM rtls WHERE TIMESTAMPDIFF(SECOND, TIME_LE, CURRENT_TIMESTAMP) <= 60';
 
             $this->result = $this->connection->query($this->query);
 
@@ -4383,11 +4383,15 @@ class Connection
                 return new db_errors(db_errors::$ERROR_ON_GETTING_MAC_TYPES);
             }
 
-            $rows = mysqli_num_rows($this->result);
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array = array('time_le' => $row['TIME_LE'], 'version' => $row['VERSION']);
+            }
 
             mysqli_close($this->connection);
 
-            return $rows;
+            return $result_array;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
