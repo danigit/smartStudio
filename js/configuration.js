@@ -12,7 +12,7 @@ const SHOW_PARTNER_LOGO = true;
 const MESSAGE_WAITING_TIME = 30000;
 
 // version number
-const UPDATE_VERSION = "3.8.3";
+const UPDATE_VERSION = "3.10.0";
 
 let socketServer = new WebSocket(SOCKET_PATH);
 let socketOpened = false;

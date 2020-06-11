@@ -4472,6 +4472,60 @@ class Connection
     }
 
     /**
+     * Function that updates the vesion of the software on the database
+     */
+    function update_version($version){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE rtls SET VERSION = ?";
+
+            $statement = $this->execute_selecting($this->query, 's', $version);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
+
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+     /**
+     * Function that gets the vesion of the software from the database
+     */
+    function get_version(){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "SELECT VERSION FROM rtls";
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_MAC_TYPES);
+            }
+
+            $row = mysqli_fetch_assoc($this->result);
+
+            mysqli_close($this->connection);
+
+            return $row['VERSION'];
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+    /**
      * Function that uses the execute statement to execute a query with the prepare statement
      * @param $query - the query to be executed
      * @param $bind_string - the string containing the types of the parameters of the query

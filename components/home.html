@@ -106,6 +106,14 @@
                                 <md-list-item ng-click="quickActions()" class="font-smal"><p>{{lang.quickActions | uppercase}}</p><img
                                         src="img/icons/menu/quick-actions.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
+                                <md-list-item ng-show="homeCtrl.isAdmin" ng-click="updateVersion()" class="font-smal"><p>{{lang.updateVersion | uppercase}}</p><img
+                                        src="img/icons/menu/update-icon.ico" class="menu-list-icon menu-icon"
+                                        alt=""></md-list-item>
+                                <md-input-container ng-show="showUpdateField" class="width-100 margin-none margin-left-15-px">
+                                    <label>{{lang.insertVersion}}</label>
+                                    <input ng-model="versionNumber" class="border-bottom-1-black width-55">
+                                    <md-button class="color-darkgreen" ng-click="sendVersion()">UPDATE</md-button>
+                                </md-input-container>
                                 <md-list-item ng-click="showLegend()" class="font-smal"><p>{{lang.legend | uppercase}}</p><img
                                         src="img/icons/menu/legend-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>

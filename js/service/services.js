@@ -1644,11 +1644,15 @@
          * @param remoteVersion
          */
         service.controlVersion = (remoteVersion) => {
-            if (remoteVersion !== UPDATE_VERSION) {
-                $timeout(function() {
-                    window.location.reload(true)
-                }, TIME_BEFORE_RELOAD_VERSION)
-            }
+
+            let serverVersion = remoteVersion.split(".")
+            let localVersion = UPDATE_VERSION.split(".")
+
+            serverVersion.forEach((val, i) => {
+                if (parseInt(val) > parseInt(localVersion[i])) {
+                    window.location.reload(true);
+                }
+            })
         }
     }
 
