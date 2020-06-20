@@ -379,7 +379,9 @@ function languageController($scope) {
         standByMode: 'Standby Mode',
         updateVersion: 'Aggiorna Versione',
         insertVersion: 'Inserire versione',
-        versionNotFound: 'Versione non trovata'
+        versionNotFound: 'Versione non trovata',
+        manageRfid: 'RFID',
+        selectRfid: 'Seleziona RFID'
     }
 }
 

@@ -489,3 +489,6 @@ let displayListCluster = (tag, index) => {
         document.getElementById(tag + '_id').style.display = 'none';
     }
 };
+
+// version number
+const UPDATE_VERSION = "3.11.0";

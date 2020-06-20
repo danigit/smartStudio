@@ -575,6 +575,7 @@
                 newSocketService.getData('get_engine_on', {}, (response) => {
                     if (response.result.version != undefined)
                         dataService.controlVersion(response.result.version)
+                    console.log(response.result.time_le)
                     canvasCtrl.showEngineOffIcon = response.result.time_le === undefined;
                 });
             }, CANVAS_UPDATE_TIME_INTERVAL);

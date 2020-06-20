@@ -11,9 +11,6 @@ const SHOW_PARTNER_LOGO = true;
 // the time before closing the socket if no message arrives
 const MESSAGE_WAITING_TIME = 30000;
 
-// version number
-const UPDATE_VERSION = "3.10.0";
-
 let socketServer = new WebSocket(SOCKET_PATH);
 let socketOpened = false;
 let groupTagDistance = 0.5;
@@ -118,8 +115,8 @@ const OUTDDOR_LOCATION_ICON = 'outdoor-location.png';
 const LOCATION_TAG_ALARM_ICON = 'alarm-icon.png';
 const LOCATION_ANCHOR_ALARM_ICON = 'offline_anchors_alert_64.png';
 const RESOLVE_ROUTING_TIME = 1500;
-const REFRESH_PAGE_IF_NOT_HOME_INTERVAL = 5000;
-const TIME_BEFORE_RELOAD_VERSION = 1500;
+const REFRESH_PAGE_IF_NOT_HOME_INTERVAL = 1500;
+const TIME_BEFORE_RELOAD_VERSION = 1000;
 // const MARKER_CLUSTER_IMAGE = "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m";
 // const MARKER_CLUSTER_IMAGE = iconsPath + '/markers/cloud_ok';
 const MARKER_CLUSTER_OK_IMAGE = {

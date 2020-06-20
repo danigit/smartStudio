@@ -4,11 +4,11 @@
     <md-content class="popup-padding">
         <div layout="column" layout-align="center center">
             <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
-                <label>{{lang.selectAnchor}}</label>
-                <md-select ng-model="dropAnchor.selectedAnchor">
+                <label>{{lang.selectRfid}}</label>
+                <md-select ng-model="rfid.selected_rfid">
                     <md-option><em>{{lang.nothing}}</em></md-option>
-                    <md-option ng-repeat="anchor in anchors track by $index" ng-value="anchor.name">
-                        {{anchor.name}}
+                    <md-option ng-repeat="rfid in rfids track by $index" ng-value="rfid.id">
+                        {{rfid.id}}
                     </md-option>
                 </md-select>
             </md-input-container>

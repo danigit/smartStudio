@@ -442,6 +442,7 @@
                             dataService.controlVersion(response.result.version)
 
                         homeCtrl.showEngineOffIcon = response.result.time_le === undefined;
+                        $scope.$apply();
                     })
                 }, HOME_ALARM_UPDATE_TIME);
             };

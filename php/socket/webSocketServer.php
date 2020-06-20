@@ -1427,6 +1427,28 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            case 'get_rfids': {
+                $result['action'] = 'get_rfids';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->get_rfids();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+            break;
+            }
+            case 'update_tag_rfid': {
+                $result['action'] = 'update_tag_rfid';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->update_tag_rfid($decoded_message['data']['tag'], $decoded_message['data']['rfid']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+            break;
+            }
             default:
                 $this->clients[$from->resourceId]->send(json_encode(array('result' => 'no_action')));
         }

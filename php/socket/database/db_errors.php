@@ -56,6 +56,8 @@ class db_errors
     public static $ERROR_ON_DELETING_USER_LOCATION = 45;
     public static $ERROR_ON_UPDATIDN_PASSWORD = 46;
     public static $ERROR_ON_INSERTING_SAFETY_BOX = 47;
+    public static $ERROR_ON_GETTITNG_RFIDS = 48;
+    public static $ERROR_ON_UPDATING_TAG_RFID = 49;
 
     private $error;
 
@@ -180,6 +182,10 @@ class db_errors
                 return '$ERROR_ON_DUPDATING_PASSWORD';
             case 47:
                 return '$ERROR_ON_DINSERTING_SAFETY_BOX';
+            case 48: 
+                return 'Impossibile recuperare gli RFID';
+            case 49:
+                return 'Impossibile aggiornare rfid del tag';
             default:
                 return 'UNKNOWN_ERROR';
         }

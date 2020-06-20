@@ -4433,12 +4433,6 @@ class Connection
 
         if ($this->connection) {
 
-//            foreach($parameters as $key => $value){
-//                if ($value == ""){
-//                    $parameters[$key] = null;
-//                }
-//            }
-
             $this->query = "UPDATE wetag_settings SET ADV_RATE = ?, ADVERTISE_IS_HERE = ?, ALARM_TIMING = ?, APN_CODE = ?, APN_NAME = ?, 
                                 DISABLE_TIMING = ?, FREEFALL_THD = ?, GEOFENCE_THD = ?, IP_GATEWAY_WIFI = ?, IP_WETAG_WIFI = ?, KA = ?, LND_PRT_TIMING = ?, 
                                 MAC_FILTER = ?, MAC_UWB = ?, MD_MODE = ?, NO_MOV_TIMING = ?, POWER_LEVEL = ?, PWD_WIFI = ?, REST_NAME = ?,
@@ -4525,6 +4519,67 @@ class Connection
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
+
+    /**
+     * Function that gets the rfids
+     */
+    function get_rfids(){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "SELECT ID, TYPE FROM tag_rfid";
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_RFIDS);
+            }
+
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('id' => $row['ID'], 'type' => $row['TYPE']);
+            }
+
+            mysqli_close($this->connection);
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Function that updates rfid of a tag
+     */
+    function update_tag_rfid($tag, $rfid){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE tag SET RFID_ID = ? WHERE ID = ?";
+
+            $statement = $this->execute_selecting($this->query, 'si', $rfid, $tag);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_UPDATING_TAG_RFID);
+            }
+
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+
     /**
      * Function that uses the execute statement to execute a query with the prepare statement
      * @param $query - the query to be executed

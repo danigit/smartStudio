@@ -370,7 +370,9 @@ function languageController($scope) {
         standByMode: 'Standby Mode',
         updateVersion: '',
         insertVersion: '',
-        versionNotFound: ''
+        versionNotFound: '',
+        manageRfid:  '',
+        selectRfid: ''
     }
 }
 
