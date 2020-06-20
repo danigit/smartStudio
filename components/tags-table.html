@@ -82,14 +82,14 @@
                                                                         title="{{lang.batteryLevel}}">
                         <span class="padding-left-5-px"><b>{{tag.battery_level}}</b>%/<b>{{tag.temperature}}</b>°C</span>
                     </td>
-                    <td md-cell ng-show="isAdmin" ng-if="exists('macs', columns) "class="padding-right-10-px">
+                    <td md-cell ng-show="isAdmin" class="padding-right-10-px">
                         <md-button ng-click="tagMacs(tag)"
                                    class="md-raised background-gray color-darkcyan margin-top-5-px"
                                    ng-if="exists('macs', columns)">
                             {{lang.macsManaging | uppercase}}
                         </md-button>
                     </td>
-                    <td md-cell ng-show="isAdmin" ng-if="exists('rfids', columns)" class="padding-right-10-px">
+                    <td md-cell ng-show="isAdmin" class="padding-right-10-px">
                         <md-button ng-click="manageRfid(tag)"
                                    class="md-raised background-gray color-darkcyan margin-top-5-px"
                                    ng-if="exists('rfids', columns)">
