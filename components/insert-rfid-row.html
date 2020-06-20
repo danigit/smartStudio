@@ -1,0 +1,55 @@
+<div ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" ng-class="insertRfid.resultClass">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg color-white font-x-large">{{lang.insertRfid | uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding width-500-px">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+
+        <form id="insertRowRfidForm" name="insertRfidForm">
+            <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <input required type="text" ng-model="insertRfid.number" name="insertRfidNumber"
+                       placeholder="{{lang.number}}">
+                <div ng-messages="insertRfidForm.insertRfidNumber.$error || insertRfidForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">{{lang.insertNumber}}</div>
+                </div>
+            </md-input-container>
+
+            <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <input required type="text" ng-model="insertRfid.type" name="insertRfidType"
+                       placeholder="{{lang.type}}">
+                <div ng-messages="insertRfidForm.insertRfidType.$error || insertRfidForm.$submitted"
+                     role="alert">
+                    <div ng-message=" required">{{lang.insertType}}</div>
+                </div>
+            </md-input-container>
+
+            <div layout="row" layout-align="center end" class="width-100">
+                <md-button ng-click="submitRfid(insertRfidForm)" class="md-raised background-darkcyan color-white">
+                    {{lang.insertRfid}}
+                </md-button>
+            </div>
+        </form>
+    </div>
+</md-content>
+<!--end popup content-->

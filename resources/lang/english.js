@@ -372,7 +372,13 @@ function languageController($scope) {
         insertVersion: '',
         versionNotFound: '',
         manageRfid:  '',
-        selectRfid: ''
+        selectRfid: '',
+        rfidTable: '',
+        deleteRfid: '',
+        addRfid: '',
+        insertRfid: '',
+        number: '',
+        insertNumber: '',
     }
 }
 
@@ -494,5 +500,7 @@ let lang = {
     tags: '',
     anchors: '',
     latitude: '',
-    longitude: ''
+    longitude: '',
+    deleteRfid: '',
+    deleteRfidText: ''
 };

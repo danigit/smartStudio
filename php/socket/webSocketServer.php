@@ -56,6 +56,7 @@ class webSocketServer implements MessageComponentInterface{
      * @throws Exception
      */
     function onClose(ConnectionInterface $conn){
+        error_log($conn);
         unset($this->clients[$conn->resourceId]);
         error_log('IL SOCKET SI E CHIUSO!!!');
     }
@@ -139,9 +140,9 @@ class webSocketServer implements MessageComponentInterface{
             case 'get_user':{
                 $result['action'] = 'get_user';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
-
-                error_log('Sessione: ' . $_SESSION['username_' . $decoded_message['data']['username']]);
+                
                 if ($this->isSessionEnded($decoded_message['data'])) {
+                    error_log('Sessione: ' . $_SESSION['username_' . $decoded_message['data']['username']]);
                     $query = $this->connection->get_user($_SESSION['username_' . $decoded_message['data']['username']]);
 
                     ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
@@ -1372,6 +1373,7 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            // getting the engine state
             case 'get_engine_on':{
                 $result['action'] = 'get_engine_on';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
@@ -1383,6 +1385,7 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            // updating the tag parameters
             case 'update_parameters':{
                 $result['action'] = 'update_parameters';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
@@ -1394,6 +1397,7 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            // setting the zones
             case 'set_zoneA_and_zoneB':{
                 $result['action'] = 'set_zoneA_and_zoneB';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
@@ -1405,6 +1409,7 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //updating the version
             case 'update_version': {
                 $result['action'] = 'update_version';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
@@ -1416,6 +1421,7 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            // getting the version
             case 'get_version': {
                 $result['action'] = 'get_version';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
@@ -1427,6 +1433,7 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            // getting the rfids
             case 'get_rfids': {
                 $result['action'] = 'get_rfids';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
@@ -1438,6 +1445,19 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
             break;
             }
+            // inserting an rfid
+            case 'insert_rfid': {
+                $result['action'] = 'insert_rfid';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->insert_rfid($decoded_message['data']['number'], $decoded_message['data']['type']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+            break;
+            }
+            // updating the tag rfid
             case 'update_tag_rfid': {
                 $result['action'] = 'update_tag_rfid';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
@@ -1448,6 +1468,31 @@ class webSocketServer implements MessageComponentInterface{
 
                 $this->clients[$from->resourceId]->send(json_encode($result));
             break;
+            }
+            //changing the rfid field
+            case 'change_rfid_field':{
+                $result['action'] = 'change_rfid_field';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->change_rfid_field($decoded_message['data']['id'], $decoded_message['data']['field'],
+                    $decoded_message['data']['value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //deleting an rfid
+            case 'delete_rfid':{
+                $result['action'] = 'delete_rfid';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->delete_rfid($decoded_message['data']['id']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
             }
             default:
                 $this->clients[$from->resourceId]->send(json_encode(array('result' => 'no_action')));

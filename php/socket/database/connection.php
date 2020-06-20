@@ -4527,7 +4527,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT ID, TYPE FROM tag_rfid";
+            $this->query = "SELECT ID, NUMBER, TYPE FROM tag_rfid";
 
             $this->result = $this->connection->query($this->query);
 
@@ -4539,12 +4539,45 @@ class Connection
             $result_array = array();
 
             while ($row = mysqli_fetch_assoc($this->result)) {
-                $result_array[] = array('id' => $row['ID'], 'type' => $row['TYPE']);
+                $result_array[] = array('id' => $row['ID'], 'number' => $row['NUMBER'], 'type' => $row['TYPE']);
             }
 
             mysqli_close($this->connection);
 
             return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+     /**
+     * Funzione che inserisce un nuovo rfid
+     * @param $number
+     * @param $type
+     * @return bool|db_errors|mixed
+     */
+    function insert_rfid($number, $type){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "INSERT INTO tag_rfid (NUMBER, TYPE) VALUES (?, ?)";
+
+            $statement = $this->execute_inserting($this->query, 'ss', $number, $type);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_INSERTING_RIFD);
+            }
+
+
+            $id = $this->connection->insert_id;
+
+            mysqli_close($this->connection);
+
+            return $id;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
@@ -4579,6 +4612,69 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that changes the value of a rfid field
+     * @param $id
+     * @param $field
+     * @param $value
+     * @return db_errors|int|mysqli_stmt
+     */
+    function change_rfid_field($id, $field, $value)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE tag_rfid SET " . strtoupper($field) . " = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'ss', $value, $id);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
+
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    /**
+     * Function that deletes an rfid
+     * @param $id
+     * @return db_errors|int|mysqli_stmt
+     */
+    function delete_rfid($id){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = 'DELETE FROM tag_rfid WHERE ID = ?';
+
+            $statement = $this->execute_selecting($this->query, 's', $id);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_DELETING_RFID);
+            }
+
+            $aff_rows = $statement->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
 
     /**
      * Function that uses the execute statement to execute a query with the prepare statement

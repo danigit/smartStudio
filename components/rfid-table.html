@@ -1,0 +1,80 @@
+<div ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg color-white font-x-large">{{lang.rfidTable | uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+    <!--end popup header-->
+</div>
+<!--popup content-->
+
+<md-content class="popup-padding width-500-px padding-bottom-70px">
+
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+
+        <md-table-container class="overflow-x-none">
+
+            <table md-table md-row-select="options.rowSelection" ng-model="selected"
+                   md-progress="promise">
+
+                <thead md-head md-order="query.order">
+                <tr md-row>
+                    <th md-column md-order-by="number"><span class="color-darkcyan">{{lang.number | uppercase}}</span></th>
+                    <th md-column md-order-by="type"><span class="color-darkcyan">{{lang.type | uppercase}}</span></th>
+                </tr>
+                </thead>
+
+                <tbody md-body>
+                <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
+                    ng-repeat="rfid in rfids | limitTo: query.limit: (query.page -1 ) * query.limit">
+
+                    <td md-cell ng-click="editCell($event, rfid, 'number')" ng-class="{'md-placeholder': !rfid.number}">
+                        {{rfid.number || lang.insertName}}
+                    </td>
+                    <td md-cell ng-click="editCell($event, rfid, 'type')" ng-class="{'md-placeholder': !rfid.type}">
+                        {{rfid.type || lang.insertName}}
+                    </td>
+                    <td md-cell ng-click="deleteRfid($event, rfid)"><img
+                            src="img/icons/delete_trash_24.png" alt="{{lang.deleteRfid}}"
+                            title="{{lang.deleteRfid}}"></td>
+                </tr>
+                <tr md-row ng-show="rfids.length === 0">
+                    <td md-cell colspan="8" class="text-center color-red">{{lang.noResultFound}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+
+        <md-input-container
+                class="md-block position-fixed bottom-0 margin-none margin-bottom-23-px zindex-100 width-0 left-0 margin-bottom-50-px margin-top-0"
+                ng-show="isAdmin">
+            <div class="width-120-px" class="width-120-px" layout="row" layout-align="center end">
+                <img src="img/icons/add_row_32.png" class="outline-none cursor-pointer"
+                     ng-click="addRfid()" alt="{{lang.addRfid}}" title="{{lang.addRfid}}">
+            </div>
+        </md-input-container>
+
+        <md-table-pagination
+                class="color-red background-white position-fixed bottom-0 margin-bottom-15-px width-100 padding-0 padding-right-24-px"
+                md-limit="query.limit" md-limit-options="query.limitOptions"
+                md-page="query.page"
+                md-total="{{rfids.length}}" md-on-paginate="">
+        </md-table-pagination>
+    </div>
+</md-content>
+<!--end popup content-->
+

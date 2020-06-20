@@ -381,7 +381,13 @@ function languageController($scope) {
         insertVersion: 'Inserire versione',
         versionNotFound: 'Versione non trovata',
         manageRfid: 'RFID',
-        selectRfid: 'Seleziona RFID'
+        selectRfid: 'Seleziona RFID',
+        rfidTable: 'Gestione RFID',
+        deleteRfid: 'Cancella RFID',
+        addRfid: 'Aggiungi RFID',
+        insertRfid: 'Inserimento RFID',
+        number: 'Numero',
+        insertNumber: 'Inserire numero'
     }
 }
 
@@ -503,5 +509,7 @@ let lang = {
     tags: 'Tag',
     anchors: 'Ancore',
     latitude: 'Latitudine',
-    longitude: 'Longitudine'
+    longitude: 'Longitudine',
+    deleteRfid: 'Cancella RFID',
+    deleteRfidText: 'Sei sicuro di voler cancellare l\'RFID?'
 };

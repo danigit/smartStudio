@@ -2660,6 +2660,158 @@
         };
 
         /**
+         * Function that show the rfid table
+         */
+        $scope.rfidTable = () => {
+            $mdDialog.show({
+                locals: { admin: $scope.isAdmin, userManager: $scope.isUserManager },
+                templateUrl: componentsPath + 'rfid-table.html',
+                parent: angular.element(document.body),
+                clickOutsideToClose: true,
+                multiple: true,
+                controller: ['$scope', 'admin', 'userManager', function($scope, admin, userManager) {
+
+                    $scope.isAdmin = admin;
+                    $scope.rfids = [];
+
+                    $scope.query = {
+                        limitOptions: [500, 15, 10, 5],
+                        order: 'number',
+                        limit: dataService.switch.showTableSorting ? 500 : 5,
+                        page: 1
+                    };
+
+                    /**
+                     * Function that update the categories table
+                     */
+                    let updateRfidTable = () => {
+                        newSocketService.getData('get_rfids', {}, (response) => {
+                            
+                            $scope.rfids = response.result;
+                        });
+                    };
+
+                    updateRfidTable();
+
+                    /**
+                     * Function that add a new category
+                     */
+                    $scope.addRfid = () => {
+                        $mdDialog.show({
+                            templateUrl: componentsPath + 'insert-rfid-row.html',
+                            parent: angular.element(document.body),
+                            targetEvent: event,
+                            clickOutsideToClose: true,
+                            multiple: true,
+                            controller: ['$scope', function($scope) {
+
+                                $scope.insertRfid = {
+                                    number: '',
+                                    type: '',
+                                    resultClass: ''
+                                };
+
+                                $scope.submitRfid = (form) => {
+                                    form.$submitted = true;
+                                    
+                                    newSocketService.getData('insert_rfid', {
+                                        number: $scope.insertRfid.number,
+                                        type: $scope.insertRfid.type
+                                    }, (response) => {
+                                        console.log(response)
+                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
+                                        if (response.result !== 0) {
+                                            $scope.insertRfid.resultClass = 'background-green';
+                                            updateRfidTable();
+                                            $timeout(function() {
+                                                $mdDialog.hide();
+                                            }, 1000);
+                                        } else {
+                                            $scope.insertTag.resultClass = 'background-red';
+                                        }
+                                    });
+
+                                }
+
+                                $scope.hide = () => {
+                                    $mdDialog.hide();
+                                }
+                            }]
+                        });
+                    };
+
+                    /**
+                     * Function that edit a cell of the table
+                     * @param event
+                     * @param rfid
+                     * @param column
+                     */
+                    $scope.editCell = (event, rfid, column) => {
+
+                        event.stopPropagation();
+
+                        if (admin) {
+                            let editCell = {
+                                modelValue: rfid[column],
+                                save: function(input) {
+                                    input.$invalid = true;
+                                    rfid[column] = input.$modelValue;
+                                    newSocketService.getData('change_rfid_field', {
+                                        id: rfid.id,
+                                        field: column,
+                                        value: input.$modelValue
+                                    }, (response) => {
+                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
+                                    });
+                                },
+                                targetEvent: event,
+                                title: lang.insertValue,
+                                validators: {
+                                    'md-maxlength': 500
+                                }
+                            };
+
+                            $mdEditDialog.large(editCell);
+                        }
+                    };
+
+                    /**
+                     * Function that delete an rfid
+                     * @param $event
+                     * @param rfid
+                     */
+                    $scope.deleteRfid = ($event, rfid) => {
+                        let confirm = $mdDialog.confirm()
+                            .title(lang.deleteRfid.toUpperCase())
+                            .textContent(lang.deleteRfidText)
+                            .targetEvent(event)
+                            .multiple(true)
+                            .ok(lang.deleteRfid)
+                            .cancel(lang.cancel);
+
+                        $mdDialog.show(confirm).then(() => {
+                            console.log('the category is: ', rfid);
+                            newSocketService.getData('delete_rfid', { id: rfid.id }, (response) => {
+                                dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result !== 0);
+
+                                if (response.result === 1) {
+                                    $scope.rfids = $scope.rfids.filter(c => c.id !== rfid.id);
+                                    $scope.$apply();
+                                }
+                            });
+                        }, function() {
+                            console.log('CANCELLATO!!!!');
+                        });
+                    };
+
+                    $scope.hide = () => {
+                        $mdDialog.hide();
+                    }
+                }]
+            })
+        };
+
+        /**
          * Function that show the safety box table
          */
         $scope.safetyBox = () => {

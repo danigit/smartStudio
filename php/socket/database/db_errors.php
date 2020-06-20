@@ -58,6 +58,8 @@ class db_errors
     public static $ERROR_ON_INSERTING_SAFETY_BOX = 47;
     public static $ERROR_ON_GETTITNG_RFIDS = 48;
     public static $ERROR_ON_UPDATING_TAG_RFID = 49;
+    public static $ERROR_ON_INSERTING_RFID = 50;
+    public static $ERROR_ON_DELETING_RFID = 51;
 
     private $error;
 
@@ -186,6 +188,10 @@ class db_errors
                 return 'Impossibile recuperare gli RFID';
             case 49:
                 return 'Impossibile aggiornare rfid del tag';
+            case 50:
+                return 'Impossibile inserire RFID';
+            case 51:
+                return 'Impossibile cancellare l\'RFID';
             default:
                 return 'UNKNOWN_ERROR';
         }
