@@ -54,7 +54,7 @@
             });
 
             // recovering the map object
-            NgMap.getMap({ id: 'main-map', timeout: 30000 }).then((map) => {
+            NgMap.getMap({ id: 'main-map'}).then((map) => {
 
                 if (map === undefined || map === null)
                     window.location.reload(true);
@@ -95,10 +95,9 @@
                                     fontSize: "18px",
                                 },
                             });
-
                             // handling only the indoor locations
                             if (marker.is_inside) {
-
+                                
                                 // filling the info window
                                 infoWindow = homeService.fillInfoWindowInsideLocation(marker, onTags, response.result);
                             }
@@ -107,7 +106,6 @@
                                 // filling the info window
                                 infoWindow = homeService.fillInfoWindowOutsideLocation(marker, dataService.allTags)
                             }
-
                             // open the info window on mouse over
                             markerObject.addListener('mouseover', function() {
                                 infoWindow.open(map, this);
@@ -128,8 +126,6 @@
                                     if (response.result === 'location_saved') {
                                         // getting the information's about the saved location
                                         newSocketService.getData('get_location_info', {}, (locationInfo) => {
-                                            if (!locationInfo.session_state)
-                                                window.location.reload();
 
                                             // saving the location info locally
                                             dataService.location = locationInfo.result;
@@ -151,6 +147,7 @@
                                     }
                                 });
                             });
+
                             // pushing the created marker with the rest of the markers
                             homeCtrl.dynamicMarkers.push(markerObject);
 
@@ -207,7 +204,6 @@
                             })
                         });
 
-
                         // if there are no markers I set the map to italy with default zoom
                         if (homeCtrl.dynamicMarkers.length === 0 && !zoomSetter) {
                             map.setCenter(new google.maps.LatLng(44.44, 8.88));
@@ -226,6 +222,7 @@
                             map.fitBounds(bounds);
                             zoomSetter = false;
                         }
+
                     })
                 });
             }).catch(function(error) {
@@ -415,7 +412,7 @@
 
                                 // updating the locations state
                                 setLocationsAlarms(onTags, userTags.result.filter(t => !t.radio_switched_off), response.result, map);
-
+                                
                                 //setting the zoom of the map to see all the locations if there are no locations with alarms
                                 if (alarmLocations.length === 0 && !zoomSetter) {
                                     map.setCenter(bounds.getCenter());
@@ -442,7 +439,6 @@
                             dataService.controlVersion(response.result.version)
 
                         homeCtrl.showEngineOffIcon = response.result.time_le === undefined;
-                        $scope.$apply();
                     })
                 }, HOME_ALARM_UPDATE_TIME);
             };

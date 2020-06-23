@@ -1696,7 +1696,6 @@
                     service.callbacks = [];
                     queueEmptied = true;
                 }
-
                 service.server.send(stringifyedData);
                 service.callbacks.push({ id: id, value: callback });
                 service.lastMessageTime = new Date();
@@ -1737,7 +1736,10 @@
                     socketServer = new WebSocket(SOCKET_PATH);
                     socketServer.onopen = function() {
                         socketOpened = true;
-                        socketServer.send({ user: cesarShift(sessionStorage.user, -CEZAR_KEY) });
+                        let user = cesarShift(sessionStorage.user, -CEZAR_KEY);
+                        if (typeof user !== 'object'){
+                            socketServer.send({ user: user });
+                        }
                         window.location.reload(true)
                     };
                     service.server = socketServer;

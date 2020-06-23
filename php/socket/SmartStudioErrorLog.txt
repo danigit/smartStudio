@@ -17166,3 +17166,497 @@ Stack trace:
 [23-Jun-2020 18:35:53 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
 [23-Jun-2020 18:35:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4185
 [23-Jun-2020 18:35:55 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:38:30 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 18:38:30
+[23-Jun-2020 18:38:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 18:38:33 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:38:33 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:38:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Jun-2020 18:38:35 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:38:35 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:38:35 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Jun-2020 18:38:35 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:38:35 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Jun-2020 18:38:35 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:38:37 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:38:37 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:38:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[23-Jun-2020 18:38:38 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:38:39 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:43:10 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 18:43:10
+[23-Jun-2020 18:43:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 18:43:13 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:43:13 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:43:13 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Jun-2020 18:43:13 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:43:13 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Jun-2020 18:43:13 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:43:15 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:43:15 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:43:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 86
+[23-Jun-2020 18:43:15 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:43:17 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:43:59 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 18:43:59
+[23-Jun-2020 18:44:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 18:44:04 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:44:04 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:44:04 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Jun-2020 18:44:04 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:44:04 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Jun-2020 18:44:04 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:44:05 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:44:05 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:44:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 86
+[23-Jun-2020 18:44:06 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:44:08 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:44:19 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 18:44:19
+[23-Jun-2020 18:44:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 18:44:23 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:44:23 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:44:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Jun-2020 18:44:26 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:44:26 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:44:26 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Jun-2020 18:44:26 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:44:26 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Jun-2020 18:44:26 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:44:27 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:44:27 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:44:28 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[23-Jun-2020 18:44:28 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:44:30 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:45:28 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 18:45:28
+[23-Jun-2020 18:45:32 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 18:45:33 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:45:33 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:45:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Jun-2020 18:45:35 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:45:35 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:45:35 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Jun-2020 18:45:35 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:45:35 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Jun-2020 18:45:35 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:45:37 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:45:37 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:45:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[23-Jun-2020 18:45:38 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:45:39 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:46:16 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 18:46:16
+[23-Jun-2020 18:46:18 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 18:46:18 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:46:18 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:46:18 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Jun-2020 18:46:21 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:46:21 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:46:21 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Jun-2020 18:46:21 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:46:21 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Jun-2020 18:46:21 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:46:22 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:46:22 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:46:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[23-Jun-2020 18:46:23 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:46:25 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:47:33 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:47:33 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:47:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 376
+[23-Jun-2020 18:47:36 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:47:42 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 18:47:42
+[23-Jun-2020 18:47:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 18:47:51 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:47:51 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:47:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Jun-2020 18:47:53 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:47:53 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:47:53 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Jun-2020 18:47:53 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:47:53 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Jun-2020 18:47:53 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:47:55 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:47:55 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:47:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[23-Jun-2020 18:47:56 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:47:58 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:48:40 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 18:48:40
+[23-Jun-2020 18:48:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 18:48:43 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:48:43 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:48:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Jun-2020 18:48:45 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:48:45 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:48:45 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Jun-2020 18:48:45 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:48:45 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Jun-2020 18:48:46 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:48:47 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:48:47 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:48:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[23-Jun-2020 18:48:48 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:48:50 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:50:33 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 18:50:33
+[23-Jun-2020 18:50:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 18:50:37 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:50:37 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:50:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Jun-2020 18:50:39 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:50:39 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 18:50:39 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Jun-2020 18:50:39 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:50:39 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Jun-2020 18:50:40 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 18:50:41 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:50:41 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:50:41 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[23-Jun-2020 18:50:42 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:50:44 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:55:05 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:55:05 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:55:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1349
+[23-Jun-2020 18:55:08 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:55:45 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:55:45 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:55:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1493
+[23-Jun-2020 18:55:48 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:56:19 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:56:19 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:56:19 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1592
+[23-Jun-2020 18:56:21 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:57:54 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:57:54 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:57:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2060
+[23-Jun-2020 18:57:57 Europe/Berlin] Sessione: simone
+[23-Jun-2020 18:59:29 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 18:59:29 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 18:59:30 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2474
+[23-Jun-2020 18:59:32 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:00:19 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:00:19 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:00:19 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2658
+[23-Jun-2020 19:00:21 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:00:40 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:00:40 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:00:40 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2752
+[23-Jun-2020 19:00:42 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:01:04 Europe/Berlin] C'E STATO UN ERRORE CON IL SOCKET
+[23-Jun-2020 19:01:04 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:01:04 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:01:04 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2803
+[23-Jun-2020 19:01:06 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:01:22 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:01:22 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:01:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2837
+[23-Jun-2020 19:01:25 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:01:47 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:01:47 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:01:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2891
+[23-Jun-2020 19:01:49 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:02:11 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:02:11 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:02:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2955
+[23-Jun-2020 19:02:14 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:02:49 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:02:49 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:02:50 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3084
+[23-Jun-2020 19:02:52 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:03:00 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:03:00 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:03:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3123
+[23-Jun-2020 19:03:02 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:03:54 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:03:54 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:03:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3322
+[23-Jun-2020 19:03:56 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:05:50 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:05:50 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:05:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3836
+[23-Jun-2020 19:05:53 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:06:03 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:06:03 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:06:03 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3865
+[23-Jun-2020 19:06:05 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:06:12 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:06:12 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:06:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3884
+[23-Jun-2020 19:06:15 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:06:25 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:06:25 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:06:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3913
+[23-Jun-2020 19:06:28 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:07:22 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:07:22 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:07:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4127
+[23-Jun-2020 19:07:24 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:07:35 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:07:35 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:07:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4166
+[23-Jun-2020 19:07:38 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:09:14 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:09:14 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:09:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4490
+[23-Jun-2020 19:09:17 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:09:42 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:09:42 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:09:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4539
+[23-Jun-2020 19:09:44 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:09:51 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:09:51 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:09:52 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4563
+[23-Jun-2020 19:09:54 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:10:00 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:10:00 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:10:01 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4587
+[23-Jun-2020 19:10:03 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:10:19 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:10:19 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:10:19 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4645
+[23-Jun-2020 19:10:22 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:11:00 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:11:00 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:11:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4779
+[23-Jun-2020 19:11:02 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:14:42 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:14:42 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:14:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 5710
+[23-Jun-2020 19:14:44 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:15:00 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:15:00 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:15:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 5789
+[23-Jun-2020 19:15:02 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:15:22 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:15:22 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:15:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 5888
+[23-Jun-2020 19:15:25 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:15:46 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:15:46 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:15:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6072
+[23-Jun-2020 19:15:49 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:17:25 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:17:25 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:17:25 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6511
+[23-Jun-2020 19:17:28 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:18:25 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:18:25 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:18:25 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6800
+[23-Jun-2020 19:18:28 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:20:44 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:20:44 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:20:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 7439
+[23-Jun-2020 19:20:47 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:21:14 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:21:14 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:21:14 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 7522
+[23-Jun-2020 19:21:16 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:21:58 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:21:58 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:21:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 7681
+[23-Jun-2020 19:22:01 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:22:19 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:22:19 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:22:19 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 7715
+[23-Jun-2020 19:22:21 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:22:49 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:22:49 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:22:50 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 7799
+[23-Jun-2020 19:22:52 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:23:21 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:23:21 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:23:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 7898
+[23-Jun-2020 19:23:24 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:23:42 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:23:42 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:23:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 7932
+[23-Jun-2020 19:23:45 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:24:12 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:24:12 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:24:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8021
+[23-Jun-2020 19:24:15 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:24:36 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:24:36 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:24:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8070
+[23-Jun-2020 19:24:39 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:24:56 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:24:56 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:24:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8159
+[23-Jun-2020 19:24:58 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:26:09 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:26:09 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:26:09 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8458
+[23-Jun-2020 19:26:11 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:27:39 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:27:39 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:27:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8466
+[23-Jun-2020 19:27:44 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:27:44 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:27:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8469
+[23-Jun-2020 19:27:47 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:29:02 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:29:02 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:29:03 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8477
+[23-Jun-2020 19:29:05 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:29:25 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:29:25 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:29:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8484
+[23-Jun-2020 19:29:28 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:29:54 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:29:54 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:29:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8493
+[23-Jun-2020 19:29:57 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:30:20 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:30:20 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:30:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8502
+[23-Jun-2020 19:30:23 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:32:28 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:32:28 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:32:29 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8523
+[23-Jun-2020 19:32:31 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:32:37 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:32:37 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:32:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8552
+[23-Jun-2020 19:32:39 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:32:45 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:32:45 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:32:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8581
+[23-Jun-2020 19:32:47 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:33:02 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:33:02 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:33:03 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8655
+[23-Jun-2020 19:33:05 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:33:11 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:33:11 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:33:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8714
+[23-Jun-2020 19:33:14 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:33:21 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:33:21 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:33:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8788
+[23-Jun-2020 19:33:24 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:33:37 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:33:37 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:33:38 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8917
+[23-Jun-2020 19:33:40 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:33:46 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:33:46 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:33:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8951
+[23-Jun-2020 19:33:48 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:33:53 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:33:53 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:33:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8975
+[23-Jun-2020 19:33:56 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:34:06 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:34:06 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:34:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9029
+[23-Jun-2020 19:34:08 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:34:15 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:34:15 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:34:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9063
+[23-Jun-2020 19:34:17 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:34:37 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:34:37 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:34:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9162
+[23-Jun-2020 19:34:39 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:34:59 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:34:59 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:34:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9211
+[23-Jun-2020 19:35:01 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:35:08 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:35:08 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:35:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9245
+[23-Jun-2020 19:35:10 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:35:26 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:35:26 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:35:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9284
+[23-Jun-2020 19:35:28 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:35:35 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:35:35 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:35:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9318
+[23-Jun-2020 19:35:38 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:36:01 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:36:01 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:36:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9392
+[23-Jun-2020 19:36:04 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:36:48 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:36:48 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:36:48 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9566
+[23-Jun-2020 19:36:50 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:37:57 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:37:57 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:37:58 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9855
+[23-Jun-2020 19:38:00 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:38:31 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:38:31 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:38:32 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9964
+[23-Jun-2020 19:38:34 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:38:52 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:38:52 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:38:52 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10003
+[23-Jun-2020 19:38:54 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:39:00 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:39:00 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:39:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10009
+[23-Jun-2020 19:39:02 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:39:10 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:39:10 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:39:10 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10038
+[23-Jun-2020 19:39:12 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:39:17 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:39:17 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:39:18 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10059
+[23-Jun-2020 19:39:20 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:39:27 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:39:27 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:39:28 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10092
+[23-Jun-2020 19:39:29 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:39:36 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:39:36 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:39:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10121
+[23-Jun-2020 19:39:39 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:39:45 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:39:45 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:39:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10146
+[23-Jun-2020 19:39:47 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:39:53 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:39:53 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:39:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10171
+[23-Jun-2020 19:39:56 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:40:03 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:40:03 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:40:04 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10204
+[23-Jun-2020 19:40:06 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:40:17 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:40:17 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:40:17 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10249
+[23-Jun-2020 19:40:19 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:40:27 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:40:27 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:40:27 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10283
+[23-Jun-2020 19:40:29 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:40:35 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:40:35 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:40:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10317
+[23-Jun-2020 19:40:38 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:40:44 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:40:44 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:40:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10346
+[23-Jun-2020 19:40:46 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:41:00 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:41:00 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:41:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10412
+[23-Jun-2020 19:41:02 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:41:45 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:41:45 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:41:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10626
+[23-Jun-2020 19:41:47 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:41:54 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:41:54 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:41:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10684
+[23-Jun-2020 19:41:57 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:43:58 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:43:58 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:43:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11768
+[23-Jun-2020 19:44:01 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:44:17 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:44:17 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:44:17 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11847
+[23-Jun-2020 19:44:19 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:46:46 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:46:46 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:46:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12576
+[23-Jun-2020 19:46:48 Europe/Berlin] Sessione: simone
