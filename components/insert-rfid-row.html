@@ -36,12 +36,13 @@
             </md-input-container>
 
             <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
-                <input required type="text" ng-model="insertRfid.type" name="insertRfidType"
-                       placeholder="{{lang.type}}">
-                <div ng-messages="insertRfidForm.insertRfidType.$error || insertRfidForm.$submitted"
-                     role="alert">
-                    <div ng-message=" required">{{lang.insertType}}</div>
-                </div>
+                <label>{{lang.selectElement}}</label>
+                <md-select ng-model="insertRfid.type">
+                    <md-option><em>{{lang.nothing}}</em></md-option>
+                    <md-option ng-repeat="rfid_type in rfid_types track by $index" ng-value="rfid_type.id">
+                        {{rfid_type.type}}
+                    </md-option>
+                </md-select>
             </md-input-container>
 
             <div layout="row" layout-align="center end" class="width-100">

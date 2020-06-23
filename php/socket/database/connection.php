@@ -4527,7 +4527,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT ID, NUMBER, TYPE FROM tag_rfid";
+            $this->query = "SELECT tag_rfid.ID, NUMBER, TYPE FROM tag_rfid JOIN rfid_type ON tag_rfid.TYPE_ID = rfid_type.ID";
 
             $this->result = $this->connection->query($this->query);
 
@@ -4550,6 +4550,36 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    /**
+     * Function that gets the rfid types
+     */
+    function get_rfid_types(){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "SELECT ID, TYPE FROM rfid_type";
+
+            $this->result = $this->connection->query($this->query);
+
+            if ($this->result == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_GETTING_RFID_TYPES);
+            }
+
+            $result_array = array();
+
+            while ($row = mysqli_fetch_assoc($this->result)) {
+                $result_array[] = array('id' => $row['ID'], 'type' => $row['TYPE']);
+            }
+
+            mysqli_close($this->connection);
+
+            return $result_array;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
      /**
      * Funzione che inserisce un nuovo rfid
      * @param $number
@@ -4560,7 +4590,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "INSERT INTO tag_rfid (NUMBER, TYPE) VALUES (?, ?)";
+            $this->query = "INSERT INTO tag_rfid (NUMBER, TYPE_ID) VALUES (?, ?)";
 
             $statement = $this->execute_inserting($this->query, 'ss', $number, $type);
 

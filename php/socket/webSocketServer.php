@@ -1445,6 +1445,18 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
             break;
             }
+            // getting the rfid types
+            case 'get_rfid_types': {
+                $result['action'] = 'get_rfid_types';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->get_rfid_types();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+            break;
+            }
             // inserting an rfid
             case 'insert_rfid': {
                 $result['action'] = 'insert_rfid';

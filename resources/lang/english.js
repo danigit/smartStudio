@@ -379,6 +379,7 @@ function languageController($scope) {
         insertRfid: '',
         number: '',
         insertNumber: '',
+        selectElement: ''
     }
 }
 
@@ -495,12 +496,11 @@ let lang = {
     userDeleted: '',
     userNotDeleted: '',
     columns: '',
-    locations: '',
-    openSite: '',
-    tags: '',
+    locations: '',select
     anchors: '',
     latitude: '',
     longitude: '',
     deleteRfid: '',
-    deleteRfidText: ''
+    deleteRfidText: '',
+    elementsNotRetrieved: ''
 };

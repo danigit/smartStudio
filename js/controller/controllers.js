@@ -2686,7 +2686,9 @@
                      */
                     let updateRfidTable = () => {
                         newSocketService.getData('get_rfids', {}, (response) => {
-                            
+                            if (response.result.length === 0){
+                                dataService.showMessage($mdToast, '', lang.elementsNotRetrieved, false);
+                            }
                             $scope.rfids = response.result;
                         });
                     };
@@ -2705,15 +2707,26 @@
                             multiple: true,
                             controller: ['$scope', function($scope) {
 
+                                $scope.rfid_types = [];
+                                $scope.selectedType = '';
                                 $scope.insertRfid = {
                                     number: '',
                                     type: '',
                                     resultClass: ''
                                 };
 
+                                newSocketService.getData('get_rfid_types', {}, (response) => {
+                                    if (response.result.length === 0){
+                                        dataService.showMessage($mdToast, '', lang.elementsNotRetrieved, false);
+                                    }
+                                    $scope.rfid_types = response.result;
+                                });
+                    
                                 $scope.submitRfid = (form) => {
                                     form.$submitted = true;
-                                    
+                                    if ($scope.insertRfid.type === '')
+                                        return;
+
                                     newSocketService.getData('insert_rfid', {
                                         number: $scope.insertRfid.number,
                                         type: $scope.insertRfid.type

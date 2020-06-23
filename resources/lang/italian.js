@@ -387,7 +387,8 @@ function languageController($scope) {
         addRfid: 'Aggiungi RFID',
         insertRfid: 'Inserimento RFID',
         number: 'Numero',
-        insertNumber: 'Inserire numero'
+        insertNumber: 'Inserire numero',
+        selectElement: 'Seleziona voce'
     }
 }
 
@@ -511,5 +512,6 @@ let lang = {
     latitude: 'Latitudine',
     longitude: 'Longitudine',
     deleteRfid: 'Cancella RFID',
-    deleteRfidText: 'Sei sicuro di voler cancellare l\'RFID?'
+    deleteRfidText: 'Sei sicuro di voler cancellare l\'RFID?',
+    elementsNotRetrievved: 'Impossibile recuperare gli elementi'
 };
