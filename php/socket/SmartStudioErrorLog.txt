@@ -17660,3 +17660,31 @@ Stack trace:
 [23-Jun-2020 19:46:46 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
 [23-Jun-2020 19:46:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12576
 [23-Jun-2020 19:46:48 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:47:51 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:47:51 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:47:52 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12889
+[23-Jun-2020 19:47:54 Europe/Berlin] Sessione: simone
+[23-Jun-2020 19:48:09 Europe/Berlin] PHP Warning:  error_log() expects parameter 1 to be string, object given in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 19:48:09 Europe/Berlin] IL SOCKET SI E CHIUSO!!!
+[23-Jun-2020 19:48:09 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12933
+[23-Jun-2020 19:48:11 Europe/Berlin] Sessione: simone
+[23-Jun-2020 20:32:18 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 20:32:18
+[23-Jun-2020 20:32:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 20:32:22 Europe/Berlin] PHP Recoverable fatal error:  Object of class Ratchet\WebSocket\WsConnection could not be converted to string in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 20:32:30 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 20:32:30
+[23-Jun-2020 20:32:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 20:32:32 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 20:32:32 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 20:32:32 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Jun-2020 20:32:33 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 20:32:33 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Jun-2020 20:32:33 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 20:32:34 Europe/Berlin] PHP Recoverable fatal error:  Object of class Ratchet\WebSocket\WsConnection could not be converted to string in /var/www/html/SMARTSTUDIO/php/socket/webSocketServer.php on line 59
+[23-Jun-2020 20:33:46 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-06-23 20:33:46
+[23-Jun-2020 20:33:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Jun-2020 20:33:58 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 20:33:58 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Jun-2020 20:33:58 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Jun-2020 20:33:58 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 20:33:58 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Jun-2020 20:34:00 Europe/Berlin] Sessione: simone

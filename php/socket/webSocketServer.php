@@ -56,7 +56,7 @@ class webSocketServer implements MessageComponentInterface{
      * @throws Exception
      */
     function onClose(ConnectionInterface $conn){
-        error_log($conn);
+        error_log(serialize($conn));
         unset($this->clients[$conn->resourceId]);
         error_log('IL SOCKET SI E CHIUSO!!!');
     }
