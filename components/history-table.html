@@ -96,7 +96,7 @@
                         </th>
                         <th md-column md-order-by="tag_y_pos" md-numeric><span class="color-darkcyan">{{lang.yPos | uppercase}}</span>
                         <th md-column md-order-by="protocol" md-numeric><span class="color-darkcyan">{{lang.protocol | uppercase}}</span>
-                        <th md-column md-order-by="mann_down_cause" md-numeric><span class="color-darkcyan">{{lang.manDownCause | uppercase}}</span>
+                        <th md-column md-numeric md-order-by="mann_down_cause"><span class="color-darkcyan">{{lang.manDownCause | uppercase}}</span>
                         </th>
                     </tr>
                     </thead>
@@ -113,7 +113,8 @@
                         </td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.location}">{{row.location || lang.noData}}
                         </td>
-                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.floor}">{{row.floor || lang.noData}}
+                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.floor}">{{row.floor ||
+                            lang.noData}}
                         </td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag_x_pos.toString()}">
                             {{row.tag_x_pos.toString() || lang.noData}}
@@ -124,7 +125,7 @@
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.protocol.toString()}">
                             {{row.protocol.toString() || lang.noData}}
                         </td>
-                        <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.man_down_cause.toString()}">
+                        <td class="no-wrap" md-cell ng-class="{'md-placeholder': !row.man_down_cause.toString()}">
                             {{row.man_down_cause.toString() || lang.noData}}
                         </td>
                     </tr>
