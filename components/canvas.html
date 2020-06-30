@@ -204,6 +204,9 @@
                                     <img
                                             src="img/icons/menu/outdoor-zone.ico" class="menu-list-icon menu-icon"
                                             alt=""></md-list-item>
+                                <md-list-item ng-show="canvasCtrl.isAdmin" ng-click="rfidTable('home')" class="font-smal"><p>{{lang.rfidTable | uppercase}}</p><img
+                                    src="img/icons/menu/rfid.ico" class="menu-list-icon menu-icon"
+                                    alt=""></md-list-item>
                                 <md-list-item class="font-smal" ng-click="viewHistory('canvas')"><p>{{lang.history |
                                     uppercase}}</p><img
                                         src="img/icons/menu/history-icon.ico" class="menu-list-icon menu-icon"

@@ -83,22 +83,25 @@
 
                         <div layout="column" id="menu-container">
                             <md-list ng-controller="menuController">
-                                <md-list-item ng-click="registry('outdoor')"><p>{{lang.weTagTable | uppercase}}</p><img
+                                <md-list-item class="font-smal" ng-click="registry('outdoor')"><p>{{lang.weTagTable | uppercase}}</p><img
                                         src="img/icons/menu/anagrafica-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="viewHistory()"><p>{{lang.history | uppercase}}</p><img
+                                <md-list-item ng-show="outdoorCtrl.isAdmin" ng-click="rfidTable('home')" class="font-smal"><p>{{lang.rfidTable | uppercase}}</p><img
+                                    src="img/icons/menu/rfid.ico" class="menu-list-icon menu-icon"
+                                    alt=""></md-list-item>
+                                <md-list-item class="font-smal" ng-click="viewHistory()"><p>{{lang.history | uppercase}}</p><img
                                         src="img/icons/menu/history-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="quickActions()"><p>{{lang.quickActions | uppercase}}</p><img
+                                <md-list-item class="font-smal" ng-click="quickActions()"><p>{{lang.quickActions | uppercase}}</p><img
                                         src="img/icons/menu/quick-actions.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="zoneOutdoor()"><p>{{lang.zoneTable | uppercase}}</p><img
+                                <md-list-item class="font-smal" ng-click="zoneOutdoor()"><p>{{lang.zoneTable | uppercase}}</p><img
                                         src="img/icons/menu/outdoor-zone.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="changePassword()"><p>{{lang.changePassword | uppercase}}</p><img
+                                <md-list-item class="font-smal" ng-click="changePassword()"><p>{{lang.changePassword | uppercase}}</p><img
                                         src="img/icons/menu/password-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
-                                <md-list-item ng-click="logout()"><p class="color-red">{{lang.logout | uppercase}}</p><img
+                                <md-list-item class="font-smal" ng-click="logout()"><p class="color-red">{{lang.logout | uppercase}}</p><img
                                         src="img/icons/menu/logout-icon.ico" class="menu-list-icon menu-icon"
                                         alt=""></md-list-item>
                             </md-list>

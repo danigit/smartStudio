@@ -1526,6 +1526,7 @@
                     $scope.items = ['name', 'type', 'battery', 'macs', 'rfids', 'zones', 'parameters', 'callme'];
                     $scope.columns = [];
                     $scope.rfids = [];
+                    $scope.assigned_rfids = [];
                     $scope.selected_rfid = null;
 
                     let call_me_button = false;
@@ -1564,6 +1565,7 @@
                         // getting the rfids
                         newSocketService.getData('get_rfids', {}, (response) => {
                             $scope.rfids = response.result;
+                            $scope.assigned_rfids = $scope.rfids.filter(rf => !$scope.tags.some(t => rf.id === t.rfid_id))
                             $scope.$apply();
                         });
                     };
@@ -1594,6 +1596,14 @@
                     $scope.isTagOffline = (tag) => {
                         return dataService.isTagOffline(tag);
                     };
+
+                    /**
+                     * Function that controls if an rfid is assigned
+                     * @param {int} rfid_id 
+                     */
+                    $scope.check_if_rfid_assigned = (rfid_id) =>{
+                        return !$scope.assigned_rfids.some(ar => ar.id === rfid_id);
+                    }
 
                     updateTagsTable();
 

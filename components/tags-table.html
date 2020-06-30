@@ -86,6 +86,7 @@
                         <md-select ng-model="selected_rfid" ng-change="updateTagRfid(tag, selected_rfid)" aria-label="Seleziona tipologia">
                             <md-option>{{lang.nothing}}</md-option>
                             <md-option ng-selected="{{rfid.id.toString() === tag.rfid_id.toString()}}"
+                                        ng-disabled="check_if_rfid_assigned(rfid.id)"
                                        ng-repeat="rfid in rfids" ng-value="rfid.id">
                                 {{rfid.number}}
                             </md-option>
