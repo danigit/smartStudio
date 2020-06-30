@@ -68,9 +68,11 @@ class webSocketServer implements MessageComponentInterface{
      * @param Exception $e
      * @throws Exception
      */
-    function onError(ConnectionInterface $conn, Exception $e){
-        // TODO: Implement onError() method.
+    function onError(ConnectionInterface $conn, Exception $e)
+    {
         error_log("C'E STATO UN ERRORE CON IL SOCKET");
+        error_log($e->getMessage());
+        echo($e->getMessage());
         $conn->close();
     }
 
