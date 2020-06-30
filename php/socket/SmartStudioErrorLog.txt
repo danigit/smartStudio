@@ -17905,6 +17905,7 @@ Stack trace:
 [30-Jun-2020 22:29:03 Europe/Berlin] Sessione: simone
 [30-Jun-2020 22:59:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 15954
 [30-Jun-2020 22:59:59 Europe/Berlin] Sessione: simone
+<<<<<<< HEAD
 [30-Jun-2020 23:03:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 16921
 [30-Jun-2020 23:03:14 Europe/Berlin] Sessione: simone
 [30-Jun-2020 23:03:30 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 17005
@@ -17917,3 +17918,5 @@ Stack trace:
 [30-Jun-2020 23:09:10 Europe/Berlin] Sessione: simone
 [30-Jun-2020 23:10:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19136
 [30-Jun-2020 23:10:46 Europe/Berlin] Sessione: simone
+=======
+>>>>>>> f1caa45251c858798e33909af059a4dbc2113909
