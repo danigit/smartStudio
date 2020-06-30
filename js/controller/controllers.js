@@ -1525,6 +1525,9 @@
                     $scope.tagsCallMe = {};
                     $scope.items = ['name', 'type', 'battery', 'macs', 'rfids', 'zones', 'parameters', 'callme'];
                     $scope.columns = [];
+                    $scope.rfids = [];
+                    $scope.selected_rfid = null;
+
                     let call_me_button = false;
 
                     $scope.query = {
@@ -1551,10 +1554,17 @@
                                 }
                             });
                         });
-
+                        
+                        // getting tag types
                         newSocketService.getData('get_all_types', {}, (response) => {
 
                             $scope.tagTypes = response.result;
+                        });
+
+                        // getting the rfids
+                        newSocketService.getData('get_rfids', {}, (response) => {
+                            $scope.rfids = response.result;
+                            $scope.$apply();
                         });
                     };
 
@@ -1832,46 +1842,19 @@
                     };
 
                     /**
-                     * Function that handle the rfid of the tag
+                     * Function that update the tag rfid
                      * @param tag
+                     * @param selectedType
                      */
-                    $scope.manageRfid = (tag) => {
-                        $scope.clickedTag = tag;
-                        // creating the dialog with the select
-                        let changeRfid = {
-                            locals: {tag: tag},
-                            templateUrl: componentsPath + 'rfid_select.html',
-                            parent: angular.element(document.body),
-                            targetEvent: event,
-                            clickOutsideToClose: true,
-                            multiple: true,
-                            controller: ['$scope', 'dataService', ($scope, dataService) => {
-                                $scope.rfids = [];
-                                $scope.rfid =  {
-                                    selected_rfid:''
-                                };
-
-                                // getting the rfids
-                                newSocketService.getData('get_rfids', {}, (response) => {
-                                    $scope.rfids = response.result;
-                                    $scope.$apply();
-                                });
-
-                                // getting the selected rfid
-                                $scope.$watch('rfid.selected_rfid', (newValue) => {
-                                    let currentValue = "" + newValue;
-                                    if (currentValue !== '') {
-                                        $mdDialog.hide();
-                                        newSocketService.getData('update_tag_rfid', {tag: tag.id, rfid: currentValue}, (response) => {
-                                            dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
-                                        })
-                                    }
-                                });
-                            }]
-                        };
+                    $scope.updateTagRfid = (tag, selectedType) => {
                         
-                        $mdDialog.show(changeRfid);
+                        if (tag.rfid_id.toString() !== selectedType.toString()) {
+                            newSocketService.getData('update_tag_rfid', {tag: tag.id, rfid: selectedType}, (response) => {
+                                dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                            })
+                        }
                     };
+                    
                     /**
                      * Function that handle the tag zones
                      * @param tag

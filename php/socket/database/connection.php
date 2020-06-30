@@ -2591,7 +2591,7 @@ class Connection
         if ($this->connection) {
             $this->query = 'SELECT t.ID, t.NAME, tt.DESCRIPTION AS TYPE, t.X_POS, t.Y_POS, t.TIME, t.BATTERY_STATUS, t.GPS_NORTH_DEGREE, t.MAN_DOWN, t.GPS_EAST_DEGREE,
                         t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.GPS_TIME, t.ALARM_TIME, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, 
-                        t.INSIDE_ZONE, t.IS_EXIT, t.ANCHOR_ID, t.BATTERY_LEVEL, t.TEMPERATURE, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
+                        t.INSIDE_ZONE, t.IS_EXIT, t.ANCHOR_ID, t.BATTERY_LEVEL, t.TEMPERATURE, t.RFID_ID, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
                         dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI, c.ID AS CATEGORY_ID, c.DESCRIPTION AS CATEGORY_DESCRIPTION, 
                         c.ICON_NAME_ALARM AS ICON_NAME_ALARM, c.ICON_NAME_NO_ALARM AS ICON_NAME_NO_ALARM, c.ICON_NAME_OFFLINE
                         FROM tag AS t JOIN tag_types AS tt ON t.TYPE = tt.ID JOIN dress_alarm ON t.ID = dress_alarm.TAG_ID LEFT JOIN category c on t.CATEGORY_ID = c.ID';
@@ -2614,7 +2614,7 @@ class Connection
                     'diagnostic_request' => (int)$row['DIAGNOSTIC_REQUEST'], 'gps_time' => $row['GPS_TIME'],
                     'sleep_time_outdoor' => (int)$row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => (int)$row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON_NAME'],
                     'time' => $row['TIME'], 'alarm_time' => $row['ALARM_TIME'], 'inside_zone' => (int)$row['INSIDE_ZONE'], 'is_exit' => (int)$row['IS_EXIT'], 'anchor_id' => $row['ANCHOR_ID'],
-                    'battery_level' => $row['BATTERY_LEVEL'], 'temperature' => $row['TEMPERATURE'], 'type_id' => (int)$row['TYPE_ID'],
+                    'battery_level' => $row['BATTERY_LEVEL'], 'temperature' => $row['TEMPERATURE'], 'rfid_id' => $row['RFID_ID'], 'type_id' => (int)$row['TYPE_ID'],
                     'helmet_dpi' => (int)$row['HELMET_DPI'], 'belt_dpi' => (int)$row['BELT_DPI'], 'glove_dpi' => (int)$row['GLOVE_DPI'], 'shoe_dpi' => (int)$row['SHOE_DPI'],
                     'category_id' => $row['CATEGORY_ID'], 'category_description' => $row['CATEGORY_DESCRIPTION'], 'icon_name_alarm' => $row['ICON_NAME_ALARM'],
                     'icon_name_no_alarm' => $row['ICON_NAME_NO_ALARM'], 'icon_name_offline' => $row['ICON_NAME_OFFLINE'], 'now_time' => date('Y-m-d H:i:s'));

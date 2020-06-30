@@ -233,18 +233,18 @@
                     canvasCtrl.legend.push({ name: category.name, img: category.no_alarm_image });
                 });
             } else {
-                $mdToast.show({
-                    hideDelay: TOAST_SHOWING_TIME,
-                    position: 'botom center',
-                    controller: 'toastController',
-                    bindToController: true,
-                    locals: {
-                        message: lang.impossibleRecoverTagCategories,
-                        background: 'background-darkred',
-                        color: 'color-white'
-                    },
-                    templateUrl: componentsPath + 'toast.html'
-                });
+                // $mdToast.show({
+                //     hideDelay: TOAST_SHOWING_TIME,
+                //     position: 'botom center',
+                //     controller: 'toastController',
+                //     bindToController: true,
+                //     locals: {
+                //         message: lang.impossibleRecoverTagCategories,
+                //         background: 'background-darkred',
+                //         color: 'color-white'
+                //     },
+                //     templateUrl: componentsPath + 'toast.html'
+                // });
             }
         });
 
