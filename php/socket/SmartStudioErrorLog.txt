@@ -17920,3 +17920,111 @@ Stack trace:
 [30-Jun-2020 23:10:46 Europe/Berlin] Sessione: simone
 =======
 >>>>>>> f1caa45251c858798e33909af059a4dbc2113909
+[30-Jun-2020 23:37:28 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 27145
+[30-Jun-2020 23:37:30 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:43:39 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-07-01 12:43:39
+[01-Jul-2020 12:43:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[01-Jul-2020 12:43:50 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[01-Jul-2020 12:43:51 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[01-Jul-2020 12:43:51 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[01-Jul-2020 12:43:52 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 87
+[01-Jul-2020 12:43:58 Europe/Berlin] UTENTE simone SI E LOGGATO
+[01-Jul-2020 12:44:00 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:46:07 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 722
+[01-Jul-2020 12:46:09 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:49:31 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:49:39 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:49:50 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:51:45 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:53:17 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:54:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4088
+[01-Jul-2020 12:54:07 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:58:09 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6752
+[01-Jul-2020 12:58:10 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:58:18 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:58:28 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:59:49 Europe/Berlin] Sessione: simone
+[01-Jul-2020 12:59:59 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:00:05 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:00:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8069
+[01-Jul-2020 13:00:39 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:00:51 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:03:27 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9744
+[01-Jul-2020 13:03:28 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:03:44 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:03:52 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:04:08 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:04:39 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:05:24 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:05:32 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10844
+[01-Jul-2020 13:05:34 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:05:46 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:06:19 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11266
+[01-Jul-2020 13:06:20 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:06:30 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:06:37 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:07:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12289
+[01-Jul-2020 13:07:58 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:08:14 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12460
+[01-Jul-2020 13:08:15 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:09:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 13584
+[01-Jul-2020 13:09:58 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:10:11 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:10:52 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:11:32 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 14377
+[01-Jul-2020 13:11:33 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:11:52 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:12:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 14746
+[01-Jul-2020 13:12:26 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:13:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 15160
+[01-Jul-2020 13:13:51 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:14:04 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:14:18 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:14:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 15444
+[01-Jul-2020 13:14:35 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:15:25 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 15693
+[01-Jul-2020 13:15:27 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:28:32 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19617
+[01-Jul-2020 13:28:34 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:28:43 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:28:52 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:29:05 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:30:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 21014
+[01-Jul-2020 13:30:54 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:33:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 22512
+[01-Jul-2020 13:33:12 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:33:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 22987
+[01-Jul-2020 13:33:56 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:34:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 23605
+[01-Jul-2020 13:34:54 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:36:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 24421
+[01-Jul-2020 13:36:09 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:39:09 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:39:26 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:41:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 27667
+[01-Jul-2020 13:41:14 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:41:26 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:41:36 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:42:32 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 28463
+[01-Jul-2020 13:42:33 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:42:46 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:43:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 28712
+[01-Jul-2020 13:43:08 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:43:21 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:43:46 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:44:00 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:45:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 29854
+[01-Jul-2020 13:45:07 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:45:36 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:45:44 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:47:04 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:48:11 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:49:00 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:49:07 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 32020
+[01-Jul-2020 13:49:09 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:53:10 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 33228
+[01-Jul-2020 13:53:12 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:53:27 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:53:48 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:55:22 Europe/Berlin] Sessione: simone
+[01-Jul-2020 13:58:15 Europe/Berlin] Sessione: simone

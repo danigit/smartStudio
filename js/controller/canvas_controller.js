@@ -297,7 +297,7 @@
                         tags = response.result;
 
                         // playing the alarms if any
-                        dataService.playAlarmsAudio(response.result);
+                        dataService.playAlarmsAudio(response.result.filter(t => !t.radio_switched_off));
 
                         // getting all the floors of the logged user
                         newSocketService.getData('get_floors_by_user', { user: dataService.user.username }, (floorsByUser) => {
@@ -506,7 +506,6 @@
 
                                                             // controlling if the tags have to be shown
                                                             if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
-                                                                console.log(singleTags)
                                                                 singleTags.forEach((tag, index) => {
                                                                     if (dataService.checkIfTagHasAlarmNoBattery(tag)) {
                                                                         canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
@@ -575,7 +574,6 @@
                 newSocketService.getData('get_engine_on', {}, (response) => {
                     if (response.result.version != undefined)
                         dataService.controlVersion(response.result.version)
-                    console.log(response.result.time_le)
                     canvasCtrl.showEngineOffIcon = response.result.time_le === undefined;
                 });
             }, CANVAS_UPDATE_TIME_INTERVAL);
