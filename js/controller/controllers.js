@@ -4237,6 +4237,7 @@
                         dataService.switch.showAnchors = (newValues[1]);
                         dataService.switch.showCameras = (newValues[2]);
                         dataService.switch.playAudio = (newValues[3]);
+                        dataService.playAlarm = (newValues[3]);
                         dataService.switch.showOutrangeTags = (newValues[4]);
                         dataService.switch.showOutdoorTags = (newValues[5]);
                         dataService.switch.showTableSorting = (newValues[6]);
@@ -4653,6 +4654,7 @@
         });
 
         $scope.muteAlarms = () => {
+            console.log('mutting allarm')
             $scope.alertButtonColor = 'background-green';
             dataService.playAlarm = false;
             $timeout(function() {

@@ -509,9 +509,6 @@
                         showOutdoorRoundDrawing: false,
                         showTableSorting: (response.result[0].table_sorting === 1)
                     };
-
-                    // turning off the home turn off button if the audio is disabled
-                    service.playAlarm = (response.result[0].sound_on === 1);
                 }
             })
         };
@@ -1200,6 +1197,7 @@
 
             // incrementing the number after which the next play is going to happen
             service.playedTime++;
+
 
             // getting the allarms to be played
             tags.forEach(function(tag) {

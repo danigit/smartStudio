@@ -176,7 +176,7 @@
                                         newSocketService.getData('get_all_tags', {}, (allTags) => {
                                             if (allTags !== null && allTags !== undefined) {
                                                 dataService.allTags = allTags.result;
-                                                dataService.alarmsSounds = [];
+                                                // dataService.alarmsSounds = [];
                                                 promise.resolve(result);
                                             }
                                         });
@@ -241,7 +241,7 @@
                                                 newSocketService.getData('get_floors_by_user', { user: dataService.user.username }, (userFloors) => {
                                                     dataService.userFloors = userFloors.result;
 
-                                                    dataService.alarmsSounds = [];
+                                                    // dataService.alarmsSounds = [];
 
                                                     newSocketService.getData('get_all_tags', {}, (allTags) => {
                                                         dataService.allTags = allTags.result;
