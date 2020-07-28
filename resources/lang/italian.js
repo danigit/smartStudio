@@ -388,7 +388,9 @@ function languageController($scope) {
         insertRfid: 'Inserimento RFID',
         number: 'Numero',
         insertNumber: 'Inserire numero',
-        selectElement: 'Seleziona voce'
+        selectElement: 'Seleziona voce',
+        insert_multiple_tags: 'Inserire tag multipli',
+        tag_number: 'Inserire numero di tag'
     }
 }
 

@@ -243,7 +243,7 @@
          * @returns {boolean}
          */
         home_service.checkIfAnchorsHaveAlarmsOrAreOffline = (anchors) => {
-            return anchors.some(a => a.battery_status || a.is_offline);
+            return anchors.some(a => a.is_offline);
         };
 
         /**

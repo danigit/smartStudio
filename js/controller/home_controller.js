@@ -226,8 +226,6 @@
                     })
                 });
             }).catch(function(error) {
-                console.log(error);
-                console.log('reloading the page because the map is broken');
                 window.location.reload(true)
             });
 
