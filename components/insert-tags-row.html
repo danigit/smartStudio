@@ -45,6 +45,14 @@
                 </md-select>
             </md-input-container>
 
+            <md-input-container ng-if="insertTag.multiple" md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <input type='number' ng-model='insertTag.number_of_tags' name='numberOfTags' placeholder="{{lang.tag_number}}">
+            </md-input-container>
+
+            <md-checkbox class="md-primary margin-top-40-px" ng-model="insertTag.multiple" aria-label="">
+                {{lang.insert_multiple_tags}}
+            </md-checkbox>    
+
             <div layout="row" layout-align="center end" class="width-100 margin-top-15-px">
                 <md-button ng-click="addTag(insertTagRowForm)" class="md-raised background-darkcyan color-white">
                     {{lang.insertTag | uppercase}}

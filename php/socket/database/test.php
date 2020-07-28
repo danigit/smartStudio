@@ -86,10 +86,12 @@ class Test{
                 break;
             case 'update_tag_category': var_dump($this->conn->update_tag_category("[{\"category\": 1, \"tags\": [4, 5]}, {\"category\": 6}]"));
                 break;
+            case 'insert_tags': var_dump($this->conn->insert_tags('Tag', 10));
+                break;
             default: var_dump('Funzione non esistente');
         }
     }
 }
 
 $test = new Test();
-$test->test_function('update_tag_category');
+$test->test_function('insert_tags');
