@@ -1155,7 +1155,7 @@
          */
         service.checkIfTagsHaveAlarmsInfo = (tags) => {
             return tags.some(tag => tag.sos || tag.man_down || tag.helmet_dpi || tag.belt_dpi || tag.glove_dpi || tag.shoe_dpi ||
-                tag.battery_status || tag.man_in_quote || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone)
+                tag.man_in_quote || tag.call_me_alarm || tag.diagnostic_request || tag.inside_zone)
         };
 
         // remain outdoor

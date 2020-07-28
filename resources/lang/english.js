@@ -379,7 +379,11 @@ function languageController($scope) {
         insertRfid: '',
         number: '',
         insertNumber: '',
-        selectElement: ''
+        selectElement: '',
+        insert_multiple_tags: 'Inserire tag multipli',
+        tag_number: 'Inserire numero di tag',
+        anchors_number: 'Inserire il numero di ancore',
+        insert_multiple_anchors: 'Inserire anore multiple'
     }
 }
 

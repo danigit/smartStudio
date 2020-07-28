@@ -90,7 +90,7 @@
 
                     <tbody md-body>
                     <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
-                        ng-repeat="row in trackingRows | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit track by $index">
+                        ng-repeat="row in trackingRows | orderBy: query.order:true | limitTo: query.limit: (query.page -1 ) * query.limit track by $index">
                         <td md-cell class="no-wrap">{{row.time}}</td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.event}">{{row.event || lang.noData}}
                         </td>

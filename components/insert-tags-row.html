@@ -35,7 +35,7 @@
                 </div>
             </md-input-container>
 
-            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-35-px">
                 <label>{{lang.type}}</label>
                 <md-select ng-model="insertTag.type">
                     <md-option><em>{{lang.nothing}}</em></md-option>
@@ -43,6 +43,16 @@
                         {{tagType.description}}
                     </md-option>
                 </md-select>
+            </md-input-container>
+
+            <md-input-container ng-if="insertTag.multiple" md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <input type='number' ng-model='insertTag.number_of_tags' name='numberOfTags' placeholder="{{lang.tag_number}}">
+            </md-input-container>
+
+            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <md-checkbox class="md-primary" ng-model="insertTag.multiple" aria-label="">
+                    {{lang.insert_multiple_tags}}
+                </md-checkbox>    
             </md-input-container>
 
             <div layout="row" layout-align="center end" class="width-100 margin-top-15-px">

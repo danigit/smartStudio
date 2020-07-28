@@ -13,8 +13,8 @@
 
 
 -- Dump della struttura del database smarttrack
-CREATE DATABASE IF NOT EXISTS `smarttrack` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-USE `smarttrack`;
+CREATE DATABASE IF NOT EXISTS `ilva` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+USE `ilva`;
 
 -- Dump della struttura di tabella smarttrack.access_control
 CREATE TABLE IF NOT EXISTS `access_control` (

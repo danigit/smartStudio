@@ -443,6 +443,18 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            // inserting multiple tags
+            case 'insert_tags':{
+                $result['action'] = 'insert_tags';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->insert_tags($decoded_message['data']['description'], $decoded_message['data']['number_of_tags'], $decoded_message['data']['type']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //deleting a tag
             case 'delete_tag':{
                 $result['action'] = 'delete_tag';
@@ -763,6 +775,18 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //inserting an anchor
+            case 'insert_anchors':{
+                $result['action'] = 'insert_anchors';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->insert_anchors($decoded_message['data']['name'], $decoded_message['data']['type'], $decoded_message['data']['number_of_anchors']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //deleting an anchor
             case 'delete_anchor':{
                 $result['action'] = 'delete_anchor';
@@ -901,7 +925,8 @@ class webSocketServer implements MessageComponentInterface{
 
                 $fromDate = $decoded_message['data']['fromDate'];
                 $toDate = $decoded_message['data']['toDate'];
-
+                $toDate = date('Y-m-d', strtotime($toDate . '+1 days'));
+                
                 $query = $this->connection->delete_history($fromDate, $toDate);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;

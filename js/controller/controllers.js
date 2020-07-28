@@ -217,7 +217,6 @@
                      * @param list
                      */
                     $scope.toggle = function(item, list) {
-                        console.log(list);
                         let idx = list.indexOf(item);
                         if (idx > -1) {
                             list.splice(idx, 1);
@@ -978,7 +977,6 @@
                      * @param list
                      */
                     $scope.toggle = function(item, list) {
-                        console.log(list);
                         let idx = list.indexOf(item);
                         if (idx > -1) {
                             list.splice(idx, 1);
@@ -1459,6 +1457,8 @@
                         name: '',
                         type: '',
                         mac: '',
+                        multiple: false,
+                        number_of_tags: '',
                         resultClass: '',
                     };
 
@@ -1476,21 +1476,41 @@
                         form.$submitted = true;
 
                         if (form.$valid) {
-                            newSocketService.getData('insert_tag', {
-                                name: $scope.insertTag.name,
-                                type: $scope.insertTag.type,
-                                macs: macs
-                            }, (response) => {
-                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
+                            // inserting multiple tags
+                            if ($scope.insertTag.multiple) {
+                                newSocketService.getData('insert_tags', {
+                                    description: $scope.insertTag.name,
+                                    number_of_tags: $scope.insertTag.number_of_tags,
+                                    type: $scope.insertTag.type
+                                }, (response) => {
+                                    dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
 
-                                if (response.result.length === 0) {
-                                    $scope.insertTag.resultClass = 'background-green';
-                                    $timeout(function() {
-                                        $mdDialog.hide();
-                                        $rootScope.$emit('updateTagsTable', {});
-                                    }, 1000);
-                                }
-                            });
+                                    if (response.result.length === 0) {
+                                        $scope.insertTag.resultClass = 'background-green';
+                                        $timeout(function() {
+                                            $mdDialog.hide();
+                                            $rootScope.$emit('updateTagsTable', {});
+                                        }, 1000);
+                                    }
+                                });
+                            } else{
+                                // inserting the single tag
+                                newSocketService.getData('insert_tag', {
+                                    name: $scope.insertTag.name,
+                                    type: $scope.insertTag.type,
+                                    macs: macs
+                                }, (response) => {
+                                    dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
+
+                                    if (response.result.length === 0) {
+                                        $scope.insertTag.resultClass = 'background-green';
+                                        $timeout(function() {
+                                            $mdDialog.hide();
+                                            $rootScope.$emit('updateTagsTable', {});
+                                        }, 1000);
+                                    }
+                                });
+                            }
                         } else {
                             $scope.insertTag.resultClass = 'background-red';
                         }
@@ -1565,7 +1585,7 @@
                         // getting the rfids
                         newSocketService.getData('get_rfids', {}, (response) => {
                             $scope.rfids = response.result;
-                            $scope.assigned_rfids = $scope.rfids.filter(rf => !$scope.tags.some(t => rf.id === t.rfid_id))
+                            $scope.assigned_rfids = $scope.rfids.filter(rf => $scope.tags.some(t => !(t.rfid_id == null) && (rf.id === t.rfid_id)))
                             $scope.$apply();
                         });
                     };
@@ -1602,7 +1622,7 @@
                      * @param {int} rfid_id 
                      */
                     $scope.check_if_rfid_assigned = (rfid_id) =>{
-                        return !$scope.assigned_rfids.some(ar => ar.id === rfid_id);
+                        return $scope.assigned_rfids.some(ar => ar.id === rfid_id);
                     }
 
                     updateTagsTable();
@@ -1857,10 +1877,19 @@
                      * @param selectedType
                      */
                     $scope.updateTagRfid = (tag, selectedType) => {
-                        
-                        if (tag.rfid_id.toString() !== selectedType.toString()) {
+                        if(tag.rfid_id == null){
                             newSocketService.getData('update_tag_rfid', {tag: tag.id, rfid: selectedType}, (response) => {
-                                dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                if(response.result !== 0 ){
+                                    dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                    $scope.assigned_rfids.push($scope.rfids.find(rf => rf.id == selectedType));
+                                }
+                            })
+                        }else if (tag.rfid_id.toString() !== selectedType.toString()) {
+                            newSocketService.getData('update_tag_rfid', {tag: tag.id, rfid: selectedType}, (response) => {
+                                if(response.result !== 0 ){
+                                    dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                    $scope.assigned_rfids.push($scope.rfids.find(rf => rf.id == selectedType));
+                                }
                             })
                         }
                     };
@@ -2631,7 +2660,6 @@
                             .cancel(lang.cancel);
 
                         $mdDialog.show(confirm).then(() => {
-                            console.log('the category is: ', category);
                             newSocketService.getData('delete_tag_category', { category_id: category.id }, (response) => {
                                 dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result !== 0);
 
@@ -2724,7 +2752,6 @@
                                         number: $scope.insertRfid.number,
                                         type: $scope.insertRfid.type
                                     }, (response) => {
-                                        console.log(response)
                                         dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
                                         if (response.result !== 0) {
                                             $scope.insertRfid.resultClass = 'background-green';
@@ -2796,7 +2823,6 @@
                             .cancel(lang.cancel);
 
                         $mdDialog.show(confirm).then(() => {
-                            console.log('the category is: ', rfid);
                             newSocketService.getData('delete_rfid', { id: rfid.id }, (response) => {
                                 dataService.showMessage($mdToast, lang.elementDeleted, lang.elementNotDeleted, response.result !== 0);
 
@@ -3180,7 +3206,6 @@
                      * @param list
                      */
                     $scope.toggle = function(item, list) {
-                        console.log(list);
                         let idx = list.indexOf(item);
                         if (idx > -1) {
                             list.splice(idx, 1);
@@ -3564,6 +3589,8 @@
                         proximity: '',
                         selectedNeighbors: [],
                         selectedPermitteds: [],
+                        multiple: false,
+                        number_of_anchors: ''
                     };
 
                     $scope.permitteds = dataService.allTags;
@@ -3595,6 +3622,13 @@
                     $scope.addAnchor = (form) => {
                         form.$submitted = true;
 
+                        // if I insert multiple anchors then I have to set the default values for the single anchors insertion
+                        if(insertAnchor.multiple){
+                            insertAnchor.mac = '0',
+                            insertAnchor.ip = '0',
+                            insertAnchor.rssi = '0'
+                        }
+
                         if (form.$valid) {
                             let neighborsString = '';
                             let permittedIds = [];
@@ -3610,28 +3644,47 @@
                                     permittedIds.push(t.id);
                                 });
 
-                            newSocketService.getData('insert_anchor', {
-                                name: $scope.insertAnchor.name,
-                                mac: $scope.insertAnchor.mac,
-                                type: $scope.insertAnchor.selectedType,
-                                ip: $scope.insertAnchor.ip,
-                                rssi: $scope.insertAnchor.rssi,
-                                proximity: $scope.insertAnchor.proximity,
-                                permitteds: permittedIds,
-                                neighbors: neighborsString,
-                                floor: floor.id
-                            }, (response) => {
-                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
+                            if(insertAnchor.multiple){
+                                newSocketService.getData('insert_anchor', {
+                                    name: $scope.insertAnchor.name,
+                                    type: $scope.insertAnchor.selectedType,
+                                    number_of_anchors: $scope.insertAnchor.number_of_anchors,
+                                }, (response) => {
+                                    dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
 
-                                if (response.result.length === 0) {
-                                    $scope.insertAnchor.resultClass = 'background-green';
-                                    $timeout(function() {
-                                        $mdDialog.hide();
-                                        $rootScope.$emit('updateAnchorsTable', {});
-                                    }, 1000);
-                                    $scope.$apply();
-                                }
-                            });
+                                    if (response.result.length === 0) {
+                                        $scope.insertAnchor.resultClass = 'background-green';
+                                        $timeout(function() {
+                                            $mdDialog.hide();
+                                            $rootScope.$emit('updateAnchorsTable', {});
+                                        }, 1000);
+                                        $scope.$apply();
+                                    }
+                                });
+                            } else{
+                                newSocketService.getData('insert_anchor', {
+                                    name: $scope.insertAnchor.name,
+                                    mac: $scope.insertAnchor.mac,
+                                    type: $scope.insertAnchor.selectedType,
+                                    ip: $scope.insertAnchor.ip,
+                                    rssi: $scope.insertAnchor.rssi,
+                                    proximity: $scope.insertAnchor.proximity,
+                                    permitteds: permittedIds,
+                                    neighbors: neighborsString,
+                                    floor: floor.id
+                                }, (response) => {
+                                    dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
+
+                                    if (response.result.length === 0) {
+                                        $scope.insertAnchor.resultClass = 'background-green';
+                                        $timeout(function() {
+                                            $mdDialog.hide();
+                                            $rootScope.$emit('updateAnchorsTable', {});
+                                        }, 1000);
+                                        $scope.$apply();
+                                    }
+                                });
+                            }
                         } else {
                             $scope.insertAnchor.resultClass = 'background-red';
                         }
@@ -3702,7 +3755,6 @@
                                 });
                             });
 
-                            console.log($scope.anchors);
                             $scope.$apply();
                         });
 
@@ -3856,7 +3908,6 @@
                      * @param list
                      */
                     $scope.toggle = function(item, list) {
-                        console.log(list);
                         let idx = list.indexOf(item);
                         if (idx > -1) {
                             list.splice(idx, 1);
@@ -4347,7 +4398,6 @@
                                                 let round = true;
                                                 $interval(function() {
 
-                                                    console.log('redrawing the canvas');
                                                     //updating the canvas and drawing border
                                                     updateCanvas(canvas.width, canvas.height, context, img);
 
@@ -4654,7 +4704,6 @@
         });
 
         $scope.muteAlarms = () => {
-            console.log('mutting allarm')
             $scope.alertButtonColor = 'background-green';
             dataService.playAlarm = false;
             $timeout(function() {
