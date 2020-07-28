@@ -1399,6 +1399,78 @@ class Connection
     }
 
     /**
+     * Funzione che inserisce un'ancora
+     * @param $name
+     * @param $mac
+     * @param $type
+     * @param $ip
+     * @param $rssi
+     * @param $proximity
+     * @param $permitted
+     * @param $neighbors
+     * @param $floor
+     * @return array|db_errors
+     */
+    function insert_anchors($description, $type, $number_of_anchors){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->connection->autocommit(false);
+            $errors = array();
+            $temp_description = $description;
+
+            $this->query = 'SELECT ID FROM anchor_types WHERE DESCRIPTION = ?';
+            $statement = $this->execute_selecting($this->query, 's', $type);
+
+            if ($statement instanceof db_errors)
+                array_push($errors, 'getting_type_id');
+            else if ($statement == false)
+                array_push($errors, 'getting_type_id');
+
+            $statement->bind_result($res_id);
+            $fetch = $statement->fetch();
+
+            $statement->close();
+
+            if ($fetch) {
+                for( $i = 1; $i <= $number_of_anchors; $i++){
+                
+                    if ($i < 10){
+                        $temp_description = $description . ' 00' . (string)$i;
+                    } else if($i < 100){
+                        $temp_description = $description . ' 0' . (string)$i;
+                    } else{
+                        $temp_description = $description . ' ' . (string)$i;
+                    }
+
+                 
+                    $this->query = 'INSERT INTO anchor (NAME, TYPE) VALUES (?, ?)';
+
+                    $statement = $this->execute_inserting($this->query, 'ss', $descritption, $res_id);
+
+                    if ($statement instanceof db_errors)
+                        array_push($errors, 'insert_anchor_db_error');
+                    else if ($statement == false)
+                        array_push($errors, 'insert_anchor_error');
+                }
+            }
+
+            $this->result = $this->connection->insert_id;
+
+            if (!empty($errors)) {
+                $this->connection->rollback();
+            }
+
+            $this->connection->commit();
+
+            mysqli_close($this->connection);
+
+            return $errors;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+    /**
      * Function that updates anchor position
      * @param $position
      * @param $id

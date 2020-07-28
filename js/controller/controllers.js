@@ -3589,6 +3589,8 @@
                         proximity: '',
                         selectedNeighbors: [],
                         selectedPermitteds: [],
+                        multiple: false,
+                        number_of_anchors: ''
                     };
 
                     $scope.permitteds = dataService.allTags;
@@ -3620,6 +3622,13 @@
                     $scope.addAnchor = (form) => {
                         form.$submitted = true;
 
+                        // if I insert multiple anchors then I have to set the default values for the single anchors insertion
+                        if(insertAnchor.multiple){
+                            insertAnchor.mac = '0',
+                            insertAnchor.ip = '0',
+                            insertAnchor.rssi = '0'
+                        }
+
                         if (form.$valid) {
                             let neighborsString = '';
                             let permittedIds = [];
@@ -3635,28 +3644,47 @@
                                     permittedIds.push(t.id);
                                 });
 
-                            newSocketService.getData('insert_anchor', {
-                                name: $scope.insertAnchor.name,
-                                mac: $scope.insertAnchor.mac,
-                                type: $scope.insertAnchor.selectedType,
-                                ip: $scope.insertAnchor.ip,
-                                rssi: $scope.insertAnchor.rssi,
-                                proximity: $scope.insertAnchor.proximity,
-                                permitteds: permittedIds,
-                                neighbors: neighborsString,
-                                floor: floor.id
-                            }, (response) => {
-                                dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
+                            if(insertAnchor.multiple){
+                                newSocketService.getData('insert_anchor', {
+                                    name: $scope.insertAnchor.name,
+                                    type: $scope.insertAnchor.selectedType,
+                                    number_of_anchors: $scope.insertAnchor.number_of_anchors,
+                                }, (response) => {
+                                    dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
 
-                                if (response.result.length === 0) {
-                                    $scope.insertAnchor.resultClass = 'background-green';
-                                    $timeout(function() {
-                                        $mdDialog.hide();
-                                        $rootScope.$emit('updateAnchorsTable', {});
-                                    }, 1000);
-                                    $scope.$apply();
-                                }
-                            });
+                                    if (response.result.length === 0) {
+                                        $scope.insertAnchor.resultClass = 'background-green';
+                                        $timeout(function() {
+                                            $mdDialog.hide();
+                                            $rootScope.$emit('updateAnchorsTable', {});
+                                        }, 1000);
+                                        $scope.$apply();
+                                    }
+                                });
+                            } else{
+                                newSocketService.getData('insert_anchor', {
+                                    name: $scope.insertAnchor.name,
+                                    mac: $scope.insertAnchor.mac,
+                                    type: $scope.insertAnchor.selectedType,
+                                    ip: $scope.insertAnchor.ip,
+                                    rssi: $scope.insertAnchor.rssi,
+                                    proximity: $scope.insertAnchor.proximity,
+                                    permitteds: permittedIds,
+                                    neighbors: neighborsString,
+                                    floor: floor.id
+                                }, (response) => {
+                                    dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
+
+                                    if (response.result.length === 0) {
+                                        $scope.insertAnchor.resultClass = 'background-green';
+                                        $timeout(function() {
+                                            $mdDialog.hide();
+                                            $rootScope.$emit('updateAnchorsTable', {});
+                                        }, 1000);
+                                        $scope.$apply();
+                                    }
+                                });
+                            }
                         } else {
                             $scope.insertAnchor.resultClass = 'background-red';
                         }
