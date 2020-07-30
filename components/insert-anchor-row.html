@@ -14,7 +14,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">{{lang.insertingAnchor | uppercase}}</h1>
+                <h1 class=" font-iceberg font-x-large color-white">{{lang.insertingAnchor | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -27,7 +27,7 @@
 
         <form id="insertAnchorForm" name="insertAnchorForm">
             <div layout="row">
-                <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <md-input-container md-no-float ng-class="{'width-100': insertAnchor.multiple == true}" class="md-block padding-right-10-px margin-bottom-0 width-50">
                     <input required type="text" ng-model="insertAnchor.name" name="insertAnchorName"
                            placeholder="{{lang.name}}">
                     <div ng-messages="insertAnchorForm.insertAnchorName.$error || insertAnchorForm.$submitted"
@@ -36,7 +36,7 @@
                     </div>
                 </md-input-container>
 
-                <md-input-container md-no-float class="md-block padding-right-10-px margin-bottom-0">
+                <md-input-container ng-if="!insertAnchor.multiple" md-no-float class="md-block padding-right-10-px margin-bottom-0 width-50">
                     <input required type="text" ng-model="insertAnchor.mac" name="insertAnchorMac"
                            placeholder="{{lang.mac}}">
                     <div ng-messages="insertAnchorForm.insertAnchorMac.$error || insertAnchorForm.$submitted"
@@ -46,7 +46,7 @@
                 </md-input-container>
             </div>
             <div layout="row">
-                <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0 width-50">
+                <md-input-container md-no-float ng-class="{'width-100': insertAnchor.multiple == true}" class="md-block padding-left-10-px margin-bottom-35-px width-50">
                     <label>{{lang.type}}</label>
                     <md-select ng-model="insertAnchor.selectedType">
                         <md-option><em>{{lang.nothing}}</em></md-option>
@@ -56,7 +56,7 @@
                         </md-option>
                     </md-select>
                 </md-input-container>
-                <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <md-input-container ng-if="!insertAnchor.multiple" md-no-float class="md-block padding-left-10-px margin-bottom-0 width-50">
                     <input required type="text" ng-model="insertAnchor.ip" name="insertAnchorIp"
                            placeholder="{{lang.ip}}">
                     <div ng-messages="insertAnchorForm.insertAnchorIp.$error || insertAnchorForm.$submitted"
@@ -66,7 +66,7 @@
                 </md-input-container>
             </div>
 
-            <div layout="row">
+            <div layout="row" ng-if="!insertAnchor.multiple">
                 <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0 width-50">
                     <label>{{lang.proximity}}</label>
                     <md-select ng-model="insertAnchor.proximity">
@@ -74,7 +74,7 @@
                         <md-option ng-value=0>NO</md-option>
                     </md-select>
                 </md-input-container>
-                <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0 width-50">
                     <input required type="number" ng-model="insertAnchor.rssi" name="insertAnchorRssi"
                            placeholder="{{lang.rssi}}">
                     <div ng-messages="insertAnchorForm.insertAnchorRssi.$error || insertAnchorForm.$submitted"
@@ -84,7 +84,7 @@
                 </md-input-container>
             </div>
 
-            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+            <md-input-container ng-if="!insertAnchor.multiple" md-no-float class="md-block padding-left-10-px margin-bottom-0 width-50">
                 <label>{{lang.neighbors}}</label>
                 <md-select ng-model="insertAnchor.selectedNeighbors"
                            md-on-close="clearSearch()"
@@ -104,7 +104,7 @@
                 </md-select>
             </md-input-container>
 
-            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+            <md-input-container ng-if="!insertAnchor.multiple" md-no-float class="md-block padding-left-10-px margin-bottom-0">
                 <label>{{lang.permitted}}</label>
                 <md-select ng-model="insertAnchor.selectedPermitteds"
                            md-on-close="clearSearch()"
@@ -123,6 +123,17 @@
                     </md-optgroup>
                 </md-select>
             </md-input-container>
+
+            <md-input-container ng-if="insertAnchor.multiple" md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <input type='number' ng-model='insertAnchor.number_of_anchors' name='numberOfAnchors' placeholder="{{lang.anchors_number}}">
+            </md-input-container>
+
+            <md-input-container md-no-float class="md-block padding-left-10-px margin-bottom-0">
+                <md-checkbox class="md-primary" ng-model="insertAnchor.multiple" aria-label="">
+                    {{lang.insert_multiple_anchors}}
+                </md-checkbox>    
+            </md-input-container>
+
 
             <div layout="row" layout-align="center end" class="width-100 margin-top-15-px">
                 <md-button ng-click="addAnchor(insertAnchorForm)" class="md-raised background-darkcyan color-white">

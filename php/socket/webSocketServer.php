@@ -775,6 +775,19 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //inserting an anchor
+            case 'insert_anchors':{
+                $result['action'] = 'insert_anchors';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->insert_anchors($decoded_message['data']['name'], $decoded_message['data']['type'], 
+                        $decoded_message['data']['number_of_anchors'], $decoded_message['data']['floor']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //deleting an anchor
             case 'delete_anchor':{
                 $result['action'] = 'delete_anchor';
