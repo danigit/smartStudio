@@ -1411,13 +1411,13 @@ class Connection
      * @param $floor
      * @return array|db_errors
      */
-    function insert_anchors($description, $type, $number_of_anchors){
+    function insert_anchors($description, $type, $number_of_anchors, $floor){
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
             $this->connection->autocommit(false);
             $errors = array();
-            $temp_description = $description;
+            $temp_description = '';
 
             $this->query = 'SELECT ID FROM anchor_types WHERE DESCRIPTION = ?';
             $statement = $this->execute_selecting($this->query, 's', $type);
@@ -1444,9 +1444,9 @@ class Connection
                     }
 
                  
-                    $this->query = 'INSERT INTO anchor (NAME, TYPE) VALUES (?, ?)';
+                    $this->query = 'INSERT INTO anchor (NAME, TYPE, FLOOR_ID) VALUES (?, ?, ?)';
 
-                    $statement = $this->execute_inserting($this->query, 'ss', $descritption, $res_id);
+                    $statement = $this->execute_inserting($this->query, 'sss', $temp_description, $res_id, $floor);
 
                     if ($statement instanceof db_errors)
                         array_push($errors, 'insert_anchor_db_error');
@@ -1454,8 +1454,6 @@ class Connection
                         array_push($errors, 'insert_anchor_error');
                 }
             }
-
-            $this->result = $this->connection->insert_id;
 
             if (!empty($errors)) {
                 $this->connection->rollback();

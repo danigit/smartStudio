@@ -1802,8 +1802,9 @@
                                                         tag_id: tag.id
                                                     }, (response) => {
 
-                                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
-                                                        if (response.result !== 0) {
+                                                        if (response.result !== 0 && response.result !== 'ERROR_ON_EXECUTE') {
+                                                            dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
+
                                                             $scope.insertMac.resultClass = 'background-green';
                                                             $timeout(function() {
                                                                 $mdDialog.hide();
@@ -1812,11 +1813,13 @@
                                                             }, 1000);
                                                             $scope.$apply();
                                                         } else {
-                                                            $scope.insertTag.resultClass = 'background-red';
+                                                            dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, false);
+
+                                                            $scope.insertMac.resultClass = 'background-red';
                                                         }
                                                     });
                                                 } else {
-                                                    $scope.insertTag.resultClass = 'background-red';
+                                                    $scope.insertMac.resultClass = 'background-red';
                                                 }
                                             };
 
@@ -3583,7 +3586,7 @@
                     $scope.insertAnchor = {
                         name: '',
                         mac: '',
-                        selectedType: '',
+                        selectedType: '1',
                         ip: '',
                         rssi: '',
                         proximity: '',
@@ -3622,33 +3625,14 @@
                     $scope.addAnchor = (form) => {
                         form.$submitted = true;
 
-                        // if I insert multiple anchors then I have to set the default values for the single anchors insertion
-                        if(insertAnchor.multiple){
-                            insertAnchor.mac = '0',
-                            insertAnchor.ip = '0',
-                            insertAnchor.rssi = '0'
-                        }
-
                         if (form.$valid) {
-                            let neighborsString = '';
-                            let permittedIds = [];
-                            $scope.neighbors.filter(a => $scope.insertAnchor.selectedNeighbors.some(sa => sa === a.name))
-                                .forEach((anchor) => {
-                                    neighborsString += anchor.mac + ',';
-                                });
-
-                            neighborsString = neighborsString.replace(/,\s*$/, "");
-
-                            $scope.permitteds = $scope.permitteds.filter(t => $scope.insertAnchor.selectedPermitteds.some(st => st === t.name))
-                                .forEach((t) => {
-                                    permittedIds.push(t.id);
-                                });
-
-                            if(insertAnchor.multiple){
-                                newSocketService.getData('insert_anchor', {
+                            //controlling if I have to insert multiple anchors
+                            if($scope.insertAnchor.multiple){
+                                newSocketService.getData('insert_anchors', {
                                     name: $scope.insertAnchor.name,
                                     type: $scope.insertAnchor.selectedType,
                                     number_of_anchors: $scope.insertAnchor.number_of_anchors,
+                                    floor: floor.id
                                 }, (response) => {
                                     dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
 
@@ -3662,6 +3646,20 @@
                                     }
                                 });
                             } else{
+                                let neighborsString = '';
+                                let permittedIds = [];
+                                $scope.neighbors.filter(a => $scope.insertAnchor.selectedNeighbors.some(sa => sa === a.name))
+                                    .forEach((anchor) => {
+                                        neighborsString += anchor.mac + ',';
+                                    });
+
+                                neighborsString = neighborsString.replace(/,\s*$/, "");
+
+                                $scope.permitteds = $scope.permitteds.filter(t => $scope.insertAnchor.selectedPermitteds.some(st => st === t.name))
+                                    .forEach((t) => {
+                                        permittedIds.push(t.id);
+                                    });
+
                                 newSocketService.getData('insert_anchor', {
                                     name: $scope.insertAnchor.name,
                                     mac: $scope.insertAnchor.mac,

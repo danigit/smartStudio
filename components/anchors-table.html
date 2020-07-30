@@ -42,7 +42,7 @@
                 <thead md-head md-order="query.order">
                 <tr md-row>
                     <th md-column><span class="color-darkcyan"></span></th>
-                    <th md-column ng-if="exists('name', columns)"><span
+                    <th md-column md-order-by="anchor.name" ng-if="exists('name', columns)" ><span
                             class="color-darkcyan">{{lang.name | uppercase}}</span></th>
                     <th md-column md-numeric ng-if="exists('x_pos', columns)"><span class="color-darkcyan">{{lang.xPos | uppercase}}</span>
                     </th>
