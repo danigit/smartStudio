@@ -848,7 +848,7 @@
                                                         locations: locationsIds,
 
                                                     }, (response) => {
-                                                        dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                                        dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result.length === 0);
 
                                                         $mdDialog.hide();
                                                         $mdDialog.show(manageLocationDialog);
