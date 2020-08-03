@@ -491,5 +491,4 @@ let displayListCluster = (tag, index) => {
 };
 
 // version number
-const UPDATE_VERSION = "3.17.0";
-git config --global user.email "you@example.com"
+const UPDATE_VERSION = "3.17.1";
