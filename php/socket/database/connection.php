@@ -4298,7 +4298,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT ID, USERNAME, NAME, ROLE, EMAIL_ALERT, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, TELEPHONE_NUMBER FROM user WHERE ROLE = 0 OR ROLE = 2 OR ROLE = 3";
+            $this->query = "SELECT ID, USERNAME, NAME, ROLE, EMAIL_ALERT, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, TELEPHONE_NUMBER FROM user";
 
             $this->result = $this->connection->query($this->query);
 
@@ -4425,6 +4425,10 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
+            $this->connection->autocommit(false);
+            $errors = array();
+
+
             for ($i = 0; $i < count($locations); $i++) {
 
                 $this->query = "INSERT INTO user_has_location (user_id, location_id) VALUES (?, ?)";
@@ -4433,18 +4437,25 @@ class Connection
 
                 if ($statement instanceof db_errors) {
                     mysqli_close($this->connection);
-                    return $statement;
+                    array_push($errors, 'error on inserting location');
                 } else if ($statement == false) {
                     mysqli_close($this->connection);
-                    return new db_errors(db_errors::$ERROR_ON_INSERTING_USER_HAS_LOCATION);
+                    array_push($errors, 'error on inserting location');
                 }
             }
 
-            $id = $this->connection->insert_id;
+            if (!empty($errors)) {
+                $this->connection->rollback();
+                mysqli_close($this->connection);
+
+                return new db_errors(db_errors::$ERROR_ON_INSERTING_USER_HAS_LOCATION);
+            }
+
+            $this->connection->commit();
 
             mysqli_close($this->connection);
 
-            return $id;
+            return $errors;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);

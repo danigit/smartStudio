@@ -552,6 +552,10 @@ PADDING
     padding: 0 15px 0 15px!important;
 }
 
+.padding-lr-20-px {
+    padding: 0 20px 0 20px!important;
+}
+
 .popup-padding {
     padding: 5px 20px 20px 20px;
 }

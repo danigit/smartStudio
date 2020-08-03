@@ -18794,3 +18794,80 @@ Stack trace:
 [30-Jul-2020 22:44:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1811
 [30-Jul-2020 22:44:43 Europe/Berlin] Sessione: simone
 [30-Jul-2020 22:44:56 Europe/Berlin] Sessione: simone
+[03-Aug-2020 14:59:42 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-03 14:59:42
+[03-Aug-2020 14:59:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[03-Aug-2020 14:59:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 82
+[03-Aug-2020 14:59:44 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[03-Aug-2020 14:59:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 87
+[03-Aug-2020 14:59:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 90
+[03-Aug-2020 15:00:04 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user ''@'localhost' (using password: NO) in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 79
+[03-Aug-2020 15:00:04 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4924
+[03-Aug-2020 15:00:04 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 90
+[03-Aug-2020 15:00:16 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user ''@'localhost' (using password: NO) in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 79
+[03-Aug-2020 15:00:16 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4924
+[03-Aug-2020 15:00:16 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 90
+[03-Aug-2020 15:00:22 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user ''@'localhost' (using password: NO) in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 79
+[03-Aug-2020 15:00:22 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4924
+[03-Aug-2020 15:00:22 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 90
+[03-Aug-2020 15:00:27 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/1045): Access denied for user ''@'localhost' (using password: NO) in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 79
+[03-Aug-2020 15:00:27 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4924
+[03-Aug-2020 15:00:27 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 90
+[03-Aug-2020 15:02:00 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-03 15:02:00
+[03-Aug-2020 15:02:03 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[03-Aug-2020 15:02:03 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[03-Aug-2020 15:02:04 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[03-Aug-2020 15:02:09 Europe/Berlin] UTENTE simone SI E LOGGATO
+[03-Aug-2020 15:02:10 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:05:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 855
+[03-Aug-2020 15:06:00 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:06:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 899
+[03-Aug-2020 15:06:33 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:07:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 925
+[03-Aug-2020 15:07:24 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:09:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1035
+[03-Aug-2020 15:09:52 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:27:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6389
+[03-Aug-2020 15:27:45 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:28:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6533
+[03-Aug-2020 15:28:16 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:29:56 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-03 15:29:56
+[03-Aug-2020 15:29:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[03-Aug-2020 15:29:59 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[03-Aug-2020 15:30:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[03-Aug-2020 15:30:01 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[03-Aug-2020 15:30:01 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[03-Aug-2020 15:30:01 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[03-Aug-2020 15:30:01 Europe/Berlin] UTENTE simone SI E LOGGATO
+[03-Aug-2020 15:30:01 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[03-Aug-2020 15:30:01 Europe/Berlin] UTENTE simone SI E LOGGATO
+[03-Aug-2020 15:30:03 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[03-Aug-2020 15:30:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 92
+[03-Aug-2020 15:30:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 95
+[03-Aug-2020 15:30:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 98
+[03-Aug-2020 15:30:29 Europe/Berlin] UTENTE simone SI E LOGGATO
+[03-Aug-2020 15:30:30 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:30:58 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 143
+[03-Aug-2020 15:31:00 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:38:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 167
+[03-Aug-2020 15:38:16 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:38:23 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-03 15:38:23
+[03-Aug-2020 15:38:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[03-Aug-2020 15:38:27 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[03-Aug-2020 15:38:27 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[03-Aug-2020 15:38:27 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[03-Aug-2020 15:38:28 Europe/Berlin] UTENTE simone SI E LOGGATO
+[03-Aug-2020 15:38:28 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[03-Aug-2020 15:38:28 Europe/Berlin] UTENTE simone SI E LOGGATO
+[03-Aug-2020 15:38:29 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 86
+[03-Aug-2020 15:38:39 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:40:35 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 144
+[03-Aug-2020 15:40:37 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:41:01 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:44:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 261
+[03-Aug-2020 15:44:12 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:45:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 345
+[03-Aug-2020 15:45:12 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:46:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 385
+[03-Aug-2020 15:46:00 Europe/Berlin] Sessione: simone
+[03-Aug-2020 15:46:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 557
+[03-Aug-2020 15:46:42 Europe/Berlin] Sessione: simone
