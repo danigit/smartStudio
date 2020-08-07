@@ -1055,6 +1055,7 @@ class Connection
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
+    
     /**
      * Funzione che inserisce un insieme di tags
      * @param $descriptio
