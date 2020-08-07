@@ -243,7 +243,9 @@
          * @returns {boolean}
          */
         home_service.checkIfAnchorsHaveAlarmsOrAreOffline = (anchors) => {
-            return anchors.some(a => a.is_offline);
+            // return anchors.some(a => a.is_offline);
+            // I put this because mentarly the anchors don't have to generate alarms
+            return false;
         };
 
         /**

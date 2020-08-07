@@ -491,4 +491,4 @@ let displayListCluster = (tag, index) => {
 };
 
 // version number
-const UPDATE_VERSION = "3.17.1";
+const UPDATE_VERSION = "3.18.0";
