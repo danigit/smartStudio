@@ -47,11 +47,11 @@
                     <th md-column md-order-by="type_name" ng-if="exists('type', columns)"><span class="color-darkcyan">{{lang.type | uppercase}}</span>
                     <th md-column md-order-by="type_name" ng-if="exists('battery', columns)"><span
                             class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span></th>
-                    <th md-column ng-if="isAdmin && exists('rfids', columns)" class="color-darkcyan">{{lang.manageRfid | uppercase}}</th>
+                    <th md-column ng-if="exists('rfids', columns)" class="color-darkcyan">{{lang.manageRfid | uppercase}}</th>
                     <th md-column ng-if="isAdmin && exists('macs', columns)"></th>
                     <th md-column ng-if="isAdmin && exists('zones', columns)"></th>
                     <th md-column ng-if="isAdmin && exists('parameters', columns)"></th>
-                    <th md-column ng-if="isAdmin && exists('callme', columns)"></th>
+                    <th md-column ng-if="exists('callme', columns)"></th>
                     <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
@@ -82,7 +82,7 @@
                                                                         title="{{lang.batteryLevel}}">
                         <span class="padding-left-5-px"><b>{{tag.battery_level}}</b>%/<b>{{tag.temperature}}</b>°C</span>
                     </td>
-                    <td md-cell ng-if="isAdmin && exists('rfids', columns)" class="padding-right-10-px">
+                    <td md-cell ng-if="exists('rfids', columns)" class="padding-right-10-px">
                         <md-select ng-model="selected_rfid" ng-change="updateTagRfid(tag, selected_rfid)" aria-label="Seleziona tipologia">
                             <md-option>{{lang.nothing}}</md-option>
                             <md-option ng-selected="{{rfid.id.toString() === tag.rfid_id.toString()}}"
@@ -111,7 +111,7 @@
                             {{lang.parameters | uppercase}}
                         </md-button>
                     </td>
-                    <td md-cell ng-click="callMe(tag)" ng-if="exists('callme', columns)" ng-show="isAdmin">
+                    <td md-cell ng-click="callMe(tag)" ng-if="exists('callme', columns)">
                         <md-button ng-class="tagsCallMe[tag.id]['background']"
                                    class="md-raised background-gray margin-top-5-px">{{tagsCallMe[tag.id]['value']}}
                         </md-button>

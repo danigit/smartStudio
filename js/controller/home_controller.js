@@ -161,15 +161,19 @@
                         // setting the cloud info window
                         google.maps.event.addListener(homeCtrl.markerClusterer, 'mouseover', (mapCluster) => {
                             if (infoWindowCluster === null) {
-                                infoWindowCluster = homeService.fillInfoWindowCluster(mapCluster, markers, dataService.allTags, onTags, response.result);
 
-                                infoWindowCluster.setPosition(mapCluster.center_);
-                                infoWindowCluster.open(map);
-                                google.maps.event.addListener(infoWindowCluster, 'closeclick', function() {
-                                    infoWindowCluster = null;
+                                newSocketService.getData('get_tags_by_user', { user: dataService.user.username }, (userTags) => {
+                                    onTags = userTags.result.filter(t => !t.radio_switched_off);
+                                    infoWindowCluster = homeService.fillInfoWindowCluster(mapCluster, markers, dataService.allTags, onTags, response.result);
+
+                                    infoWindowCluster.setPosition(mapCluster.center_);
+                                    infoWindowCluster.open(map);
+                                    google.maps.event.addListener(infoWindowCluster, 'closeclick', function() {
+                                        infoWindowCluster = null;
+                                    });
+                                    google.maps.event.addDomListener(window, 'load', homeService.fillInfoWindowCluster);
                                 });
-                                google.maps.event.addDomListener(window, 'load', homeService.fillInfoWindowCluster);
-                            }
+                           }
                         });
 
                         // changing the cloud icon if there are alarms
@@ -178,6 +182,7 @@
                                 infoWindowCluster.close(map);
                                 infoWindowCluster = null;
                             }
+
                             // getting the clusters
                             mapClusters.getClusters().forEach(cluster => {
                                 let clusterLocations = [];
@@ -424,7 +429,7 @@
                                 }
 
                                 // showing the anchors alarm icon if there are anchors in alarm
-                                homeCtrl.showOfflineAnchorsIcon = homeService.checkIfAnchorsHaveAlarmsOrAreOffline(response.result);
+                                homeCtrl.showOfflineAnchorsIcon = homeService.checkIfOfflineAnchorsIconHasToBeShown(response.result);
                             });
                         });
 
