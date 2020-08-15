@@ -118,6 +118,7 @@
             let locationTags    = [];
             let locationAnchors = [];
             let clusterString   = '<div class="margin-top-10-px"><md-list>';
+            let clusterAlarmsString = '';
 
             cluster.markers_.forEach(m => {
                 markers.forEach((l, idx) => {
@@ -167,7 +168,8 @@
                 })
             });
 
-            clusterString += '</md-list><div class="margin-top-20-px height-135px overflow-auto padding-top-15-px border-1-top-red">';
+            clusterString += '</md-list>'
+            clusterAlarmsString = '<div class="margin-top-20-px max-height-135px overflow-auto padding-top-15-px border-1-top-red">';
 
             cluster.markers_.forEach(m => {
                 markers.forEach(l => {
@@ -182,21 +184,26 @@
                     if (m.getPosition().lat() === l.position[0] && m.getPosition().lng() === l.position[1]) {
                         // getting tags alarms
                         locationTags.forEach(t => {
+
                             let alarms = dataService.loadTagAlarmsForInfoWindow(t, '');
-                            alarms.forEach(a => {
-                                clusterString += '<div class="display-flex margin-bottom-10-px"><div>' +
-                                    '<img src="' + a.image + '"class="width-55px margin-right-10-px" alt="' + a.name + '"/>' +
-                                    '</div>' +
-                                    '<div>' +
-                                    '   <h3 class="margin-none">' + a.tag + ' - ' + l.name + '</h3>' +
-                                    '   <h4 class="margin-none">' + a.name + '</h4>' +
-                                    '</div></div>'
-                            });
+                            if (alarms.length > 0){
+
+                                alarms.forEach(a => {
+                                    clusterAlarmsString += '<div class="display-flex margin-bottom-10-px"><div>' +
+                                        '<img src="' + a.image + '"class="width-55px margin-right-10-px" alt="' + a.name + '"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                        '   <h3 class="margin-none">' + a.tag + ' - ' + l.name + '</h3>' +
+                                        '   <h4 class="margin-none">' + a.name + '</h4>' +
+                                        '</div></div>'
+                                });
+                            } 
                         });
                     }
                 });
             });
 
+            clusterString += clusterAlarmsString;
             clusterString += '</div></div>';
 
             // filling the info window
@@ -243,10 +250,20 @@
          * @returns {boolean}
          */
         home_service.checkIfAnchorsHaveAlarmsOrAreOffline = (anchors) => {
-            // return anchors.some(a => a.is_offline);
+            // return anchors.some(a => a.is_offline || a.battery_status);
             // I put this because mentarly the anchors don't have to generate alarms
             return false;
         };
+    
+
+        /**
+         * Function that controls if the offline anchors icon has to be shownd 
+         * @param {Array} anchors 
+         */
+        home_service.checkIfOfflineAnchorsIconHasToBeShown = (anchors) => {
+
+            return anchors.some(a => a.is_offline || a.battery_status);
+        }
 
         /**
          * Function that controls if the alarms array passed as parameter contains an alarm in the location passed as parameter

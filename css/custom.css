@@ -34,6 +34,10 @@ DIMENSIONS
     height: 300px;
 }
 
+.max-height-135px{
+    max-height: 135px;
+}
+
 .width-auto {
     width: auto!important;
 }

@@ -1802,8 +1802,8 @@
                                                         tag_id: tag.id
                                                     }, (response) => {
 
-                                                        if (response.result !== 0 && response.result !== 'ERROR_ON_EXECUTE') {
-                                                            dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
+                                                        if (!isNaN(response.result) && response.result !== 0) {
+                                                            dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, true);
 
                                                             $scope.insertMac.resultClass = 'background-green';
                                                             $timeout(function() {
@@ -1813,7 +1813,7 @@
                                                             }, 1000);
                                                             $scope.$apply();
                                                         } else {
-                                                            dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, false);
+                                                            dataService.showMessage($mdToast, lang.elementInserted, response.result, false);
 
                                                             $scope.insertMac.resultClass = 'background-red';
                                                         }
