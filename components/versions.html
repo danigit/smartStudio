@@ -13,7 +13,7 @@
 
         <div layout="column">
             <div layout="row" layout-align="center center" class="">
-                <h1 class=" font-iceberg font-x-large">SMART STUDIO - {{lang.versions | uppercase}}</h1>
+                <h1 class=" font-iceberg color-white font-x-large">SMART STUDIO - {{lang.versions | uppercase}}</h1>
             </div>
         </div>
     </md-toolbar>
@@ -30,14 +30,24 @@
                    md-progress="promise">
 
                 <thead md-head md-order="query.order">
-                <tr md-row>
-                    <th md-column><span class="color-darkcyan">{{lang.version | uppercase}}</span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.description | uppercase}}</span></th>
-                    <th md-column><span class="color-darkcyan">{{lang.date | uppercase}}</span></th>
-                </tr>
+                    <tr md-row>
+                        <th md-column><span class="color-darkcyan">{{lang.version | uppercase}}</span></th>
+                        <th md-column><span class="color-darkcyan">{{lang.description | uppercase}}</span></th>
+                        <th md-column><span class="color-darkcyan">{{lang.date | uppercase}}</span></th>
+                    </tr>
                 </thead>
 
                 <tbody md-body>
+                    <tr md-auto-select="true" md-on-select="logItem" md-row md-select="floor">
+                        <td class="color-orange" md-cell>V 3.19.0 - CLOUD ALARMS</td>
+                        <td md-cell>
+                            <span class="color-green text-bold">Ridefinita la visualizzazione degli allarmi all'interno delle finestre coud</span><br>
+                            <span class="color-green text-bold">Implementato l'aggiornamento automatico degli allarmi nella finestra dei cloud</span><br>
+                            <span class="color-green text-bold">Implementata la visualizzazione del messaggio di errore se inserisco un tag che c'e' gia'</span><br>
+                            <span class="color-green text-bold">Resi visibili gli rfid e callme per tutti gli utenti</span>
+                        </td>
+                        <td md-cell>14/08/2020</td>
+                    </tr>
                     <tr md-auto-select="true" md-on-select="logItem" md-row md-select="floor">
                         <td class="color-orange" md-cell>V 3.18.0 - RIMOSSO ZOOM PER ANCORE OFFLINE</td>
                         <td md-cell>

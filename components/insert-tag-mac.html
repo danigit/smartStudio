@@ -39,7 +39,7 @@
                 </thead>
 
                 <tbody md-body>
-                <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
+                <tr md-row md-select="mac" md-on-select="logItem" md-auto-select="true"
                     ng-repeat="mac in macs | limitTo: query.limit: (query.page -1 ) * query.limit">
 
                     <td md-cell ng-click="editCell($event, mac, 'mac')" ng-class="{'md-placeholder': !mac.mac}">
