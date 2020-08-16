@@ -92,10 +92,9 @@
                             </md-option>
                         </md-select>
                     </td>
-                    <td md-cell ng-show="isAdmin" class="padding-right-10-px">
+                    <td md-cell ng-show="isAdmin" class="padding-right-10-px" ng-if="exists('macs', columns)">
                         <md-button ng-click="tagMacs(tag)"
-                                   class="md-raised background-gray color-darkcyan margin-top-5-px"
-                                   ng-if="exists('macs', columns)">
+                                   class="md-raised background-gray color-darkcyan margin-top-5-px">
                             {{lang.macsManaging | uppercase}}
                         </md-button>
                     </td>
