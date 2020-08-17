@@ -1586,7 +1586,6 @@
                         newSocketService.getData('get_rfids', {}, (response) => {
                             $scope.rfids = response.result;
                             $scope.assigned_rfids = $scope.rfids.filter(rf => $scope.tags.some(t => !(t.rfid_id == null) && (rf.id === t.rfid_id)))
-                            $scope.$apply();
                         });
                     };
 
@@ -1880,18 +1879,29 @@
                      * @param selectedType
                      */
                     $scope.updateTagRfid = (tag, selectedType) => {
-                        if(tag.rfid_id == null){
+                        if(tag.rfid_id == null && selectedType != 'Nessuno'){
                             newSocketService.getData('update_tag_rfid', {tag: tag.id, rfid: selectedType}, (response) => {
                                 if(response.result !== 0 ){
                                     dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
                                     $scope.assigned_rfids.push($scope.rfids.find(rf => rf.id == selectedType));
+                                    $scope.tags.find(t => t.id == tag.id).rfid_id = selectedType;
                                 }
                             })
-                        }else if (tag.rfid_id.toString() !== selectedType.toString()) {
+                        }else if (selectedType != 'Nessuno' && (tag.rfid_id.toString() !== selectedType.toString())) {
                             newSocketService.getData('update_tag_rfid', {tag: tag.id, rfid: selectedType}, (response) => {
                                 if(response.result !== 0 ){
                                     dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                    $scope.assigned_rfids = $scope.assigned_rfids.filter(c => c.id !== tag.rfid_id);
                                     $scope.assigned_rfids.push($scope.rfids.find(rf => rf.id == selectedType));
+                                    $scope.tags.find(t => t.id == tag.id).rfid_id = selectedType;
+                                }
+                            })
+                        } else if (selectedType === 'Nessuno') {
+                            newSocketService.getData('update_tag_rfid', {tag: tag.id, rfid: null}, (response) => {
+                                if(response.result !== 0 ){
+                                    dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                    $scope.assigned_rfids = $scope.assigned_rfids.filter(c => c.id !== tag.rfid_id);
+                                    $scope.tags.find(t => t.id == tag.id).rfid_id = null;
                                 }
                             })
                         }

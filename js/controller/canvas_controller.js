@@ -532,7 +532,7 @@
                                                                 })
                                                             }
                                                             // controlling if the tags have to be displayed
-                                                            else if ((canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) && dataService.checkIfTagsHaveAlarms(visibleTags)) {
+                                                            else if (canvasCtrl.isUserManager && dataService.checkIfTagsHaveAlarms(visibleTags)) {
                                                                 singleTags.forEach((tag, index) => {
                                                                     if (dataService.checkIfTagHasAlarm(tag)) {
                                                                         canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
@@ -540,17 +540,15 @@
                                                                                 alarmsCounts[index] = 0;
 
                                                                             canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-
-                                                                            // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
-                                                                            if (index === singleTags.length - 1) {
-                                                                                context.drawImage(bufferCanvas, 0, 0);
-                                                                                canvasDrawned = true;
-                                                                            }
+                                                                            context.drawImage(bufferCanvas, 0, 0);
+                                                                            canvasDrawned = true;
                                                                         });
                                                                     }
                                                                     // drawing the tag without alarm
-                                                                    else {
+                                                                    else if (dataService.switch.showOutdoorTags){
                                                                         canvasService.drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                        context.drawImage(bufferCanvas, 0, 0);
+                                                                        canvasDrawned = true;
                                                                     }
                                                                 })
                                                             }
@@ -1369,7 +1367,6 @@
                     });
 
                     newSocketService.getData('get_evacuation', {}, (response) => {
-                        console.log(response);
                         if (response.result == 1) {
                             evacuation_on = true;
                             $scope.evacuation_button = 'background-green';
@@ -1382,7 +1379,6 @@
                     });
 
                     $scope.sendEvacuation = () => {
-                        console.log('evacuation is: ', evacuation_on);
                         if (evacuation_on == false) {
                             newSocketService.getData('set_evacuation', {}, (response) => {
                                 if (response.result > 0) {
