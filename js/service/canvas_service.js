@@ -166,6 +166,7 @@
 
             let i, numLoading = tagClouds.length;
             const onload = () => --numLoading === 0 && onAllLoaded(images);
+            const result = {};
             const images = [];
 
             for(i = 0; i < tagClouds.length; i++) {
@@ -177,18 +178,25 @@
 
                 if (tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
                     img.src = tagsIconPath + 'cumulative_tags_all_32.png'
+                    img.alarm = false;
                 } else if (tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
                     img.src = tagsIconPath + 'cumulative_tags_half_alert_32.png';
+                    img.alarm = true;
                 } else if (tagState.withAlarm && !tagState.withoutAlarm && !tagState.offline) {
                     img.src = tagsIconPath + 'cumulative_tags_all_alert_32.png'
+                    img.alarm = true;
                 } else if (tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
                     img.src = tagsIconPath + 'cumulative_tags_offline_alert_32.png'
+                    img.alarm = true;
                 } else if (!tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
                     img.src = tagsIconPath + 'cumulative_tags_offline_online_32.png'
+                    img.alarm = false;
                 } else if (!tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
                     img.src = tagsIconPath + 'cumulative_tags_offline_32.png'
+                    img.alarm = false;
                 } else if (!tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
                     img.src = tagsIconPath + 'cumulative_tags_32.png'
+                    img.alarm = false;
                 }
 
                 img.onload = onload;

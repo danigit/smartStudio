@@ -1200,18 +1200,18 @@
 
             // getting the allarms to be played
             tags.forEach(function(tag) {
-                if (tag.battery_status) {
-                    // control if the alarm is already considered, if not I add it to the allarms to play
-                    // here I am using tag name because if I use the id then if I have more than
-                    if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.id, 'battery')) {
-                        service.alarmsSounds.push({ tag: tag.id, alarm: 'battery' });
-                        service.playAlarm = true;
-                    }
-                }
+                // if (tag.battery_status) {
+                //     // control if the alarm is already considered, if not I add it to the allarms to play
+                //     // here I am using tag name because if I use the id then if I have more than
+                //     if (!controlIfAlarmIsInArray(service.alarmsSounds, tag.id, 'battery')) {
+                //         service.alarmsSounds.push({ tag: tag.id, alarm: 'battery' });
+                //         service.playAlarm = true;
+                //     }
+                // }
                 // if the alarm is no more active I remove it
-                else {
-                    service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.id, 'battery');
-                }
+                // else {
+                //     service.alarmsSounds = filterAlarms(service.alarmsSounds, tag.id, 'battery');
+                // }
 
                 if (tag.man_down) {
                     // control if the alarm is already considered, if not I add it to the allarms to play
