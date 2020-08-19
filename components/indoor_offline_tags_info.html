@@ -76,6 +76,20 @@
                         </md-select>
                     </div>
                 </md-list-item>
+                <md-list-item class="md-2-line">
+                    <img src="img/icons/tags/battery_low_24.png" class="md-avatar" alt="{{lang.batteryEmptyTags}}"
+                         title="{{lang.batteryEmptyTags}}">
+                    <div class="md-list-item-text" layout="column">
+                        <h3>{{lang.batteryEmptyTags}}: <b class="color-red">{{tagsStateBatteryEmpty.length}}</b></h3>
+                        <h4 class="color-red">{{ tagsStateBatteryEmpty.length }} {{lang.areBatteryEmptyTags | lowercase}}</h4>
+
+                        <md-select ng-if="tagsStateBatteryEmpty.length > 0" ng-model="antani" paceholder="{{lang.batteryEmptyTags}}">
+                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in tagsStateBatteryEmpty track by $index">
+                                <img src="img/icons/tags/battery_low_24.png" class="margin-right-10-px height-25px" alt="{{lang.batteryEmptyTags}}" title="{{lang.batteryEmptyTags}}"><span class="font-large vertical-align-super">{{tag.name}}</span>
+                            </md-option>
+                        </md-select>
+                    </div>
+                </md-list-item>
             </md-list>
         </div>
     </div>

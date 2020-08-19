@@ -613,11 +613,12 @@
                     $scope.tagsStateIndoorOnline = 0;
                     $scope.tagsStateIndoorOffGrid = 0;
                     $scope.tagsStateIndoorOffTags = 0;
+                    $scope.tagsStateBatteryEmpty = 0;
 
                     // setting the color for each category
-                    $scope.colors = ["#4BAE5A", "#E12315", "#D3D3D3"];
+                    $scope.colors = ["#4BAE5A", "#E12315", "#D3D3D3", "#ff5722"];
                     // setting the name for each category
-                    $scope.labels = [lang.activeTags, lang.shutDownTags, lang.disabledTags];
+                    $scope.labels = [lang.activeTags, lang.shutDownTags, lang.disabledTags, lang.batteryEmptyTags];
 
                     // continuously updating the tag situation
                     service.offlineTagsInterval = $interval(function() {
@@ -644,6 +645,9 @@
                             // getting the online tags
                             $scope.tagsStateIndoorOnline = response.result.length - $scope.tagsStateOffGrid.length - $scope.tagsStateIndoorOffTags.length;
 
+                            // getting the tags with the empty battery
+                            $scope.tagsStateBatteryEmpty = response.result.filter(t => t.battery_status);
+                            
                             // setting the data for the visualization
                             $scope.data = [$scope.tagsStateIndoorOnline, $scope.tagsStateIndoorOffTags.length, $scope.tagsStateIndoorOffGrid.length];
                         });

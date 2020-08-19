@@ -392,7 +392,9 @@ function languageController($scope) {
         insert_multiple_tags: 'Inserire tag multipli',
         tag_number: 'Inserire numero di tag',
         anchors_number: 'Inserire il numero di ancore',
-        insert_multiple_anchors: 'Inserire anore multiple'
+        insert_multiple_anchors: 'Inserire anore multiple',
+        batteryEmptyTags: 'Wetags batteria scarica',
+        areBatteryEmptyTags: 'wetags sono scarichi'
     }
 }
 
@@ -517,5 +519,6 @@ let lang = {
     longitude: 'Longitudine',
     deleteRfid: 'Cancella RFID',
     deleteRfidText: 'Sei sicuro di voler cancellare l\'RFID?',
-    elementsNotRetrievved: 'Impossibile recuperare gli elementi'
+    elementsNotRetrievved: 'Impossibile recuperare gli elementi',
+    batteryEmptyTags: 'Wetag scarichi'
 };
