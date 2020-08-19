@@ -383,7 +383,9 @@ function languageController($scope) {
         insert_multiple_tags: 'Inserire tag multipli',
         tag_number: 'Inserire numero di tag',
         anchors_number: 'Inserire il numero di ancore',
-        insert_multiple_anchors: 'Inserire anore multiple'
+        insert_multiple_anchors: 'Inserire anore multiple',
+        batteryEmptyTags: 'Wetags batteria scarica',
+        areBatteryEmptyTags: 'wetags sono scarichi'
     }
 }
 
@@ -500,11 +502,12 @@ let lang = {
     userDeleted: '',
     userNotDeleted: '',
     columns: '',
-    locations: '',select
+    locations: '',
     anchors: '',
     latitude: '',
     longitude: '',
     deleteRfid: '',
     deleteRfidText: '',
-    elementsNotRetrieved: ''
+    elementsNotRetrieved: '',
+    batteryEmtpyTags: 'Wetag scarichi'
 };

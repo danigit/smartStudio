@@ -266,7 +266,7 @@
 
                                 //controlling if the tag is online and if has to be shown (not turned off), if yes I show the tags on the map
                                 //TODO - put the server time that I get when  I get all the tags
-                                if ((new Date(tag.now_time) - (new Date(tag.gps_time)) < tag.sleep_time_outdoor) && !tag.radio_switched_off) {
+                                if (!tag.radio_switched_off && (new Date(tag.now_time) - (new Date(tag.gps_time)) < tag.sleep_time_outdoor) ) {
                                     // setting the icon of the created marker
                                     outdoorService.setIcon(tag, marker, false);
 
@@ -283,18 +283,20 @@
                                             setOutdoorMarker(mapMarker, marker, tag, alarmsCounts, index, tagAlarms, prevAlarmCounts, map, true, locationInfo.name);
                                         }
                                         // if there are no tags with alarms then I don't show anything
-                                        else {
-                                            if (dataService.dynamicTags.length > 0) {
-                                                dataService.dynamicTags.forEach(marker => marker.setMap(null));
-                                                dataService.dynamicTags = [];
-                                            }
+                                        else if(dataService.dynamicTags[mapMarker] !== undefine){
+                                            dataService.dynamicTags[mapMarker].setMap(null);
+                                            dataService.dynamicTags.splice(mapMarker, 1);
                                         }
                                     }
-                                    // removing all the tas from the map
-                                    else {
-                                        if (dataService.dynamicTags.length > 0) {
-                                            dataService.dynamicTags.forEach(marker => marker.setMap(null));
-                                            dataService.dynamicTags = [];
+                                    else if (!(outdoorCtrl.isAdmin && outdoorCtrl.isTracker && outdoorCtrl.isUserManager)){
+                                        if (dataService.checkIfTagHasAlarmNoBattery(tag)) {
+                                            // showing the tag on the map
+                                            setOutdoorMarker(mapMarker, marker, tag, alarmsCounts, index, tagAlarms, prevAlarmCounts, map, true, locationInfo.name);
+                                        }
+                                         // if there are no tags with alarms then I don't show anything
+                                        else if (dataService.dynamicTags[mapMarker] !== undefine){
+                                            dataService.dynamicTags[mapMarker].setMap(null);
+                                            dataService.dynamicTags.splice(mapMarker, 1);
                                         }
                                     }
                                 }
@@ -310,19 +312,28 @@
                                         if (dataService.checkIfTagsHaveAlarmsOutdoor(tags)) {
                                             setOutdoorMarker(mapMarker, marker, tag, alarmsCounts, index, tagAlarms, prevAlarmCounts, map, false, locationInfo.name);
                                         } else {
-                                            if (dataService.dynamicTags.length > 0) {
-                                                dataService.dynamicTags.forEach(marker => marker.setMap(null));
-                                                dataService.dynamicTags = [];
+                                            if (dataService.dynamicTags[mapMarker] !== undefine) {
+                                                dataService.dynamicTags[mapMarker].setMap(null);
+                                                dataService.dynamicTags.splice(mapMarker, 1);   
                                             }
+                                        }
+                                    }
+                                    else if (!(outdoorCtrl.isAdmin && outdoorCtrl.isTracker && outdoorCtrl.isUserManager)){
+                                        if (dataService.checkIfTagHasAlarmNoBattery(tag)) {
+                                            // showing the tag on the map
+                                            setOutdoorMarker(mapMarker, marker, tag, alarmsCounts, index, tagAlarms, prevAlarmCounts, map, true, locationInfo.name);
+                                        }
+                                         // if there are no tags with alarms then I don't show anything
+                                        else if(dataService.dynamicTags[mapMarker] !== undefined) {
+                                            dataService.dynamicTags[mapMarker].setMap(null);
+                                            dataService.dynamicTags.splice(mapMarker, 1);
                                         }
                                     }
                                 }
                                 // removing all the tags from the map
-                                else {
-                                    if (dataService.dynamicTags.length > 0) {
-                                        dataService.dynamicTags.forEach(marker => marker.setMap(null));
-                                        dataService.dynamicTags = [];
-                                    }
+                                else if (dataService.dynamicTags[mapMarker] !== undefined) {
+                                    dataService.dynamicTags[mapMarker].setMap(null);
+                                    dataService.dynamicTags.splice(mapMarker, 1);
                                 }
 
                                 prevAlarmCounts[index] = tagAlarms.length;
@@ -336,8 +347,8 @@
                         } else if (dataService.dynamicTags.length > 1) {
                             // map.setCenter(bounds.getCenter());
                         } else {
-                            let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
-                            map.setCenter(latLng);
+                            // let latLng = new google.maps.LatLng(dataService.location.latitude, dataService.location.longitude);
+                            // map.setCenter(latLng);
                         }
                     });
                 });
@@ -391,8 +402,8 @@
                     // setting the icon of the marker on the map
                     dataService.dynamicTags[mapMarker].setIcon(tagAlarms[alarmsCounts[index]++]);
                 }
-                // controlling if the tag is not off
-                else if (!tag.radio_switched_off) {
+                // removing the tag from the map if is turned off
+                else {
                     // control if the tag is online or offline
                     if (tag.battery_status && !dataService.hasTagReaperedAfterOffline(tag)) {
                         dataService.dynamicTags[mapMarker].setIcon(tagsIconPath + 'battery_low_24.png');
@@ -401,24 +412,11 @@
                     } else {
                         dataService.setMarkerOfflineIcon(dataService.dynamicTags[mapMarker])
                     }
-
                 }
-                // removing the tag from the map if is turned off
-                else {
-                    dataService.dynamicTags[mapMarker].setMap(null);
-                    dataService.dynamicTags.splice(mapMarker, 1);
-                }
-            }
-            // putting the new marker on the map if the tag is on
-            else if (!tag.radio_switched_off) {
+            } else {
                 dataService.dynamicTags.push(marker);
                 marker.setMap(map);
                 bounds.extend(marker.getPosition());
-            }
-            // removing the marker from the map if the tag is off
-            else if (dataService.dynamicTags[mapMarker] !== undefined) {
-                dataService.dynamicTags[mapMarker].setMap(null);
-                dataService.dynamicTags.splice(mapMarker, 1);
             }
         };
 
