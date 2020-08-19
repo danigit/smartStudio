@@ -708,6 +708,10 @@ OTHER
     overflow: auto !important;
 }
 
+.overflow-y-scroll {
+    overflow-y: scroll;
+}
+
 .cursor-pointer {
     cursor: pointer;
 }
