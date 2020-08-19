@@ -267,10 +267,22 @@
 
                                                 map.setCenter(latLng);
 
-                                                new google.maps.Marker({
+                                                let marker = new google.maps.Marker({
                                                     position: latLng,
                                                     map: map,
                                                     icon: tagsIconPath + 'search-tag.png'
+                                                });
+
+                                                let infoWindow = new google.maps.InfoWindow({
+                                                    content: '<div class="marker-info-container">' +
+                                                        '<div class="infinite-rotation"><img src="' + tagsIconPath + 'Single_alarm.png" class="tag-info-icon" alt="Smart Studio" title="Smart Studio"></div>' +
+                                                        '<p class="text-center font-large text-bold color-darkcyan">' + tag.name.toUpperCase() + '</p>' +
+                                                        '<div><p class="float-left margin-right-10-px">Latitude: </p><p class="float-right"><b>' + alarmTag.gps_north_degree + '</b></p></div>' +
+                                                        '<div class="clear-float"><p class="float-left margin-right-10-px">Longitude: </p><p class="float-right"><b>' + alarmTag.gps_east_degree + '</b></p></div></div>'
+                                                });
+
+                                                marker.addListener('mouseover', function() {
+                                                    infoWindow.open(map, this);
                                                 });
                                             });
 
