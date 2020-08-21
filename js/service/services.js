@@ -163,23 +163,23 @@
                                                     allTagsAlarms.push(alarm);
                                                 })
                                         });
-
                                         // getting the outdoor locations tags alarms
                                         outdoorLocationTags.forEach(tag => {
                                             // getting tag location
-                                            let tagLocation = locations.find(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
+                                            newSocketService.getData('get_user_locations', {user: service.user}, (user_locations) => {
+                                                let tagLocation = user_locations.result.find(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
 
-                                            // i control if the tag has a location
-                                            if (tagLocation !== undefined) {
+                                                // i control if the tag has a location
+                                                if (tagLocation !== undefined) {
 
-                                                //getting the tags alarms
-                                                service.loadTagAlarmsForInfoWindow(tag, tagLocation.name)
-                                                    .forEach(alarm => {
-                                                        allTagsAlarms.push(alarm);
-                                                    })
-                                            }
+                                                    //getting the tags alarms
+                                                    service.loadTagAlarmsForInfoWindow(tag, tagLocation.name)
+                                                        .forEach(alarm => {
+                                                            allTagsAlarms.push(alarm);
+                                                        })
+                                                }
+                                            })
                                         });
-
                                         // getting the outdoor tags without a location alarms
                                         outdoorNoLocationTags.forEach(tag => {
                                             // show the tag as no location
@@ -205,7 +205,7 @@
 
                                         // controlling if there are alarms
                                         $scope.tableEmpty = ($scope.alarms.length === 0);
-                                        $scope.$apply();
+                                        // $scope.$apply();
                                     });
 
                                 });

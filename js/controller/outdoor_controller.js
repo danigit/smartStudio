@@ -217,14 +217,19 @@
                     tags = response.result.filter(t => !t.radio_switched_off);
                     // getting all the locations
                     newSocketService.getData('get_all_locations', {}, (locations) => {
+                        newSocketService.getData('get_tags_by_user', { user: dataService.user.username }, (userTags) => {
+                            let outdoorTags = response.result.filter(t => dataService.isOutdoor(t));
+                            let alarmTags = [...outdoorTags, ...userTags.result]
 
-                        // showing the alarm icon if there are tags out of location and the quick action is setted
-                        // showing the alarm icon if there are tags with alarms
-                        outdoorCtrl.showAlarmsIcon = response.result.some(t => dataService.haveToShowBatteryEmpty(t)) && (dataService.showAlarmForOutOfLocationTags(tags.filter(t => dataService.isOutdoor(t)), locations.result.filter(l => !l.is_inside)) ||
-                            dataService.checkIfTagsHaveAlarmsInfo(tags));
+                            // showing the alarm icon if there are tags out of location and the quick action is setted
+                            // showing the alarm icon if there are tags with alarms
+                            outdoorCtrl.showAlarmsIcon = alarmTags.some(t => dataService.haveToShowBatteryEmpty(t)) && 
+                            (dataService.showAlarmForOutOfLocationTags(tags.filter(t => dataService.isOutdoor(t)), locations.result.filter(l => !l.is_inside)) ||
+                                dataService.checkIfTagsHaveAlarmsInfo(tags));
 
-                        // showing tags alarm icon if there are tags offline
-                        outdoorCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(response.result);
+                            // showing tags alarm icon if there are tags offline
+                            outdoorCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(alarmTags);
+                        });
 
                         // playing the audio if there are alarms
                         dataService.playAlarmsAudio(tags);

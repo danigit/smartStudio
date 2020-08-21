@@ -20192,3 +20192,106 @@ Stack trace:
 [19-Aug-2020 23:43:03 Europe/Berlin] Sessione: simone
 [19-Aug-2020 23:45:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 46559
 [19-Aug-2020 23:45:46 Europe/Berlin] Sessione: simone
+[20-Aug-2020 11:06:49 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-20 11:06:49
+[20-Aug-2020 11:07:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[20-Aug-2020 11:07:16 Europe/Berlin] UTENTE simone SI E LOGGATO
+[20-Aug-2020 11:07:18 Europe/Berlin] Sessione: simone
+[20-Aug-2020 11:14:17 Europe/Berlin] Sessione: simone
+[21-Aug-2020 16:29:30 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-21 16:29:30
+[21-Aug-2020 16:29:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[21-Aug-2020 16:29:33 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[21-Aug-2020 16:29:34 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[21-Aug-2020 16:29:43 Europe/Berlin] UTENTE simone SI E LOGGATO
+[21-Aug-2020 16:29:44 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:02:10 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9799
+[21-Aug-2020 17:02:11 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:03:41 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10235
+[21-Aug-2020 17:03:42 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:04:05 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10342
+[21-Aug-2020 17:04:07 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:04:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10506
+[21-Aug-2020 17:04:49 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:05:20 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10631
+[21-Aug-2020 17:05:21 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:06:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10811
+[21-Aug-2020 17:06:07 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:06:30 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:07:05 Europe/Berlin] PHP Notice:  Undefined index: data in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1335
+[21-Aug-2020 17:07:05 Europe/Berlin] PHP Warning:  count(): Parameter must be an array or an object that implements Countable in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 80
+[21-Aug-2020 17:07:05 Europe/Berlin] PHP Notice:  Undefined index: data in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[21-Aug-2020 17:07:05 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[21-Aug-2020 17:07:05 Europe/Berlin] UTENTE simone SI E LOGGATO
+[21-Aug-2020 17:07:05 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[21-Aug-2020 17:07:06 Europe/Berlin] UTENTE simone SI E LOGGATO
+[21-Aug-2020 17:07:07 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:07:13 Europe/Berlin] PHP Notice:  Undefined index: data in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1335
+[21-Aug-2020 17:07:13 Europe/Berlin] PHP Warning:  count(): Parameter must be an array or an object that implements Countable in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 80
+[21-Aug-2020 17:07:13 Europe/Berlin] PHP Notice:  Undefined index: data in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[21-Aug-2020 17:07:13 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[21-Aug-2020 17:07:13 Europe/Berlin] UTENTE simone SI E LOGGATO
+[21-Aug-2020 17:07:13 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[21-Aug-2020 17:07:13 Europe/Berlin] UTENTE simone SI E LOGGATO
+[21-Aug-2020 17:07:15 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:09:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12911
+[21-Aug-2020 17:09:23 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:10:19 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 13185
+[21-Aug-2020 17:10:20 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:11:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 13454
+[21-Aug-2020 17:11:16 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:12:17 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 13753
+[21-Aug-2020 17:12:18 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:14:44 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:15:00 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:16:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 14967
+[21-Aug-2020 17:16:22 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:18:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 15522
+[21-Aug-2020 17:18:14 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:18:24 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:19:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 15889
+[21-Aug-2020 17:19:43 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:20:07 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:22:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 16853
+[21-Aug-2020 17:23:00 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:24:04 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:24:10 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:25:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 17573
+[21-Aug-2020 17:25:26 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:27:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 18166
+[21-Aug-2020 17:27:08 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:27:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 18442
+[21-Aug-2020 17:27:56 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:29:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19018
+[21-Aug-2020 17:29:35 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:31:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19876
+[21-Aug-2020 17:32:00 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:33:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 20239
+[21-Aug-2020 17:33:07 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:33:17 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:33:25 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:33:34 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:33:43 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:34:06 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:35:14 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 20816
+[21-Aug-2020 17:35:14 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:35:21 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:36:09 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 21098
+[21-Aug-2020 17:36:10 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:36:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 21277
+[21-Aug-2020 17:36:48 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:38:57 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:41:21 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:57:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 28366
+[21-Aug-2020 17:57:48 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:58:17 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 28537
+[21-Aug-2020 17:58:18 Europe/Berlin] Sessione: simone
+[21-Aug-2020 17:59:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 28780
+[21-Aug-2020 17:59:01 Europe/Berlin] Sessione: simone
+[21-Aug-2020 18:03:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 30349
+[21-Aug-2020 18:03:25 Europe/Berlin] Sessione: simone
+[21-Aug-2020 18:03:31 Europe/Berlin] Sessione: simone
+[21-Aug-2020 18:04:37 Europe/Berlin] Sessione: simone
+[21-Aug-2020 18:04:50 Europe/Berlin] Sessione: simone
+[21-Aug-2020 18:05:47 Europe/Berlin] Sessione: simone
+[21-Aug-2020 18:07:16 Europe/Berlin] Sessione: simone
+[21-Aug-2020 18:11:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 33116
+[21-Aug-2020 18:11:06 Europe/Berlin] Sessione: simone
