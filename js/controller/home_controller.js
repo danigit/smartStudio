@@ -19,6 +19,8 @@
         let alarmLocations = [];
         let imageIndex = 0;
         let infoWindowCluster = null;
+        // declaring the info window
+        let infoWindow = null;
 
         // I use this variable so that the zoom is done only at the firs circle, so that I can zoom out after automatic zoom
         let zoomSetter = false;
@@ -75,12 +77,10 @@
                     // getting the anchors of the current user
                     newSocketService.getData('get_anchors_by_user', { user: dataService.user.username }, (response) => {
 
+                        onTags = userTags.result.filter(t => !t.radio_switched_off);
+
                         //creating the interaction with the location icon, infoWindow, click
                         markers.forEach(marker => {
-                            // declaring the info window
-                            let infoWindow = null;
-
-                            onTags = userTags.result.filter(t => !t.radio_switched_off);
                             // creating a new marker which is a copy of the current looped marker
                             let markerObject = new google.maps.Marker({
                                 position: new google.maps.LatLng(marker.position[0], marker.position[1]),
@@ -95,26 +95,35 @@
                                     fontSize: "18px",
                                 },
                             });
-                            // handling only the indoor locations
-                            if (marker.is_inside) {
-                                
-                                // filling the info window
-                                infoWindow = homeService.fillInfoWindowInsideLocation(marker, onTags, response.result);
-                            }
-                            // handling only the outdoor locations
-                            else {
-                                // filling the info window
-                                infoWindow = homeService.fillInfoWindowOutsideLocation(marker, dataService.allTags)
-                            }
-                            // open the info window on mouse over
-                            markerObject.addListener('mouseover', function() {
-                                infoWindow.open(map, this);
-                            });
 
-                            // closing the info window on mouse out
-                            markerObject.addListener('mouseout', function() {
-                                infoWindow.close(map, this);
-                            });
+                            // adding the mouseover event to the location
+                            google.maps.event.addListener(markerObject, 'mouseover', () => {
+                                // taking the updated tags and anchors
+                                newSocketService.getData('get_tags_by_user', { user: dataService.user.username }, (userTags) => {
+                                    // getting the anchors of the current user
+                                    newSocketService.getData('get_anchors_by_user', { user: dataService.user.username }, (response) => {
+
+                                        onTags = userTags.result.filter(t => !t.radio_switched_off);
+
+                                        // assigning the infowindows
+                                        if (marker.is_inside) {
+                                            // filling the info window
+                                            infoWindow = homeService.fillInfoWindowInsideLocation(marker, onTags, response.result);
+                                            infoWindow.open(map, markerObject)
+                                        } else{
+                                            infoWindow = homeService.fillInfoWindowOutsideLocation(marker, dataService.allTags)
+                                            infoWindow.open(map, markerObject)
+                                        }
+
+                                        
+                                    })
+                                })
+                            })
+
+                            // adding the mouseout event to the location
+                            google.maps.event.addListener(markerObject, 'mouseout', () => {
+                                infoWindow.close(map, markerObject);
+                            })
 
                             // entering the location on marker click
                             markerObject.addListener('click', () => {
@@ -280,9 +289,9 @@
                     let markerObject = new google.maps.Marker({
                         position: new google.maps.LatLng(marker.position[0], marker.position[1]),
                     });
-
+                    
                     let markerSelected = homeCtrl.dynamicMarkers.find(m => homeService.isMarkerSelected(m, markerObject));
-
+                    
                     // getting the situation of tags and anchors
                     let locationAnchors = homeService.getLocationAnchors(marker, anchors);
                     let locationTags = homeService.getIndoorLocationTags(marker, indoorTags);
@@ -394,9 +403,18 @@
                         // getting all the locations
                         newSocketService.getData('get_all_locations', {}, (locations) => {
 
-                            // controlling if there are tags out off all the locations
-                            // showing the home alarm icons if there are tags in alarm
-                            homeCtrl.showAlarmsIcon = response.result.some(t => dataService.haveToShowBatteryEmpty(t)) && (dataService.showAlarmForOutOfLocationTags(onTags.filter(t => dataService.isOutdoor(t)), locations.result) || dataService.checkIfTagsHaveAlarmsInfo(onTags))
+                            newSocketService.getData('get_tags_by_user', { user: dataService.user.username }, (userTags) => {
+                                let outdoorTags = response.result.filter(t => dataService.isOutdoor(t) && dataService.hasTagAValidGps(t));
+                                let alarmTags = [...outdoorTags, ...userTags.result]
+                                console.log(alarmTags)
+                                
+                                // controlling if there are tags out off all the locations
+                                // showing the home alarm icons if there are tags in alarm
+                                homeCtrl.showAlarmsIcon = alarmTags.some(t => 
+                                    dataService.haveToShowBatteryEmpty(t)) && 
+                                    (dataService.showAlarmForOutOfLocationTags(onTags.filter(t => dataService.isOutdoor(t)), locations.result) || 
+                                    dataService.checkIfTagsHaveAlarmsInfo(onTags))
+                            })
                         });
 
                         // cheching if I have to show the tag offline icon

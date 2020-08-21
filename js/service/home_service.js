@@ -22,7 +22,7 @@
             //getting the current marker anchors
             let locationAnchors = home_service.getLocationAnchors(marker, userAnchors);
 
-            let alarmsString = '<div class="margin-top-10-px padding-10-px border-1-top-red">';
+            let alarmsString = '<div class="margin-top-10-px padding-10-px border-1-top-red ">';
 
             // getting tags alarms
             locationTags.forEach(t => {
