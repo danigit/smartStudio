@@ -98,6 +98,7 @@
 
                             // adding the mouseover event to the location
                             google.maps.event.addListener(markerObject, 'mouseover', () => {
+                                console.log("adding listener")
                                 // taking the updated tags and anchors
                                 newSocketService.getData('get_tags_by_user', { user: dataService.user.username }, (userTags) => {
                                     // getting the anchors of the current user
@@ -402,23 +403,15 @@
 
                         // getting all the locations
                         newSocketService.getData('get_all_locations', {}, (locations) => {
-
-                            newSocketService.getData('get_tags_by_user', { user: dataService.user.username }, (userTags) => {
-                                let outdoorTags = response.result.filter(t => dataService.isOutdoor(t) && dataService.hasTagAValidGps(t));
-                                let alarmTags = [...outdoorTags, ...userTags.result]
-                                console.log(alarmTags)
-                                
-                                // controlling if there are tags out off all the locations
-                                // showing the home alarm icons if there are tags in alarm
-                                homeCtrl.showAlarmsIcon = alarmTags.some(t => 
-                                    dataService.haveToShowBatteryEmpty(t)) && 
-                                    (dataService.showAlarmForOutOfLocationTags(onTags.filter(t => dataService.isOutdoor(t)), locations.result) || 
-                                    dataService.checkIfTagsHaveAlarmsInfo(onTags))
+                            dataService.showAlarmsIcon(onTags, locations).then((res) => {
+                                homeCtrl.showAlarmsIcon = res;
                             })
                         });
 
-                        // cheching if I have to show the tag offline icon
-                        homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(onTags);
+                        dataService.getUserTags().then((userTags) => {
+                            // cheching if I have to show the tag offline icon
+                            homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(userTags);
+                        });
 
                         // playing the audio if there are alarms
                         dataService.playAlarmsAudio(onTags);

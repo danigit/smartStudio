@@ -67,6 +67,47 @@
             return false;
         };
 
+        service.getUserTags = () => {
+            return new Promise((success, error) => {
+                newSocketService.getData('get_all_tags', {}, (response) => {
+                    newSocketService.getData('get_all_locations', {}, (locations) => {
+                        newSocketService.getData('get_tags_by_user', { user: service.user.username }, (userTags) => {
+                            newSocketService.getData('get_user_locations', {user: service.user.id}, (user_locations) => {
+                                // getting only the outdoor tags
+                                let outdoorTags = response.result.filter(t => service.isOutdoor(t) && service.hasTagAValidGps(t));
+
+                                // getting only the outdoor tags that are in any location 
+                                let locationsTags = outdoorTags.filter(t => 
+                                    locations.result.find(l => service.getTagDistanceFromLocationOrigin(t, [l.latitude, l.longitude]) <= l.radius) !== undefined);
+                                    
+                                // getting the tags in the locations of the logged user
+                                let userLocationsTags = locationsTags.filter(t => user_locations.result.find(l => service.getTagDistanceFromLocationOrigin(t, [l.latitude, l.longitude]) <= l.radius) !== undefined);
+
+                                // getting the tags out of every location
+                                let outOfLocationsTaga = outdoorTags.filter(ot => !locationsTags.some(lt => ot.id === lt.id));
+
+                                let alarmTags = [...userLocationsTags, ...outOfLocationsTaga, ...userTags.result]
+                                success(alarmTags)
+                            })
+                        })
+                    })
+                })
+            })
+        };
+
+        service.showAlarmsIcon = (onTags, allLocations) => {
+            // controlling if there are tags out off all the locations
+            // showing the home alarm icons if there are tags in alarm
+            return new Promise((success) => {
+                service.getUserTags().then((userTags) => {
+                    success(userTags.some(t => 
+                        service.haveToShowBatteryEmpty(t)) && 
+                        (service.showAlarmForOutOfLocationTags(onTags.filter(t => service.isOutdoor(t)), allLocations.result) || 
+                        service.checkIfTagsHaveAlarmsInfo(onTags)))
+                })
+            })
+        }
+
         service.showAlarms = (constantUpdateNotifications, map, position) => {
             // showing the table with the alarms
             $mdDialog.show({
@@ -166,7 +207,7 @@
                                         // getting the outdoor locations tags alarms
                                         outdoorLocationTags.forEach(tag => {
                                             // getting tag location
-                                            newSocketService.getData('get_user_locations', {user: service.user}, (user_locations) => {
+                                            newSocketService.getData('get_user_locations', {user: service.user.id}, (user_locations) => {
                                                 let tagLocation = user_locations.result.find(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius);
 
                                                 // i control if the tag has a location
@@ -628,29 +669,28 @@
                         }
                         //getting all the tags
                         // TODO - maybe I have to take only the tags of the current logged user
-                        newSocketService.getData('get_all_tags', {}, (response) => {
-
+                        service.getUserTags().then((userTags) => {
                             // getting the offline tags indoor
-                            $scope.tagsStateIndoorOffGrid = response.result
+                            $scope.tagsStateIndoorOffGrid = userTags
                                 .filter(t => (t.gps_north_degree === 0 && t.gps_east_degree === 0) && !t.radio_switched_off && ((Date.now() - new Date(t.time)) > t.sleep_time_indoor));
 
                             // getting the offline tags outdoor
-                            $scope.tagsStateOffGrid = response.result
+                            $scope.tagsStateOffGrid = userTags
                                 .filter(t => (t.gps_north_degree !== 0 && t.gps_east_degree !== 0) && !t.radio_switched_off && ((Date.now() - new Date(t.gps_time)) > t.sleep_time_outdoor))
                                 .concat($scope.tagsStateIndoorOffGrid);
 
                             // getting the shut down tags
-                            $scope.tagsStateIndoorOffTags = response.result.filter(t => t.radio_switched_off);
+                            $scope.tagsStateIndoorOffTags = userTags.filter(t => t.radio_switched_off);
 
                             // getting the online tags
-                            $scope.tagsStateIndoorOnline = response.result.length - $scope.tagsStateOffGrid.length - $scope.tagsStateIndoorOffTags.length;
+                            $scope.tagsStateIndoorOnline = userTags.length - $scope.tagsStateOffGrid.length - $scope.tagsStateIndoorOffTags.length;
 
                             // getting the tags with the empty battery
-                            $scope.tagsStateBatteryEmpty = response.result.filter(t => t.battery_status);
+                            $scope.tagsStateBatteryEmpty = userTags.filter(t => t.battery_status);
                             
                             // setting the data for the visualization
                             $scope.data = [$scope.tagsStateIndoorOnline, $scope.tagsStateIndoorOffTags.length, $scope.tagsStateIndoorOffGrid.length];
-                        });
+                        })
                     }, TAGS_ALARMS_WINDOW_UPDATE_TIME);
 
                     // hide the window on click
