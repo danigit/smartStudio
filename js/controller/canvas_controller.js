@@ -117,7 +117,7 @@
                     drawedLines = (parsedResponseDrawing === null) ? [] : parsedResponseDrawing;
 
                     if (drawedLines !== null)
-                        updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
+                        canvasService.updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
 
                     if (zones !== null)
                         zones.forEach((zone) => {
@@ -286,18 +286,16 @@
                 newSocketService.getData('get_all_tags', {}, (response) => {
                     dataService.allTags = response.result;
 
+                    let onTags = response.result.filter(t => !t.radio_switched_off);
+
                     newSocketService.getData('get_all_locations', {}, (locations) => {
-                        newSocketService.getData('get_tags_by_user', { user: dataService.user.username }, (userTags) => {
-                            let outdoorTags = response.result.filter(t => dataService.isOutdoor(t));
-                            let alarmTags = [...outdoorTags, ...userTags.result]
+                        dataService.showAlarmsIcon(onTags, locations).then((res) => {
+                            canvasCtrl.showAlarmsIcon = res;
+                        });
 
-                            canvasCtrl.showAlarmsIcon = alarmTags.some(t => dataService.haveToShowBatteryEmpty(t)) && 
-                                (dataService.showAlarmForOutOfLocationTags(response.result.filter(t => dataService.isOutdoor(t) && 
-                                !t.radio_switched_off), locations.result) ||
-                                dataService.checkIfTagsHaveAlarms(response.result.filter(t => !t.radio_switched_off)));
-
+                        dataService.getUserTags().then((userTags) => {
                             //showing the offline tags alarm icon
-                            canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline();
+                            canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(userTags);
                         });
 
                         tags = response.result;
@@ -323,7 +321,7 @@
                                     let parsedDraw = JSON.parse(drawings.result);
 
                                     // controlling if there are drawings
-                                    if (parsedDraw.length > 0) {
+                                    if (parsedDraw !== null && parsedDraw.length > 0) {
 
                                         // drawing the lines
                                         parsedDraw.forEach((line) => {
@@ -960,7 +958,7 @@
                             drawedLines = drawedLines.filter(l => !toBeRemoved.some(r => r.begin.x === l.begin.x && r.begin.y === l.begin.y &&
                                 r.end.x === l.end.x && r.end.y === l.end.y));
 
-                            updateDrawingCanvas([], drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
+                            canvasService.updateDrawingCanvas([], drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, (canvasCtrl.speedDial.clickedButton === 'drop_anchor'));
 
                             // drawing the old zones
                             canvasService.drawZones(zones, drawedZones, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, true, alpha);

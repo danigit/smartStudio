@@ -227,3 +227,19 @@ CLEAN GOOGLE MAP
         ]
     }
 ]
+
+
+LAST UPDATES
+
+- Removed the fail message on empty rfid table
+- Removed updateDrawingCanvas not founded
+- Removed the possibility to assign a radius for the location indoor in the locations table
+- Added the color white for the legend window
+- Fixed the outdoor zones table
+- Fixed the Quadrato swotch for outdoor locations
+- Fixed the insert tag with invalid type
+- Removed Nessuno from tag type in tags table (if I assign Nessuno i can't see the tag in the table)
+- Handeled the insertion of ancors with an invalid type
+- Fixed the login text over the logo
+-----------------------------------------------------------------------------------------------------------------
+- Implemented the insertion of the tag category for offline tags

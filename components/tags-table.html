@@ -70,7 +70,6 @@
                     <td md-cell ng-class="{'md-placeholder': !tag.type_name}" ng-if="exists('type', columns)">
                         <md-select ng-model="selectedType" ng-disabled="!isAdmin"
                                    ng-change="updateTagType(tag, selectedType)" aria-label="Seleziona tipologia">
-                            <md-option><em>{{lang.nothing}}</em></md-option>
                             <md-option ng-selected="{{tagType.id.toString() === tag.type_id.toString()}}"
                                        ng-repeat="tagType in tagTypes track by $index" ng-value="tagType.id">
                                 {{tagType.description}}

@@ -322,7 +322,6 @@
 
         canvas_service.findZones = (zones, coords, floor, canvasWidth, canvasHeight) => {
             let realcoords = scaleSizeFromVirtualToReal(floor, canvasWidth, canvasHeight, coords.x, coords.y);
-            console.log(realcoords);
 
             return zones.filter(z => (realcoords.x > z.x_left && realcoords.x < z.x_right && realcoords.y > z.y_up && realcoords.y < z.y_down)).map(z => z.id);
         };

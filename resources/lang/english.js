@@ -385,7 +385,10 @@ function languageController($scope) {
         anchors_number: 'Inserire il numero di ancore',
         insert_multiple_anchors: 'Inserire anore multiple',
         batteryEmptyTags: 'Wetags batteria scarica',
-        areBatteryEmptyTags: 'wetags sono scarichi'
+        areBatteryEmptyTags: 'wetags sono scarichi',
+        uwb: '',
+        bluetooth: '',
+        offlineImage: ''
     }
 }
 
@@ -509,5 +512,7 @@ let lang = {
     deleteRfid: '',
     deleteRfidText: '',
     elementsNotRetrieved: '',
-    batteryEmtpyTags: 'Wetag scarichi'
+    batteryEmtpyTags: 'Wetag scarichi',
+    selectTagType: '',
+    selectValidType: ''
 };

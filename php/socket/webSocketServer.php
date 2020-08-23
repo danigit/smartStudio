@@ -251,7 +251,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting a location by user
             case 'get_locations_by_user':{
-                $result['action'] = 'get_location_by_user';
+                $result['action'] = 'get_locations_by_user';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
 
                 $query = $this->connection->get_locations_by_user($decoded_message['data']['user']);
@@ -278,6 +278,20 @@ class webSocketServer implements MessageComponentInterface{
             //saving marker image
             case 'save_tag_category_alarm_image':{
                 $result['action'] = 'save_tag_category_alarm_image';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                if (array_key_exists('image', $decoded_message['data'])) {
+                    $decodedFile = explode('data:image/png;base64,', $decoded_message['data']['image']);
+                    $decodedFile = base64_decode($decodedFile[1]);
+                    $result['result'] = file_put_contents(TAG_CATEGORY_IMAGES_PATH . $decoded_message['data']['imageName'], $decodedFile);
+                }
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //saving marker image
+            case 'save_tag_category_offline_image':{
+                $result['action'] = 'save_tag_category_offline_image';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
 
                 if (array_key_exists('image', $decoded_message['data'])) {

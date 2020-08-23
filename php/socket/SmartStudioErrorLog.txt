@@ -20295,3 +20295,1303 @@ Stack trace:
 [21-Aug-2020 18:07:16 Europe/Berlin] Sessione: simone
 [21-Aug-2020 18:11:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 33116
 [21-Aug-2020 18:11:06 Europe/Berlin] Sessione: simone
+[22-Aug-2020 11:16:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 38437
+[22-Aug-2020 11:16:54 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Aug-2020 11:16:56 Europe/Berlin] Sessione: simone
+[22-Aug-2020 11:16:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 38445
+[22-Aug-2020 11:18:16 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Aug-2020 11:18:18 Europe/Berlin] Sessione: simone
+[22-Aug-2020 11:37:22 Europe/Berlin] LOGOUT MANUALE DELL'UTENTE simone
+[22-Aug-2020 11:37:22 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Aug-2020 11:37:22 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Aug-2020 11:37:22 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[22-Aug-2020 11:37:30 Europe/Berlin] UTENTE alessandro SI E LOGGATO
+[22-Aug-2020 11:37:31 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:37:41 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:41:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 46378
+[22-Aug-2020 11:41:02 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:41:21 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:42:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 46960
+[22-Aug-2020 11:42:46 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:42:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 46967
+[22-Aug-2020 11:42:51 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:42:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 46974
+[22-Aug-2020 11:42:56 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:44:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 47651
+[22-Aug-2020 11:44:50 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:47:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 48518
+[22-Aug-2020 11:47:17 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:47:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:31 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:32 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:33 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:40 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:51 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:57 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:58 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:47:59 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:00 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:05 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:06 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:07 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:18 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:31 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:32 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:33 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:40 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:51 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:57 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:58 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:48:59 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:00 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:05 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:06 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:07 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:18 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:31 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:32 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:33 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:40 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:51 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:49:58 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 49475
+[22-Aug-2020 11:49:59 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:50:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:05 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:06 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:07 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:18 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:32 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 49666
+[22-Aug-2020 11:50:33 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:50:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:40 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:51 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:57 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:58 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:50:59 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:00 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:05 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:06 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:07 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:18 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:31 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:32 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:33 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:40 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:51 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:57 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:58 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:51:59 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:00 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:05 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:06 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:07 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:18 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:31 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:32 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:33 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:40 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:51 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:57 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:58 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:52:59 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:00 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:05 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:07 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:07 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:18 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:31 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:32 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:33 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:40 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:51 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:57 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:58 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:53:59 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:00 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:05 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:06 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:07 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:18 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:31 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:32 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:33 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:40 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:51 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:57 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:58 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:54:59 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:00 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:05 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:06 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:07 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:18 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:31 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:32 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:33 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:40 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:51 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:57 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:58 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:55:59 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:00 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:05 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:06 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:07 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:18 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:31 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:32 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:33 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:40 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:51 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:57 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:58 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:56:59 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:00 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:05 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:06 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:07 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:18 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:31 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:32 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:33 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:38 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 52207
+[22-Aug-2020 11:57:39 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:57:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:51 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:57 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:58 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:57:59 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:00 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:05 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 52360
+[22-Aug-2020 11:58:06 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:58:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:15 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:18 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:19 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:20 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:30 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 52501
+[22-Aug-2020 11:58:31 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:58:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:46 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:47 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:48 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:49 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:50 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:52 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:53 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:54 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:55 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:56 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:57 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:58 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:58:59 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:00 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:01 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:02 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:03 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:04 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:05 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:06 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:06 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:08 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:09 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:10 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:11 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:12 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:13 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:14 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:16 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:17 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:18 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 52774
+[22-Aug-2020 11:59:19 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 11:59:21 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:22 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:23 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:24 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:25 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:26 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:27 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:28 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:29 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:30 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:31 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:32 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:33 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:34 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:35 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:36 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:37 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:38 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:39 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:40 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:41 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:42 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:43 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:44 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:45 Europe/Berlin] PHP Notice:  Undefined index: user in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 1337
+[22-Aug-2020 11:59:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 52935
+[22-Aug-2020 11:59:48 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:00:10 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53064
+[22-Aug-2020 12:00:11 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:00:27 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53159
+[22-Aug-2020 12:00:29 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:01:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53354
+[22-Aug-2020 12:01:03 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:02:38 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53913
+[22-Aug-2020 12:02:39 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:03:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 54300
+[22-Aug-2020 12:03:45 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:04:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 54519
+[22-Aug-2020 12:04:24 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:05:18 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 54840
+[22-Aug-2020 12:05:20 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:05:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 54999
+[22-Aug-2020 12:05:48 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:21:32 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 60641
+[22-Aug-2020 12:21:33 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:23:35 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 61483
+[22-Aug-2020 12:23:36 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:25:41 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 62303
+[22-Aug-2020 12:25:42 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:39:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 68242
+[22-Aug-2020 12:39:52 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:53:28 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 73922
+[22-Aug-2020 12:53:30 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:55:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 74799
+[22-Aug-2020 12:55:37 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 12:56:10 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 75102
+[22-Aug-2020 12:56:11 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 13:00:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 77057
+[22-Aug-2020 13:00:53 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 13:00:58 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 13:04:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 79797
+[22-Aug-2020 13:04:26 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 13:29:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 99050
+[22-Aug-2020 13:30:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 99053
+[22-Aug-2020 13:32:27 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 99056
+[22-Aug-2020 13:32:52 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 99059
+[22-Aug-2020 13:32:52 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 13:33:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 99670
+[22-Aug-2020 13:33:39 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 13:35:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 100958
+[22-Aug-2020 13:35:06 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 13:35:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 101361
+[22-Aug-2020 13:35:34 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 13:36:04 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 101809
+[22-Aug-2020 13:36:04 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 13:36:09 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 13:37:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 102347
+[22-Aug-2020 13:37:03 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 13:40:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 104111
+[22-Aug-2020 13:40:22 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 14:46:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 140003
+[22-Aug-2020 14:46:52 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 14:50:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 141732
+[22-Aug-2020 14:50:17 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 14:52:04 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 142596
+[22-Aug-2020 14:52:05 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 14:54:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 143829
+[22-Aug-2020 14:54:25 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 14:55:14 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 144294
+[22-Aug-2020 14:55:15 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 14:56:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 145005
+[22-Aug-2020 14:56:13 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:17 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162202
+[22-Aug-2020 15:18:18 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:20 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162208
+[22-Aug-2020 15:18:22 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162214
+[22-Aug-2020 15:18:25 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:27 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162220
+[22-Aug-2020 15:18:28 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:30 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162226
+[22-Aug-2020 15:18:32 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:34 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162232
+[22-Aug-2020 15:18:35 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162238
+[22-Aug-2020 15:18:38 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:40 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162244
+[22-Aug-2020 15:18:42 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162250
+[22-Aug-2020 15:18:45 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162256
+[22-Aug-2020 15:18:48 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162262
+[22-Aug-2020 15:18:52 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162268
+[22-Aug-2020 15:18:56 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:18:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162274
+[22-Aug-2020 15:19:00 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:01 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162278
+[22-Aug-2020 15:19:03 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:05 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162284
+[22-Aug-2020 15:19:06 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162290
+[22-Aug-2020 15:19:09 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162296
+[22-Aug-2020 15:19:13 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162302
+[22-Aug-2020 15:19:16 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:18 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162308
+[22-Aug-2020 15:19:19 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162314
+[22-Aug-2020 15:19:22 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162320
+[22-Aug-2020 15:19:26 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:28 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162326
+[22-Aug-2020 15:19:29 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162332
+[22-Aug-2020 15:19:32 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:34 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162338
+[22-Aug-2020 15:19:36 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:38 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162344
+[22-Aug-2020 15:19:39 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:41 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162350
+[22-Aug-2020 15:19:42 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162356
+[22-Aug-2020 15:19:46 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:48 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162362
+[22-Aug-2020 15:19:49 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162368
+[22-Aug-2020 15:19:52 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162374
+[22-Aug-2020 15:19:56 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:19:58 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162380
+[22-Aug-2020 15:19:59 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:20:01 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162386
+[22-Aug-2020 15:20:02 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:20:04 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162392
+[22-Aug-2020 15:20:06 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:20:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162398
+[22-Aug-2020 15:20:09 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:20:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162404
+[22-Aug-2020 15:20:12 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:20:14 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162410
+[22-Aug-2020 15:20:16 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:20:28 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162549
+[22-Aug-2020 15:20:29 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:20:52 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162831
+[22-Aug-2020 15:20:54 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:40:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 178459
+[22-Aug-2020 15:40:58 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:43:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 180721
+[22-Aug-2020 15:43:55 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:44:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 181081
+[22-Aug-2020 15:44:25 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:46:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 182598
+[22-Aug-2020 15:46:25 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:47:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 183595
+[22-Aug-2020 15:47:45 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:48:07 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 183864
+[22-Aug-2020 15:48:08 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 17:40:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 271605
+[22-Aug-2020 17:40:40 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 17:56:08 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 17:56:14 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:27:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 302577
+[22-Aug-2020 18:27:02 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:28:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 303483
+[22-Aug-2020 18:28:14 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:29:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 304831
+[22-Aug-2020 18:30:01 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:31:19 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 305630
+[22-Aug-2020 18:31:20 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:42:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 313903
+[22-Aug-2020 18:42:03 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:45:04 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 315448
+[22-Aug-2020 18:45:06 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:46:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 316822
+[22-Aug-2020 18:46:55 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:47:14 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 317052
+[22-Aug-2020 18:47:15 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:50:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 319336
+[22-Aug-2020 18:50:14 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:50:48 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 319761
+[22-Aug-2020 18:50:50 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:51:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 320147
+[22-Aug-2020 18:51:22 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 23:35:58 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-22 23:35:58
+[22-Aug-2020 23:36:28 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Aug-2020 23:36:29 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Aug-2020 23:36:29 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Aug-2020 23:36:32 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[22-Aug-2020 23:36:56 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Aug-2020 23:36:58 Europe/Berlin] Sessione: simone
+[22-Aug-2020 23:37:14 Europe/Berlin] Sessione: simone
+[22-Aug-2020 23:37:20 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:38:38 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8339
+[23-Aug-2020 00:38:39 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[23-Aug-2020 00:38:39 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Aug-2020 00:38:40 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 00:38:40 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Aug-2020 00:38:40 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Aug-2020 00:38:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8347
+[23-Aug-2020 00:38:47 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:38:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8353
+[23-Aug-2020 00:38:52 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:38:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8359
+[23-Aug-2020 00:38:56 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:38:58 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8365
+[23-Aug-2020 00:39:00 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8371
+[23-Aug-2020 00:39:04 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8377
+[23-Aug-2020 00:39:07 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:09 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8383
+[23-Aug-2020 00:39:11 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8389
+[23-Aug-2020 00:39:14 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8395
+[23-Aug-2020 00:39:18 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:20 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8401
+[23-Aug-2020 00:39:21 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8407
+[23-Aug-2020 00:39:24 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8413
+[23-Aug-2020 00:39:28 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:30 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8419
+[23-Aug-2020 00:39:31 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8425
+[23-Aug-2020 00:39:34 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8431
+[23-Aug-2020 00:39:38 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:40 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8437
+[23-Aug-2020 00:39:41 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8443
+[23-Aug-2020 00:39:44 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8449
+[23-Aug-2020 00:39:48 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8455
+[23-Aug-2020 00:39:51 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8461
+[23-Aug-2020 00:39:54 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:56 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8467
+[23-Aug-2020 00:39:58 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:40:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8473
+[23-Aug-2020 00:40:02 Europe/Berlin] Sessione: simone
+[23-Aug-2020 01:40:09 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 55310
+[23-Aug-2020 01:40:10 Europe/Berlin] Sessione: simone
+[23-Aug-2020 01:40:29 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-23 01:40:29
+[23-Aug-2020 01:40:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Aug-2020 01:40:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 82
+[23-Aug-2020 01:40:35 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Aug-2020 01:40:35 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Aug-2020 01:40:35 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Aug-2020 01:40:35 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 01:40:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 90
+[23-Aug-2020 01:40:50 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 01:40:51 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:41:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 98
+[23-Aug-2020 01:41:10 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:41:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 692
+[23-Aug-2020 01:41:59 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:43:52 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 951
+[23-Aug-2020 01:43:53 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:44:04 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:45:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2033
+[23-Aug-2020 01:45:13 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:46:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2451
+[23-Aug-2020 01:46:59 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:47:07 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2578
+[23-Aug-2020 01:47:07 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:53:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9225
+[23-Aug-2020 01:53:21 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:54:18 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9685
+[23-Aug-2020 01:54:19 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:57:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12515
+[23-Aug-2020 01:57:46 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:58:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 13859
+[23-Aug-2020 01:58:57 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:05:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19335
+[23-Aug-2020 02:05:21 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:07:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19564
+[23-Aug-2020 02:07:22 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:08:47 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:08:47 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:08:47 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:08:47 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:08:47 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:32 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:32 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:32 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:32 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 21585
+[23-Aug-2020 02:10:38 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:11:12 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:15:01 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 22345
+[23-Aug-2020 02:15:03 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:24:38 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-23 02:24:38
+[23-Aug-2020 02:24:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Aug-2020 02:24:42 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[23-Aug-2020 02:24:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Aug-2020 02:24:44 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 02:24:44 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 02:24:44 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[23-Aug-2020 02:24:44 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 02:24:45 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 02:24:45 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 02:24:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[23-Aug-2020 02:25:09 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 02:25:10 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:25:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 152
+[23-Aug-2020 02:25:46 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:26:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 266
+[23-Aug-2020 02:26:15 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:26:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 328
+[23-Aug-2020 02:26:59 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:32:41 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 377
+[23-Aug-2020 02:32:43 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:34:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 699
+[23-Aug-2020 02:34:57 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:36:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 830
+[23-Aug-2020 02:36:50 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:37:41 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 866
+[23-Aug-2020 02:37:43 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:38:30 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 942
+[23-Aug-2020 02:38:32 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:39:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1017
+[23-Aug-2020 02:39:03 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:19 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4698
+[23-Aug-2020 02:41:26 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4698
+[23-Aug-2020 02:41:38 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4698
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:44 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4698
+[23-Aug-2020 02:45:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3096
+[23-Aug-2020 02:45:09 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:45:48 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:47:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4014
+[23-Aug-2020 02:47:36 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:58:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4313
+[23-Aug-2020 02:58:07 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:58:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4359
+[23-Aug-2020 02:58:22 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:59:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4393
+[23-Aug-2020 02:59:23 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:01:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4463
+[23-Aug-2020 03:01:57 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:03:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4521
+[23-Aug-2020 03:03:06 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:04:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4555
+[23-Aug-2020 03:04:06 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:07:17 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4589
+[23-Aug-2020 03:07:17 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:08:56 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4635
+[23-Aug-2020 03:08:56 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:14:07 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4669
+[23-Aug-2020 03:14:08 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:15:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4703
+[23-Aug-2020 03:15:49 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:16:50 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4749
+[23-Aug-2020 03:16:51 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:18:50 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4784
+[23-Aug-2020 03:18:51 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:24:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9065
+[23-Aug-2020 03:24:49 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:25:33 Europe/Berlin] PHP Notice:  Undefined index: name in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3887
+[23-Aug-2020 03:25:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9735
+[23-Aug-2020 03:25:47 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:25:56 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:30:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11115
+[23-Aug-2020 03:30:18 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:31:15 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-23 03:31:15
+[23-Aug-2020 03:31:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Aug-2020 03:31:15 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[23-Aug-2020 03:31:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Aug-2020 03:31:17 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 03:31:17 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 03:31:17 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[23-Aug-2020 03:31:17 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 03:31:17 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 03:31:17 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 03:31:19 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[23-Aug-2020 03:31:24 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 03:31:26 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:35:34 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 146
+[23-Aug-2020 03:35:35 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:36:38 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 224
+[23-Aug-2020 03:36:40 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:37:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 289
+[23-Aug-2020 03:37:37 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:38:18 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 575
+[23-Aug-2020 03:38:19 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:42:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2088
+[23-Aug-2020 03:42:40 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:48:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2872
+[23-Aug-2020 03:48:51 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:51:14 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:52:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4042
+[23-Aug-2020 03:52:13 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:59:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10132
+[23-Aug-2020 03:59:22 Europe/Berlin] Sessione: dani
+[23-Aug-2020 04:01:56 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10597
+[23-Aug-2020 04:01:57 Europe/Berlin] Sessione: dani
+[23-Aug-2020 04:02:35 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11313
+[23-Aug-2020 04:02:36 Europe/Berlin] Sessione: dani
+[23-Aug-2020 04:02:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11497
+[23-Aug-2020 04:02:47 Europe/Berlin] Sessione: dani
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 12:25:54 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-23 12:25:54
+[23-Aug-2020 12:26:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Aug-2020 12:26:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Aug-2020 12:26:42 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 12:26:42 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 12:26:55 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 12:26:56 Europe/Berlin] Sessione: dani
+[23-Aug-2020 12:27:13 Europe/Berlin] Sessione: dani
+[23-Aug-2020 12:27:23 Europe/Berlin] Sessione: dani
+[23-Aug-2020 12:27:33 Europe/Berlin] LOGOUT MANUALE DELL'UTENTE dani
+[23-Aug-2020 12:27:33 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 12:27:33 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 12:27:33 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[23-Aug-2020 12:29:59 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 12:30:01 Europe/Berlin] Sessione: dani
+[23-Aug-2020 12:30:33 Europe/Berlin] LOGOUT MANUALE DELL'UTENTE dani
+[23-Aug-2020 12:30:33 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 12:30:33 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 12:30:33 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[23-Aug-2020 12:32:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 654
+[23-Aug-2020 12:33:01 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 657
+[23-Aug-2020 12:33:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 660
+[23-Aug-2020 12:34:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 663
+[23-Aug-2020 14:03:52 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 14:03:53 Europe/Berlin] Sessione: dani
+[23-Aug-2020 14:04:09 Europe/Berlin] Sessione: dani
+[23-Aug-2020 14:05:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1822
+[23-Aug-2020 14:05:02 Europe/Berlin] Sessione: dani
+[23-Aug-2020 14:12:47 Europe/Berlin] Sessione: dani
+[23-Aug-2020 14:12:55 Europe/Berlin] Sessione: dani
+[23-Aug-2020 14:13:47 Europe/Berlin] Sessione: dani
+[23-Aug-2020 14:13:52 Europe/Berlin] Sessione: dani
+[23-Aug-2020 14:19:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 17469
+[23-Aug-2020 14:19:48 Europe/Berlin] Sessione: dani
+[23-Aug-2020 14:50:46 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-23 14:50:46
+[23-Aug-2020 14:50:50 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Aug-2020 14:50:50 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[23-Aug-2020 14:50:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Aug-2020 14:50:51 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 14:50:51 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 14:50:51 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[23-Aug-2020 14:50:51 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 14:50:51 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 14:50:51 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 14:50:53 Europe/Berlin] Sessione: dani
+[23-Aug-2020 14:52:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1281
+[23-Aug-2020 14:52:27 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:13:04 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:23:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 29358
+[23-Aug-2020 15:23:36 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:25:17 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 31252
+[23-Aug-2020 15:25:17 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:20:44 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-23 15:20:44
+[23-Aug-2020 15:20:58 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Aug-2020 15:20:59 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 15:21:00 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 15:21:10 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Aug-2020 15:21:19 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 15:21:21 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:22:33 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:25:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4844
+[23-Aug-2020 15:25:57 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:36:05 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:40:30 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19356
+[23-Aug-2020 15:40:32 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:41:04 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19526
+[23-Aug-2020 15:41:05 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:42:41 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 20646
+[23-Aug-2020 15:42:42 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:43:05 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 20888
+[23-Aug-2020 15:43:07 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:46:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 23278
+[23-Aug-2020 15:46:24 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:47:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 23753
+[23-Aug-2020 15:47:54 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:50:14 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 24346
+[23-Aug-2020 15:50:16 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:51:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 24705
+[23-Aug-2020 15:51:34 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:53:10 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 25117
+[23-Aug-2020 15:53:12 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:58:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 28928
+[23-Aug-2020 15:58:23 Europe/Berlin] Sessione: dani
+[23-Aug-2020 15:58:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 29110
+[23-Aug-2020 15:58:44 Europe/Berlin] Sessione: dani

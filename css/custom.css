@@ -42,6 +42,10 @@ DIMENSIONS
     max-height: 135px;
 }
 
+.min-widht-500px{
+    min-width: 500px;
+}
+
 .width-auto {
     width: auto!important;
 }
@@ -349,8 +353,12 @@ MARGINS
     margin-top: 0;
 }
 
-.margin-top-10 {
-    margin-top: 10% !important;
+.margin-top-90 {
+    margin-top: 90% !important;
+}
+
+.margin-top-20 {
+    margin-top: 20% !important;
 }
 
 .margin-top-15-px {
@@ -391,6 +399,10 @@ MARGINS
 
 .margin-bottom-15-px {
     margin-bottom: 15px !important;
+}
+
+.margin-bottom-17-px {
+    margin-bottom: 17px !important;
 }
 
 .margin-bottom-23-px {

@@ -209,7 +209,6 @@ function openFullScreen(elem) {
  * @returns {Promise<any>}
  */
 function convertImageToBase64(img) {
-    console.log(img);
     if (img == null)
         return Promise.resolve(null);
 
@@ -491,4 +490,4 @@ let displayListCluster = (tag, index) => {
 };
 
 // version number
-const UPDATE_VERSION = "3.24.0";
+const UPDATE_VERSION = "3.26.0";
