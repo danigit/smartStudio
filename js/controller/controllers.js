@@ -1494,22 +1494,27 @@
                                     }
                                 });
                             } else{
-                                // inserting the single tag
-                                newSocketService.getData('insert_tag', {
-                                    name: $scope.insertTag.name,
-                                    type: $scope.insertTag.type,
-                                    macs: macs
-                                }, (response) => {
-                                    dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
+                                if ($scope.insertTag.type !== 'Nessuno'){
+                                    // inserting the single tag
+                                    newSocketService.getData('insert_tag', {
+                                        name: $scope.insertTag.name,
+                                        type: $scope.insertTag.type,
+                                        macs: macs
+                                    }, (response) => {
+                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
 
-                                    if (response.result.length === 0) {
-                                        $scope.insertTag.resultClass = 'background-green';
-                                        $timeout(function() {
-                                            $mdDialog.hide();
-                                            $rootScope.$emit('updateTagsTable', {});
-                                        }, 1000);
-                                    }
-                                });
+                                        if (response.result.length === 0) {
+                                            $scope.insertTag.resultClass = 'background-green';
+                                            $timeout(function() {
+                                                $mdDialog.hide();
+                                                $rootScope.$emit('updateTagsTable', {});
+                                            }, 1000);
+                                        }
+                                    });
+                                } else{
+                                    dataService.showMessage($mdToast, '', lang.selectTagType, false);
+                                    $scope.insertTag.resultClass = 'background-red';
+                                }
                             }
                         } else {
                             $scope.insertTag.resultClass = 'background-red';
@@ -2720,9 +2725,6 @@
                      */
                     let updateRfidTable = () => {
                         newSocketService.getData('get_rfids', {}, (response) => {
-                            if (response.result.length === 0){
-                                dataService.showMessage($mdToast, '', lang.elementsNotRetrieved, false);
-                            }
                             $scope.rfids = response.result;
                         });
                     };
@@ -3445,6 +3447,8 @@
                     $scope.isOutdoor = true;
                     $scope.tableEmptyZone = false;
                     $scope.isUserManager = dataService.isUserManager;
+                    $scope.items = ['name', 'x_left', 'x_right', 'y_up', 'y_down', 'color', 'priority', 'header_order', 'header_left_side', 'radius', 'gps_north', 'gps_sud', ];
+                    $scope.columns = [];
 
                     $scope.zonesTable = [];
                     $scope.query = {
@@ -3563,6 +3567,38 @@
                         $mdDialog.show(addRoundRowDialog);
                     };
 
+                     /**
+                     * Function that show hide the columns of the table
+                     * @param item
+                     * @param list
+                     */
+                    $scope.toggle = function(item, list) {
+                        let idx = list.indexOf(item);
+                        if (idx > -1) {
+                            list.splice(idx, 1);
+                        } else {
+                            list.push(item);
+                        }
+                    };
+
+                    /**
+                     * Function that sets the label of the select column field
+                     * @returns {string}
+                     */
+                    $scope.getName = () => {
+                        return lang.columns
+                    };
+
+                    /**
+                     * Function that control if a column must be displayed
+                     * @param item
+                     * @param list
+                     * @returns {boolean}
+                     */
+                    $scope.exists = function(item, list) {
+                        return list.indexOf(item) > -1;
+                    };
+
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
@@ -3596,7 +3632,7 @@
                     $scope.insertAnchor = {
                         name: '',
                         mac: '',
-                        selectedType: '1',
+                        selectedType: '',
                         ip: '',
                         rssi: '',
                         proximity: '',
@@ -3640,7 +3676,7 @@
                             if($scope.insertAnchor.multiple){
                                 newSocketService.getData('insert_anchors', {
                                     name: $scope.insertAnchor.name,
-                                    type: $scope.insertAnchor.selectedType,
+                                    type: $scope.insertAnchor.selectedType !== '' ? $scope.insertAnchor.selectedType : 1,
                                     number_of_anchors: $scope.insertAnchor.number_of_anchors,
                                     floor: floor.id
                                 }, (response) => {
@@ -3670,28 +3706,33 @@
                                         permittedIds.push(t.id);
                                     });
 
-                                newSocketService.getData('insert_anchor', {
-                                    name: $scope.insertAnchor.name,
-                                    mac: $scope.insertAnchor.mac,
-                                    type: $scope.insertAnchor.selectedType,
-                                    ip: $scope.insertAnchor.ip,
-                                    rssi: $scope.insertAnchor.rssi,
-                                    proximity: $scope.insertAnchor.proximity,
-                                    permitteds: permittedIds,
-                                    neighbors: neighborsString,
-                                    floor: floor.id
-                                }, (response) => {
-                                    dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
+                                if ($scope.insertAnchor.selectedType !== ''){
+                                    newSocketService.getData('insert_anchor', {
+                                        name: $scope.insertAnchor.name,
+                                        mac: $scope.insertAnchor.mac,
+                                        type: $scope.insertAnchor.selectedType,
+                                        ip: $scope.insertAnchor.ip,
+                                        rssi: $scope.insertAnchor.rssi,
+                                        proximity: $scope.insertAnchor.proximity,
+                                        permitteds: permittedIds,
+                                        neighbors: neighborsString,
+                                        floor: floor.id
+                                    }, (response) => {
+                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result.length === 0);
 
-                                    if (response.result.length === 0) {
-                                        $scope.insertAnchor.resultClass = 'background-green';
-                                        $timeout(function() {
-                                            $mdDialog.hide();
-                                            $rootScope.$emit('updateAnchorsTable', {});
-                                        }, 1000);
-                                        $scope.$apply();
-                                    }
-                                });
+                                        if (response.result.length === 0) {
+                                            $scope.insertAnchor.resultClass = 'background-green';
+                                            $timeout(function() {
+                                                $mdDialog.hide();
+                                                $rootScope.$emit('updateAnchorsTable', {});
+                                            }, 1000);
+                                            $scope.$apply();
+                                        }
+                                    });
+                                } else{
+                                    dataService.showMessage($mdToast, '', lang.selectValidType, false);
+                                    $scope.insertAnchor.resultClass = 'background-red';
+                                }
                             }
                         } else {
                             $scope.insertAnchor.resultClass = 'background-red';

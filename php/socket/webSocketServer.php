@@ -251,7 +251,7 @@ class webSocketServer implements MessageComponentInterface{
             }
             //getting a location by user
             case 'get_locations_by_user':{
-                $result['action'] = 'get_location_by_user';
+                $result['action'] = 'get_locations_by_user';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
 
                 $query = $this->connection->get_locations_by_user($decoded_message['data']['user']);

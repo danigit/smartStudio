@@ -215,6 +215,9 @@
                     dataService.allTags = response.result;
 
                     tags = response.result.filter(t => !t.radio_switched_off);
+
+                    let onTags = response.result.filter(t => !t.radio_switched_off);
+
                     // getting all the locations
                     newSocketService.getData('get_all_locations', {}, (locations) => {
                         dataService.showAlarmsIcon(onTags, locations).then((res) => {

@@ -77,12 +77,12 @@
                         ng-class="{'md-placeholder': !location.longitude}" ng-if="exists('longitude', columns)">
                         {{location.longitude || lang.longitude}}
                     </td>
-                    <td md-cell class="no-wrap" ng-click="editCell($event, location, 'radius')"
+                    <td md-cell class="no-wrap" ng-click="!location.is_inside ? editCell($event, location, 'radius') : null"
                         ng-class="{'md-placeholder': !location.radius.toString()}" ng-if="exists('radius', columns)">
                         {{location.radius ||
                         lang.insertRadius}}
                     </td>
-                    <td md-cell class="no-wrap" ng-click="editCell($event, location, 'meter_radius')"
+                    <td md-cell class="no-wrap" ng-click="!location.is_inside ? editCell($event, location, 'meter_radius') : null"
                         ng-class="{'md-placeholder': !location.meter_radius.toString()}"
                         ng-if="exists('meter_radius', columns)">{{location.meter_radius ||
                         lang.insertRadius}}

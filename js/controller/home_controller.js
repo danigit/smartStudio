@@ -98,7 +98,6 @@
 
                             // adding the mouseover event to the location
                             google.maps.event.addListener(markerObject, 'mouseover', () => {
-                                console.log("adding listener")
                                 // taking the updated tags and anchors
                                 newSocketService.getData('get_tags_by_user', { user: dataService.user.username }, (userTags) => {
                                     // getting the anchors of the current user

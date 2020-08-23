@@ -64,7 +64,7 @@
     background-color: #0093c4;
 }
 
-#draw-rect-on-off-container.md-subheader-inner{
+#draw-rect-on-off-container .md-subheader-inner{
     padding: 0!important;
 }
 

@@ -21201,3 +21201,335 @@ Stack trace:
 [22-Aug-2020 15:20:29 Europe/Berlin] Sessione: alessandro
 [22-Aug-2020 15:20:52 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 162831
 [22-Aug-2020 15:20:54 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:40:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 178459
+[22-Aug-2020 15:40:58 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:43:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 180721
+[22-Aug-2020 15:43:55 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:44:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 181081
+[22-Aug-2020 15:44:25 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:46:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 182598
+[22-Aug-2020 15:46:25 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:47:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 183595
+[22-Aug-2020 15:47:45 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 15:48:07 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 183864
+[22-Aug-2020 15:48:08 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 17:40:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 271605
+[22-Aug-2020 17:40:40 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 17:56:08 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 17:56:14 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:27:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 302577
+[22-Aug-2020 18:27:02 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:28:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 303483
+[22-Aug-2020 18:28:14 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:29:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 304831
+[22-Aug-2020 18:30:01 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:31:19 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 305630
+[22-Aug-2020 18:31:20 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:42:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 313903
+[22-Aug-2020 18:42:03 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:45:04 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 315448
+[22-Aug-2020 18:45:06 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:46:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 316822
+[22-Aug-2020 18:46:55 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:47:14 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 317052
+[22-Aug-2020 18:47:15 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:50:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 319336
+[22-Aug-2020 18:50:14 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:50:48 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 319761
+[22-Aug-2020 18:50:50 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 18:51:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 320147
+[22-Aug-2020 18:51:22 Europe/Berlin] Sessione: alessandro
+[22-Aug-2020 23:35:58 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-22 23:35:58
+[22-Aug-2020 23:36:28 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Aug-2020 23:36:29 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Aug-2020 23:36:29 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Aug-2020 23:36:32 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[22-Aug-2020 23:36:56 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Aug-2020 23:36:58 Europe/Berlin] Sessione: simone
+[22-Aug-2020 23:37:14 Europe/Berlin] Sessione: simone
+[22-Aug-2020 23:37:20 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:38:38 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8339
+[23-Aug-2020 00:38:39 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[23-Aug-2020 00:38:39 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Aug-2020 00:38:40 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 00:38:40 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Aug-2020 00:38:40 Europe/Berlin] UTENTE simone SI E LOGGATO
+[23-Aug-2020 00:38:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8347
+[23-Aug-2020 00:38:47 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:38:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8353
+[23-Aug-2020 00:38:52 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:38:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8359
+[23-Aug-2020 00:38:56 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:38:58 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8365
+[23-Aug-2020 00:39:00 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8371
+[23-Aug-2020 00:39:04 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8377
+[23-Aug-2020 00:39:07 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:09 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8383
+[23-Aug-2020 00:39:11 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8389
+[23-Aug-2020 00:39:14 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8395
+[23-Aug-2020 00:39:18 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:20 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8401
+[23-Aug-2020 00:39:21 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8407
+[23-Aug-2020 00:39:24 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8413
+[23-Aug-2020 00:39:28 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:30 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8419
+[23-Aug-2020 00:39:31 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8425
+[23-Aug-2020 00:39:34 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8431
+[23-Aug-2020 00:39:38 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:40 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8437
+[23-Aug-2020 00:39:41 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8443
+[23-Aug-2020 00:39:44 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8449
+[23-Aug-2020 00:39:48 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8455
+[23-Aug-2020 00:39:51 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8461
+[23-Aug-2020 00:39:54 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:39:56 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8467
+[23-Aug-2020 00:39:58 Europe/Berlin] Sessione: simone
+[23-Aug-2020 00:40:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8473
+[23-Aug-2020 00:40:02 Europe/Berlin] Sessione: simone
+[23-Aug-2020 01:40:09 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 55310
+[23-Aug-2020 01:40:10 Europe/Berlin] Sessione: simone
+[23-Aug-2020 01:40:29 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-23 01:40:29
+[23-Aug-2020 01:40:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Aug-2020 01:40:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 82
+[23-Aug-2020 01:40:35 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Aug-2020 01:40:35 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[23-Aug-2020 01:40:35 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[23-Aug-2020 01:40:35 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 01:40:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 90
+[23-Aug-2020 01:40:50 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 01:40:51 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:41:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 98
+[23-Aug-2020 01:41:10 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:41:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 692
+[23-Aug-2020 01:41:59 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:43:52 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 951
+[23-Aug-2020 01:43:53 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:44:04 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:45:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2033
+[23-Aug-2020 01:45:13 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:46:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2451
+[23-Aug-2020 01:46:59 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:47:07 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2578
+[23-Aug-2020 01:47:07 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:53:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9225
+[23-Aug-2020 01:53:21 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:54:18 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9685
+[23-Aug-2020 01:54:19 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:56:40 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 01:57:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12515
+[23-Aug-2020 01:57:46 Europe/Berlin] Sessione: dani
+[23-Aug-2020 01:58:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 13859
+[23-Aug-2020 01:58:57 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:05:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19335
+[23-Aug-2020 02:05:21 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:07:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 19564
+[23-Aug-2020 02:07:22 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:08:47 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:08:47 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:08:47 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:08:47 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:08:47 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:32 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:32 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:32 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:32 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 21585
+[23-Aug-2020 02:10:38 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:10:48 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:11:12 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:15:01 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 22345
+[23-Aug-2020 02:15:03 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:24:38 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-23 02:24:38
+[23-Aug-2020 02:24:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Aug-2020 02:24:42 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[23-Aug-2020 02:24:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Aug-2020 02:24:44 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 02:24:44 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 02:24:44 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[23-Aug-2020 02:24:44 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 02:24:45 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 02:24:45 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 02:24:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[23-Aug-2020 02:25:09 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 02:25:10 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:25:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 152
+[23-Aug-2020 02:25:46 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:26:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 266
+[23-Aug-2020 02:26:15 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:26:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 328
+[23-Aug-2020 02:26:59 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:32:41 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 377
+[23-Aug-2020 02:32:43 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:34:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 699
+[23-Aug-2020 02:34:57 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:36:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 830
+[23-Aug-2020 02:36:50 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:37:41 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 866
+[23-Aug-2020 02:37:43 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:38:30 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 942
+[23-Aug-2020 02:38:32 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:39:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1017
+[23-Aug-2020 02:39:03 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:18 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:19 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4698
+[23-Aug-2020 02:41:26 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4698
+[23-Aug-2020 02:41:38 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4698
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:43 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:41:44 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4698
+[23-Aug-2020 02:45:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3096
+[23-Aug-2020 02:45:09 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:45:48 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:47:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4014
+[23-Aug-2020 02:47:36 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:47:59 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: anchors_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3678
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:48:02 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 02:58:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4313
+[23-Aug-2020 02:58:07 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:58:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4359
+[23-Aug-2020 02:58:22 Europe/Berlin] Sessione: dani
+[23-Aug-2020 02:59:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4393
+[23-Aug-2020 02:59:23 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:01:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4463
+[23-Aug-2020 03:01:57 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:03:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4521
+[23-Aug-2020 03:03:06 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:04:06 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4555
+[23-Aug-2020 03:04:06 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:07:17 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4589
+[23-Aug-2020 03:07:17 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:08:56 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4635
+[23-Aug-2020 03:08:56 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:14:07 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4669
+[23-Aug-2020 03:14:08 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:15:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4703
+[23-Aug-2020 03:15:49 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:16:50 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4749
+[23-Aug-2020 03:16:51 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:18:50 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4784
+[23-Aug-2020 03:18:51 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:24:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9065
+[23-Aug-2020 03:24:49 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:25:33 Europe/Berlin] PHP Notice:  Undefined index: name in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3887
+[23-Aug-2020 03:25:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9735
+[23-Aug-2020 03:25:47 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:25:56 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:30:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11115
+[23-Aug-2020 03:30:18 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:31:15 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-23 03:31:15
+[23-Aug-2020 03:31:15 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Aug-2020 03:31:15 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[23-Aug-2020 03:31:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Aug-2020 03:31:17 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 03:31:17 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 03:31:17 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[23-Aug-2020 03:31:17 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 03:31:17 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 03:31:17 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 03:31:19 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[23-Aug-2020 03:31:24 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 03:31:26 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:35:34 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 146
+[23-Aug-2020 03:35:35 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:36:38 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 224
+[23-Aug-2020 03:36:40 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:37:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 289
+[23-Aug-2020 03:37:37 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:38:18 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 575
+[23-Aug-2020 03:38:19 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:42:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2088
+[23-Aug-2020 03:42:40 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:48:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 2872
+[23-Aug-2020 03:48:51 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:51:14 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:52:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4042
+[23-Aug-2020 03:52:13 Europe/Berlin] Sessione: dani
+[23-Aug-2020 03:59:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10132
+[23-Aug-2020 03:59:22 Europe/Berlin] Sessione: dani
+[23-Aug-2020 04:01:56 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10597
+[23-Aug-2020 04:01:57 Europe/Berlin] Sessione: dani
+[23-Aug-2020 04:02:35 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11313
+[23-Aug-2020 04:02:36 Europe/Berlin] Sessione: dani
+[23-Aug-2020 04:02:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 11497
+[23-Aug-2020 04:02:47 Europe/Berlin] Sessione: dani
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: grid_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3679
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: cameras_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: outag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: zones_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: sound_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: outdoor_tag_on in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 04:03:09 Europe/Berlin] PHP Notice:  Undefined index: table_sorting in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3680
+[23-Aug-2020 12:25:54 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-23 12:25:54
+[23-Aug-2020 12:26:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[23-Aug-2020 12:26:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[23-Aug-2020 12:26:42 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 12:26:42 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[23-Aug-2020 12:26:55 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 12:26:56 Europe/Berlin] Sessione: dani
+[23-Aug-2020 12:27:13 Europe/Berlin] Sessione: dani
+[23-Aug-2020 12:27:23 Europe/Berlin] Sessione: dani
+[23-Aug-2020 12:27:33 Europe/Berlin] LOGOUT MANUALE DELL'UTENTE dani
+[23-Aug-2020 12:27:33 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 12:27:33 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 12:27:33 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[23-Aug-2020 12:29:59 Europe/Berlin] UTENTE dani SI E LOGGATO
+[23-Aug-2020 12:30:01 Europe/Berlin] Sessione: dani
+[23-Aug-2020 12:30:33 Europe/Berlin] LOGOUT MANUALE DELL'UTENTE dani
+[23-Aug-2020 12:30:33 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 12:30:33 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[23-Aug-2020 12:30:33 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[23-Aug-2020 12:32:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 654
+[23-Aug-2020 12:33:01 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 657
+[23-Aug-2020 12:33:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 660
+[23-Aug-2020 12:34:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 663

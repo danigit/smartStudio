@@ -28,7 +28,7 @@
 <!--end popup header-->
 
 <!--popup content-->
-<md-content class="popup-padding padding-bottom-70px">
+<md-content class="popup-padding  padding-bottom-70px">
 
     <div layout="column" layout-align="center center" ng-controller="languageController">
 
@@ -54,7 +54,7 @@
                     <th md-column md-order-by="role" ng-if="exists('role', columns)" ng-show="isAdmin"><span
                             class="color-darkcyan">{{lang.role | uppercase}}</span>
                     </th>
-                    <th md-column md-order-by="telephone_number" ng-if="exists('phone', columns)" ng-show="isAdmin">
+                    <th md-column md-order-by="telephone_number" ng-if="exists('phone', columns) && isAdmin" >
                         <span class="color-darkcyan">{{lang.phone | uppercase}}</span>
                     </th>
                     <th md-column md-order-by="bot_url" ng-if="exists('url_bot', columns)" ng-show="isAdmin"><span

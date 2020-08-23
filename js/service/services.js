@@ -74,7 +74,7 @@
                         newSocketService.getData('get_tags_by_user', { user: service.user.username }, (userTags) => {
                             newSocketService.getData('get_user_locations', {user: service.user.id}, (user_locations) => {
                                 // getting only the outdoor tags
-                                let outdoorTags = response.result.filter(t => service.isOutdoor(t) && service.hasTagAValidGps(t));
+                                let outdoorTags = response.result.filter(t => service.isOutdoor(t) || service.hasTagAnInvalidGps(t));
 
                                 // getting only the outdoor tags that are in any location 
                                 let locationsTags = outdoorTags.filter(t => 
@@ -84,7 +84,7 @@
                                 let userLocationsTags = locationsTags.filter(t => user_locations.result.find(l => service.getTagDistanceFromLocationOrigin(t, [l.latitude, l.longitude]) <= l.radius) !== undefined);
 
                                 // getting the tags out of every location
-                                let outOfLocationsTaga = outdoorTags.filter(ot => !locationsTags.some(lt => ot.id === lt.id));
+                                let outOfLocationsTaga = outdoorTags.filter(ot => !locationsTags.some(lt => ot.id === lt.id) || service.hasTagAnInvalidGps(ot));
 
                                 let alarmTags = [...userLocationsTags, ...outOfLocationsTaga, ...userTags.result]
                                 success(alarmTags)
