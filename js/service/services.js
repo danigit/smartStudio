@@ -162,7 +162,7 @@
 
                                         indoorLocationTags = userTags.result.filter(t => !t.radio_switched_off);
                                         // the dags indoor have no location if the anchor is null
-                                        let indoorNoLocationTags = allTags.filter(t => !service.isOutdoor(t) && t.anchor_id === null);
+                                        let indoorNoLocationTags = allTags.filter(t => !service.isOutdoor(t) && service.hasTagAnInvalidGps(t) && t.anchor_id === null);
 
                                         // getting the tags outdoor that have a location
                                         //TODO - the hasTagAValidGps is superflous because I control already in isOutdoor but I have to understand if isOutdoor
@@ -170,11 +170,15 @@
                                         let outdoorLocationTags = allTags.filter(t => service.isOutdoor(t) && service.hasTagAValidGps(t));
 
                                         // getting the tags outdoor that have no site setted
-                                        let outdoorNoSiteTags = allTags.filter(t => (service.hasTagAnInvalidGps(t)));
+                                        let outdoorNoSiteTags = allTags.filter(t => service.isOutdoor(t) && service.hasTagAnInvalidGps(t));
 
                                         // getting the outdoor tags without any location
                                         let outdoorNoLocationTags = service.getTagsWithoutAnyLocation(outdoorLocationTags, locations);
 
+                                        console.log(indoorNoLocationTags)
+                                        console.log(outdoorLocationTags)
+                                        console.log(outdoorNoSiteTags)
+                                        console.log(outdoorNoLocationTags)
                                         // removing the tags that are out of all the location
                                         outdoorLocationTags = outdoorLocationTags.filter(t => !outdoorNoLocationTags.some(ot => ot.id === t.id));
 
@@ -195,7 +199,6 @@
                                                     });
                                             }
                                         });
-
                                         // getting the indoor tags without a location alarms
                                         indoorNoLocationTags.forEach(tag => {
                                             // getting the tags alarms
@@ -238,7 +241,12 @@
                                         // getting the tags with no valida position alarms
                                         outdoorNoSiteTags.forEach(tag => {
                                             // getting the tags that have no valid position
-                                            allTagsAlarms.push(service.createAlarmObjectForInfoWindow(tag, lang.noValidPosition, lang.noValidPositionDescription, tagsIconPath + 'tag_without_position.png', lang.noLocation));
+                                            // allTagsAlarms.push(service.createAlarmObjectForInfoWindow(tag, lang.noValidPosition, lang.noValidPositionDescription, tagsIconPath + 'tag_without_position.png', lang.noLocation));
+                                            // getting tags alarms
+                                            service.loadTagAlarmsForInfoWindow(tag, lang.noLocation)
+                                                .forEach(alarm => {
+                                                    allTagsAlarms.push(alarm);
+                                                })
                                         });
 
                                         // setting the alarms in the table
@@ -263,7 +271,7 @@
                         // controlling if the tag is in an outdoor location
                         if (service.isOutdoor(tag)) {
                             // if the tag is outdoor and has no position i show tag not found message
-                            if (tag.gps_north_degree === -2 && tag.gps_east_degree === -2) {
+                            if (service.hasTagAnInvalidGps(tag)) {
                                 showNotFountTagWindow()
                             } else {
                                 // closing the alarms table
@@ -427,7 +435,7 @@
          * @returns {boolean|boolean}
          */
         service.hasTagAValidGps = (tag) => {
-            return tag.gps_north_degree !== -2 && tag.gps_east_degree !== -2;
+            return tag.gps_north_degree !== -2 && tag.gps_east_degree !== -2 && tag.gps_north_degree !== -1 && tag.gps_east_degree !== -1;
         };
 
         /**
@@ -1366,12 +1374,16 @@
 
             let category_name_alarm = '';
             let category_name_no_alarm = '';
+            let category_name_offline = '';
 
             if (isCategoryAndImageNotNull(tag)) {
                 category_name_alarm = tag.icon_name_alarm.split('.').slice(0, -1).join('.');
                 category_name_no_alarm = tag.icon_name_no_alarm.split('.').slice(0, -1).join('.');
+                category_name_offline = tag.icon_name_offline.split('.').slice(0, -1).join('.');
             }
 
+            console.log(category_name_alarm)
+            console.log(category_name_no_alarm)
             if (tag.sos) {
                 if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + '_sos.png');

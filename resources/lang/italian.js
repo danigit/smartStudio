@@ -396,7 +396,8 @@ function languageController($scope) {
         batteryEmptyTags: 'Wetags batteria scarica',
         areBatteryEmptyTags: 'wetags sono scarichi',
         uwb: 'UWB',
-        bluetooth: 'Bluetooth'
+        bluetooth: 'Bluetooth',
+        offlineImage: 'Imagine offline'
     }
 }
 

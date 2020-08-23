@@ -2515,6 +2515,7 @@
 
                                 let alarm_image = null;
                                 let no_alarm_image = null;
+                                let offline_image = null;
 
                                 $scope.submitTagCategory = (form) => {
                                     form.$submitted = true;
@@ -2527,6 +2528,8 @@
                                         let alarm_fileName = '';
                                         let no_alarm_file = null;
                                         let no_alarm_fileName = '';
+                                        let offline_file = null;
+                                        let offline_fileName = null;
 
                                         if (alarm_image != null && alarm_image.files.length !== 0) {
                                             alarm_file = alarm_image.files[0];
@@ -2538,7 +2541,12 @@
                                             no_alarm_fileName = no_alarm_file.name;
                                         }
 
-                                        if (alarm_file != null && no_alarm_file != null) {
+                                        if (offline_image != null && offline_image.files.length !== 0) {
+                                            offline_file = offline_image.files[0];
+                                            offline_fileName = offline_file.name;
+                                        }
+
+                                        if (alarm_file != null && no_alarm_file != null && offline_file !== null) {
                                             convertImageToBase64(alarm_file)
                                                 .then((images) => {
                                                     if (images !== null) {
@@ -2555,38 +2563,52 @@
                                                                             image: no_alarm_images
                                                                         }, (no_alarm_savedImage) => {
 
-                                                                            if (savedImage.result === false || no_alarm_savedImage === false) {
-                                                                                $scope.insertTag.resultClass = 'background-red';
-                                                                                $scope.insertTagCategory.showError = true;
-                                                                                $scope.insertTagCategory.message = lang.cannotConvertImage
-                                                                            } else {
-                                                                                if (alarm_fileName !== '' && no_alarm_fileName !== '') {
-                                                                                    newSocketService.getData('insert_tag_category', {
-                                                                                        name: $scope.insertTagCategory.name,
-                                                                                        alarm_name: alarm_fileName,
-                                                                                        no_alarm_name: no_alarm_fileName
-                                                                                    }, (response) => {
-                                                                                        if (!response.session_state)
-                                                                                            window.location.reload();
+                                                                            convertImageToBase64(offline_file)
+                                                                                .then((offline_images) => {
+                                                                                    if (offline_images !== null) {
+                                                                                        newSocketService.getData('save_tag_category_offline_image', {
+                                                                                            imageName: offline_fileName,
+                                                                                            image: offline_images
+                                                                                        }, (offline_savedImage) => {
 
-                                                                                        if (response.result !== 0) {
-                                                                                            $scope.insertTagCategory.resultClass = 'background-green';
-                                                                                            updateCategoriesTable();
-                                                                                            $timeout(function() {
-                                                                                                $mdDialog.hide();
-                                                                                            }, 1000);
-                                                                                        } else {
-                                                                                            $scope.insertTag.resultClass = 'background-red';
-                                                                                            $scope.insertTagCategory.showError = true;
-                                                                                            $scope.insertTagCategory.message = lang.cannotSaveImage
-                                                                                        }
-                                                                                    });
-                                                                                } else {
-                                                                                    $scope.insertTag.resultClass = 'background-red';
-                                                                                    $scope.insertTagCategory.showError = true;
-                                                                                    $scope.insertTagCategory.message = lang.cannotConvertImage
-                                                                                }
-                                                                            }
+                                                                                            if (savedImage.result === false || no_alarm_savedImage === false || offline_savedImage === false) {
+                                                                                                $scope.insertTag.resultClass = 'background-red';
+                                                                                                $scope.insertTagCategory.showError = true;
+                                                                                                $scope.insertTagCategory.message = lang.cannotConvertImage
+                                                                                            } else {
+                                                                                                if (alarm_fileName !== '' && no_alarm_fileName !== '' && offline_fileName !== '') {
+                                                                                                    newSocketService.getData('insert_tag_category', {
+                                                                                                        name: $scope.insertTagCategory.name,
+                                                                                                        alarm_name: alarm_fileName,
+                                                                                                        no_alarm_name: no_alarm_fileName,
+                                                                                                        offline_name: offline_fileName
+                                                                                                    }, (response) => {
+
+                                                                                                        if (response.result !== 0) {
+                                                                                                            $scope.insertTagCategory.resultClass = 'background-green';
+                                                                                                            updateCategoriesTable();
+                                                                                                            $timeout(function() {
+                                                                                                                $mdDialog.hide();
+                                                                                                            }, 1000);
+                                                                                                        } else {
+                                                                                                            $scope.insertTag.resultClass = 'background-red';
+                                                                                                            $scope.insertTagCategory.showError = true;
+                                                                                                            $scope.insertTagCategory.message = lang.cannotSaveImage
+                                                                                                        }
+                                                                                                    });
+                                                                                                } else {
+                                                                                                    $scope.insertTag.resultClass = 'background-red';
+                                                                                                    $scope.insertTagCategory.showError = true;
+                                                                                                    $scope.insertTagCategory.message = lang.cannotConvertImage
+                                                                                                }
+                                                                                            }
+                                                                                        })
+                                                                                    } else{
+                                                                                        $scope.insertTagCategory.resultClass = 'background-red';
+                                                                                        $scope.insertTagCategory.showError = true;
+                                                                                        $scope.insertTagCategory.message = lang.cannotConvertImage
+                                                                                    }
+                                                                                })
                                                                         });
                                                                     } else {
                                                                         $scope.insertTagCategory.resultClass = 'background-red';
@@ -2594,7 +2616,7 @@
                                                                         $scope.insertTagCategory.message = lang.cannotConvertImage
                                                                     }
                                                                 })
-                                                        });
+                                                            })
                                                     } else {
                                                         $scope.insertTagCategory.resultClass = 'background-red';
                                                         $scope.insertTagCategory.showError = true;
@@ -2621,6 +2643,10 @@
                                     no_alarm_image.click();
                                 };
 
+                                $scope.uploadTagCategoryOfflineImage = () => {
+                                    offline_image = document.getElementById('offline-image');
+                                    offline_image.click();
+                                };
                                 $scope.hide = () => {
                                     $mdDialog.hide();
                                 }

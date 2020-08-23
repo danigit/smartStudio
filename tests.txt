@@ -241,3 +241,5 @@ LAST UPDATES
 - Removed Nessuno from tag type in tags table (if I assign Nessuno i can't see the tag in the table)
 - Handeled the insertion of ancors with an invalid type
 - Fixed the login text over the logo
+-----------------------------------------------------------------------------------------------------------------
+- Implemented the insertion of the tag category for offline tags
