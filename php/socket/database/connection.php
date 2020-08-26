@@ -51,7 +51,7 @@ class Connection
 
             $this->query = 'INSERT INTO user (USERNAME, PASSWORD, EMAIL,  NAME, ROLE) VALUES (?, ?, ?, ?, ?)';
 
-            $this->result = $this->execute_inserting($this->query, 'ssssi', $username, $hash_code, 'dani@gmail.com', 'dani', 1);
+            $this->result = $this->execute_inserting($this->query, 'ssssi', $username, $hash_code, 'simo@gmail.com', 'simo', 1);
 
             if ($this->result instanceof db_errors)
                 return $this->result;
@@ -2740,7 +2740,7 @@ class Connection
                     'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'],
                     'sleep_time_outdoor' => $row['SLEEP_TIME_OUTDOOR'], 'sleep_time_indoor' => $row['SLEEP_TIME_INDOOR'], 'type_icon' => $row['ICON_NAME'],
                     'location_name' => $row['LOCATION_NAME'], 'location_longitude' => $row['LOCATION_LONGITUDE'], 'location_latitude' => $row['LOCATION_LATITUDE'], 'floor_name' => $row['FLOOR_NAME'], 'floor_image' => $row['IMAGE_MAP'],
-                    'time' => $row['TIME'], 'inside_zone' => $row['INSIDE_ZONE'], 'is_exit' => $row['IS_EXIT'], 'anchor_name' => $row['ANCHOR_NAME'], 'type_id' => $row['TYPE_ID'],
+                    'time' => $row['TIME'], 'now_time' => date('Y-m-d H:i:s'), 'inside_zone' => $row['INSIDE_ZONE'], 'is_exit' => $row['IS_EXIT'], 'anchor_name' => $row['ANCHOR_NAME'], 'type_id' => $row['TYPE_ID'],
                     'helmet_dpi' => $row['HELMET_DPI'], 'belt_dpi' => $row['BELT_DPI'], 'glove_dpi' => $row['GLOVE_DPI'], 'shoe_dpi' => $row['SHOE_DPI']);
             }
 
@@ -4958,4 +4958,4 @@ class Connection
 }
 
 // $conn = new Connection();
-// var_dump($conn->register('dani', 'dani'));
+// var_dump($conn->register('simo', 'simo'));

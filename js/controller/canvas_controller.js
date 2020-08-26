@@ -296,13 +296,13 @@
                         dataService.getUserTags().then((userTags) => {
                             //showing the offline tags alarm icon
                             canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(userTags);
+
+                            // playing the alarms if any
+                            dataService.playAlarmsAudio(userTags);
                         });
 
                         tags = response.result;
-
-                        // playing the alarms if any
-                        dataService.playAlarmsAudio(response.result.filter(t => !t.radio_switched_off));
-
+                        
                         // getting all the floors of the logged user
                         newSocketService.getData('get_floors_by_user', { user: dataService.user.username }, (floorsByUser) => {
 

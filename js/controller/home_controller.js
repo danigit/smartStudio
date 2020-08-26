@@ -27,6 +27,7 @@
 
         // visualizing the data according if the user is admin or not
         homeCtrl.isAdmin = dataService.isAdmin;
+        homeCtrl.isTracker = dataService.isTracker;
         homeCtrl.isUserManager = dataService.isUserManager;
         homeCtrl.socketOpened = socketOpened;
         homeCtrl.debug = DEBUG;
@@ -409,11 +410,12 @@
 
                         dataService.getUserTags().then((userTags) => {
                             // cheching if I have to show the tag offline icon
-                            homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(userTags);
-                        });
+                            homeCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(userTags) || dataService.checkIfTagsHaveBatteryEmpty(userTags);
 
-                        // playing the audio if there are alarms
-                        dataService.playAlarmsAudio(onTags);
+                            // playing the audio if there are alarms
+                            dataService.playAlarmsAudio(userTags);
+                       });
+
 
                         // getting the anchors of the logged user
                         newSocketService.getData('get_anchors_by_user', { user: dataService.user.username }, (response) => {

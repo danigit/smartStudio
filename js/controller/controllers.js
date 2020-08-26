@@ -1567,19 +1567,19 @@
                      * Fuction that updates the tags table
                      */
                     let updateTagsTable = () => {
-                        newSocketService.getData('get_all_tags', {}, (response) => {
+                        dataService.getUserTags().then(response => {
+                            $scope.tags = response;
 
-                            $scope.tags = response.result;
-
-                            response.result.forEach(function(tag) {
+                            response.forEach(function(tag) {
                                 let tagId = tag.id;
+
                                 $scope.tagsCallMe[tagId] = {
                                     background: (tag.call_me_alarm === 1) ? 'color-darkgreen' : 'color-darkred',
                                     value: (tag.call_me_alarm === 1) ? lang.stopCallMe : lang.callMe,
                                     on: (tag.call_me_alarm === 1)
                                 }
                             });
-                        });
+                        })
                         
                         // getting tag types
                         newSocketService.getData('get_all_types', {}, (response) => {
