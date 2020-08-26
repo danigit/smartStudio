@@ -175,10 +175,6 @@
                                         // getting the outdoor tags without any location
                                         let outdoorNoLocationTags = service.getTagsWithoutAnyLocation(outdoorLocationTags, locations);
 
-                                        console.log(indoorNoLocationTags)
-                                        console.log(outdoorLocationTags)
-                                        console.log(outdoorNoSiteTags)
-                                        console.log(outdoorNoLocationTags)
                                         // removing the tags that are out of all the location
                                         outdoorLocationTags = outdoorLocationTags.filter(t => !outdoorNoLocationTags.some(ot => ot.id === t.id));
 
@@ -229,7 +225,7 @@
                                             // show the tag as no location
                                             if (!locations.some(l => service.getTagDistanceFromLocationOrigin(tag, [l.latitude, l.longitude]) <= l.radius) &&
                                                 service.switch.showOutrangeTags)
-                                                allTagsAlarms.push(service.createAlarmObjectForInfoWindow(tag, lang.outOfSite, lang.outOfSiteDescription, tagsIconPath + 'tag_out_of_location.png', lang.noLocation));
+                                                // allTagsAlarms.push(service.createAlarmObjectForInfoWindow(tag, lang.outOfSite, lang.outOfSiteDescription, tagsIconPath + 'tag_out_of_location.png', lang.noLocation));
 
                                             // getting tags alarms
                                             service.loadTagAlarmsForInfoWindow(tag, lang.noLocation)
@@ -665,9 +661,9 @@
                     $scope.tagsStateBatteryEmpty = 0;
 
                     // setting the color for each category
-                    $scope.colors = ["#4BAE5A", "#E12315", "#D3D3D3", "#ff5722"];
+                    $scope.colors = ["#4BAE5A", "#E12315", "#D3D3D3"];
                     // setting the name for each category
-                    $scope.labels = [lang.activeTags, lang.shutDownTags, lang.disabledTags, lang.batteryEmptyTags];
+                    $scope.labels = [lang.activeTags, lang.shutDownTags, lang.disabledTags];
 
                     // continuously updating the tag situation
                     service.offlineTagsInterval = $interval(function() {
@@ -1199,6 +1195,11 @@
             return alarms.filter(a => !(a.tag === tag && a.alarm === alarmType))
         };
 
+        // functions that check if there is at least one tag with the battery emepty
+        service.checkIfTagsHaveBatteryEmpty = (tags) => {
+            return tags.some((tag) => tag.battery_status);
+        }
+
         //function that checks if at least one tag has an alarm
         // remain canvas
         service.checkIfTagsHaveAlarms = (tags) => {
@@ -1382,8 +1383,6 @@
                 category_name_offline = tag.icon_name_offline.split('.').slice(0, -1).join('.');
             }
 
-            console.log(category_name_alarm)
-            console.log(category_name_no_alarm)
             if (tag.sos) {
                 if (isCategoryAndImageNotNull(tag)) {
                     tagAlarmsImages.push(tagsIconPath + category_name_alarm + '_sos.png');

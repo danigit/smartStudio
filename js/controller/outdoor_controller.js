@@ -227,11 +227,11 @@
                         //showing the offline tags alarm icon
                         dataService.getUserTags().then((userTags) => {
                             outdoorCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(userTags);
+
+                            // playing the audio if there are alarms
+                            dataService.playAlarmsAudio(userTags);
                         });
-
-                        // playing the audio if there are alarms
-                        dataService.playAlarmsAudio(tags);
-
+                        
                         // gettin only the outdoor tags that have not superated the second delta
                         outdoorTags = response.result.filter(t => dataService.isOutdoor(t) && dataService.hasTagAValidGps(t) && !dataService.hasTagSuperatedSecondDelta(t));
 
@@ -286,7 +286,7 @@
                                             setOutdoorMarker(mapMarker, marker, tag, alarmsCounts, index, tagAlarms, prevAlarmCounts, map, true, locationInfo.name);
                                         }
                                         // if there are no tags with alarms then I don't show anything
-                                        else if(dataService.dynamicTags[mapMarker] !== undefine){
+                                        else if(dataService.dynamicTags[mapMarker] !== undefined){
                                             dataService.dynamicTags[mapMarker].setMap(null);
                                             dataService.dynamicTags.splice(mapMarker, 1);
                                         }
