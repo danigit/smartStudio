@@ -226,7 +226,9 @@
 
                         //showing the offline tags alarm icon
                         dataService.getUserTags().then((userTags) => {
-                            outdoorCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(userTags);
+                            let onTags = userTags.filter(t => !t.radio_switched_off);
+
+                            outdoorCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(onTags);
 
                             // playing the audio if there are alarms
                             dataService.playAlarmsAudio(userTags);

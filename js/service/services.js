@@ -797,6 +797,19 @@
         //#####################################################################
 
 
+        // Function that filters the history according to ta the user tags
+        service.filterHistory = (logs) => {
+            return new Promise((success) => {
+                let filteredLogs = null;
+
+                service.getUserTags().then(userTags => {
+                    filteredLogs = logs.filter(l => userTags.some(ut => ut.id === l.tag_id))
+                    success(filteredLogs)
+                })
+            })
+        }
+
+        // function that sets the write protocol according to the received index
         service.getProtocol = (history_rows) => {
             let historyRows = [];
 

@@ -444,7 +444,6 @@ function cesarShift(str, amount) {
 let log = (text) => {
     if (DEBUG) {
         let area = document.getElementById("log-area");
-        console.log(area);
         area.value += '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n';
         area.value += text + '\n';
         area.value += '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n';
@@ -459,7 +458,6 @@ let logarr       = (array) => {
         area.value += "-------------------------------------------------------------------------------------------\n";
         area.value += "message: \n";
         array.result.forEach(e => {
-            console.log(e);
             let pretty = JSON.stringify(e, undefined, 4);
             area.value += "" + pretty + '\n'
         })
@@ -490,4 +488,4 @@ let displayListCluster = (tag, index) => {
 };
 
 // version number
-const UPDATE_VERSION = "3.27.0";
+const UPDATE_VERSION = "3.28.0";
