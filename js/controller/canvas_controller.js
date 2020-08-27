@@ -294,8 +294,10 @@
                         });
 
                         dataService.getUserTags().then((userTags) => {
+                            let onTags = userTags.filter(t => !t.radio_switched_off);
+
                             //showing the offline tags alarm icon
-                            canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(userTags);
+                            canvasCtrl.showOfflineTagsIcon = dataService.checkIfTagsAreOffline(onTags);
 
                             // playing the alarms if any
                             dataService.playAlarmsAudio(userTags);

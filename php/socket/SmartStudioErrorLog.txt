@@ -21783,3 +21783,119 @@ Stack trace:
 [26-Aug-2020 18:27:58 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
 [26-Aug-2020 18:28:18 Europe/Berlin] UTENTE dani SI E LOGGATO
 [26-Aug-2020 18:28:20 Europe/Berlin] Sessione: dani
+[26-Aug-2020 21:36:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 104601
+[26-Aug-2020 21:36:13 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[26-Aug-2020 21:36:14 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 104604
+[26-Aug-2020 21:36:23 Europe/Berlin] Sessione: dani
+[26-Aug-2020 21:36:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 104611
+[26-Aug-2020 21:36:28 Europe/Berlin] Sessione: dani
+[26-Aug-2020 21:36:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 104618
+[27-Aug-2020 09:11:00 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-27 09:11:00
+[27-Aug-2020 09:12:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[27-Aug-2020 09:12:27 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[27-Aug-2020 09:12:27 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[27-Aug-2020 09:12:27 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[27-Aug-2020 09:12:27 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 09:12:27 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[27-Aug-2020 09:12:27 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 09:12:29 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 86
+[27-Aug-2020 09:12:46 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 09:12:47 Europe/Berlin] Sessione: dani
+[27-Aug-2020 09:18:35 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4583
+[27-Aug-2020 09:18:36 Europe/Berlin] Sessione: dani
+[27-Aug-2020 09:19:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4818
+[27-Aug-2020 09:19:23 Europe/Berlin] Sessione: dani
+[27-Aug-2020 09:21:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6332
+[27-Aug-2020 09:21:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6335
+[27-Aug-2020 09:23:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 6338
+[27-Aug-2020 09:23:09 Europe/Berlin] Sessione: dani
+[27-Aug-2020 09:25:29 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8025
+[27-Aug-2020 09:25:30 Europe/Berlin] Sessione: dani
+[27-Aug-2020 09:26:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8697
+[27-Aug-2020 09:26:25 Europe/Berlin] Sessione: dani
+[27-Aug-2020 09:31:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12340
+[27-Aug-2020 09:31:12 Europe/Berlin] Sessione: dani
+[27-Aug-2020 09:32:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 13506
+[27-Aug-2020 09:32:45 Europe/Berlin] Sessione: dani
+[27-Aug-2020 09:37:44 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 17376
+[27-Aug-2020 09:37:46 Europe/Berlin] Sessione: dani
+[27-Aug-2020 09:48:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 26097
+[27-Aug-2020 09:48:59 Europe/Berlin] Sessione: dani
+[27-Aug-2020 09:50:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 27588
+[27-Aug-2020 09:50:56 Europe/Berlin] Sessione: dani
+[27-Aug-2020 10:16:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 47294
+[27-Aug-2020 10:16:18 Europe/Berlin] Sessione: dani
+[27-Aug-2020 10:22:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 52389
+[27-Aug-2020 10:22:55 Europe/Berlin] Sessione: dani
+[27-Aug-2020 10:24:12 Europe/Berlin] PHP Notice:  Undefined index: tag in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 908
+[27-Aug-2020 10:24:14 Europe/Berlin] PHP Notice:  Undefined index: tag in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 908
+[27-Aug-2020 10:24:14 Europe/Berlin] PHP Notice:  Undefined index: event in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 909
+[27-Aug-2020 10:25:20 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 52478
+[27-Aug-2020 10:25:21 Europe/Berlin] Sessione: dani
+[27-Aug-2020 10:40:46 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-27 10:40:46
+[27-Aug-2020 10:40:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[27-Aug-2020 10:40:50 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[27-Aug-2020 10:40:50 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[27-Aug-2020 10:40:51 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[27-Aug-2020 10:40:51 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[27-Aug-2020 10:40:51 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[27-Aug-2020 10:40:52 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 10:40:52 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[27-Aug-2020 10:40:52 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 10:40:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[27-Aug-2020 10:41:03 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 10:41:04 Europe/Berlin] Sessione: dani
+[27-Aug-2020 10:47:00 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 157
+[27-Aug-2020 10:47:01 Europe/Berlin] Sessione: dani
+[27-Aug-2020 10:48:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 237
+[27-Aug-2020 10:48:45 Europe/Berlin] Sessione: dani
+[27-Aug-2020 10:50:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 317
+[27-Aug-2020 10:50:45 Europe/Berlin] Sessione: dani
+[27-Aug-2020 10:51:17 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 359
+[27-Aug-2020 10:51:19 Europe/Berlin] Sessione: dani
+[27-Aug-2020 10:52:55 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 408
+[27-Aug-2020 10:52:56 Europe/Berlin] Sessione: dani
+[27-Aug-2020 10:59:18 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-27 10:59:18
+[27-Aug-2020 10:59:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[27-Aug-2020 10:59:22 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[27-Aug-2020 10:59:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[27-Aug-2020 10:59:24 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[27-Aug-2020 10:59:25 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[27-Aug-2020 10:59:25 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[27-Aug-2020 10:59:25 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 10:59:25 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[27-Aug-2020 10:59:25 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 10:59:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[27-Aug-2020 10:59:44 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 10:59:46 Europe/Berlin] Sessione: dani
+[27-Aug-2020 11:03:05 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 179
+[27-Aug-2020 11:03:06 Europe/Berlin] Sessione: dani
+[27-Aug-2020 12:36:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 36816
+[27-Aug-2020 12:36:39 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[27-Aug-2020 12:36:40 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 36819
+[27-Aug-2020 12:36:41 Europe/Berlin] Sessione: dani
+[27-Aug-2020 12:41:05 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-08-27 12:41:05
+[27-Aug-2020 12:41:08 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[27-Aug-2020 12:41:08 Europe/Berlin] PHP Notice:  Trying to access array offset on value of type null in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 104
+[27-Aug-2020 12:41:09 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[27-Aug-2020 12:41:10 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[27-Aug-2020 12:41:10 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: dani
+[27-Aug-2020 12:41:10 Europe/Berlin] L'UTENTE dani NON E COLLEGATO
+[27-Aug-2020 12:41:10 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 12:41:10 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[27-Aug-2020 12:41:10 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 12:41:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 89
+[27-Aug-2020 12:41:20 Europe/Berlin] UTENTE dani SI E LOGGATO
+[27-Aug-2020 12:41:21 Europe/Berlin] Sessione: dani
+[27-Aug-2020 12:42:59 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1347
+[27-Aug-2020 12:43:01 Europe/Berlin] Sessione: dani
+[27-Aug-2020 12:43:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1577
+[27-Aug-2020 12:43:22 Europe/Berlin] Sessione: dani
+[27-Aug-2020 12:45:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1662
+[27-Aug-2020 12:45:12 Europe/Berlin] Sessione: dani
+[27-Aug-2020 12:46:03 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1722
+[27-Aug-2020 12:46:04 Europe/Berlin] Sessione: dani
+[27-Aug-2020 12:47:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1756
+[27-Aug-2020 12:47:25 Europe/Berlin] Sessione: dani
+[27-Aug-2020 12:47:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1836
+[27-Aug-2020 12:47:46 Europe/Berlin] Sessione: dani

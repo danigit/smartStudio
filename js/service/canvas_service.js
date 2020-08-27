@@ -635,7 +635,6 @@
             if (showDrawing && anchorPositioning) {
                 canvas_service.loadAnchorsImages(dataService.anchors, (images) => {
                     images.forEach((image, index) => {
-                        console.log('drawing anchors');
                         canvas_service.drawIcon(dataService.anchors[index], canvasContext, image, floorWidth, canvasWidth, canvasHeight, false);
                     })
                 })

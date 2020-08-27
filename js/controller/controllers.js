@@ -1153,9 +1153,10 @@
                             tag: newValues[2],
                             event: newValues[3]
                         }, (response) => {
-
-                            $scope.trackingRows = dataService.getProtocol(response.result);
-                            $scope.$apply();
+                            dataService.filterHistory(response.result).then((tracking) => {
+                                $scope.trackingRows = dataService.getProtocol(tracking);
+                                $scope.$apply();
+                            });
                         });
                     });
 
@@ -1256,27 +1257,28 @@
                             event: newValues[3]
                         }, (response) => {
 
-                            $scope.historyRows = dataService.getProtocol(response.result);
-                            $scope.query['limitOptions'] = [500, 15, 10, 5];
-                            $scope.query['limitOptions'].push(response.result.length);
+                            dataService.filterHistory(response.result).then((history) => {
+                                $scope.historyRows = dataService.getProtocol(history);
+                                $scope.query['limitOptions'] = [500, 15, 10, 5];
+                                $scope.query['limitOptions'].push(history.length);
 
-                            newSocketService.getData('get_all_locations', {}, (locations) => {
-                                $scope.historyRows.forEach((event, index) => {
-                                    if (event.tag_x_pos !== -1 && event.tag_y_pos !== -1 &&
-                                        event.tag_x_pos !== -2 && event.tag_y_pos !== -2 &&
-                                        event.tag_x_pos !== 0 && event.tag_y_pos !== 0) {
-                                        let tagLocation = dataService.getOutdoorTagLocation(locations.result, {
-                                            gps_north_degree: event.tag_x_pos,
-                                            gps_east_degree: event.tag_y_pos
-                                        })[0];
-                                        if (tagLocation !== undefined) {
-                                            $scope.historyRows[index].location = tagLocation.name;
+                                newSocketService.getData('get_all_locations', {}, (locations) => {
+                                    $scope.historyRows.forEach((event, index) => {
+                                        if (event.tag_x_pos !== -1 && event.tag_y_pos !== -1 &&
+                                            event.tag_x_pos !== -2 && event.tag_y_pos !== -2 &&
+                                            event.tag_x_pos !== 0 && event.tag_y_pos !== 0) {
+                                            let tagLocation = dataService.getOutdoorTagLocation(locations.result, {
+                                                gps_north_degree: event.tag_x_pos,
+                                                gps_east_degree: event.tag_y_pos
+                                            })[0];
+                                            if (tagLocation !== undefined) {
+                                                $scope.historyRows[index].location = tagLocation.name;
+                                            }
                                         }
-                                    }
+                                    });
                                 });
-                            });
-
-                            $scope.$apply();
+                            })
+                                                        $scope.$apply();
                         });
                     });
 
