@@ -533,6 +533,7 @@
          */
         service.getTagDistanceFromLocationOrigin = (tag, origin) => {
             if (service.tagHasValidCoordinates(tag)) {
+
                 let distX = Math.abs(tag.gps_north_degree - origin[0]);
                 let distY = Math.abs(tag.gps_east_degree - origin[1]);
 
@@ -799,13 +800,45 @@
 
         // Function that filters the history according to ta the user tags
         service.filterHistory = (logs) => {
-            return new Promise((success) => {
-                let filteredLogs = null;
+            return new Promise(success => {
 
-                service.getUserTags().then(userTags => {
-                    filteredLogs = logs.filter(l => userTags.some(ut => ut.id === l.tag_id))
-                    success(filteredLogs)
+                newSocketService.getData('get_anchors_by_user', {user: service.user.username}, (response) => {
+                    newSocketService.getData('get_user_locations', {user: service.user.id}, (locations) =>{
+                        newSocketService.getData('get_all_locations', {}, (all_locations) => {
+
+                            let user_indoor_logs = logs.filter(l => response.result.some(ua => ua.id === l.anchor_id));
+                            
+                            let outdoor_user_locations = locations.result.filter(l => !l.is_inside);
+                            let outdoor_logs = logs.filter(l => l.anchor === 'nessun dato');
+
+                            let user_outdoor_logs = outdoor_logs.filter(l => 
+                                outdoor_user_locations.some(ol => 
+                                    service.isTagInLocation({
+                                        gps_north_degree: l.tag_x_pos, 
+                                        gps_east_degree: l.tag_y_pos
+                                    }, 
+                                    {
+                                        position: [ol.latitude, ol.longitude], 
+                                        radius: ol.radius
+                                    })
+                                )
+                            );
+
+                            let no_location_logs = outdoor_logs.filter(l => 
+                                !service.checkIfAnyTagOutOfLocation(all_locations.result.filter(l => !l.is_inside), 
+                                {
+                                    gps_north_degree: l.tag_x_pos, 
+                                    gps_east_degree: l.tag_y_pos
+                                })
+                            )
+
+                            console.log(logs)
+                            console.log([...user_indoor_logs, ...user_outdoor_logs, ...no_location_logs])
+                            success([...user_indoor_logs, ...user_outdoor_logs, ...no_location_logs])
+                        })
+                    })
                 })
+
             })
         }
 
