@@ -1258,6 +1258,7 @@
                         }, (response) => {
 
                             dataService.filterHistory(response.result).then((history) => {
+                                console.log(history)
                                 $scope.historyRows = dataService.getProtocol(history);
                                 $scope.query['limitOptions'] = [500, 15, 10, 5];
                                 $scope.query['limitOptions'].push(history.length);
@@ -1276,9 +1277,9 @@
                                             }
                                         }
                                     });
+                                    $scope.$apply();
                                 });
                             })
-                                                        $scope.$apply();
                         });
                     });
 

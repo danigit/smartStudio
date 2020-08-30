@@ -81,6 +81,7 @@ function languageController($scope) {
         anchor: 'Ancora',
         site: 'Sito',
         noData: 'Nessun dato disponibile',
+        positionNotValid: 'Posizione non valida',
         sitesTable: 'Gestione siti',
         versions: 'Versioni',
         onlineAnchors: 'Ancore online',

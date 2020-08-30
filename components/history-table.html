@@ -117,10 +117,10 @@
                             lang.noData}}
                         </td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag_x_pos.toString()}">
-                            {{row.tag_x_pos.toString() || lang.noData}}
+                            {{row.tag_x_pos === -1 ? lang.positionNotValid : row.tag_x_pos || lang.noData}}
                         </td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.tag_y_pos.toString()}">
-                            {{row.tag_y_pos.toString() || lang.noData}}
+                            {{row.tag_y_pos === -1 ? lang.positionNotValid : row.tag_y_pos || lang.noData}}
                         </td>
                         <td md-cell class="no-wrap" ng-class="{'md-placeholder': !row.protocol.toString()}">
                             {{row.protocol.toString() || lang.noData}}
