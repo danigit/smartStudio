@@ -69,3 +69,5 @@ function generateRandomCode() {
     return $code;
 
 }
+
+define('SOCKET_INTERVAL', 30);
