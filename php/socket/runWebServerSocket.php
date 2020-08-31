@@ -23,19 +23,4 @@ $server = IoServer::factory(
 
 $server->run();
 
-//$loop = React\EventLoop\Factory::create();
-//
-//$webSocket = new React\Socket\Server('127.0.0.1:8090', $loop);
-//$webSocket = new React\Socket\SecureServer($webSocket, $loop, [
-//
-//]);
-//$server = IoServer::factory(
-//    new HttpServer(
-//        new WsServer(
-//            new webSocketServer()
-//        )
-//    ), $webSocket,  $loop
-//);
-//
-//$server->run();
 ?>

@@ -10,16 +10,20 @@
 require_once 'ajax/helper.php';
 require_once 'database/connection.php';
 
+// ini_set('display_errors', 1);
+
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 
 class webSocketServer implements MessageComponentInterface{
     protected $clients;
     private $connection;
+    private $socket_timer;
 
     public function __construct(){
         $this->clients = [];
         $this->connection = new Connection();
+        $this->socket_timer = new DateTime('NOW');
 //        $this->now_time = date("Y-m-d H:i:s");
         error_reporting(E_ALL);
         ini_set('display_errors', 0);
@@ -95,6 +99,13 @@ class webSocketServer implements MessageComponentInterface{
      */
     function onMessage(ConnectionInterface $from, $msg){
 
+        $interval = (new DateTime('NOW'))->diff($this->socket_timer);
+
+        if ($interval->s > SOCKET_INTERVAL){
+            file_put_contents('socket_timer.txt', (new DateTime('NOW'))->format("d:m:y h:i:s"));
+            $this->socket_timer = new DateTime('NOW');
+        }
+        
         $result = array();
 
         echo sprintf('Connection %d has send message: "%s"' . "\n", $from->resourceId, $msg);
