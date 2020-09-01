@@ -13,6 +13,7 @@
     function loginController($scope, $state, $timeout, newSocketService, dataService) {
         $scope.user           = {username: '', password: ''};
         $scope.showPartner = SHOW_PARTNER_LOGO;
+        $scope.debug = DEBUG;
 
         // handling the login error messages
         $scope.errorHandeling = {wrongData: false, socketClosed: newSocketService.socketClosed};
@@ -60,6 +61,12 @@
         //change the page to the recover password page
         $scope.recoverPassword = () => {
             $state.go('recover-password');
+        }
+
+        $scope.closeSocket= () =>{
+            console.log('Closing the socket...')
+            socketServer.onclose = () => {}
+            socketServer.close();
         }
     }
 })();
