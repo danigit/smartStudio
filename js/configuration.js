@@ -15,7 +15,7 @@ let socketServer = new WebSocket(SOCKET_PATH);
 let socketOpened = false;
 let groupTagDistance = 0.5;
 // show or hide the console messages
-const DEBUG = false;
+const DEBUG = true;
 
 socketServer.onopen = function() {
     socketOpened = true;
@@ -145,3 +145,10 @@ const AUDIO_PLAY_INTERVAL = 4;
 const TOAST_SHOWING_TIME = 5000;
 const COLLAPSIBLE_STATE = true;
 const TABLE_CELL_MAX_LENGTH = 500;
+
+
+// window.onbeforeunload = function(e) {
+//     socketServer.onclose = function () {};
+//     socketServer.close();
+//     socketOpened = false;
+// };
