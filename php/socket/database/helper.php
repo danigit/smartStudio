@@ -53,8 +53,8 @@ function sendEmail($email, $code){
         $mail->Port = 587; //587; // 465;
         $mail->SMTPSecure = 'tls';
         $mail->SMTPAuth = true;
-        $mail->Username = "clienti.assoantincendio@gmail.com";
-        $mail->Password = "clientiasso";
+        $mail->Username = "resolute.develop@gmail.com";
+        $mail->Password = "!develop!88";
         $mail->setFrom('', 'Smart Studio');
         $mail->addAddress($email);
         $mail->Subject = "Recupero password";

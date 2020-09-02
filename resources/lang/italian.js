@@ -398,7 +398,12 @@ function languageController($scope) {
         areBatteryEmptyTags: 'wetags sono scarichi',
         uwb: 'UWB',
         bluetooth: 'Bluetooth',
-        offlineImage: 'Imagine offline'
+        offlineImage: 'Imagine offline',
+        callMe: 'Chiamata',
+        sms: 'SMS',
+        whatsApp: 'WhatsApp',
+        yes: 'Si',
+        no: 'No'
     }
 }
 

@@ -65,6 +65,12 @@
                         <span class="color-darkcyan">{{lang.emailAlert | uppercase}}</span></th>
                     <th md-column md-order-by="web_service_url" ng-if="exists('webservice_url', columns)"
                         ng-show="isAdmin"><span class="color-darkcyan">{{lang.webserviceUrl | uppercase}}</span></th>
+                    <th md-column md-order-by="call_me" ng-if="exists('callMe', columns)" ng-show="isAdmin"><span
+                            class="color-darkcyan">{{lang.callMe | uppercase}}</span>
+                    <th md-column md-order-by="sms" ng-if="exists('sms', columns)" ng-show="isAdmin"><span
+                            class="color-darkcyan">{{lang.sms | uppercase}}</span>
+                    <th md-column md-order-by="whats_app" ng-if="exists('whatsApp', columns)" ng-show="isAdmin"><span
+                            class="color-darkcyan">{{lang.whatsApp | uppercase}}</span>
                     <th md-column md-order-by="manage_locations" ng-show="isAdmin || isUserManager"><span
                             class="color-darkcyan">{{lang.manageLocation | uppercase}}</span></th>
                     <th md-column ng-show="isAdmin || isUserManager"></th>
@@ -120,6 +126,45 @@
                     <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'web_service_url')"
                         ng-class="{'md-placeholder': !user.web_service_url}" ng-if="exists('webservice_url', columns)">
                         {{user.web_service_url || 'Inserire url del webservice'}}
+                    </td>
+                    <td class="no-wrap" md-cell ng-if="exists('callMe', columns)" ng-show="isAdmin">
+                        <md-input-container md-no-float class="md-block">
+                            <md-select ng-disabled="user.telephone_number === null" ng-model="userCallMe" ng-change="updateUserCallMe(user, userCallMe)"
+                                       aria-label="Seleziona ruolo">
+                                <md-option ng-selected="{{user.call_me === '1'}}" ng-value=1>{{lang.yes |
+                                    uppercase}}
+                                </md-option>
+                                <md-option ng-selected="{{user.call_me === '0'}}" ng-value=0>{{lang.no |
+                                    uppercase}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </td>
+                    <td class="no-wrap" md-cell ng-if="exists('sms', columns)" ng-show="isAdmin">
+                        <md-input-container md-no-float class="md-block">
+                            <md-select ng-disabled="user.telephone_number === null" ng-model="userSms" ng-change="updateUserSms(user, userSms)"
+                                       aria-label="Seleziona ruolo">
+                                <md-option ng-selected="{{user.sms === '1'}}" ng-value=1>{{lang.yes |
+                                    uppercase}}
+                                </md-option>
+                                <md-option ng-selected="{{user.sms === '0'}}" ng-value=0>{{lang.no |
+                                    uppercase}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </td>
+                    <td class="no-wrap" md-cell ng-if="exists('whatsApp', columns)" ng-show="isAdmin">
+                        <md-input-container md-no-float class="md-block">
+                            <md-select ng-disabled="user.telephone_number === null" ng-model="userWhatsApp" ng-change="updateUserWhatsApp(user, userWhatsApp)"
+                                       aria-label="Seleziona ruolo">
+                                <md-option ng-selected="{{user.whats_app === '1'}}" ng-value=1>{{lang.yes |
+                                    uppercase}}
+                                </md-option>
+                                <md-option ng-selected="{{user.whats_app === '0'}}" ng-value=0>{{lang.no |
+                                    uppercase}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
                     </td>
                     <td md-cell>
                         <md-button ng-click="manageLocations(user)" class="md-raised background-darkcyan color-white">

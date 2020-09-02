@@ -1318,7 +1318,8 @@ class webSocketServer implements MessageComponentInterface{
 
                 $query = $this->connection->insert_super_user($decoded_message['data']['username_reg'], $decoded_message['data']['name'],
                     $decoded_message['data']['email'], $decoded_message['data']['phone'], $decoded_message['data']['emailList'], $decoded_message['data']['botUrl'],
-                    $decoded_message['data']['chatId'], $decoded_message['data']['webUrl'], $decoded_message['data']['role']);
+                    $decoded_message['data']['chatId'], $decoded_message['data']['webUrl'], $decoded_message['data']['role'], $decoded_message['data']['call_me'],
+                    $decoded_message['data']['sms'], $decoded_message['data']['whats_app']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -1347,6 +1348,23 @@ class webSocketServer implements MessageComponentInterface{
                 }
 
                 $query = $this->connection->change_user_field($decoded_message['data']['super_user_id'], $decoded_message['data']['super_user_field'],
+                    $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
+            case 'change_super_user_telephone_options':{
+                $result['action'] = 'change_super_user_telephone_options';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                if($decoded_message['data']['field_value'] === '') {
+                    $decoded_message['data']['field_value'] = null;
+                }
+
+                $query = $this->connection->change_user_telephone_options($decoded_message['data']['super_user_id'], $decoded_message['data']['super_user_field'],
                     $decoded_message['data']['field_value']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;

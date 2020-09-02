@@ -23,10 +23,10 @@
 <!--end popup header-->
 
 <!--popup content-->
-<md-content class="popup-padding">
+<md-content class="popup-padding min-width-500px">
     <div layout="column" layout-align="center center" ng-controller="languageController">
 
-        <form id="insertUserForm" name="insertUserForm">
+        <form id="insertUserForm" name="insertUserForm" class="width-70">
             <div layout="column">
                 <md-input-container md-no-float class="margin-bottom-0">
                     <input required type="text" ng-model="user.username" name="userUsername"
@@ -61,6 +61,19 @@
                            placeholder="{{lang.phoneNumber}}" aria-label="">
                 </md-input-container>
 
+                <md-input-container ng-if="user.phone !== ''" md-no-float class="padding-left-10-px margin-bottom-0">
+                    <md-checkbox class="md-primary" ng-model="user.phoneOptions.callMe" aria-label="">
+                        {{lang.callMe}}
+                    </md-checkbox>    
+
+                    <md-checkbox class="md-primary" ng-model="user.phoneOptions.sms" aria-label="">
+                        {{lang.sms}}
+                    </md-checkbox>
+
+                    <md-checkbox class="md-primary" ng-model="user.phoneOptions.whatsApp" aria-label="">
+                        {{lang.whatsApp}}
+                    </md-checkbox>
+                </md-input-container>
                 <md-input-container md-no-float class="margin-bottom-0">
                     <div layout="row">
                         <div>

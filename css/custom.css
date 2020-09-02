@@ -42,7 +42,7 @@ DIMENSIONS
     max-height: 135px;
 }
 
-.min-widht-500px{
+.min-width-500px{
     min-width: 500px;
 }
 
@@ -68,6 +68,10 @@ DIMENSIONS
 
 .width-55 {
     width: 55%!important;
+}
+
+.widht-70{
+    width: 705;
 }
 
 .height-90 {
