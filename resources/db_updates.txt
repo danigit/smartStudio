@@ -1,1 +1,4 @@
-inserire la chiave unica sul campo del nome mac nella tabella dei mac
+inserire tre campi nella tabella user
+- CALL_GSM -> bit
+- SMS -> bit
+- WHATSAPP -> bit

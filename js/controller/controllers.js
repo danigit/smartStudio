@@ -415,6 +415,9 @@
                     $scope.isAdmin = admin;
                     $scope.isUserManager = userManager;
                     $scope.tableEmpty = false;
+                    $scope.showColumn = true;
+                    $scope.items = ['username', 'name'];
+                    $scope.columns = [];
                     $scope.query = {
                         limitOptions: [500, 15, 10, 5],
                         limit: dataService.switch.showTableSorting ? 500 : 5,
@@ -624,6 +627,38 @@
                         $mdDialog.show(addUserDialog);
                     };
 
+                    /**
+                     * Function that show hide the columns of the table
+                     * @param item
+                     * @param list
+                     */
+                    $scope.toggle = function(item, list) {
+                        let idx = list.indexOf(item);
+                        if (idx > -1) {
+                            list.splice(idx, 1);
+                        } else {
+                            list.push(item);
+                        }
+                    };
+
+                    /**
+                     * Function that sets the label of the select column field
+                     * @returns {string}
+                     */
+                    $scope.getName = () => {
+                        return lang.columns
+                    };
+
+                    /**
+                     * Function that control if a column must be displayed
+                     * @param item
+                     * @param list
+                     * @returns {boolean}
+                     */
+                    $scope.exists = function(item, list) {
+                        return list.indexOf(item) > -1;
+                    };
+
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
@@ -722,9 +757,12 @@
                     $scope.usersTable = [];
                     $scope.isAdmin = admin;
                     $scope.userRole = '';
+                    $scope.userCallMe = '';
+                    $scope.userSms = '';
+                    $scope.userWhatsApp = '';
                     $scope.isUserManager = userManager;
                     $scope.showColumn = true;
-                    $scope.items = ['username', 'name', 'role', 'phone', 'url_bot', 'bot_id', 'email_alert', 'webservice_url'];
+                    $scope.items = ['username', 'name', 'role', 'phone', 'url_bot', 'bot_id', 'email_alert', 'webservice_url', 'callMe', 'sms', 'whatsApp'];
                     $scope.columns = [];
                     $scope.query = {
                         limitOptions: [500, 15, 10, 5],
@@ -748,6 +786,54 @@
                                 role: userRole
                             }, (response) => {
                                 dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result === 1);
+                                if(response.result === 1){
+                                    updateSuperuserTable();
+                                }
+                            });
+                        }
+                    };
+
+                    $scope.updateUserCallMe = (user, userCallMe) => {
+                        if(user.call_me !== userCallMe.toString()){
+                            newSocketService.getData('change_super_user_telephone_options', {
+                                super_user_id: user.id,
+                                super_user_field: 'call_gsm',
+                                field_value: userCallMe
+                            }, (response) => {
+                                dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                if(response.result !== 0){
+                                    updateSuperuserTable();
+                                }
+                            });
+                        }
+                    };
+
+                    $scope.updateUserSms = (user, userSms) => {
+                        if(user.sms !== userSms.toString()){
+                            newSocketService.getData('change_super_user_telephone_options', {
+                                super_user_id: user.id,
+                                super_user_field: 'sms',
+                                field_value: userSms
+                            }, (response) => {
+                                dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                if(response.result !== 0){
+                                    updateSuperuserTable();
+                                }
+                            });
+                        }
+                    };
+                    
+                    $scope.updateUserWhatsApp = (user, userWhatsApp) => {
+                        if(user.whats_app !== userWhatsApp.toString()){
+                            newSocketService.getData('change_super_user_telephone_options', {
+                                super_user_id: user.id,
+                                super_user_field: 'whatsapp',
+                                field_value: userWhatsApp
+                            }, (response) => {
+                                dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                if(response.result !== 0){
+                                    updateSuperuserTable();
+                                }
                             });
                         }
                     };
@@ -926,6 +1012,9 @@
                                         field_value: input.$modelValue
                                     }, (response) => {
                                         dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                        if(response.result !== 0){
+                                            updateSuperuserTable();
+                                        }
                                     });
                                 },
                                 targetEvent: event,
@@ -1029,10 +1118,10 @@
                     $scope.roles = [lang.genericUser, lang.intermediateUser, lang.trackerUser];
                     $scope.userRoleRegister = { registerRole: '' };
                     $scope.user = {
-                        username: '',
-                        name: '',
-                        email: '',
-                        phone: '',
+                        username: 'ale',
+                        name: 'ale',
+                        email: 'ds.acconto@gmail.com',
+                        phone: '322222222222',
                         emailForList: '',
                         botUrl: '',
                         chatId: '',
@@ -1041,7 +1130,12 @@
                         showError: false,
                         isIndoor: false,
                         message: '',
-                        resultClass: ''
+                        resultClass: '',
+                        phoneOptions: {
+                            callMe: true,
+                            sms: false,
+                            whatsApp: true
+                        }
                     };
 
                     $scope.addEmail = () => {
@@ -1052,6 +1146,7 @@
                     $scope.insertUser = (form) => {
                         form.$submitted = true;
 
+                        console.log($scope.user);
                         if (form.$valid) {
                             newSocketService.getData('insert_super_user', {
                                 username_reg: $scope.user.username,
@@ -1062,9 +1157,12 @@
                                 botUrl: $scope.user.botUrl,
                                 chatId: $scope.user.chatId,
                                 webUrl: $scope.user.webUrl,
-                                role: $scope.userRoleRegister.registerRole
+                                role: $scope.userRoleRegister.registerRole,
+                                call_me: $scope.user.phoneOptions.callMe,
+                                sms: $scope.user.phoneOptions.sms,
+                                whats_app: $scope.user.phoneOptions.whatsApp,
                             }, (response) => {
-                                dataService.showMessage($mdToast, lang.userDeleted, lang.userNotDeleted, response.result.length === 0);
+                                dataService.showMessage($mdToast, lang.userDeleted, lang.elementNotInserted, response.result.length === 0);
 
                                 if (response.result.length === 0) {
                                     $scope.user.resultClass = 'background-green';

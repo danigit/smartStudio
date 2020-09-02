@@ -10,7 +10,7 @@ require_once 'dani_config.php';
 require_once 'helper.php';
 require_once 'db_errors.php';
 
-// ini_set('display_errors', 1);
+ini_set('display_errors', 1);
 
 class Connection
 {
@@ -4295,12 +4295,36 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    function change_user_telephone_options($user_id, $user_field, $field_value){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE user SET " . strtoupper($user_field) . " = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'is', (int)$field_value, $user_id);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
+
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
     function get_all_users()
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT ID, USERNAME, NAME, ROLE, EMAIL_ALERT, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, TELEPHONE_NUMBER FROM user";
+            $this->query = "SELECT ID, USERNAME, NAME, ROLE, EMAIL_ALERT, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, TELEPHONE_NUMBER, CALL_GSM, SMS, WHATSAPP FROM user";
 
             $this->result = $this->connection->query($this->query);
 
@@ -4312,7 +4336,8 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'username' => $row['USERNAME'], 'name' => $row['NAME'], 'role' => $row['ROLE'], 'email_alert' => $row['EMAIL_ALERT'],
-                    'bot_url' => $row['BOT_URL'], 'bot_chat_id' => $row['BOT_CHAT_ID'], 'web_service_url' => $row['WEB_SERVICE_URL'], 'telephone_number' => $row['TELEPHONE_NUMBER']);
+                    'bot_url' => $row['BOT_URL'], 'bot_chat_id' => $row['BOT_CHAT_ID'], 'web_service_url' => $row['WEB_SERVICE_URL'], 'telephone_number' => $row['TELEPHONE_NUMBER'],
+                    'call_me' => $row['CALL_GSM'], 'sms' => $row['SMS'], 'whats_app' => $row['WHATSAPP']);
             }
 
             mysqli_close($this->connection);
@@ -4322,7 +4347,7 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function insert_super_user($username, $name, $email, $phone, $email_list, $bot_url, $chat_id, $web_url, $role)
+    function insert_super_user($username, $name, $email, $phone, $email_list, $bot_url, $chat_id, $web_url, $role, $call_me, $sms, $whats_app)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
@@ -4356,9 +4381,9 @@ class Connection
 
                 $hash_code = password_hash($password, PASSWORD_BCRYPT);
 
-                $this->query = "INSERT INTO user (USERNAME, PASSWORD, NAME, TELEPHONE_NUMBER, EMAIL_ALERT, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, ROLE) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                $this->query = "INSERT INTO user (USERNAME, PASSWORD, NAME, TELEPHONE_NUMBER, EMAIL_ALERT, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, ROLE, CALL_GSM, SMS, WHATSAPP) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                $statement = $this->execute_inserting($this->query, 'ssssssssi', $username, $hash_code, $name, $phone, $email_list_string, $bot_url, $chat_id, $web_url, $role);
+                $statement = $this->execute_inserting($this->query, 'ssssssssiiii', $username, $hash_code, $name, $phone, $email_list_string, $bot_url, $chat_id, $web_url, $role, $call_me, $sms, $whats_app);
 
                 if ($statement instanceof db_errors)
                     array_push($errors, 'insert_user_db_error');
