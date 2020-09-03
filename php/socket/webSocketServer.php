@@ -1356,6 +1356,18 @@ class webSocketServer implements MessageComponentInterface{
                 break;
             }
             //changing the location field
+            case 'reset_telephone_options':{
+                $result['action'] = 'reset_telephone_options';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->reset_telephone_options($decoded_message['data']['super_user_id']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
             case 'change_super_user_telephone_options':{
                 $result['action'] = 'change_super_user_telephone_options';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);

@@ -4269,8 +4269,7 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
-    function change_user_field($user_id, $user_field, $field_value)
-    {
+    function change_user_field($user_id, $user_field, $field_value){
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
@@ -4295,6 +4294,30 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    function reset_telephone_options($user_id){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE user SET CALL_GSM = 0, SMS = 0, WHATSAPP = 0 WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 's', $user_id);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
+
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
     function change_user_telephone_options($user_id, $user_field, $field_value){
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
