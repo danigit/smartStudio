@@ -520,5 +520,6 @@ let lang = {
     elementsNotRetrieved: '',
     batteryEmtpyTags: 'Wetag scarichi',
     selectTagType: '',
-    selectValidType: ''
+    selectValidType: '',
+    phoneOptionsNotReseted: ''
 };

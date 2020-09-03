@@ -1001,11 +1001,13 @@
                         event.stopPropagation();
 
                         if (admin) {
+                            
                             let editCell = {
                                 modelValue: superUser[superUserName],
                                 save: function(input) {
                                     input.$invalid = true;
                                     superUser[superUserName] = input.$modelValue;
+                                    
                                     newSocketService.getData('change_super_user_field', {
                                         super_user_id: superUser.id,
                                         super_user_field: superUserName,
@@ -1013,7 +1015,15 @@
                                     }, (response) => {
                                         dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
                                         if(response.result !== 0){
-                                            updateSuperuserTable();
+                                            if(superUserName === 'telephone_number'){
+                                                reset_telephone_options(superUser.id, input.$modelValue).then(response => {
+                                                    if(response){
+                                                        updateSuperuserTable();
+                                                    } else{
+                                                        dataService.showMessage($mdToast, '', lang.phoneOptionsNotReseted, false);
+                                                    }
+                                                })
+                                            }
                                         }
                                     });
                                 },
@@ -1026,6 +1036,18 @@
 
                             $mdEditDialog.large(editCell);
                         }
+                    };
+
+                    let reset_telephone_options = (user_id, telephone_number) => {
+                        return new Promise((success, error) => {
+                            if(telephone_number === ''){
+                                newSocketService.getData('reset_telephone_options', {
+                                    super_user_id: user_id,
+                                }, (response) => {
+                                    response.result === 0 ? success(false) : success(true);
+                                })
+                            }
+                        });
                     };
 
                     /**

@@ -531,5 +531,6 @@ let lang = {
     elementsNotRetrievved: 'Impossibile recuperare gli elementi',
     batteryEmptyTags: 'Wetag scarichi',
     selectTagType: 'Selezionare un tipo valido',
-    selectValidType: 'Selezionare un tipo valido'
+    selectValidType: 'Selezionare un tipo valido',
+    phoneOptionsNotReseted: 'Impostazioni telefono non resetate'
 };
