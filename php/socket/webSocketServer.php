@@ -30,6 +30,7 @@ class webSocketServer implements MessageComponentInterface{
         ini_set('log_errors', 1);
         ini_set('error_log', 'SmartStudioErrorLog.txt');
         error_log('SERVER IN ASCOLTO DAL: ' . date("Y-m-d H:i:s"));
+        echo('SERVER IN ASCOLTO DAL: ' . date("Y-m-d H:i:s") . PHP_EOL);
     }
 
     /**
