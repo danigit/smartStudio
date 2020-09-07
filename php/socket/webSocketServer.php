@@ -103,7 +103,7 @@ class webSocketServer implements MessageComponentInterface{
         $interval = (new DateTime('NOW'))->diff($this->socket_timer);
 
         if ($interval->s > SOCKET_INTERVAL){
-            file_put_contents('socket_timer.txt', (new DateTime('NOW'))->format("d:m:y h:i:s"));
+            file_put_contents('socket_timer.txt', (new DateTime('NOW'))->format("d:m:y H:i:s"));
             $this->socket_timer = new DateTime('NOW');
         }
         
