@@ -44,6 +44,8 @@
                     <th md-column><span class="color-darkcyan"></span></th>
                     <th md-column md-order-by="anchor.name" ng-if="exists('name', columns)" ><span
                             class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column md-numeric ng-if="exists('mac', columns)"><span class="color-darkcyan">{{lang.anchorMac | uppercase}}</span>
+                    </th>
                     <th md-column md-numeric ng-if="exists('x_pos', columns)"><span class="color-darkcyan">{{lang.xPos | uppercase}}</span>
                     </th>
                     <th md-column md-numeric ng-if="exists('y_pos', columns)"><span class="color-darkcyan">{{lang.yPos | uppercase}}</span>
@@ -64,8 +66,6 @@
                     <th md-column md-numeric ng-if="exists('proximity', columns)"><span class="color-darkcyan">{{lang.proximity | uppercase}}</span>
                     </th>
                     <th md-column ng-if="exists('type', columns)"><span class="color-darkcyan">{{lang.type}}</span></th>
-                    <th md-column md-numeric ng-if="exists('mac', columns)"><span class="color-darkcyan">{{lang.anchorMac | uppercase}}</span>
-                    </th>
                     <th md-column ng-if="exists('permiteds', columns)"><span class="color-darkcyan">{{lang.permittedAssets | uppercase}}</span>
                     </th>
                     <th ng-if="isAdmin" md-column></th>
@@ -83,6 +83,12 @@
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'name')"
                         ng-class="{'md-placeholder': !anchor.anchor.name}" ng-if="exists('name', columns)">
                         {{anchor.anchor.name || lang.insertName}}
+                    </td>
+
+                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'mac')"
+                        ng-class="{'md-placeholder': !anchor.anchor.mac.toString()}" ng-if="exists('mac', columns)">
+                        {{anchor.anchor.mac.toString() ||
+                        lang.insertMac}}
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'x_pos')"
@@ -151,12 +157,6 @@
                                 {{anchorType.description}}
                             </md-option>
                         </md-select>
-                    </td>
-
-                    <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'mac')"
-                        ng-class="{'md-placeholder': !anchor.anchor.mac.toString()}" ng-if="exists('mac', columns)">
-                        {{anchor.anchor.mac.toString() ||
-                        lang.insertMac}}
                     </td>
 
                     <td class="no-wrap" md-cell ng-class="{'md-placeholder': !anchor.permitted_asset}"

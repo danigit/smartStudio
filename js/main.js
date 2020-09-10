@@ -22,8 +22,9 @@
             resolve: {
                 goToHomeIfLoggedIn: ['$state', 'newSocketService', 'dataService', function($state, newSocketService, dataService) {
                     newSocketService.getData('get_user', { username: cesarShift(sessionStorage.user, -CEZAR_KEY) }, (response) => {
-                        if (response.result !== 'no_user')
+                        if (response.result !== 'no_user'){
                             $state.go('home');
+                        }
                         else {
                             newSocketService.autologin($state);
                         }
@@ -111,7 +112,7 @@
                                     })
                                 }, 500);
                             } else {
-                                $state.go('login');
+                                // $state.go('login');
                             }
                         });
 

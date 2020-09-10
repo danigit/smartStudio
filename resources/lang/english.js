@@ -431,6 +431,7 @@ let lang = {
     deleteLocationText: 'Are you sure deleting this site?',
     deleteZone: 'Delete zone',
     deleteZoneText: 'Are you sure deleting this zone?',
+    administratorUser: {userName: 'Administrator user', userValue: 1},
     genericUser: { userName: 'Generic user', userValue: 0 },
     intermediateUser: { userName: 'Intermediate user', userValue: 2 },
     trackerUser: { userName: 'Tracker user', userValue: 3 },

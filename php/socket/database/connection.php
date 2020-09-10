@@ -4247,23 +4247,40 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
+            $this->connection->autocommit(false);
+
+            $errors = array();
+
             $this->query = 'DELETE FROM user WHERE ID = ?';
 
             $statement = $this->execute_selecting($this->query, 'i', $user);
 
             if ($statement instanceof db_errors) {
-                mysqli_close($this->connection);
-                return $statement;
+                array_push($errors, 'delete_user_error');
             } else if ($statement == false) {
-                mysqli_close($this->connection);
-                return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+                array_push($errors, 'delete_user_error');
             }
 
-            $aff_rows = $statement->affected_rows;
+            $this->query = 'DELETE FROM user_has_location WHERE USER_ID = ?';
 
+            $statement = $this->execute_selecting($this->query, 'i', $user);
+
+            if ($statement instanceof db_errors) {
+                array_push($errors, 'delete_user_location_error');
+            } else if ($statement == false) {
+                array_push($errors, 'delete_user_location_error');
+            }
+
+            if (!empty($errors)) {
+                $this->connection->rollback();
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_PASSWORD);
+            }
+
+            $this->connection->commit();
             mysqli_close($this->connection);
 
-            return $aff_rows;
+            return $errors;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);

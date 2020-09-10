@@ -832,8 +832,6 @@
                                 })
                             )
 
-                            console.log(logs)
-                            console.log([...user_indoor_logs, ...user_outdoor_logs, ...no_location_logs])
                             success([...user_indoor_logs, ...user_outdoor_logs, ...no_location_logs])
                         })
                     })
@@ -1820,7 +1818,7 @@
                         // controlling if I have to make the login froom cookies
                         // TODO - I have to make the cookies encoded with cezar
                         if (!result.session_state && action !== 'login' && action !== 'logout') {
-                            $state.go('login');
+                            // $state.go('login');
                             service.autologin($state);
                         }
                         let call = service.callbacks.shift();
@@ -1845,7 +1843,7 @@
                         socketOpened = true;
                         let user = cesarShift(sessionStorage.user, -CEZAR_KEY);
                         if (typeof user !== 'object'){
-                            socketServer.send({ user: user });
+                            // socketServer.send({ user: user });
                         }
                         window.location.reload(true)
                     };
@@ -1866,6 +1864,8 @@
         };
 
         service.autologin = ($state) => {
+            // service.socket.close();
+            
             sessionStorage.clear();
             let credential = document.cookie;
             let username = service.getCookie('username_smart', credential);
