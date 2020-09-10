@@ -1065,9 +1065,9 @@
 
                         $mdDialog.show(confirm).then(() => {
                             newSocketService.getData('delete_super_user', { user_id: user.id }, (response) => {
-                                dataService.showMessage($mdToast, lang.userDeleted, lang.userNotDeleted, response.result !== 0);
+                                dataService.showMessage($mdToast, lang.userDeleted, lang.userNotDeleted, response.result.length === 0);
 
-                                if (response.result !== 0) {
+                                if (response.result.length === 0) {
                                     $scope.usersTable = $scope.usersTable.filter(u => u.id !== user.id);
                                     $scope.$apply();
                                 }
@@ -1137,7 +1137,7 @@
                 controller: ['$scope', function($scope) {
                     let emailList = [];
 
-                    $scope.roles = [lang.genericUser, lang.intermediateUser, lang.trackerUser];
+                    $scope.roles = [lang.administratorUser, lang.genericUser, lang.intermediateUser, lang.trackerUser];
                     $scope.userRoleRegister = { registerRole: '' };
                     $scope.user = {
                         username: '',

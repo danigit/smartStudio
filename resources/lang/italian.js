@@ -440,6 +440,7 @@ let lang = {
     deleteLocationText: 'Sei sicuro di voler cancellare la location?',
     deleteZone: 'Cancella zona',
     deleteZoneText: 'Sei sicuro di voler cancellare la zona?',
+    administratorUser: {userName: 'Utente amministratore', userValue: 1},
     genericUser: { userName: 'Utente generico', userValue: 0 },
     intermediateUser: { userName: 'Utente intermedio', userValue: 2 },
     trackerUser: { userName: 'Utente di tracciamento', userValue: 3 },
