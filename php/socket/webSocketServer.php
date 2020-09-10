@@ -130,6 +130,7 @@ class webSocketServer implements MessageComponentInterface{
                     $_SESSION['is_admin'] = $result['result']['role'];
                     session_write_close();
                     error_log("UTENTE " . $decoded_message['data']['username'] . ' SI E LOGGATO');
+                    $result['session_state'] = true;
                 }
 
                 $this->clients[$from->resourceId]->send(json_encode($result));

@@ -375,7 +375,7 @@ function languageController($scope) {
         openLegend: 'Legenda',
         categoryLegend: 'Legenda categorie',
         manDownCause: 'Causa uomo a terra',
-        anchorMac: 'MAC anchora',
+        anchorMac: 'MAC ancora',
         userTableTitle: 'Utenti',
         standByMode: 'Standby Mode',
         updateVersion: 'Aggiorna Versione',

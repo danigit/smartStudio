@@ -12,9 +12,9 @@
 
 define('DB_SERVER', 'localhost');
 define('DB_USERNAME', 'root');
-define('DB_PASSWORD', '');
+define('DB_PASSWORD', 'dani');
 //define('DB_DATABASE', 'cloud_safety_1');
 //define('DB_DATABASE', 'cloud_safety_2');
-define('DB_DATABASE', 'ilva_test');
+define('DB_DATABASE', 'ilva');
 
 define('TIME_REST', 30);

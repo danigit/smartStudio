@@ -1140,10 +1140,10 @@
                     $scope.roles = [lang.genericUser, lang.intermediateUser, lang.trackerUser];
                     $scope.userRoleRegister = { registerRole: '' };
                     $scope.user = {
-                        username: 'ale',
-                        name: 'ale',
-                        email: 'ds.acconto@gmail.com',
-                        phone: '322222222222',
+                        username: '',
+                        name: '',
+                        email: '',
+                        phone: '',
                         emailForList: '',
                         botUrl: '',
                         chatId: '',
@@ -1154,9 +1154,9 @@
                         message: '',
                         resultClass: '',
                         phoneOptions: {
-                            callMe: true,
+                            callMe: false,
                             sms: false,
-                            whatsApp: true
+                            whatsApp: false
                         }
                     };
 
