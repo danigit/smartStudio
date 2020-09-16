@@ -63,6 +63,8 @@
                             class="color-darkcyan">{{lang.botId | uppercase}}</span></th>
                     <th md-column md-order-by="email_alert" ng-if="exists('email_alert', columns)" ng-show="isAdmin">
                         <span class="color-darkcyan">{{lang.emailAlert | uppercase}}</span></th>
+                    <th md-column md-order-by="messenger_id" ng-if="exists('messenger_id', columns)" ng-show="isAdmin">
+                        <span class="color-darkcyan">{{lang.messengerId | uppercase}}</span></th>
                     <th md-column md-order-by="web_service_url" ng-if="exists('webservice_url', columns)"
                         ng-show="isAdmin"><span class="color-darkcyan">{{lang.webserviceUrl | uppercase}}</span></th>
                     <th md-column md-order-by="call_me" ng-if="exists('callMe', columns)" ng-show="isAdmin"><span
@@ -122,6 +124,10 @@
                     <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'email_alert')"
                         ng-class="{'md-placeholder': !user.email_alert}" ng-if="exists('email_alert', columns)">
                         {{user.email_alert || 'Inserire email di alerta'}}
+                    </td>
+                    <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'messenger_id')"
+                        ng-class="{'md-placeholder': !user.messenger_id}" ng-if="exists('messenger_id', columns)">
+                        {{user.messenger_id || 'Inserire id messenger'}}
                     </td>
                     <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="editCell($event, user, 'web_service_url')"
                         ng-class="{'md-placeholder': !user.web_service_url}" ng-if="exists('webservice_url', columns)">

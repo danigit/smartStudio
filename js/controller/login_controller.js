@@ -42,9 +42,9 @@
                         // if the login is ok I save the username in local and redirect to home
                         else if (response.result.id !== undefined) {
                             dataService.user.username = $scope.user.username;
-                            sessionStorage.user       = cesarShift($scope.user.username, CEZAR_KEY);
+                            sessionStorage.user       = CryptoJS.AES.encrypt($scope.user.username, 'SmartStudio');
                             document.cookie           = 'username_smart = ' + $scope.user.username;
-                            document.cookie           = 'password_smart = ' + $scope.user.password;
+                            document.cookie           = 'password_smart = ' + CryptoJS.AES.encrypt($scope.user.password, 'SmartStudio');
                             $state.go('home');
                         }
                         // showing error on login

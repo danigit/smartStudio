@@ -274,6 +274,7 @@ function languageController($scope) {
         legend: "Legend",
         image: 'Image',
         meaning: 'Meaning',
+        messengerId: '',
         safe_tag_meaning: '',
         safe_tag_description: '',
         safe_tags_meaning: '',

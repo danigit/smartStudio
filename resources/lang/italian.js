@@ -275,6 +275,7 @@ function languageController($scope) {
         urlBot: 'URL Bot',
         botId: 'ID Bot',
         emailAlert: 'Email di allerta',
+        messengerId: 'Id messenger',
         webserviceUrl: 'URL del webservice',
         legend: 'Legenda',
         image: 'Imagine',

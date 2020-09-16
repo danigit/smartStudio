@@ -1788,7 +1788,13 @@
 
             //adding the user to the data sended to the server
             if (action !== 'login') {
-                data.username = (cesarShift(sessionStorage.user, -CEZAR_KEY) !== '' ? cesarShift(sessionStorage.user, -CEZAR_KEY) : '');
+                let user = '';
+
+                if(sessionStorage.user !== undefined){
+                    user = CryptoJS.AES.decrypt(sessionStorage.user, 'SmartStudio').toString(CryptoJS.enc.Utf8);
+                }
+
+                data.username = (user !== '' ? user : '');
             }
 
             userData = data;
@@ -1841,7 +1847,10 @@
                     socketServer = new WebSocket(SOCKET_PATH);
                     socketServer.onopen = function() {
                         socketOpened = true;
-                        let user = cesarShift(sessionStorage.user, -CEZAR_KEY);
+                        let user = '';
+                        if(sessionStorage.user !== undefined){
+                            user = CryptoJS.AES.decrypt(sessionStorage.user, 'SmartStudio').toString(CryptoJS.enc.Utf8);
+                        }
                         if (typeof user !== 'object'){
                             // socketServer.send({ user: user });
                         }
@@ -1858,27 +1867,26 @@
          * @param cookie
          * @returns {string}
          */
-        service.getCookie = (name, cookie) => {
+        service.getCookie = (name) => {
             let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
             return (match) ? match[2] : '';
         };
 
         service.autologin = ($state) => {
             // service.socket.close();
-            
+        
             sessionStorage.clear();
-            let credential = document.cookie;
-            let username = service.getCookie('username_smart', credential);
-            let password = service.getCookie('password_smart', credential);
+            let username = service.getCookie('username_smart');
+            let password = service.getCookie('password_smart');
             if (username !== '' && password !== '') {
                 service.getData('login', {
                     username: username,
-                    password: password
+                    password: CryptoJS.AES.decrypt(password, 'SmartStudio').toString(CryptoJS.enc.Utf8)
                 }, (response) => {
 
                     // if the login is ok I save the username in local and redirect to home
                     if (response.result.id !== undefined) {
-                        sessionStorage.user = cesarShift(username, CEZAR_KEY);
+                        sessionStorage.user = CryptoJS.AES.encrypt(username, 'SmartStudio');
                         service.callbacks = [];
                         $state.go('home');
                     }

@@ -121,6 +121,7 @@ class webSocketServer implements MessageComponentInterface{
 
                 if ($query instanceof db_errors){
                     $result['result'] = $query->getErrorName();
+                    error_log("UTENTE " . $decoded_message['data']['username'] . ' NON E RIUSCITO A LOGGARSI');
                 }else{
 //                    $this->now_time = date("Y-m-d H:i:s");
                     $result['result'] = $query;
