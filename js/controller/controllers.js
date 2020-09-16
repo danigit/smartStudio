@@ -762,7 +762,7 @@
                     $scope.userWhatsApp = '';
                     $scope.isUserManager = userManager;
                     $scope.showColumn = true;
-                    $scope.items = ['username', 'name', 'role', 'phone', 'url_bot', 'bot_id', 'email_alert', 'webservice_url', 'callMe', 'sms', 'whatsApp'];
+                    $scope.items = ['username', 'name', 'role', 'phone', 'url_bot', 'bot_id', 'email_alert', 'messenger_id', 'webservice_url', 'callMe', 'sms', 'whatsApp'];
                     $scope.columns = [];
                     $scope.query = {
                         limitOptions: [500, 15, 10, 5],

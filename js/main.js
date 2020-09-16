@@ -21,7 +21,13 @@
             controller: 'loginController as loginCtr',
             resolve: {
                 goToHomeIfLoggedIn: ['$state', 'newSocketService', 'dataService', function($state, newSocketService, dataService) {
-                    newSocketService.getData('get_user', { username: cesarShift(sessionStorage.user, -CEZAR_KEY) }, (response) => {
+                    let user = '';
+
+                    if (sessionStorage.user !== undefined){
+                        user = CryptoJS.AES.decrypt(sessionStorage.user, 'SmartStudio').toString(CryptoJS.enc.Utf8);
+                    }
+
+                    newSocketService.getData('get_user', { username: user}, (response) => {
                         if (response.result !== 'no_user'){
                             $state.go('home');
                         }
@@ -57,7 +63,13 @@
                     let promise = $q.defer();
                     let result = {};
                     setTimeout(function() {
-                        newSocketService.getData('get_user', { username: cesarShift(sessionStorage.user, -CEZAR_KEY) }, (response) => {
+                        let user = '';
+
+                        if(sessionStorage.user !== undefined){
+                            user = CryptoJS.AES.decrypt(sessionStorage.user, 'SmartStudio').toString(CryptoJS.enc.Utf8);
+                        }
+                        
+                        newSocketService.getData('get_user', { username: user}, (response) => {
 
                             if (response.result !== 'no_user') {
                                 dataService.user = response.result[0];
@@ -149,7 +161,12 @@
                             } else {
                                 $state.go('home');
                             }
-                            newSocketService.getData('get_user', { username: cesarShift(sessionStorage.user, -CEZAR_KEY) }, (user) => {
+                            let user = '';
+
+                            if(sessionStorage.user !== undefined){
+                                user = CryptoJS.AES.decrypt(sessionStorage.user, 'SmartStudio').toString(CryptoJS.enc.Utf8);
+                            }
+                            newSocketService.getData('get_user', { username: user}, (user) => {
                                 if (user.result[0].username !== undefined) {
 
                                     dataService.user = user.result[0];
@@ -204,7 +221,12 @@
                     let result = {};
 
                     setTimeout(function() {
-                        newSocketService.getData('get_user', { username: cesarShift(sessionStorage.user, -CEZAR_KEY) }, (response) => {
+                        let user = '';
+
+                        if(sessionStorage.user !== undefined){
+                            user = CryptoJS.AES.decrypt(sessionStorage.user, 'SmartStudio');
+                        }
+                        newSocketService.getData('get_user', { username: user}, (response) => {
                             if (response.result[0].username !== undefined) {
                                 dataService.user = response.result[0];
                                 if (response.result[0].role === 1) {
