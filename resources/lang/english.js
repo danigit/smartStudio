@@ -395,7 +395,10 @@ function languageController($scope) {
         sms: '',
         whatsApp: '',
         yes: '',
-        no: ''
+        no: '',
+        updateTitle: '',
+        updateContent: '',
+        cookieEmpty: ''
     }
 }
 

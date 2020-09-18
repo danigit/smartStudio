@@ -63,6 +63,11 @@
 
                     <div class="background-transparent-white text-center color-red font-smal
                         margint-top-5-px margin-bottom-10-px padding-10-px"
+                         ng-show="errorHandeling.cookie_empty">{{lang.cookieEmpty}}
+                    </div>
+
+                    <div class="background-transparent-white text-center color-red font-smal
+                        margint-top-5-px margin-bottom-10-px padding-10-px"
                          ng-show="errorHandeling.socketClosed">{{lang.closedSocket}}
                     </div>
                     <md-button id="loginButton" ng-click="login(loginForm)" class="md-raised">Login</md-button>
