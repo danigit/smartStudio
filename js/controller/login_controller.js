@@ -16,7 +16,7 @@
         $scope.debug = DEBUG;
 
         // handling the login error messages
-        $scope.errorHandeling = {wrongData: false, socketClosed: newSocketService.socketClosed};
+        $scope.errorHandeling = {wrongData: false, socketClosed: newSocketService.socketClosed, cookie_empty: !newSocketService.isCookieActive()};
 
         // function that makes the log in of the user
         $scope.login = (form) => {

@@ -1753,11 +1753,25 @@
             let serverVersion = remoteVersion.split(".")
             let localVersion = UPDATE_VERSION.split(".")
 
-            serverVersion.forEach((val, i) => {
+            let is_outdated = serverVersion.some((val, i) => {
                 if (parseInt(val) > parseInt(localVersion[i])) {
-                    window.location.reload(true);
+                   return true; 
+                }else{
+                    return false;
                 }
             })
+            
+            if( is_outdated && !UPDATED){
+                UPDATED = true;
+                $mdDialog.show({
+                    templateUrl: componentsPath + 'reload.html',
+                    parent: angular.element(document.body),
+                    targetEvent: event,
+                    controller: ['$scope',  ($scope) => {
+
+                    }]
+                })
+            }
         }
     }
 
@@ -1854,7 +1868,7 @@
                         if (typeof user !== 'object'){
                             // socketServer.send({ user: user });
                         }
-                        window.location.reload(true)
+                        window.location.reload()
                     };
                     service.server = socketServer;
                 }, SOCKET_RECONECT_INTERVAL)
@@ -1872,13 +1886,23 @@
             return (match) ? match[2] : '';
         };
 
+        service.isCookieActive = () => {
+            let username = service.getCookie('username_smart');
+            let password = service.getCookie('password_smart');
+            if (username !== '' && password !== '' && username !== undefined && password !== undefined) {
+                return true;
+            }else{
+                return false;
+            } 
+        }
+
         service.autologin = ($state) => {
             // service.socket.close();
         
             sessionStorage.clear();
             let username = service.getCookie('username_smart');
             let password = service.getCookie('password_smart');
-            if (username !== '' && password !== '') {
+            if (username !== '' && password !== '' && username !== undefined && password !== undefined) {
                 service.getData('login', {
                     username: username,
                     password: CryptoJS.AES.decrypt(password, 'SmartStudio').toString(CryptoJS.enc.Utf8)
@@ -1886,11 +1910,14 @@
 
                     // if the login is ok I save the username in local and redirect to home
                     if (response.result.id !== undefined) {
+                        dataService.cookieEmpty = false;
                         sessionStorage.user = CryptoJS.AES.encrypt(username, 'SmartStudio');
                         service.callbacks = [];
                         $state.go('home');
                     }
                 });
+            }else{
+                $state.go('login');
             }
         }
     }

@@ -4359,12 +4359,13 @@ class Connection
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
+
     function get_all_users()
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT ID, USERNAME, NAME, ROLE, EMAIL_ALERT, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, TELEPHONE_NUMBER, CALL_GSM, SMS, WHATSAPP FROM user";
+            $this->query = "SELECT ID, USERNAME, NAME, ROLE, EMAIL_ALERT, MESSENGER_ID, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, TELEPHONE_NUMBER, CALL_GSM, SMS, WHATSAPP FROM user";
 
             $this->result = $this->connection->query($this->query);
 
@@ -4376,7 +4377,7 @@ class Connection
 
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'username' => $row['USERNAME'], 'name' => $row['NAME'], 'role' => $row['ROLE'], 'email_alert' => $row['EMAIL_ALERT'],
-                    'bot_url' => $row['BOT_URL'], 'bot_chat_id' => $row['BOT_CHAT_ID'], 'web_service_url' => $row['WEB_SERVICE_URL'], 'telephone_number' => $row['TELEPHONE_NUMBER'],
+                    'messenger_id' => $row['MESSENGER_ID'], 'bot_url' => $row['BOT_URL'], 'bot_chat_id' => $row['BOT_CHAT_ID'], 'web_service_url' => $row['WEB_SERVICE_URL'], 'telephone_number' => $row['TELEPHONE_NUMBER'],
                     'call_me' => $row['CALL_GSM'], 'sms' => $row['SMS'], 'whats_app' => $row['WHATSAPP']);
             }
 

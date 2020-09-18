@@ -404,7 +404,10 @@ function languageController($scope) {
         sms: 'SMS',
         whatsApp: 'WhatsApp',
         yes: 'Si',
-        no: 'No'
+        no: 'No',
+        updateTitle: 'Aggiornamento disponibile',
+        updateContent: 'Press Ctrl+F5 per installare l\'agggiornamento',
+        cookieEmpty: 'I cookie sono vuoti'
     }
 }
 

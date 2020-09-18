@@ -1,0 +1,27 @@
+<div ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar" class="background-red">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hide()">
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="width-400px">
+                <h1 class="font-iceberg font-x-large color-white">{{lang.updateTitle | uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+    <!--end popup header-->
+</div>
+<!--popup content-->
+<md-content class="popup-padding">
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+        <div class="margin-top-15-px color-red">{{lang.updateContent}}</div> 
+    </div>
+</md-content>
+<!--end popup content-->
