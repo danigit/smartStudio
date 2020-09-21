@@ -23,6 +23,7 @@
                 goToHomeIfLoggedIn: ['$state', 'newSocketService', 'dataService', function($state, newSocketService, dataService) {
                     let user = '';
 
+
                     if (sessionStorage.user !== undefined){
                         user = CryptoJS.AES.decrypt(sessionStorage.user, 'SmartStudio').toString(CryptoJS.enc.Utf8);
                     }
@@ -35,6 +36,7 @@
                             newSocketService.autologin($state);
                         }
                     });
+
                 }]
             }
         })

@@ -398,7 +398,12 @@ function languageController($scope) {
         no: '',
         updateTitle: '',
         updateContent: '',
-        cookieEmpty: ''
+        cookieEmpty: '',
+        controllAccess: '',
+        inCount: '',
+        outCount: '',
+        noValue: '',
+        accessHistory: ''
     }
 }
 

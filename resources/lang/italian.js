@@ -407,7 +407,12 @@ function languageController($scope) {
         no: 'No',
         updateTitle: 'Aggiornamento disponibile',
         updateContent: 'Press Ctrl+F5 per installare l\'agggiornamento',
-        cookieEmpty: 'I cookie sono vuoti'
+        cookieEmpty: 'I cookie sono vuoti',
+        controllAccess: 'Controllo Accessi',
+        inCount: 'Numero ingressi',
+        outCount: 'Numero uscite',
+        noValue: 'Nessun valore',
+        accessHistory: 'Storico accessi',
     }
 }
 

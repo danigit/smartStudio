@@ -1440,6 +1440,166 @@
         };
 
         /**
+         * Function that shows the history table
+         * @param position
+         */
+        $scope.viewAccessHistory = function(position) {
+            dataService.homeTimer = dataService.stopTimer(dataService.homeTimer);
+            dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
+
+            let floor = dataService.userFloors.filter(f => f.name === dataService.defaultFloorName)[0];
+
+            $mdDialog.show({
+                templateUrl: componentsPath + 'access-history-table.html',
+                parent: angular.element(document.body),
+                targetEvent: event,
+                clickOutsideToClose: true,
+                controller: ['$scope', function($scope) {
+                    let from = new Date();
+                    from.setDate(from.getDate() - 7);
+
+                    $scope.tableEmpty = false;
+                    $scope.isAdmin = dataService.isAdmin;
+                    $scope.isUserManager = dataService.isUserManager;
+
+                    $scope.access_history = {
+                        fromDate: from,
+                        toDate: new Date(),
+                        tags: dataService.allTags,
+                        anchors: [],
+                        events: null,
+                        selectedTag: null,
+                        selectedAnchor: null,
+                        selectedEvent: null
+                    };
+
+                    $scope.query = {
+                        limitOptions: [500, 15, 10, 5],
+                        order: 'time',
+                        limit: dataService.switch.showTableSorting ? 500 : 5,
+                        page: 1
+                    };
+
+                    $scope.accessHistoryRows = [];
+
+                    newSocketService.getData('get_access_events', {}, (response) => {
+
+                        $scope.access_history.events = response.result;
+                    });
+
+                    newSocketService.getData('get_anchors_by_floor_and_location', {
+                        floor: floor.name,
+                        location: dataService.location.name
+                    }, (response) => {
+
+                        console.log(response)
+                        $scope.access_history.anchors = response.result;
+                    });
+
+                    /**
+                     * Function that deletes the history
+                     */
+                    $scope.deleteAccessHistory = () => {
+                        let fromDate = $filter('date')($scope.access_history.fromDate, 'yyyy-MM-dd');
+                        let toDate = $filter('date')($scope.access_history.toDate, 'yyyy-MM-dd');
+
+                        newSocketService.getData('delete_access_history', { fromDate: fromDate, toDate: toDate }, (response) => {
+
+                            if (response.result !== 0) {
+                                //TODO add toast
+                                newSocketService.getData('get_access_history', {
+                                    fromDate: fromDate,
+                                    toDate: toDate,
+                                    tag: $scope.access_history.selectedTag,
+                                    event: $scope.access_history.selectedEvent
+                                }, (access_history_result) => {
+                                    //TODO add toast
+                                    $scope.accessHistoryRows = dataService.getProtocol(access_history_result.result);
+                                    $scope.tableEmpty = $scope.accessHistoryRows.length === 0;
+                                    $scope.$apply();
+                                });
+                            }
+                        });
+                    };
+
+                    $scope.$watchGroup(['access_history.fromDate', 'access_history.toDate', 'access_history.selectedTag', 'access_history.selectedAnchor', 'access_history.selectedEvent'], function(newValues) {
+                        let fromDate = $filter('date')(newValues[0], 'yyyy-MM-dd');
+                        let toDate = $filter('date')(newValues[1], 'yyyy-MM-dd');
+
+                        console.log('watching')
+                        console.log(newValues)
+                        
+                        newSocketService.getData('get_access_history', {
+                            fromDate: fromDate,
+                            toDate: toDate,
+                            tag: newValues[2],
+                            anchor: newValues[3],
+                            event: newValues[4]
+                        }, (response) => {
+
+                            dataService.filterHistory(response.result).then((access_history_filtered) => {
+                                $scope.accessHistoryRows = dataService.getProtocol(access_history_filtered);
+                                $scope.query['limitOptions'] = [500, 15, 10, 5];
+                                $scope.query['limitOptions'].push(access_history_filtered.length);
+
+                                newSocketService.getData('get_all_locations', {}, (locations) => {
+                                    $scope.accessHistoryRows.forEach((event, index) => {
+                                        if (event.tag_x_pos !== -1 && event.tag_y_pos !== -1 &&
+                                            event.tag_x_pos !== -2 && event.tag_y_pos !== -2 &&
+                                            event.tag_x_pos !== 0 && event.tag_y_pos !== 0) {
+                                            let tagLocation = dataService.getOutdoorTagLocation(locations.result, {
+                                                gps_north_degree: event.tag_x_pos,
+                                                gps_east_degree: event.tag_y_pos
+                                            })[0];
+                                            if (tagLocation !== undefined) {
+                                                $scope.accessHistoryRows[index].location = tagLocation.name;
+                                            }
+                                        }
+                                    });
+                                    $scope.$apply();
+                                });
+                            })
+                        });
+                    });
+
+                    /**
+                     * Function that save the history table in a xml file
+                     */
+                    $scope.saveAccessHistory = () => {
+                        let blob = new Blob([document.getElementById('access-history-table').innerHTML], {
+                            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8"
+                        });
+
+                        let date = new Date();
+                        saveAs(blob, "Smart_Studio_Access_History_" + date.getDate() + "_" + (date.getMonth() + 1) + "_" + date.getFullYear() + ".xls");
+                    };
+
+                    $scope.hide = () => {
+
+                        $mdDialog.hide();
+                    }
+                }],
+
+                onRemoving: function() {
+                    switch (position) {
+                        case 'home':
+                            if (dataService.homeTimer === undefined) {
+                                NgMap.getMap('main-map').then((map) => {
+                                    $rootScope.$emit('constantUpdateNotifications', map)
+                                });
+                            }
+                            break;
+                        case 'canvas':
+                            if (dataService.canvasInterval === undefined) {
+                                $rootScope.$emit('constantUpdateCanvas')
+                            }
+                            break;
+                    }
+                }
+            });
+        }
+
+        /**
          * Function thet shows the versions table
          */
         $scope.viewVersions = () => {
@@ -4145,6 +4305,140 @@
             $mdDialog.show(anchorsDialog);
         };
 
+        $scope.showControllAccessTable = function() {
+            console.log('showing controll access');
+            dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
+
+            let floor = dataService.userFloors.filter(f => f.name === dataService.defaultFloorName)[0];
+
+            /**
+             * Object that handle the anchors table
+             * @type {{parent: Object, clickOutsideToClose: boolean, controller: [string, string, function(*=, *=): void], multiple: boolean, onRemoving: onRemoving, targetEvent: Event, locals: {admin: *}, templateUrl: string}}
+             */
+            let anchorsDialog = {
+                locals: { admin: $scope.isAdmin },
+                templateUrl: componentsPath + 'controll-access-table.html',
+                parent: angular.element(document.body),
+                targetEvent: event,
+                clickOutsideToClose: true,
+                multiple: true,
+                controller: ['$scope', 'admin', function($scope, admin) {
+                    $scope.selected = [];
+                    $scope.isAdmin = dataService.isAdmin;
+                    $scope.isUserManager = dataService.isUserManager;
+                    $scope.accessAnchors = [];
+                    $scope.items = ['name', 'in_count', 'out_count', 'x_pos', 'y_pos', 'z_pos', 'floor', 'ip', 'battery', 'mac'];
+                    $scope.columns = [];
+
+                    $scope.query = {
+                        limitOptions: [500, 15, 10, 5],
+                        order: 'name',
+                        limit: dataService.switch.showTableSorting ? 500 : 5,
+                        page: 1
+                    };
+
+                    /**
+                     * Function that update the anchors table
+                     */
+                    let updateAnchorsTable = () => {
+                        $scope.accessAnchors = [];
+
+                        // getting the access anchors
+                        newSocketService.getData('get_access_anchors_by_floor_and_location', {
+                            floor: (floor.name !== undefined) ? floor.name : '',
+                            location: dataService.location.name
+                        }, (response) => {
+                            $scope.accessAnchors = response.result;
+                            $scope.$apply();
+                        });
+                    };
+
+                    updateAnchorsTable();
+
+                    $rootScope.$on('updateAnchorsTable', function() {
+                        updateAnchorsTable();
+                    });
+
+                    /**
+                     * Function that edit a cell of the table
+                     * @param event
+                     * @param anchor
+                     * @param anchorName
+                     */
+                    $scope.editCell = (event, anchor, anchorName) => {
+
+                        event.stopPropagation();
+
+                        if (admin) {
+                            let editCell = {
+                                modelValue: anchor[anchorName],
+                                save: function(input) {
+                                    input.$invalid = true;
+                                    anchor[anchorName] = input.$modelValue;
+                                    newSocketService.getData('change_anchor_field', {
+                                        anchor_id: anchor.id,
+                                        anchor_field: anchorName,
+                                        field_value: input.$modelValue
+                                    }, (response) => {
+                                        dataService.showMessage($mdToast, lang.elementInserted, lang.elementNotInserted, response.result !== 0);
+                                    });
+                                },
+                                targetEvent: event,
+                                title: lang.insertValue,
+                                validators: {
+                                    'md-maxlength': 500
+                                }
+                            };
+
+                            $mdEditDialog.large(editCell);
+                        }
+                    };
+
+                    /**
+                     * Function that show hide the columns of the table
+                     * @param item
+                     * @param list
+                     */
+                    $scope.toggle = function(item, list) {
+                        let idx = list.indexOf(item);
+                        if (idx > -1) {
+                            list.splice(idx, 1);
+                        } else {
+                            list.push(item);
+                        }
+                    };
+
+                    /**
+                     * Function that sets the label of the select column field
+                     * @returns {string}
+                     */
+                    $scope.getName = () => {
+                        return lang.columns
+                    };
+
+                    /**
+                     * Function that control if a column must be displayed
+                     * @param item
+                     * @param list
+                     * @returns {boolean}
+                     */
+                    $scope.exists = function(item, list) {
+                        return list.indexOf(item) > -1;
+                    };
+
+                    $scope.hideAnchors = () => {
+                        $mdDialog.hide();
+                    };
+                }],
+
+                onRemoving: function() {
+                    if (dataService.canvasInterval === undefined) {
+                        $rootScope.$emit('constantUpdateCanvas', {})
+                    }
+                }
+            };
+            $mdDialog.show(anchorsDialog);
+        };
         /**
          * Function that show the floor table
          */

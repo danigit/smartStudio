@@ -575,11 +575,18 @@
             for(i = 0; i < anchors.length; i++){
                 const img = new Image();
                 images.push(img);
-                if (!anchors[i].is_offline)
-                    img.src = tagsIconPath + 'anchor_online_16.png';
-                else if (anchors[i].is_offline)
-                    img.src = tagsIconPath + 'anchor_offline_16.png';
-
+                if (anchors[i].anchor_type_id === 5){
+                    if(!anchors[i].is_offline){
+                        img.src = tagsIconPath + 'access_anchor_online_32.png';
+                    }else if(anchors[i].is_offline){
+                        img.src = tagsIconPath + 'access_anchor_offline_32.png';
+                    }
+                }else{
+                    if (!anchors[i].is_offline)
+                        img.src = tagsIconPath + 'anchor_online_16.png';
+                    else if (anchors[i].is_offline)
+                        img.src = tagsIconPath + 'anchor_offline_16.png';
+                }
                 img.onload = onload;
             }
             return images;

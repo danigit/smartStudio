@@ -18,7 +18,6 @@ let socketOpened = false;
 let groupTagDistance = 0.5;
 // show or hide the console messages
 const DEBUG = false;
-
 socketServer.onopen = function() {
     socketOpened = true;
 };
