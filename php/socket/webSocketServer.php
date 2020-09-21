@@ -888,6 +888,18 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //getting the anchors by floor and location
+            case 'get_access_anchors_by_floor_and_location':{
+                $result['action'] = 'get_access_anchors_by_floor_and_location';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->get_access_anchors_by_floor_and_location($decoded_message['data']['floor'], $decoded_message['data']['location']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //getting the anchors by location
             case 'get_anchors_by_location':{
                 $result['action'] = 'get_anchors_by_location';
@@ -930,6 +942,24 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //getting the history
+            case 'get_access_history':{
+                $result['action'] = 'get_access_history';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $fromDate = $decoded_message['data']['fromDate'];
+                $toDate = $decoded_message['data']['toDate'];
+                $tag = $decoded_message['data']['tag'];
+                $anchor = $decoded_message['data']['anchor'];
+                $event = $decoded_message['data']['event'];
+
+                $query = $this->connection->get_access_history($fromDate, $toDate, $tag, $anchor, $event);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             case 'get_tracking':{
                 $result['action'] = 'get_tracking';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
@@ -957,6 +987,21 @@ class webSocketServer implements MessageComponentInterface{
                 $toDate = date('Y-m-d', strtotime($toDate . '+1 days'));
                 
                 $query = $this->connection->delete_history($fromDate, $toDate);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            case 'delete_access_history':{
+                $result['action'] = 'delete_access_history';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $fromDate = $decoded_message['data']['fromDate'];
+                $toDate = $decoded_message['data']['toDate'];
+                $toDate = date('Y-m-d', strtotime($toDate . '+1 days'));
+                
+                $query = $this->connection->delete_access_history($fromDate, $toDate);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
@@ -993,6 +1038,18 @@ class webSocketServer implements MessageComponentInterface{
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
 
                 $query = $this->connection->get_events();
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //getting the events
+            case 'get_access_events':{
+                $result['action'] = 'get_access_events';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->get_access_events();
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

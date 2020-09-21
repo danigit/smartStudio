@@ -62,6 +62,7 @@ class db_errors
     public static $ERROR_ON_DELETING_RFID = 51;
     public static $ERROR_ON_GETTING_RFID_TYPES = 52;
     public static $ERROR_ON_DUPLICATE_ENTRY = 53;
+    public static $ERROR_ON_GETTING_ACCESS_HISTORY = 54;
     private $error;
 
     /**
@@ -197,6 +198,8 @@ class db_errors
                 return 'Impossibile recuperare i tipi di RFID';
             case 53:
                 return 'Impossibile inserire, elemento già presente';
+            case 54:
+                return 'ERROR_ON_GETTING_ACCESS_HISTORY';
             default:
                 return 'UNKNOWN_ERROR';
         }

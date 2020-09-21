@@ -1,0 +1,126 @@
+<div ng-controller="languageController">
+    <!--popup header-->
+    <md-toolbar id="popup-toolbar">
+        <div layout="row" layout-align="end center" class="width-100">
+            <md-button class="md-icon-button margin-none" ng-click="hideAnchors()">
+                <img src="img/icons/close-icon.png" aria-label="{{lang.closeButton}}" alt="{{lang.closeButton}}"
+                     title="{{lang.closeButton}}"/>
+            </md-button>
+        </div>
+
+        <div layout="row" layout-align="center center" class="margin-top--20-px">
+            <img src="img/icons/login-icon.png" class="popup-icon" alt="Smart Track" title="Smart Track">
+        </div>
+
+        <div layout="column">
+            <div layout="row" layout-align="center center" class="">
+                <h1 class=" font-iceberg color-white font-x-large">{{lang.controllAccess | uppercase}}</h1>
+            </div>
+        </div>
+    </md-toolbar>
+</div>
+<!--end popup header-->
+
+<!--popup content-->
+<md-content class="popup-padding padding-bottom-70px">
+
+    <div layout="column" layout-align="center center" ng-controller="languageController">
+
+        <md-table-container class="overflow-x-none">
+
+            <table md-table md-row-select="options.rowSelection" ng-model="selected"
+                   md-progress="promise">
+
+                <md-select class="width-200-px float-right background-darkcyan color-white text-center"
+                           md-selected-text="getName()" multiple ng-model="columns"
+                           placeholder="Select columns">
+                    <md-option ng-repeat="item in items" ng-selected="{{true}}" ng-value="item">
+                        {{item}}
+                    </md-option>
+                </md-select>
+
+                <thead md-head md-order="query.order">
+                <tr md-row>
+                    <th md-column><span class="color-darkcyan"></span></th>
+                    <th md-column md-order-by="anchor.name" ng-if="exists('name', columns)" ><span
+                            class="color-darkcyan">{{lang.name | uppercase}}</span></th>
+                    <th md-column md-numeric ng-if="exists('in_count', columns)"><span class="color-darkcyan">{{lang.inCount | uppercase}}</span>
+                    </th>
+                    <th md-column md-numeric ng-if="exists('out_count', columns)"><span class="color-darkcyan">{{lang.outCount | uppercase}}</span>
+                    </th>
+                    <th md-column md-numeric ng-if="exists('mac', columns)"><span class="color-darkcyan">{{lang.anchorMac | uppercase}}</span>
+                    </th>
+                    <th md-column md-numeric ng-if="exists('x_pos', columns)"><span class="color-darkcyan">{{lang.xPos | uppercase}}</span>
+                    </th>
+                    <th md-column md-numeric ng-if="exists('y_pos', columns)"><span class="color-darkcyan">{{lang.yPos | uppercase}}</span>
+                    </th>
+                    <th md-column md-numeric ng-if="exists('z_pos', columns)"><span class="color-darkcyan">{{lang.zPos | uppercase}}</span>
+                    </th>
+                    <th md-column ng-if="exists('floor', columns)"><span class="color-darkcyan">{{lang.floor | uppercase}}</span>
+                    </th>
+                    <th md-column ng-if="exists('battery', columns)"><span class="color-darkcyan">{{lang.batteryStatus}}</span></th>
+                    <th md-column ng-if="exists('ip', columns)"><span class="color-darkcyan">{{lang.ip}}</span></th>
+                </tr>
+                </thead>
+
+                <tbody md-body>
+                <tr md-row md-select="anchor" md-on-select="logItem" md-auto-select="true"
+                    ng-repeat="accessAnchor in accessAnchors | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
+                    <td md-cell><img alt="{{lang.anchorState}}" title="{{lang.anchorState}}"
+                                     aria-label="{{lang.anchorState}}"
+                                     ng-src="{{accessAnchor.is_offline ? 'img/icons/tags/access_anchor_offline_32.png' : 'img/icons/tags/access_anchor_online_32.png'}}">
+                    </td>
+
+                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !accessAnchor.name}" ng-if="exists('name', columns)">
+                        {{accessAnchor.name || lang.noValue}}
+                    </td>
+
+                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !accessAnchor.in_count}" ng-if="exists('in_count', columns)">
+                        {{accessAnchor.in_count.toString()}}
+                    </td>
+
+                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !accessAnchor.out_count}" ng-if="exists('out_count', columns)">
+                        {{accessAnchor.out_count.toString()}}
+                    </td>
+
+                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !accessAnchor.mac.toString()}" ng-if="exists('mac', columns)">
+                        {{accessAnchor.mac.toString() || lang.noValue}}
+                    </td>
+
+                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !accessAnchor.x_pos.toString()}" ng-if="exists('x_pos', columns)">
+                        {{accessAnchor.x_pos.toString() || lang.noValue}}
+                    </td>
+
+                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !accessAnchor.y_pos.toString()}" ng-if="exists('y_pos', columns)">
+                        {{accessAnchor.y_pos.toString() || lang.noValue}}
+                    </td>
+
+                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !accessAnchor.z_pos.toString()}" ng-if="exists('z_pos', columns)">
+                        {{accessAnchor.z_pos.toString() || lang.noValue}}
+                    </td>
+                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !accessAnchor.floor_name.toString()}"
+                        ng-if="exists('floor', columns)">{{accessAnchor.floor_name.toString() || lang.noValue}}
+                    </td>
+                    <td class="no-wrap" md-cell ng-if="exists('battery', columns)"><img alt="{{lang.bateryStatus}}"
+                        ng-src="{{accessAnchor.battery_status ? 'img/icons/battery_empty_24.png' : 'img/icons/battery_full_24.png'}}">
+                    </td>
+                    <td md-cell class="no-wrap" ng-class="{'md-placeholder': !accessAnchor.ip}" ng-if="exists('ip', columns)">
+                        {{accessAnchor.ip || lang.noValue}}
+                    </td>
+                </tr>
+                <tr md-row ng-show="accessAnchors.length === 0">
+                    <td md-cell colspan="13" class="text-center color-red">{{lang.noResultFound}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </md-table-container>
+
+        <md-table-pagination
+                class="color-red background-white position-fixed bottom-0 margin-bottom-15-px width-100 padding-0 padding-right-24-px"
+                md-limit="query.limit" md-limit-options="query.limitOptions"
+                md-page="query.page"
+                md-total="{{accessAnchors.length}}" md-on-paginate="getAnchors">
+        </md-table-pagination>
+    </div>
+</md-content>
+<!--end popup content-->

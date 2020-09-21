@@ -25,6 +25,14 @@
 <md-content class="popup-padding">
     <div layout="column" layout-align="center center" ng-controller="languageController">
         <md-list>
+            <md-list-item class="width-300-px" ng-if="anchor.anchor_type_id === 5">
+                <p class="float-left text-bold">{{lang.inCount}}:</p>
+                <p class="float-right text-right">{{anchor.in_count}}</p>
+            </md-list-item>
+             <md-list-item class="width-300-px" ng-if="anchor.anchor_type_id === 5">
+                <p class="float-left text-bold">{{lang.outCount}}:</p>
+                <p class="float-right text-right">{{anchor.out_count}}</p>
+            </md-list-item>
             <md-list-item class="width-300-px">
                 <p class="float-left text-bold">{{lang.ip}}:</p>
                 <p class="float-right text-right">{{anchor.ip}}</p>
