@@ -9,6 +9,9 @@
                 <img ng-if="canvasCtrl.showOfflineAnchorsIcon" ng-click="showOfflineAnchorsIndoor()" class="margin-bottom-5-px padding-top-bottom-6px width-40px border-bottom-3-white"
                      src="img/icons/offline_anchors_alert_64.png" alt="{{lang.offlineAnchors}}"
                      title="{{lang.offlineAnchors}}">
+                <img ng-if="canvasCtrl.zonesFull" ng-click="showFullZones()" class="margin-bottom-5-px padding-top-bottom-6px width-40px border-bottom-3-white"
+                     src="img/icons/full_zones_64.png" alt="{{lang.fullZones}}"
+                     title="{{lang.offlineAnchors}}">
                 <img ng-if="!canvasCtrl.socketOpened" class="padding-top-bottom-6px border-bottom-3-white width-40px"
                      src="img/icons/socket-down.ico" alt="{{lang.engineOff}}"
                      title="{{lang.engineOff}}">

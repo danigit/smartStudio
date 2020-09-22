@@ -57,6 +57,8 @@
                     </th>
                     <th md-column md-order-by="y_down" ng-if="exists('y_down', columns)"><span class="color-darkcyan">{{lang.yDown}}</span>
                     </th>
+                    <th md-column md-order-by="max_people" ng-if="exists('max_people', columns)"><span class="color-darkcyan">{{lang.maxPeople}}</span>
+                    </th>
                     <th md-column md-order-by="radius" ng-if="exists('radius', columns)" ng-show="isOutdoor"><span
                             class="color-darkcyan">{{lang.radius}}</span></th>
                     <th md-column md-order-by="gps_north" ng-if="exists('gps_north', columns)" ng-show="isOutdoor"><span
@@ -97,6 +99,9 @@
                     <td md-cell ng-click="zone.y_down !== null ? editCell($event, zone, 'y_down') : null"
                         ng-class="{'md-placeholder': !zone.y_down}" ng-if="exists('y_down', columns)">{{zone.y_down ===
                         null ? "Valore non necessario" : zone.y_down|| lang.insertValue}}
+                    </td>
+                    <td md-cell ng-click="editCell($event, zone, 'max_people')" ng-class="{'md-placeholder': !zone.max_people}" 
+                        ng-if="exists('max_people', columns)">{{zone.max_people|| lang.insertValue}}
                     </td>
                     <td ng-show="isOutdoor" md-cell
                         ng-click="zone.radius !== null ? editCell($event, zone, 'radius') : null"

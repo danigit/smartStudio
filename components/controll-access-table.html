@@ -58,7 +58,6 @@
                     </th>
                     <th md-column ng-if="exists('floor', columns)"><span class="color-darkcyan">{{lang.floor | uppercase}}</span>
                     </th>
-                    <th md-column ng-if="exists('battery', columns)"><span class="color-darkcyan">{{lang.batteryStatus}}</span></th>
                     <th md-column ng-if="exists('ip', columns)"><span class="color-darkcyan">{{lang.ip}}</span></th>
                 </tr>
                 </thead>
@@ -100,9 +99,6 @@
                     </td>
                     <td md-cell class="no-wrap" ng-class="{'md-placeholder': !accessAnchor.floor_name.toString()}"
                         ng-if="exists('floor', columns)">{{accessAnchor.floor_name.toString() || lang.noValue}}
-                    </td>
-                    <td class="no-wrap" md-cell ng-if="exists('battery', columns)"><img alt="{{lang.bateryStatus}}"
-                        ng-src="{{accessAnchor.battery_status ? 'img/icons/battery_empty_24.png' : 'img/icons/battery_full_24.png'}}">
                     </td>
                     <td md-cell class="no-wrap" ng-class="{'md-placeholder': !accessAnchor.ip}" ng-if="exists('ip', columns)">
                         {{accessAnchor.ip || lang.noValue}}

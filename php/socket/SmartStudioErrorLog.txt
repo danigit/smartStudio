@@ -40478,3 +40478,338 @@ Stack trace:
 [21-Sep-2020 16:07:17 Europe/Berlin] PHP Notice:  Undefined index: anchor in C:\xampp\htdocs\smartStudio\php\socket\webSocketServer.php on line 953
 [21-Sep-2020 16:08:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 235
 [21-Sep-2020 16:08:43 Europe/Berlin] Sessione: simone
+[21-Sep-2020 16:39:24 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3191
+[21-Sep-2020 16:39:24 Europe/Berlin] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3201
+[21-Sep-2020 16:39:24 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3204
+[21-Sep-2020 16:39:25 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3191
+[21-Sep-2020 16:39:25 Europe/Berlin] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3201
+[21-Sep-2020 16:39:25 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3204
+[21-Sep-2020 16:39:25 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5082
+[21-Sep-2020 16:39:25 Europe/Berlin] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5087
+[21-Sep-2020 16:39:25 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5090
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3541
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3554
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 1716
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 1721
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 1724
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 1716
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 1721
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 1724
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3506
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3517
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3142
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3159
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3142
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3159
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 1284
+[21-Sep-2020 16:39:26 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 1296
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4922
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4933
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4922
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4933
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3142
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3159
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3142
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 3159
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 1284
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 1296
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4922
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4933
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::__construct(): (HY000/2002): Only one usage of each socket address (protocol/network address/port) is normally permitted.
+ in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4922
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli::prepare(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 5463
+[21-Sep-2020 16:39:27 Europe/Berlin] PHP Warning:  mysqli_close(): Couldn't fetch mysqli in C:\xampp\htdocs\smartStudio\php\socket\database\connection.php on line 4933
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42795
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42796
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42799
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42802
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42805
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42808
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42811
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42814
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42817
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42820
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42823
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42826
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42829
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42832
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42835
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42838
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42841
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42844
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42847
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42850
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42853
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42856
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42859
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42862
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42865
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42868
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42871
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42874
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42877
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42880
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42883
+[21-Sep-2020 18:51:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42886
+[21-Sep-2020 18:51:36 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42891
+[21-Sep-2020 18:51:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 42894
+[21-Sep-2020 18:51:39 Europe/Berlin] Sessione: simone
+[21-Sep-2020 18:51:44 Europe/Berlin] Sessione: simone
+[22-Sep-2020 09:49:26 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-09-22 09:49:26
+[22-Sep-2020 09:49:50 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Sep-2020 09:49:57 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 09:49:59 Europe/Berlin] Sessione: simone
+[22-Sep-2020 09:53:25 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:03:08 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-09-22 10:03:08
+[22-Sep-2020 10:03:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Sep-2020 10:03:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[22-Sep-2020 10:03:13 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 10:03:13 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 10:03:13 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[22-Sep-2020 10:03:13 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:03:13 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 10:03:13 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:03:14 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 10:03:14 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:03:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 90
+[22-Sep-2020 10:03:28 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:03:29 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:03:34 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:04:17 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 307
+[22-Sep-2020 10:04:18 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:08:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 381
+[22-Sep-2020 10:08:26 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:09:48 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 549
+[22-Sep-2020 10:09:48 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:21:50 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-09-22 10:21:50
+[22-Sep-2020 10:21:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Sep-2020 10:21:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[22-Sep-2020 10:21:55 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 10:21:55 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 10:21:55 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[22-Sep-2020 10:21:55 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:21:55 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 10:21:55 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:21:56 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 10:21:56 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:21:58 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 90
+[22-Sep-2020 10:22:03 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:22:05 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:23:06 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:24:34 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-09-22 10:24:34
+[22-Sep-2020 10:24:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Sep-2020 10:24:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[22-Sep-2020 10:24:40 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 10:24:40 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 10:24:40 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[22-Sep-2020 10:24:40 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:24:40 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 10:24:40 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:24:41 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 10:24:41 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:24:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 90
+[22-Sep-2020 10:24:49 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:24:50 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:24:55 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:25:30 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-09-22 10:25:30
+[22-Sep-2020 10:25:34 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Sep-2020 10:25:35 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[22-Sep-2020 10:25:35 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 10:25:35 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 10:25:35 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[22-Sep-2020 10:25:35 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:25:35 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 10:25:35 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:25:37 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 10:25:37 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:25:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 90
+[22-Sep-2020 10:25:43 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 10:25:45 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:25:51 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:26:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1054
+[22-Sep-2020 10:26:52 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:27:05 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1247
+[22-Sep-2020 10:27:05 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:28:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3297
+[22-Sep-2020 10:28:54 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:29:14 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3672
+[22-Sep-2020 10:29:15 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:44:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 20947
+[22-Sep-2020 10:44:24 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:44:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 21493
+[22-Sep-2020 10:44:54 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:45:20 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 21982
+[22-Sep-2020 10:45:21 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:46:10 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 22817
+[22-Sep-2020 10:46:10 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:46:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 23486
+[22-Sep-2020 10:46:47 Europe/Berlin] Sessione: simone
+[22-Sep-2020 10:47:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 24738
+[22-Sep-2020 10:47:54 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:08:01 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 47685
+[22-Sep-2020 11:08:02 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:08:29 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 48175
+[22-Sep-2020 11:08:29 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:08:54 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 48627
+[22-Sep-2020 11:08:54 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:10:35 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 50525
+[22-Sep-2020 11:10:39 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 50528
+[22-Sep-2020 11:10:39 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:10:42 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 50579
+[22-Sep-2020 11:10:43 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:11:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 51888
+[22-Sep-2020 11:11:53 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:12:35 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 52663
+[22-Sep-2020 11:12:35 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:13:13 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53362
+[22-Sep-2020 11:13:13 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:13:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53719
+[22-Sep-2020 11:13:33 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:14:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 54609
+[22-Sep-2020 11:14:22 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:15:04 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 55384
+[22-Sep-2020 11:15:04 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:15:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 55758
+[22-Sep-2020 11:15:25 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:17:37 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 58265
+[22-Sep-2020 11:17:38 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:20:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 61419
+[22-Sep-2020 11:20:24 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:30:03 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 63706
+[22-Sep-2020 11:30:03 Europe/Berlin] C'E STATO UN ERRORE CON IL SOCKET
+[22-Sep-2020 11:30:03 Europe/Berlin] Unable to write to stream: fwrite(): send of 8192 bytes failed with errno=10053 An established connection was aborted by the software in your host machine.
+
+[22-Sep-2020 11:30:03 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 64592
+[22-Sep-2020 11:30:22 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-09-22 11:30:22
+[22-Sep-2020 11:30:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Sep-2020 11:30:26 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[22-Sep-2020 11:30:27 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 11:30:27 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 11:30:27 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[22-Sep-2020 11:30:27 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 11:30:27 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 11:30:27 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 11:30:28 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 11:30:29 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 11:30:31 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 90
+[22-Sep-2020 11:30:34 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 11:30:35 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:30:40 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:31:05 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 594
+[22-Sep-2020 11:31:05 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:31:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 932
+[22-Sep-2020 11:31:24 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:33:14 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3003
+[22-Sep-2020 11:33:14 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:33:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3189
+[22-Sep-2020 11:33:24 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:33:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3642
+[22-Sep-2020 11:33:49 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:34:34 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 4497
+[22-Sep-2020 11:34:35 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:35:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 5406
+[22-Sep-2020 11:35:23 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:38:49 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9304
+[22-Sep-2020 11:38:49 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:39:34 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9314
+[22-Sep-2020 11:39:34 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:39:53 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9653
+[22-Sep-2020 11:39:53 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:40:20 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10161
+[22-Sep-2020 11:40:20 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:40:43 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10576
+[22-Sep-2020 11:40:43 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:40:57 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 10838
+[22-Sep-2020 11:40:58 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:42:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 12452
+[22-Sep-2020 11:42:25 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:43:21 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 13514
+[22-Sep-2020 11:43:22 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:44:23 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 14671
+[22-Sep-2020 11:44:23 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:46:51 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 17464
+[22-Sep-2020 11:46:51 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:49:20 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 20277
+[22-Sep-2020 11:49:20 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:50:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 21225
+[22-Sep-2020 11:50:11 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:52:07 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-09-22 11:52:07
+[22-Sep-2020 11:52:11 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Sep-2020 11:52:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[22-Sep-2020 11:52:12 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 11:52:12 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 11:52:12 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[22-Sep-2020 11:52:12 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 11:52:12 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 11:52:12 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 11:52:14 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 11:52:14 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 11:52:16 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 90
+[22-Sep-2020 11:52:20 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 11:52:22 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:52:26 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:53:20 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 1156
+[22-Sep-2020 11:53:20 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:55:48 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3969
+[22-Sep-2020 11:55:49 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:57:24 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 5771
+[22-Sep-2020 11:57:25 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:58:40 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 7194
+[22-Sep-2020 11:58:41 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:59:10 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 7742
+[22-Sep-2020 11:59:11 Europe/Berlin] Sessione: simone
+[22-Sep-2020 11:59:33 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 8157
+[22-Sep-2020 11:59:34 Europe/Berlin] Sessione: simone
+[22-Sep-2020 12:00:27 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 9162
+[22-Sep-2020 12:00:27 Europe/Berlin] Sessione: simone
+[22-Sep-2020 12:09:45 Europe/Berlin] SERVER IN ASCOLTO DAL: 2020-09-22 12:09:45
+[22-Sep-2020 12:09:45 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 53
+[22-Sep-2020 12:09:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 84
+[22-Sep-2020 12:09:46 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 12:09:46 Europe/Berlin] SESSIONE TERMINATA CON UTENTE: simone
+[22-Sep-2020 12:09:46 Europe/Berlin] L'UTENTE simone NON E COLLEGATO
+[22-Sep-2020 12:09:47 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 12:09:47 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 12:09:47 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 12:09:48 Europe/Berlin] L'UTENTE  NON E COLLEGATO
+[22-Sep-2020 12:09:48 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 12:09:50 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 90
+[22-Sep-2020 12:09:55 Europe/Berlin] UTENTE simone SI E LOGGATO
+[22-Sep-2020 12:09:56 Europe/Berlin] Sessione: simone
+[22-Sep-2020 12:10:00 Europe/Berlin] Sessione: simone
+[22-Sep-2020 12:10:12 Europe/Berlin] C'E STATO UN ERRORE CON IL SOCKET
+[22-Sep-2020 12:10:12 Europe/Berlin] Unable to write to stream: fwrite(): send of 8192 bytes failed with errno=10053 An established connection was aborted by the software in your host machine.
+
+[22-Sep-2020 12:10:12 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 352
+[22-Sep-2020 12:10:13 Europe/Berlin] Sessione: simone
+[22-Sep-2020 12:13:09 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3698
+[22-Sep-2020 12:13:10 Europe/Berlin] Sessione: simone
+[22-Sep-2020 12:13:22 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 3922
+[22-Sep-2020 12:13:22 Europe/Berlin] Sessione: simone
