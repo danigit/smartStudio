@@ -403,7 +403,12 @@ function languageController($scope) {
         inCount: '',
         outCount: '',
         noValue: '',
-        accessHistory: ''
+        accessHistory: '',
+        maxPeople: '',
+        fullZones: '',
+        insideVsMax: '',
+        zoneName: '',
+        anchorName: ''
     }
 }
 

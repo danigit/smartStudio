@@ -48,6 +48,7 @@
         canvasCtrl.drawingImage = 'horizontal-line.png';
         canvasCtrl.legend = [];
         canvasCtrl.socketOpened = socketOpened;
+        canvasCtrl.zonesFull = false;
 
         // setting the default floor
         canvasService.setDefaultFloor(canvasCtrl);
@@ -340,6 +341,8 @@
                                         // getting the div where to show the headers of the working zones
                                         let workingZones = document.getElementById('working-zones');
                                         let angularWorkingZones = angular.element(workingZones);
+
+                                        canvasCtrl.zonesFull = floorZones.result.some(z => z.max_people_alert === 1);
 
                                         // controlling if there are zones to be drawned
                                         if (floorZones.result.length > 0 && dataService.switch.showZones) {
@@ -643,6 +646,61 @@
                 }
             }
         };
+
+        $scope.showFullZones = () => {
+
+            $mdDialog.show({
+                templateUrl: componentsPath + 'full_zones.html',
+                parent: angular.element(document.body),
+                targetEvent: event,
+                clickOutsideToClose: true,
+                controller: ['$scope', function($scope) {
+                    
+                    $scope.fullZones = [];
+                    $scope.tableEmpty = true;
+
+                    $scope.query = {
+                        limitOptions: [5, 10, 15],
+                        order: 'name',
+                        limit: 5,
+                        page: 1
+                    };
+
+                    newSocketService.getData('get_floor_zones', {
+                        floor: canvasCtrl.floorData.defaultFloorName,
+                        location: canvasCtrl.floorData.location,
+                        user: dataService.user.username
+                    }, (response) => {
+                        newSocketService.getData('get_anchors_by_floor_and_location', {
+                            floor: canvasCtrl.floorData.defaultFloorName,
+                            location: canvasCtrl.floorData.location
+                        }, (anchors) => {
+                            $scope.tableEmpty = response.result.length === 0;
+                            $scope.fullZones = response.result.filter(z => z.max_people_alert === 1);
+
+                            let accessAnchors = anchors.result.filter(a => a.anchor_type_id === 5);
+
+                            $scope.fullZones.forEach((fz, index) => {
+                                accessAnchors.forEach(a => {
+                                    if (a.anchor_type_id === 5 && canvasService.isAnchorInZone(a, fz)){
+
+                                        fz.anchor = a.name;
+                                        fz.in_count = a.in_count;
+                                        fz.out_count = a.out_count;
+                                        fz.inside = a.in_count - a.out_count;
+                                    }
+                                })
+                            });
+                        })
+                })
+
+                $scope.hide = () => {
+                    $mdDialog.hide();
+                    }
+                }],
+            })
+
+        }
 
         //getting the coordinate of the click within respect the canvas
         HTMLCanvasElement.prototype.canvasMouseClickCoords = function(event) {
@@ -1330,7 +1388,7 @@
          * @returns {*}
          */
         let isTagAtCoords = (coords, distance) => {
-            return dataService.floorTags.some(function(tag) {
+            return dataService.floorTags.filter(t => !t.radio_switched_off && !dataService.hasTagSuperatedSecondDelta(t)).some(function(tag) {
                 let realHeight = (canvasCtrl.defaultFloor[0].width * canvas.height) / canvas.width;
                 let virtualTagPosition = scaleIconSize(tag.x_pos, tag.y_pos, canvasCtrl.defaultFloor[0].width, realHeight, canvas.width, canvas.height);
                 return canvasService.isElementAtClick(virtualTagPosition, coords, distance)

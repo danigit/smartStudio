@@ -3347,6 +3347,7 @@
                         x_right: '',
                         y_up: '',
                         y_down: '',
+                        max_people: '',
                         color: '',
                         resultClass: '',
                     };
@@ -3365,6 +3366,7 @@
                                 x_right: $scope.insertZone.x_right,
                                 y_up: $scope.insertZone.y_up,
                                 y_down: $scope.insertZone.y_down,
+                                max_people: $scope.insertZone.max_people,
                                 color: ($scope.insertZone.color !== undefined) ? $scope.insertZone.color : '#000000',
                                 floor: floor.id
                             };
@@ -3412,7 +3414,7 @@
                     $scope.isOutdoor = false;
                     $scope.tableEmptyZone = false;
                     $scope.isUserManager = dataService.isUserManager;
-                    $scope.items = ['name', 'x_left', 'x_right', 'y_up', 'y_down', 'color', 'priority', 'header_order', 'header_left_side'];
+                    $scope.items = ['name', 'x_left', 'x_right', 'y_up', 'y_down', 'max_people', 'color', 'priority', 'header_order', 'header_left_side'];
                     $scope.columns = [];
                     $scope.zonesTable = [];
                     $scope.query = {
@@ -4327,7 +4329,7 @@
                     $scope.isAdmin = dataService.isAdmin;
                     $scope.isUserManager = dataService.isUserManager;
                     $scope.accessAnchors = [];
-                    $scope.items = ['name', 'in_count', 'out_count', 'x_pos', 'y_pos', 'z_pos', 'floor', 'ip', 'battery', 'mac'];
+                    $scope.items = ['name', 'in_count', 'out_count', 'x_pos', 'y_pos', 'z_pos', 'floor', 'ip', 'mac'];
                     $scope.columns = [];
 
                     $scope.query = {

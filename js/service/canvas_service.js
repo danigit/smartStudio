@@ -681,6 +681,9 @@
             });
         };
 
+        canvas_service.isAnchorInZone = (anchor, zone) => {
+            return (anchor.x_pos > zone.x_left && anchor.x_pos < zone.x_right && anchor.y_pos > zone.y_up && anchor.y_pos < zone.y_down);
+        }
 
 
 
