@@ -408,7 +408,9 @@ function languageController($scope) {
         fullZones: '',
         insideVsMax: '',
         zoneName: '',
-        anchorName: ''
+        anchorName: '',
+        localStorage: '',
+        evac: ''
     }
 }
 
@@ -536,5 +538,8 @@ let lang = {
     batteryEmtpyTags: 'Wetag scarichi',
     selectTagType: '',
     selectValidType: '',
-    phoneOptionsNotReseted: ''
+    phoneOptionsNotReseted: '',
+    maxPeople: '',
+    noZone: '',
+    notAvailable: ''
 };

@@ -473,6 +473,28 @@
 
                                                     dataService.floorTags = tagsByFloorAndLocation.result;
 
+                                                    floorZones.result.forEach(fz => {
+                                                        let tagsInZone = 0;
+
+                                                        tagsByFloorAndLocation.result.filter(t => !t.is_offline).forEach(lt => {
+
+                                                            if (canvasService.isElementInsideZone(lt, fz)){
+                                                                tagsInZone++;
+                                                            }
+                                                        })
+
+                                                        if(tagsInZone >= fz.max_people){
+                                                            if(fz.max_people_alert === 0){
+                                                                newSocketService.getData('insert_max_people_alert', {zone_id: fz.id}, (response) => {
+                                                                    
+                                                                    if(response.result === 1){
+                                                                        dataService.showToast($mdToast, fz.name + ' ' + lang.maxPeople, 'background-darkred', 'color-white');
+                                                                    }
+                                                                })
+                                                            }
+                                                        }
+                                                    })
+
                                                     // showing the legend button
                                                     canvasCtrl.showCategoriesButton = dataService.hasTagCategory(tagsByFloorAndLocation.result);
 
@@ -1425,8 +1447,12 @@
                     $scope.safeTags = null;
                     $scope.unsafeTags = [];
                     $scope.data = [];
+                    $scope.anchors = [];
                     $scope.evacuation_value = lang.initEvacuation;
                     $scope.evacuation_button = 'background-red';
+                    $scope.anchorsInfo = {};
+                    $scope.totalPresent = 0;
+                    $scope.totalZones = 0;
                     let evacuation_on = false;
 
                     $scope.men = {
@@ -1437,53 +1463,100 @@
                     $scope.colors = ["#4BAE5A", "#E13044"];
                     $scope.labels = [lang.personInEvacuationZone, lang.lostPersons];
 
-                    newSocketService.getData('get_emergency_info', {
-                        location: dataService.location.name,
-                        floor: floor
-                    }, (response) => {
-                        if (!response.session_state)
-                            window.location.reload();
+                    // continuously updating the tag situation
+                    dataService.emergencyZoneInterval = $interval(function() {
 
-                        $scope.safeTags = response.result;
-                        $scope.unsafeTags = tags.filter(t => !response.result.some(i => i.tag_name === t.name));
+                        let tempTotalPresent = 0;
+                        let tempTotalZones = 0;
+                        newSocketService.getData('get_anchors_by_floor_and_location', {
+                            floor: canvasCtrl.floorData.defaultFloorName,
+                            location: canvasCtrl.floorData.location
+                        }, response =>{
+                            let emergencyAnchors = response.result.filter(a => a.emergency_zone === 1);
+                            newSocketService.getData('get_tags_by_floor_and_location', {
+                                floor: canvasCtrl.defaultFloor[0].id,
+                                location: canvasCtrl.floorData.location
+                            }, floorTags => {
+                                newSocketService.getData('get_floor_zones', {
+                                    floor: canvasCtrl.floorData.defaultFloorName,
+                                    location: canvasCtrl.floorData.location,
+                                    user: dataService.user.username
+                                }, floorZones => {
+                                    emergencyAnchors.forEach(a => {
+                                        let anchorTags = floorTags.result.filter(ft => ft.anchor_id === a.id);
+                                        let anchorZone = floorZones.result.find(z => canvasService.isElementInsideZone(a, z));
+                                        
+                                        $scope.anchorsInfo[a.id] = {
+                                            anchorName: a.name, 
+                                            anchorFloor: a.floor_name, 
+                                            zone: anchorZone !== undefined ? anchorZone.name : lang.noZone, 
+                                            anchorTags: anchorTags, 
+                                            zoneMax: anchorZone !== undefined ? anchorZone.max_people : lang.notAvailable,
+                                            anchorData: [anchorTags.length, anchorZone.max_people]
+                                        };
+                                        tempTotalPresent += anchorTags.length;
+                                        tempTotalZones += anchorZone.max_people;
 
-                        $scope.men.safe = response.result.length;
-                        $scope.men.unsafe = tags.length - response.result.length;
+                                    })
 
-                        $scope.data = [$scope.men.safe, $scope.men.unsafe];
-                    });
-
-                    newSocketService.getData('get_evacuation', {}, (response) => {
-                        if (response.result == 1) {
-                            evacuation_on = true;
-                            $scope.evacuation_button = 'background-green';
-                            $scope.evacuation_value = lang.reset;
-                        } else {
-                            $scope.evacuation_on = false;
-                            $scope.evacuation_button = 'background-red';
-                            $scope.evacuation_value = lang.initEvacuation;
-                        }
-                    });
-
-                    $scope.sendEvacuation = () => {
-                        if (evacuation_on == false) {
-                            newSocketService.getData('set_evacuation', {}, (response) => {
-                                if (response.result > 0) {
-                                    evacuation_on = true;
-                                    $scope.evacuation_button = 'background-green';
-                                    $scope.evacuation_value = lang.reset;
-                                }
-                            });
-                        } else {
-                            newSocketService.getData('stop_evacuation', {}, (response) => {
-                                if (response.result > 0) {
-                                    evacuation_on = false;
-                                    $scope.evacuation_button = 'background-red';
-                                    $scope.evacuation_value = lang.initEvacuation;
-                                }
+                                    $scope.totalZones = tempTotalZones;
+                                    $scope.totalPresent = tempTotalPresent;
+                                })
                             })
-                        }
-                    };
+                        })
+                    }, EMERGENCY_WINDOW_UPDATE_TIME);
+
+                    $scope.isAnchorsEmpty = () => {
+                        return Object.keys($scope.anchorsInfo).length === 0;
+                    }
+
+                    // newSocketService.getData('get_emergency_info', {
+                    //     location: dataService.location.name,
+                    //     floor: floor
+                    // }, (response) => {
+                    //     if (!response.session_state)
+                    //         window.location.reload();
+
+                    //     $scope.safeTags = response.result;
+                    //     $scope.unsafeTags = tags.filter(t => !response.result.some(i => i.tag_name === t.name));
+
+                    //     $scope.men.safe = response.result.length;
+                    //     $scope.men.unsafe = tags.length - response.result.length;
+
+                    //     $scope.data = [$scope.men.safe, $scope.men.unsafe];
+                    // });
+
+                    // newSocketService.getData('get_evacuation', {}, (response) => {
+                    //     if (response.result == 1) {
+                    //         evacuation_on = true;
+                    //         $scope.evacuation_button = 'background-green';
+                    //         $scope.evacuation_value = lang.reset;
+                    //     } else {
+                    //         $scope.evacuation_on = false;
+                    //         $scope.evacuation_button = 'background-red';
+                    //         $scope.evacuation_value = lang.initEvacuation;
+                    //     }
+                    // });
+
+                    // $scope.sendEvacuation = () => {
+                    //     if (evacuation_on == false) {
+                    //         newSocketService.getData('set_evacuation', {}, (response) => {
+                    //             if (response.result > 0) {
+                    //                 evacuation_on = true;
+                    //                 $scope.evacuation_button = 'background-green';
+                    //                 $scope.evacuation_value = lang.reset;
+                    //             }
+                    //         });
+                    //     } else {
+                    //         newSocketService.getData('stop_evacuation', {}, (response) => {
+                    //             if (response.result > 0) {
+                    //                 evacuation_on = false;
+                    //                 $scope.evacuation_button = 'background-red';
+                    //                 $scope.evacuation_value = lang.initEvacuation;
+                    //             }
+                    //         })
+                    //     }
+                    // };
 
                     $scope.hide = () => {
                         $mdDialog.hide();

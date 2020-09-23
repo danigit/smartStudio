@@ -34,6 +34,8 @@
                         username: $scope.user.username,
                         password: $scope.user.password
                     }, (response) => {
+
+                        console.log(response);
                         // showing errors on login
                         if (response.result === 'ERROR_ON_LOGIN') {
                             $scope.errorHandeling.wrongData    = true;
@@ -43,8 +45,13 @@
                         else if (response.result.id !== undefined) {
                             dataService.user.username = $scope.user.username;
                             sessionStorage.user       = CryptoJS.AES.encrypt($scope.user.username, 'SmartStudio');
-                            document.cookie           = 'username_smart = ' + $scope.user.username;
-                            document.cookie           = 'password_smart = ' + CryptoJS.AES.encrypt($scope.user.password, 'SmartStudio');
+                            if(response.result.local_storage === 1){
+                                localStorage.setItem('username_smart', $scope.user.username);
+                                localStorage.setItem('password_smart', CryptoJS.AES.encrypt($scope.user.password, 'SmartStudio'));
+                            }else{
+                                document.cookie           = 'username_smart = ' + $scope.user.username;
+                                document.cookie           = 'password_smart = ' + CryptoJS.AES.encrypt($scope.user.password, 'SmartStudio');
+                            }
                             $state.go('home');
                         }
                         // showing error on login

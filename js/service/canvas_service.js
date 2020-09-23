@@ -685,6 +685,10 @@
             return (anchor.x_pos > zone.x_left && anchor.x_pos < zone.x_right && anchor.y_pos > zone.y_up && anchor.y_pos < zone.y_down);
         }
 
+        canvas_service.isElementInsideZone = (element, zone) => {
+            return (element.x_pos > zone.x_left && element.x_pos < zone.x_right && element.y_pos > zone.y_up && element.y_pos < zone.y_down);
+        }
+
 
 
 

@@ -68,6 +68,8 @@
                     <th md-column ng-if="exists('type', columns)"><span class="color-darkcyan">{{lang.type}}</span></th>
                     <th md-column ng-if="exists('permiteds', columns)"><span class="color-darkcyan">{{lang.permittedAssets | uppercase}}</span>
                     </th>
+                    <th md-column ng-if="exists('evac', columns)"><span class="color-darkcyan">{{lang.evac | uppercase}}</span>
+                    </th>
                     <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
@@ -174,6 +176,19 @@
                         </md-select>
                     </td>
 
+                    <td class="no-wrap" md-cell ng-if="exists('evac', columns)" ng-show="isAdmin">
+                        <md-input-container md-no-float class="md-block">
+                            <md-select ng-model="anchorEvac" ng-change="updateAnchorEvac(anchor.anchor, anchorEvac)"
+                                       aria-label="Seleziona ruolo">
+                                <md-option ng-selected="{{anchor.anchor.emergency_zone === 1}}" ng-value=1>{{lang.yes |
+                                    uppercase}}
+                                </md-option>
+                                <md-option ng-selected="{{anchor.anchor.emergency_zone === 0}}" ng-value=0>{{lang.no |
+                                    uppercase}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </td>
                     <td md-cell ng-show="isAdmin" class="no-wrap" ng-click="deleteRow(anchor.anchor)"><img
                             src="img/icons/delete_trash_24.png" alt="{{lang.deleteAnchor}}"
                             title="{{lang.deleteAnchor}}"></td>
