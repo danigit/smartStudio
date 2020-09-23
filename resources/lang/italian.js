@@ -413,11 +413,13 @@ function languageController($scope) {
         outCount: 'Numero uscite',
         noValue: 'Nessun valore',
         accessHistory: 'Storico accessi',
-        maxPeople: 'Limite affolamento',
+        // maxPeople: 'Limite affolamento',j
         fullZones: 'Zone affolate',
         insideVsMax: 'Presenti / Totali',
         zoneName: 'Nome zona',
-        anchorName: 'Nome ancora'
+        anchorName: 'Nome ancora',
+        localStorage: 'Archiviazione Locale',
+        evac: 'Evacuazione'
     }
 }
 
@@ -547,5 +549,8 @@ let lang = {
     batteryEmptyTags: 'Wetag scarichi',
     selectTagType: 'Selezionare un tipo valido',
     selectValidType: 'Selezionare un tipo valido',
-    phoneOptionsNotReseted: 'Impostazioni telefono non resetate'
+    phoneOptionsNotReseted: 'Impostazioni telefono non resetate',
+    maxPeople: 'ha raggiunto la sua capienza',
+    noZone: 'Nessuna zona',
+    notAvailable: 'Non disponibile'
 };

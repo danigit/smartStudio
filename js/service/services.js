@@ -1903,6 +1903,7 @@
             let username = service.getCookie('username_smart');
             let password = service.getCookie('password_smart');
             if (username !== '' && password !== '' && username !== undefined && password !== undefined) {
+               
                 service.getData('login', {
                     username: username,
                     password: CryptoJS.AES.decrypt(password, 'SmartStudio').toString(CryptoJS.enc.Utf8)
@@ -1916,6 +1917,29 @@
                         $state.go('home');
                     }
                 });
+            }else if (username === '' || password === '' || username === undefined || password === undefined){
+
+                username = localStorage.getItem('username_smart');
+                password = localStorage.getItem('password_smart');
+
+                if (username !== '' && password !== '' && username !== undefined && password !== undefined) {
+                    service.getData('login', {
+                        username: username,
+                        password: CryptoJS.AES.decrypt(password, 'SmartStudio').toString(CryptoJS.enc.Utf8)
+                    }, (response) => {
+
+                        // if the login is ok I save the username in local and redirect to home
+                        if (response.result.id !== undefined) {
+                            dataService.cookieEmpty = false;
+                            sessionStorage.user = CryptoJS.AES.encrypt(username, 'SmartStudio');
+                            service.callbacks = [];
+                            $state.go('home');
+                        }
+                    });
+                }else{
+                    $state.go('login');
+                }
+ 
             }else{
                 $state.go('login');
             }

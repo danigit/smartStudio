@@ -19,8 +19,8 @@ let groupTagDistance = 0.5;
 // show or hide the console messages
 const DEBUG = false;
 socketServer.onopen = function() {
-    socketOpened = true;
-};
+    socketOpened = true; 
+ };
 
 /***************************************************************
  * DIRECTORIES PATHS
@@ -110,6 +110,7 @@ const HOME_ALARM_UPDATE_TIME = 1000;
 const OUTDOOR_ALARM_UPDATE_TIME = 1000;
 const TAGS_ALARMS_WINDOW_UPDATE_TIME = 1000;
 const ALARMS_WINDOW_UPDATE_TIME = 1000;
+const EMERGENCY_WINDOW_UPDATE_TIME = 1000;
 const ANCHORS_ALARMS_WINDOW_UPDATE_TIME = 1000;
 const INDOOR_LOCATION_ICON = 'location-marker.png';
 const OUTDDOR_LOCATION_ICON = 'outdoor-location.png';

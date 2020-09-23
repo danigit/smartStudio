@@ -79,7 +79,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT ID, PASSWORD, ROLE FROM user WHERE  USERNAME = ?';
+            $this->query = 'SELECT ID, PASSWORD, ROLE, LOCAL_STORAGE FROM user WHERE  USERNAME = ?';
 
             $statement = $this->execute_selecting($this->query, 's', $username);
 
@@ -91,13 +91,13 @@ class Connection
                 return new db_errors(db_errors::$ERROR_ON_LOGIN);
             }
 
-            $statement->bind_result($res_id, $res_pass, $res_role);
+            $statement->bind_result($res_id, $res_pass, $res_role, $local_storage);
             $fetch = $statement->fetch();
 
             mysqli_close($this->connection);
 
             if ($fetch && password_verify($password, $res_pass))
-                return array('id' => $res_id, 'role' => $res_role);
+                return array('id' => $res_id, 'role' => $res_role, 'local_storage' => $local_storage);
 
             return new db_errors(db_errors::$ERROR_ON_LOGIN);
         }
@@ -3399,7 +3399,7 @@ class Connection
             $this->query = 'SELECT tag.ID, tag.NAME, tag.X_POS, tag.Y_POS, tag.TIME, tag.GPS_TIME, tag.ALARM_TIME, tag.BATTERY_STATUS, tag.GPS_NORTH_DEGREE, tag.MAN_DOWN, tag.GPS_EAST_DEGREE,
                         tag.MAN_DOWN_DISABLED, tag.MAN_DOWN_DISABLED_ALERTED, tag.MAN_DOWN_TACITATED, tag.SOS, tag.SOS_ALERTED, tag.MAN_IN_QUOTE, tag.MAN_IN_QUOTE_ALERTED,
                         tag.CALL_ME_ALARM, tag.EVACUATION_ALARM, tag.RADIO_SWITCHED_OFF, tag.DIAGNOSTIC_REQUEST, tag.INSIDE_ZONE, tag.IS_EXIT, tag.BATTERY_LEVEL, tag.TEMPERATURE, 
-                        floor.NAME AS FLOOR_NAME, a.NAME AS ANCHOR_NAME, tag_types.ID AS TYPE_ID, c.ID AS CATEGORY_ID, c.DESCRIPTION AS CATEGORY_DESCRIPTION, c.ICON_NAME_ALARM, c.ICON_NAME_NO_ALARM, c.ICON_NAME_OFFLINE, tag_types.DESCRIPTION AS TAG_TYPE_NAME, tag_types.SLEEP_TIME_INDOOR, dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
+                        floor.NAME AS FLOOR_NAME, a.NAME AS ANCHOR_NAME, a.ID AS ANCHOR_ID, tag_types.ID AS TYPE_ID, c.ID AS CATEGORY_ID, c.DESCRIPTION AS CATEGORY_DESCRIPTION, c.ICON_NAME_ALARM, c.ICON_NAME_NO_ALARM, c.ICON_NAME_OFFLINE, tag_types.DESCRIPTION AS TAG_TYPE_NAME, tag_types.SLEEP_TIME_INDOOR, dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI
                         FROM tag JOIN anchor a ON tag.ANCHOR_ID = a.ID JOIN floor ON a.FLOOR_ID = floor.ID JOIN tag_types ON tag. TYPE = tag_types.ID 
                         JOIN location l ON floor.LOCATION_ID = l.ID JOIN dress_alarm ON tag.ID = dress_alarm.TAG_ID LEFT JOIN category c on tag.CATEGORY_ID = c.ID
                         WHERE floor.ID = ? AND l.NAME = ? AND tag.GPS_NORTH_DEGREE = 0 AND tag.GPS_EAST_DEGREE = 0';
@@ -3423,7 +3423,7 @@ class Connection
                     'sos' => $row['SOS'], 'sos_alerted' => $row['SOS_ALERTED'], 'man_in_quote' => $row['MAN_IN_QUOTE'], 'man_in_quote_alerted' => $row['MAN_IN_QUOTE_ALERTED'],
                     'call_me_alarm' => $row['CALL_ME_ALARM'], 'evacuation_alarm' => $row['EVACUATION_ALARM'], 'radio_switched_off' => $row['RADIO_SWITCHED_OFF'],
                     'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'], 'inside_zone' => $row['INSIDE_ZONE'], 'is_exit' => $row['IS_EXIT'], 'battery_level' => $row['BATTERY_LEVEL'],
-                    'temperature' => $row['TEMPERATURE'], 'floor_name' => $row['FLOOR_NAME'], 'anchor_name' => $row['ANCHOR_NAME'],
+                    'temperature' => $row['TEMPERATURE'], 'floor_name' => $row['FLOOR_NAME'], 'anchor_name' => $row['ANCHOR_NAME'], 'anchor_id' => $row['ANCHOR_ID'],
                     'tag_type_id' => $row['TYPE_ID'], 'tag_type_name' => $row['TAG_TYPE_NAME'], 'sleep_time_indoor' => $row['SLEEP_TIME_INDOOR'],
                     'helmet_dpi' => $row['HELMET_DPI'], 'belt_dpi' => $row['BELT_DPI'], 'glove_dpi' => $row['GLOVE_DPI'], 'shoe_dpi' => $row['SHOE_DPI'], 'category_id' => $row['CATEGORY_ID'],
                     'category_description' => $row['CATEGORY_DESCRIPTION'], 'icon_name_alarm' => $row['ICON_NAME_ALARM'], 'icon_name_no_alarm' => $row['ICON_NAME_NO_ALARM'],
@@ -4467,7 +4467,37 @@ class Connection
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
+    /**
+     * Function that change the value of max_people_alert to 1 
+     * @param $zone_id
+     * @param $zone_color
+     * @return db_errors|int|mysqli_stmt
+     */
+    function insert_max_people_alert($zone_id)
+    {
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
+        if ($this->connection) {
+            $this->query = "UPDATE zone SET MAX_PEOPLE_ALERT = 1 WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 's', $zone_id);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
+
+            $this->result = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $this->result;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
     /**
      * Function that change the value of a tag field
      * @param $zone_id
@@ -4820,12 +4850,62 @@ class Connection
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
 
+    function change_user_local_storage($user_id, $user_field, $field_value){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE user SET " . strtoupper($user_field) . " = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'is', (int)$field_value, $user_id);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
+
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
+    function update_anchor_evac($anchor_id, $anchor_field, $field_value){
+        $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
+
+        if ($this->connection) {
+            $this->query = "UPDATE anchor SET " . strtoupper($anchor_field) . " = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'is', (int)$field_value, $anchor_id);
+
+            if ($statement instanceof db_errors) {
+                mysqli_close($this->connection);
+                return $statement;
+            } else if ($statement == false) {
+                mysqli_close($this->connection);
+                return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
+            }
+
+            $aff_rows = $this->connection->affected_rows;
+
+            mysqli_close($this->connection);
+
+            return $aff_rows;
+        }
+
+        return new db_errors(db_errors::$CONNECTION_ERROR);
+    }
+
     function get_all_users()
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT ID, USERNAME, NAME, ROLE, EMAIL_ALERT, MESSENGER_ID, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, TELEPHONE_NUMBER, CALL_GSM, SMS, WHATSAPP FROM user";
+            $this->query = "SELECT ID, USERNAME, NAME, ROLE, EMAIL_ALERT, MESSENGER_ID, BOT_URL, BOT_CHAT_ID, WEB_SERVICE_URL, TELEPHONE_NUMBER, CALL_GSM, SMS, WHATSAPP, LOCAL_STORAGE FROM user";
 
             $this->result = $this->connection->query($this->query);
 
@@ -4838,7 +4918,7 @@ class Connection
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'username' => $row['USERNAME'], 'name' => $row['NAME'], 'role' => $row['ROLE'], 'email_alert' => $row['EMAIL_ALERT'],
                     'messenger_id' => $row['MESSENGER_ID'], 'bot_url' => $row['BOT_URL'], 'bot_chat_id' => $row['BOT_CHAT_ID'], 'web_service_url' => $row['WEB_SERVICE_URL'], 'telephone_number' => $row['TELEPHONE_NUMBER'],
-                    'call_me' => $row['CALL_GSM'], 'sms' => $row['SMS'], 'whats_app' => $row['WHATSAPP']);
+                    'call_me' => $row['CALL_GSM'], 'sms' => $row['SMS'], 'whats_app' => $row['WHATSAPP'], 'local_storage' => $row['LOCAL_STORAGE']);
             }
 
             mysqli_close($this->connection);

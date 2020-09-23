@@ -760,9 +760,10 @@
                     $scope.userCallMe = '';
                     $scope.userSms = '';
                     $scope.userWhatsApp = '';
+                    $scope.userLocalStorage = '';
                     $scope.isUserManager = userManager;
                     $scope.showColumn = true;
-                    $scope.items = ['username', 'name', 'role', 'phone', 'url_bot', 'bot_id', 'email_alert', 'messenger_id', 'webservice_url', 'callMe', 'sms', 'whatsApp'];
+                    $scope.items = ['username', 'name', 'role', 'phone', 'url_bot', 'bot_id', 'email_alert', 'messenger_id', 'webservice_url', 'callMe', 'sms', 'whatsApp', 'localStorage'];
                     $scope.columns = [];
                     $scope.query = {
                         limitOptions: [500, 15, 10, 5],
@@ -822,7 +823,23 @@
                             });
                         }
                     };
-                    
+
+                    $scope.updateUserLocalStorage = (user, userLocalStorage) => {
+                        if(user.local_storage !== userLocalStorage.toString()){
+                            newSocketService.getData('change_super_user_local_storage', {
+                                super_user_id: user.id,
+                                super_user_field: 'local_storage',
+                                field_value: userLocalStorage
+                            }, (response) => {
+                                console.log(response);
+                                dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                if(response.result !== 0){
+                                    updateSuperuserTable();
+                                }
+                            });
+                        }
+                    };
+
                     $scope.updateUserWhatsApp = (user, userWhatsApp) => {
                         if(user.whats_app !== userWhatsApp.toString()){
                             newSocketService.getData('change_super_user_telephone_options', {
@@ -1492,8 +1509,7 @@
                         location: dataService.location.name
                     }, (response) => {
 
-                        console.log(response)
-                        $scope.access_history.anchors = response.result;
+                        $scope.access_history.anchors = response.result.filter(a => a.anchor_type_id === 5);
                     });
 
                     /**
@@ -1526,9 +1542,6 @@
                         let fromDate = $filter('date')(newValues[0], 'yyyy-MM-dd');
                         let toDate = $filter('date')(newValues[1], 'yyyy-MM-dd');
 
-                        console.log('watching')
-                        console.log(newValues)
-                        
                         newSocketService.getData('get_access_history', {
                             fromDate: fromDate,
                             toDate: toDate,
@@ -4081,10 +4094,11 @@
                         tags: dataService.allTags
                     };
                     $scope.anchors = [];
+                    $scope.anchorEvac = '';
                     $scope.permitteds = [];
                     $scope.anchorTypes = [];
                     $scope.selectedType = null;
-                    $scope.items = ['name', 'x_pos', 'y_pos', 'z_pos', 'floor', 'radius', 'ip', 'battery', 'state', 'rssi', 'proximity', 'type', 'mac', 'permiteds'];
+                    $scope.items = ['name', 'x_pos', 'y_pos', 'z_pos', 'floor', 'radius', 'ip', 'battery', 'state', 'rssi', 'proximity', 'type', 'mac', 'permiteds', 'evac'];
                     $scope.columns = [];
 
                     $scope.query = {
@@ -4131,6 +4145,17 @@
                         });
                     };
 
+                    $scope.updateAnchorEvac = (anchor, anchorEvac) => {
+                        if(anchor.emergency_zone !== anchorEvac){
+                            newSocketService.getData('update_anchor_evac', {
+                                anchor_id: anchor.id,
+                                anchor_field: 'emergency_zone',
+                                field_value: anchorEvac
+                            }, (response) => {
+                                dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                            });
+                        }
+                    };
                     /**
                      * Fuction that control if the permitted assets are changed
                      * @param anchor

@@ -1234,6 +1234,18 @@ class webSocketServer implements MessageComponentInterface{
                 $this->clients[$from->resourceId]->send(json_encode($result));
                 break;
             }
+            //activating max_people alert
+            case 'insert_max_people_alert':{
+                $result['action'] = 'insert_max_people_alert';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                $query = $this->connection->insert_max_people_alert($decoded_message['data']['zone_id']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
             //changing the location field
             case 'change_zone_field':{
                 $result['action'] = 'change_zone_field';
@@ -1437,6 +1449,40 @@ class webSocketServer implements MessageComponentInterface{
                 }
 
                 $query = $this->connection->change_user_telephone_options($decoded_message['data']['super_user_id'], $decoded_message['data']['super_user_field'],
+                    $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
+            case 'change_super_user_local_storage':{
+                $result['action'] = 'change_super_user_telephone_options';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                if($decoded_message['data']['field_value'] === '') {
+                    $decoded_message['data']['field_value'] = null;
+                }
+
+                $query = $this->connection->change_user_local_storage($decoded_message['data']['super_user_id'], $decoded_message['data']['super_user_field'],
+                    $decoded_message['data']['field_value']);
+
+                ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
+
+                $this->clients[$from->resourceId]->send(json_encode($result));
+                break;
+            }
+            //changing the location field
+            case 'update_anchor_evac':{
+                $result['action'] = 'update_anchor_evac';
+                $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
+
+                if($decoded_message['data']['field_value'] === '') {
+                    $decoded_message['data']['field_value'] = 0;
+                }
+
+                $query = $this->connection->update_anchor_evac($decoded_message['data']['anchor_id'], $decoded_message['data']['anchor_field'],
                     $decoded_message['data']['field_value']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;

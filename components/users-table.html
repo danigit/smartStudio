@@ -73,6 +73,8 @@
                             class="color-darkcyan">{{lang.sms | uppercase}}</span>
                     <th md-column md-order-by="whats_app" ng-if="exists('whatsApp', columns)" ng-show="isAdmin"><span
                             class="color-darkcyan">{{lang.whatsApp | uppercase}}</span>
+                    <th md-column md-order-by="whats_app" ng-if="exists('whatsApp', columns)" ng-show="isAdmin"><span
+                            class="color-darkcyan">{{lang.localStorage | uppercase}}</span>
                     <th md-column md-order-by="manage_locations" ng-show="isAdmin || isUserManager"><span
                             class="color-darkcyan">{{lang.manageLocation | uppercase}}</span></th>
                     <th md-column ng-show="isAdmin || isUserManager"></th>
@@ -167,6 +169,19 @@
                                     uppercase}}
                                 </md-option>
                                 <md-option ng-selected="{{user.whats_app === '0'}}" ng-value=0>{{lang.no |
+                                    uppercase}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                    </td>
+                    <td class="no-wrap" md-cell ng-if="exists('localStorage', columns)" ng-show="isAdmin">
+                        <md-input-container md-no-float class="md-block">
+                            <md-select ng-model="userLocalStorage" ng-change="updateUserLocalStorage(user, userLocalStorage)"
+                                       aria-label="Seleziona ruolo">
+                                <md-option ng-selected="{{user.local_storage === '1'}}" ng-value=1>{{lang.yes |
+                                    uppercase}}
+                                </md-option>
+                                <md-option ng-selected="{{user.local_storage === '0'}}" ng-value=0>{{lang.no |
                                     uppercase}}
                                 </md-option>
                             </md-select>
