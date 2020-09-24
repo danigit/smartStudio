@@ -4830,6 +4830,8 @@
                 if (response.result === 'logged_out') {
                     document.cookie = "username_smart = ; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
                     document.cookie = "password_smart = ; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+                    localStorage.removeItem('username_smart');
+                    localStorage.removeItem('password_smart');
                     $state.go('login');
                 }
             });

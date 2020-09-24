@@ -1437,6 +1437,8 @@
          * Functionthat handles the emergency zone dialog
          */
         $scope.showEmergencyZone = () => {
+            dataService.canvasInterval = dataService.stopTimer(dataService.canvasInterval);
+
             $mdDialog.show({
                 locals: { floor: canvasCtrl.defaultFloor[0].name, tags: dataService.floorTags },
                 templateUrl: componentsPath + 'emergency-alarm-info.html',
@@ -1466,13 +1468,17 @@
                     // continuously updating the tag situation
                     dataService.emergencyZoneInterval = $interval(function() {
 
+                        if (DEBUG)
+                            console.log('updating the emergency zone...');
+
                         let tempTotalPresent = 0;
-                        let tempTotalZones = 0;
+                        let tempTotalTags = 0;
                         newSocketService.getData('get_anchors_by_floor_and_location', {
                             floor: canvasCtrl.floorData.defaultFloorName,
                             location: canvasCtrl.floorData.location
                         }, response =>{
                             let emergencyAnchors = response.result.filter(a => a.emergency_zone === 1);
+
                             newSocketService.getData('get_tags_by_floor_and_location', {
                                 floor: canvasCtrl.defaultFloor[0].id,
                                 location: canvasCtrl.floorData.location
@@ -1482,25 +1488,38 @@
                                     location: canvasCtrl.floorData.location,
                                     user: dataService.user.username
                                 }, floorZones => {
-                                    emergencyAnchors.forEach(a => {
-                                        let anchorTags = floorTags.result.filter(ft => ft.anchor_id === a.id);
-                                        let anchorZone = floorZones.result.find(z => canvasService.isElementInsideZone(a, z));
-                                        
-                                        $scope.anchorsInfo[a.id] = {
-                                            anchorName: a.name, 
-                                            anchorFloor: a.floor_name, 
-                                            zone: anchorZone !== undefined ? anchorZone.name : lang.noZone, 
-                                            anchorTags: anchorTags, 
-                                            zoneMax: anchorZone !== undefined ? anchorZone.max_people : lang.notAvailable,
-                                            anchorData: [anchorTags.length, anchorZone.max_people]
-                                        };
-                                        tempTotalPresent += anchorTags.length;
-                                        tempTotalZones += anchorZone.max_people;
+                                    
+                                    newSocketService.getData('get_all_tags', {}, allTags => {
 
+                                        response.result.forEach(a => {
+                                           allTags.result.forEach(t => {
+
+                                               if(t.anchor_id === a.id.toString()){
+                                                   tempTotalTags++;
+                                               }
+                                           })
+                                        });
+
+                                        emergencyAnchors.forEach(a => {
+
+                                            let anchorTags = floorTags.result.filter(ft => ft.anchor_id === a.id);
+                                            let anchorZone = floorZones.result.find(z => canvasService.isElementInsideZone(a, z));
+                                            
+                                            $scope.anchorsInfo[a.id] = {
+                                                anchorName: a.name, 
+                                                anchorFloor: a.floor_name, 
+                                                zone: anchorZone !== undefined ? anchorZone.name : lang.noZone, 
+                                                anchorTags: anchorTags, 
+                                                zoneMax: anchorZone !== undefined ? anchorZone.max_people : lang.notAvailable,
+                                                anchorData: [anchorTags.length, anchorZone.max_people]
+                                            };
+                                            tempTotalPresent += anchorTags.length;
+
+                                        })
+
+                                        $scope.totalZones = tempTotalTags;
+                                        $scope.totalPresent = tempTotalPresent;
                                     })
-
-                                    $scope.totalZones = tempTotalZones;
-                                    $scope.totalPresent = tempTotalPresent;
                                 })
                             })
                         })
@@ -1526,42 +1545,49 @@
                     //     $scope.data = [$scope.men.safe, $scope.men.unsafe];
                     // });
 
-                    // newSocketService.getData('get_evacuation', {}, (response) => {
-                    //     if (response.result == 1) {
-                    //         evacuation_on = true;
-                    //         $scope.evacuation_button = 'background-green';
-                    //         $scope.evacuation_value = lang.reset;
-                    //     } else {
-                    //         $scope.evacuation_on = false;
-                    //         $scope.evacuation_button = 'background-red';
-                    //         $scope.evacuation_value = lang.initEvacuation;
-                    //     }
-                    // });
+                    newSocketService.getData('get_evacuation', {}, (response) => {
+                        if (response.result == 1) {
+                            evacuation_on = true;
+                            $scope.evacuation_button = 'background-green';
+                            $scope.evacuation_value = lang.reset;
+                        } else {
+                            $scope.evacuation_on = false;
+                            $scope.evacuation_button = 'background-red';
+                            $scope.evacuation_value = lang.initEvacuation;
+                        }
+                    });
 
-                    // $scope.sendEvacuation = () => {
-                    //     if (evacuation_on == false) {
-                    //         newSocketService.getData('set_evacuation', {}, (response) => {
-                    //             if (response.result > 0) {
-                    //                 evacuation_on = true;
-                    //                 $scope.evacuation_button = 'background-green';
-                    //                 $scope.evacuation_value = lang.reset;
-                    //             }
-                    //         });
-                    //     } else {
-                    //         newSocketService.getData('stop_evacuation', {}, (response) => {
-                    //             if (response.result > 0) {
-                    //                 evacuation_on = false;
-                    //                 $scope.evacuation_button = 'background-red';
-                    //                 $scope.evacuation_value = lang.initEvacuation;
-                    //             }
-                    //         })
-                    //     }
-                    // };
+                    $scope.sendEvacuation = () => {
+                        if (evacuation_on == false) {
+                            newSocketService.getData('set_evacuation', {}, (response) => {
+                                if (response.result > 0) {
+                                    evacuation_on = true;
+                                    $scope.evacuation_button = 'background-green';
+                                    $scope.evacuation_value = lang.reset;
+                                }
+                            });
+                        } else {
+                            newSocketService.getData('stop_evacuation', {}, (response) => {
+                                if (response.result > 0) {
+                                    evacuation_on = false;
+                                    $scope.evacuation_button = 'background-red';
+                                    $scope.evacuation_value = lang.initEvacuation;
+                                }
+                            })
+                        }
+                    };
 
                     $scope.hide = () => {
                         $mdDialog.hide();
                     }
-                }]
+                }],
+                // stoping the interva (request for data) when the window closes
+                onRemoving: function() {
+                    dataService.emergencyZoneInterval = dataService.stopTimer(dataService.emergencyZoneInterval);
+
+                    if (dataService.canvasInterval === undefined)
+                        constantUpdateCanvas();
+                }
             })
         };
 
