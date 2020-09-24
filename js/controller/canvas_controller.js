@@ -1488,37 +1488,36 @@
                                     location: canvasCtrl.floorData.location,
                                     user: dataService.user.username
                                 }, floorZones => {
-                                    
                                     newSocketService.getData('get_all_tags', {}, allTags => {
+                                        newSocketService.getData('get_anchors_by_location', {location: canvasCtrl.floorData.location}, locationAnchors => {
+                                            locationAnchors.result.forEach(a => {
+                                                allTags.result.forEach(t => {
 
-                                        response.result.forEach(a => {
-                                           allTags.result.forEach(t => {
+                                                    if(t.anchor_id === a.id.toString()){
+                                                        tempTotalTags++;
+                                                    }
+                                                })
+                                            });
 
-                                               if(t.anchor_id === a.id.toString()){
-                                                   tempTotalTags++;
-                                               }
-                                           })
-                                        });
+                                            emergencyAnchors.forEach(a => {
 
-                                        emergencyAnchors.forEach(a => {
+                                                let anchorTags = floorTags.result.filter(ft => ft.anchor_id === a.id);
+                                                let anchorZone = floorZones.result.find(z => canvasService.isElementInsideZone(a, z));
+                                                
+                                                $scope.anchorsInfo[a.id] = {
+                                                    anchorName: a.name, 
+                                                    anchorFloor: a.floor_name, 
+                                                    zone: anchorZone !== undefined ? anchorZone.name : lang.noZone, 
+                                                    anchorTags: anchorTags, 
+                                                    zoneMax: anchorZone !== undefined ? anchorZone.max_people : lang.notAvailable,
+                                                    anchorData: [anchorTags.length, anchorZone.max_people - anchorTags.length],
+                                                };
+                                                tempTotalPresent += anchorTags.length;
+                                            })
 
-                                            let anchorTags = floorTags.result.filter(ft => ft.anchor_id === a.id);
-                                            let anchorZone = floorZones.result.find(z => canvasService.isElementInsideZone(a, z));
-                                            
-                                            $scope.anchorsInfo[a.id] = {
-                                                anchorName: a.name, 
-                                                anchorFloor: a.floor_name, 
-                                                zone: anchorZone !== undefined ? anchorZone.name : lang.noZone, 
-                                                anchorTags: anchorTags, 
-                                                zoneMax: anchorZone !== undefined ? anchorZone.max_people : lang.notAvailable,
-                                                anchorData: [anchorTags.length, anchorZone.max_people - anchorTags.length],
-                                            };
-                                            tempTotalPresent += anchorTags.length;
-
+                                            $scope.totalZones = tempTotalTags;
+                                            $scope.totalPresent = tempTotalPresent;
                                         })
-
-                                        $scope.totalZones = tempTotalTags;
-                                        $scope.totalPresent = tempTotalPresent;
                                     })
                                 })
                             })

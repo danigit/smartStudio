@@ -41807,3 +41807,7 @@ Stack trace:
 [24-Sep-2020 13:52:56 Europe/Berlin] Sessione: simone
 [24-Sep-2020 13:54:47 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 55087
 [24-Sep-2020 13:54:47 Europe/Berlin] Sessione: simone
+[24-Sep-2020 14:09:46 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 70508
+[24-Sep-2020 14:09:46 Europe/Berlin] Sessione: simone
+[24-Sep-2020 14:34:02 Europe/Berlin] CONNESSIONE SOCKET RISTABILITA DAL CLIENTE 76390
+[24-Sep-2020 14:34:03 Europe/Berlin] Sessione: simone
