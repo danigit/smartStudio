@@ -413,7 +413,7 @@ function languageController($scope) {
         outCount: 'Numero uscite',
         noValue: 'Nessun valore',
         accessHistory: 'Storico accessi',
-        // maxPeople: 'Limite affolamento',j
+        maxPeople: 'Limite affolamento',
         fullZones: 'Zone affolate',
         insideVsMax: 'Presenti / Totali',
         zoneName: 'Nome zona',

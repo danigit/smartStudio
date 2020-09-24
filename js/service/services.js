@@ -1922,7 +1922,7 @@
                 username = localStorage.getItem('username_smart');
                 password = localStorage.getItem('password_smart');
 
-                if (username !== '' && password !== '' && username !== undefined && password !== undefined) {
+                if (username !== '' && password !== '' && username !== undefined && password !== undefined && username !== null && password !== null) {
                     service.getData('login', {
                         username: username,
                         password: CryptoJS.AES.decrypt(password, 'SmartStudio').toString(CryptoJS.enc.Utf8)
