@@ -1239,7 +1239,7 @@ class webSocketServer implements MessageComponentInterface{
                 $result['action'] = 'insert_max_people_alert';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
 
-                $query = $this->connection->insert_max_people_alert($decoded_message['data']['zone_id']);
+                $query = $this->connection->insert_max_people_alert($decoded_message['data']['zone_id'], $decoded_message['data']['value']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

@@ -476,22 +476,25 @@
                                                     floorZones.result.forEach(fz => {
                                                         let tagsInZone = 0;
 
-                                                        tagsByFloorAndLocation.result.filter(t => !t.is_offline).forEach(lt => {
+                                                      tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off).forEach(lt => {
 
                                                             if (canvasService.isElementInsideZone(lt, fz)){
                                                                 tagsInZone++;
                                                             }
-                                                        })
+                                                      })
 
                                                         if(tagsInZone >= fz.max_people){
                                                             if(fz.max_people_alert === 0){
-                                                                newSocketService.getData('insert_max_people_alert', {zone_id: fz.id}, (response) => {
+                                                                newSocketService.getData('insert_max_people_alert', {zone_id: fz.id, value: 1}, (response) => {
                                                                     
                                                                     if(response.result === 1){
                                                                         dataService.showToast($mdToast, fz.name + ' ' + lang.maxPeople, 'background-darkred', 'color-white');
                                                                     }
                                                                 })
                                                             }
+                                                        } else {
+                                                            newSocketService.getData('insert_max_people_alert', {zone_id: fz.id, value: 0}, response => {
+                                                            })
                                                         }
                                                     })
 
@@ -1491,7 +1494,7 @@
                                     newSocketService.getData('get_all_tags', {}, allTags => {
                                         newSocketService.getData('get_anchors_by_location', {location: canvasCtrl.floorData.location}, locationAnchors => {
                                             locationAnchors.result.forEach(a => {
-                                                allTags.result.forEach(t => {
+                                                allTags.result.filter(t => !t.radio_switched_off).forEach(t => {
 
                                                     if(t.anchor_id === a.id.toString()){
                                                         tempTotalTags++;
@@ -1501,7 +1504,7 @@
 
                                             emergencyAnchors.forEach(a => {
 
-                                                let anchorTags = floorTags.result.filter(ft => ft.anchor_id === a.id);
+                                                let anchorTags = floorTags.result.filter(ft => !ft.radio_switched_off && ft.anchor_id === a.id);
                                                 let anchorZone = floorZones.result.find(z => canvasService.isElementInsideZone(a, z));
                                                 
                                                 $scope.anchorsInfo[a.id] = {
@@ -1509,8 +1512,8 @@
                                                     anchorFloor: a.floor_name, 
                                                     zone: anchorZone !== undefined ? anchorZone.name : lang.noZone, 
                                                     anchorTags: anchorTags, 
-                                                    zoneMax: anchorZone !== undefined ? anchorZone.max_people : lang.notAvailable,
-                                                    anchorData: [anchorTags.length, anchorZone.max_people - anchorTags.length],
+                                                    zoneMax: tempTotalTags,
+                                                    anchorData: [anchorTags.length, tempTotalTags - anchorTags.length],
                                                 };
                                                 tempTotalPresent += anchorTags.length;
                                             })
