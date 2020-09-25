@@ -419,7 +419,10 @@ function languageController($scope) {
         zoneName: 'Nome zona',
         anchorName: 'Nome ancora',
         localStorage: 'Archiviazione Locale',
-        evac: 'Evacuazione'
+        evac: 'Evacuazione',
+        evacuationTotal: ' in zone di evacuazione su un totale di ',
+        evacuationBeforePresent: '',
+        evacuationAfterTotal: ''
     }
 }
 

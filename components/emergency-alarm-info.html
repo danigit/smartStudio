@@ -92,7 +92,7 @@
                     </div>
                 </div>
                 <div ng-if="!isAnchorsEmpty()" layout="row" class="text-center font-x-large text-bold color-red">
-                    <p class="width-100">{{totalPresent}} in zone di evacuazione su un totale di {{totalZones}}</p>
+                  <p class="width-100">{{lang.evacuationBeforePresent}} {{totalPresent}} {{lang.evacuationTotal}} {{totalZones}} {{lang.evacuationAfterTotal}}</p>
                 </div>
             </div>
         </div>

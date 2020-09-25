@@ -17,7 +17,7 @@ let socketServer = new WebSocket(SOCKET_PATH);
 let socketOpened = false;
 let groupTagDistance = 0.5;
 // show or hide the console messages
-const DEBUG = true;
+const DEBUG = false;
 socketServer.onopen = function() {
     socketOpened = true; 
  };

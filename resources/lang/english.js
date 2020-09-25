@@ -410,7 +410,10 @@ function languageController($scope) {
         zoneName: '',
         anchorName: '',
         localStorage: '',
-        evac: ''
+        evac: '',
+        evacuationTotal: '',
+        evacuationBeforePresent: '',
+        evacuationAfterTotal: ''
     }
 }
 

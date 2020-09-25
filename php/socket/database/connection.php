@@ -4473,13 +4473,13 @@ class Connection
      * @param $zone_color
      * @return db_errors|int|mysqli_stmt
      */
-    function insert_max_people_alert($zone_id)
+    function insert_max_people_alert($zone_id, $value)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "UPDATE zone SET MAX_PEOPLE_ALERT = 1 WHERE ID = ?";
-            $statement = $this->execute_selecting($this->query, 's', $zone_id);
+            $this->query = "UPDATE zone SET MAX_PEOPLE_ALERT = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'is', $value, $zone_id);
 
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
