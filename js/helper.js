@@ -320,7 +320,7 @@ function drawRect(begin, drawingContext) {
  * @param alpha
  */
 // drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
-function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, drawingOn, alpha) {
+function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, drawingOn, zoneName, alpha) {
     let realHeight = (floorWidth * canvasHeight) / canvasWidth;
 
     let virtualPositionTop    = scaleIconSize(begin.x, begin.y, floorWidth, realHeight, canvasWidth, canvasHeight);
@@ -334,6 +334,7 @@ function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeig
         drawingContext.fillStyle = 'black';
         drawingContext.fillRect(virtualPositionTop.width - 5, virtualPositionTop.height - 5, 10, 10);
     }
+    
     drawingContext.globalAlpha = alpha;
     drawingContext.fillStyle   = color;
     drawingContext.fillRect(virtualPositionTop.width | 0, virtualPositionTop.height | 0, width | 0, height | 0);
@@ -341,6 +342,9 @@ function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeig
     drawingContext.stroke();
     drawingContext.closePath();
 
+    drawingContext.beginPath();
+    drawingContext.fillStyle = 'black';
+    drawingContext.fillText(zoneName, virtualPositionTop.width | 0 + 5, virtualPositionTop.height | 0 + 10);
 }
 
 /**

@@ -413,7 +413,8 @@ function languageController($scope) {
         evac: '',
         evacuationTotal: '',
         evacuationBeforePresent: '',
-        evacuationAfterTotal: ''
+        evacuationAfterTotal: '',
+        noAnchors: ''
     }
 }
 

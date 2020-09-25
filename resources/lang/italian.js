@@ -422,7 +422,8 @@ function languageController($scope) {
         evac: 'Evacuazione',
         evacuationTotal: ' in zone di evacuazione su un totale di ',
         evacuationBeforePresent: '',
-        evacuationAfterTotal: ''
+        evacuationAfterTotal: '',
+        noAnchors: 'Nessuna ancora presente'
     }
 }
 

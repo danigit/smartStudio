@@ -357,7 +357,7 @@
                                                     y: zone.y_up,
                                                     xx: zone.x_right,
                                                     yy: zone.y_down
-                                                }, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, zone.color, false, alpha);
+                                                }, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, zone.color, false, zone.name, alpha);
                                             });
 
                                             // ordering the zones in the header according to the header order of each one
@@ -1458,6 +1458,8 @@
                     $scope.anchorsInfo = {};
                     $scope.totalPresent = 0;
                     $scope.totalZones = 0;
+                    $scope.isAnchorsEmpty = 0;
+
                     let evacuation_on = false;
 
                     $scope.men = {
@@ -1502,8 +1504,13 @@
                                                 })
                                             });
 
+                                            if(emergencyAnchors.length === 0){
+                                                for (var member in $scope.anchorsInfo) delete $scope.anchorsInfo[member];
+                                            }
+
                                             emergencyAnchors.forEach(a => {
 
+                                                console.log("inside for loop")
                                                 let anchorTags = floorTags.result.filter(ft => !ft.radio_switched_off && ft.anchor_id === a.id);
                                                 let anchorZone = floorZones.result.find(z => canvasService.isElementInsideZone(a, z));
                                                 
@@ -1518,6 +1525,12 @@
                                                 tempTotalPresent += anchorTags.length;
                                             })
 
+                                            if(Object.keys($scope.anchorsInfo).length !== 0){
+                                                $scope.isAnchorsEmpty = 2;
+                                            }else{
+                                                $scope.isAnchorsEmpty = 1;
+                                            }
+
                                             $scope.totalZones = tempTotalTags;
                                             $scope.totalPresent = tempTotalPresent;
                                         })
@@ -1526,10 +1539,6 @@
                             })
                         })
                     }, EMERGENCY_WINDOW_UPDATE_TIME);
-
-                    $scope.isAnchorsEmpty = () => {
-                        return Object.keys($scope.anchorsInfo).length === 0;
-                    }
 
                     // newSocketService.getData('get_emergency_info', {
                     //     location: dataService.location.name,
