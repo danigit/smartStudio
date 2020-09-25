@@ -24,7 +24,7 @@
     <md-content class="popup-padding">
         <div layout="row" layout-align="center center">
             <div layout="column">
-                <md-progress-circular ng-show="isAnchorsEmpty()" md-diameter="100" md-mode="indeterminate"
+                <md-progress-circular ng-show="isAnchorsEmpty === 0" md-diameter="100" md-mode="indeterminate"
                                     class="margin-auto"></md-progress-circular>
                 <div ng-repeat="zone in anchorsInfo" layout="row" class="padding-tb-5-px border-bottom-1-lightgray">
                     <div layout="row">
@@ -91,12 +91,15 @@
                         </div>
                     </div>
                 </div>
-                <div ng-if="!isAnchorsEmpty()" layout="row" class="text-center font-x-large text-bold color-red">
+
+                <div ng-if="isAnchorsEmpty === 1">{{lang.noAnchors}}</div>
+
+                <div ng-if="isAnchorsEmpty === 2" layout="row" class="text-center font-x-large text-bold color-red">
                   <p class="width-100">{{lang.evacuationBeforePresent}} {{totalPresent}} {{lang.evacuationTotal}} {{totalZones}} {{lang.evacuationAfterTotal}}</p>
                 </div>
             </div>
         </div>
-        <div layout="row" layout-align="center center">
+        <div ng-if="isAnchorsEmpty === 2" layout="row" layout-align="center center">
             <div class="margin-left-20-px">
                 <md-button ng-click="sendEvacuation()" id="evacuation-button" ng-class="evacuation_button" class="md-raised color-white margin-auto margin-top-20-px">{{evacuation_value}}</md-button>
             </div>
