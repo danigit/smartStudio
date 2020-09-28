@@ -317,6 +317,19 @@
                                 // settuing the local location floor with the ones on the database
                                 canvasCtrl.floors = floorsByLocation.result;
 
+                                let fullZoneFounded = false;
+                                floorsByLocation.result.forEach(f => {
+                                    newSocketService.getData('get_floor_zones', {floor: f.name, location: canvasCtrl.floorData.location, user: dataService.user.username}, floorZones => {
+                                        if (floorZones.result.some(z => z.max_people_active === 1 && z.max_people_alert === 1)){
+
+                                            canvasCtrl.zonesFull = true;
+                                            fullZoneFounded = true;
+                                        } else if(!fullZoneFounded){
+                                            canvasCtrl.zonesFull = false;
+                                        }
+                                    })
+                                })
+
                                 // getting the drawings
                                 newSocketService.getData('get_drawing', { floor: canvasCtrl.defaultFloor[0].id }, (drawings) => {
 
@@ -341,8 +354,6 @@
                                         // getting the div where to show the headers of the working zones
                                         let workingZones = document.getElementById('working-zones');
                                         let angularWorkingZones = angular.element(workingZones);
-
-                                        canvasCtrl.zonesFull = floorZones.result.some(z => z.max_people_alert === 1);
 
                                         // controlling if there are zones to be drawned
                                         if (floorZones.result.length > 0 && dataService.switch.showZones) {
@@ -476,26 +487,12 @@
                                                     floorZones.result.forEach(fz => {
                                                         let tagsInZone = 0;
 
-                                                      tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off).forEach(lt => {
+                                                        tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off).forEach(lt => {
 
-                                                            if (canvasService.isElementInsideZone(lt, fz)){
-                                                                tagsInZone++;
-                                                            }
-                                                      })
-
-                                                        if(tagsInZone >= fz.max_people){
-                                                            if(fz.max_people_alert === 0){
-                                                                newSocketService.getData('insert_max_people_alert', {zone_id: fz.id, value: 1}, (response) => {
-                                                                    
-                                                                    if(response.result === 1){
-                                                                        dataService.showToast($mdToast, fz.name + ' ' + lang.maxPeople, 'background-darkred', 'color-white');
-                                                                    }
-                                                                })
-                                                            }
-                                                        } else {
-                                                            newSocketService.getData('insert_max_people_alert', {zone_id: fz.id, value: 0}, response => {
-                                                            })
-                                                        }
+                                                                if (canvasService.isElementInsideZone(lt, fz)){
+                                                                    tagsInZone++;
+                                                                }
+                                                        })
                                                     })
 
                                                     // showing the legend button
@@ -691,36 +688,54 @@
                         page: 1
                     };
 
-                    newSocketService.getData('get_floor_zones', {
-                        floor: canvasCtrl.floorData.defaultFloorName,
-                        location: canvasCtrl.floorData.location,
-                        user: dataService.user.username
-                    }, (response) => {
-                        newSocketService.getData('get_anchors_by_floor_and_location', {
-                            floor: canvasCtrl.floorData.defaultFloorName,
-                            location: canvasCtrl.floorData.location
-                        }, (anchors) => {
-                            $scope.tableEmpty = response.result.length === 0;
-                            $scope.fullZones = response.result.filter(z => z.max_people_alert === 1);
+                    canvasCtrl.floors.forEach(f => {
+                        newSocketService.getData('get_floor_zones', {
+                            floor: f.name,
+                            location: canvasCtrl.floorData.location,
+                            user: dataService.user.username
+                        }, (response) => {
+                            newSocketService.getData('get_anchors_by_floor_and_location', {
+                                floor: f.name,
+                                location: canvasCtrl.floorData.location
+                            }, (anchors) => {
+                                newSocketService.getData('get_tags_by_floor_and_location', {
+                                    floor: f.id,
+                                    location: canvasCtrl.floorData.location
+                                }, floorTags => {
+                                    $scope.tableEmpty = response.result.length === 0;
 
-                            let accessAnchors = anchors.result.filter(a => a.anchor_type_id === 5);
+                                    let fullFloorZones = response.result.filter(z => z.max_people_alert === 1 && z.max_people_active === 1);
+                                    let typeFiveAnchorInZone = false;
 
-                            $scope.fullZones.forEach((fz, index) => {
-                                accessAnchors.forEach(a => {
-                                    if (a.anchor_type_id === 5 && canvasService.isAnchorInZone(a, fz)){
+                                    let accessFloorAnchors = anchors.result.filter(a => a.anchor_type_id === 5);
+                                    
+                                    fullFloorZones.forEach((fz, index) => {
 
-                                        fz.anchor = a.name;
-                                        fz.in_count = a.in_count;
-                                        fz.out_count = a.out_count;
-                                        fz.inside = a.in_count - a.out_count;
-                                    }
+                                        fz.floor_name = f.name;
+
+                                        accessFloorAnchors.forEach(a => {
+                                            if (canvasService.isAnchorInZone(a, fz)){
+                                                typeFiveAnchorInZone = true;
+                                                fz.in_count = a.in_count;
+                                                fz.out_count = a.out_count;
+                                                fz.inside = a.in_count - a.out_count;
+                                            }
+                                        })
+                                    
+                                        if(!typeFiveAnchorInZone){
+                                            fz.in_count = '-';
+                                            fz.out_count = '-';
+                                            fz.inside = floorTags.result.filter(ft => !ft.radio_switched_off && canvasService.isElementInsideZone(ft, fz)).length
+                                        }
+                                    });
+                                    $scope.fullZones.push(...fullFloorZones);
                                 })
-                            });
+                            })
                         })
-                })
-
-                $scope.hide = () => {
-                    $mdDialog.hide();
+                    })
+                    
+                    $scope.hide = () => {
+                        $mdDialog.hide();
                     }
                 }],
             })

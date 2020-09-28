@@ -4224,7 +4224,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "SELECT zone.ID, zone.NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, MAX_PEOPLE, MAX_PEOPLE_ALERT, zone.COLOR AS ZONE_COLOR, FLOOR_ID, WORK_PROCESS_ID, working_process.DESCRIPTION, working_process.COLOR AS PROCESS_COLOR, 
+            $this->query = "SELECT zone.ID, zone.NAME, X_LEFT, X_RIGHT, Y_UP, Y_DOWN, MAX_PEOPLE, MAX_PEOPLE_ALERT, MAX_PEOPLE_ACTIVE, zone.COLOR AS ZONE_COLOR, FLOOR_ID, WORK_PROCESS_ID, working_process.DESCRIPTION, working_process.COLOR AS PROCESS_COLOR, 
                             PRIORITY, HEADER_ORDER, HEADER_LEFT_SIDE, FONT_COLOR FROM zone JOIN floor 
                             ON FLOOR_ID = floor.ID JOIN location l on floor.LOCATION_ID = l.ID JOIN user_has_location 
                             ON l.ID = user_has_location.LOCATION_ID JOIN user u ON user_has_location.USER_ID = u.ID LEFT JOIN working_process ON zone.WORK_PROCESS_ID = working_process.ID
@@ -4245,7 +4245,7 @@ class Connection
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'x_left' => $row['X_LEFT'],
                     'x_right' => $row['X_RIGHT'], 'y_up' => $row['Y_UP'], 'y_down' => $row['Y_DOWN'], 'max_people' => $row['MAX_PEOPLE'], 'max_people_alert' => $row['MAX_PEOPLE_ALERT'],
-                    'color' => $row['ZONE_COLOR'], 'floor_id' => $row['FLOOR_ID'], 'work_process_id' => $row['WORK_PROCESS_ID'], 'process_description' => $row['DESCRIPTION'],
+                    'max_people_active' => $row['MAX_PEOPLE_ACTIVE'], 'color' => $row['ZONE_COLOR'], 'floor_id' => $row['FLOOR_ID'], 'work_process_id' => $row['WORK_PROCESS_ID'], 'process_description' => $row['DESCRIPTION'],
                     'process_color' => $row['PROCESS_COLOR'], 'priority' => $row['PRIORITY'], 'header_order' => $row['HEADER_ORDER'], 'header_left_side' => $row['HEADER_LEFT_SIDE'],
                     'font_color' => $row['FONT_COLOR']);
             }
