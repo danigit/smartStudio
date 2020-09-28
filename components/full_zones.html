@@ -41,7 +41,7 @@
                 <thead md-head md-order="query.order">
                     <tr md-row>
                         <th md-column md-order-by="zone"><span class="color-darkcyan">{{lang.zoneName | uppercase}}</span></th>
-                        <th md-column md-order-by="zone"><span class="color-darkcyan">{{lang.anchorName | uppercase}}</span></th>
+                        <th md-column md-order-by="zone"><span class="color-darkcyan">{{lang.floorName | uppercase}}</span></th>
                         <th md-column md-order-by="zone"><span class="color-darkcyan">{{lang.inCount | uppercase}}</span></th>
                         <th md-column md-order-by="zone"><span class="color-darkcyan">{{lang.outCount | uppercase}}</span></th>
                         <th md-column md-order-by="zone"><span class="color-darkcyan">{{lang.insideVsMax | uppercase}}</span></th>
@@ -51,7 +51,7 @@
                 <tbody md-body>
                     <tr md-row ng-repeat="zone in fullZones | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
                         <td md-cell>{{zone.name}}</td>
-                        <td md-cell>{{zone.anchor}}</td>
+                        <td md-cell>{{zone.floor_name}}</td>
                         <td md-cell>{{zone.in_count}}</td>
                         <td md-cell>{{zone.out_count}}</td>
                         <td md-cell>{{zone.inside}}/{{zone.max_people}}</td>

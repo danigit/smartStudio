@@ -414,7 +414,8 @@ function languageController($scope) {
         evacuationTotal: '',
         evacuationBeforePresent: '',
         evacuationAfterTotal: '',
-        noAnchors: ''
+        noAnchors: '',
+        floorName: ''
     }
 }
 

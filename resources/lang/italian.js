@@ -423,7 +423,8 @@ function languageController($scope) {
         evacuationTotal: ' in zone di evacuazione su un totale di ',
         evacuationBeforePresent: '',
         evacuationAfterTotal: '',
-        noAnchors: 'Nessuna ancora presente'
+        noAnchors: 'Nessuna ancora presente',
+        floorName: 'Nome piano'
     }
 }
 
