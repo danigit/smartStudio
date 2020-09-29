@@ -73,6 +73,8 @@
                             class="color-darkcyan">{{lang.headerOrder}}</span></th>
                     <th md-column md-order-by="header_left_side" ng-if="isAdmin && exists('header_left_side', columns)">
                         <span class="color-darkcyan">{{lang.headerLeftSide}}</span></th>
+                    <th md-column md-order-by="color" ng-if="isAdmin && exists('croud', columns)"><span
+                            class="color-darkcyan">{{lang.croud}}</span></th>
                     <th ng-if="isAdmin" md-column></th>
                 </tr>
                 </thead>
@@ -135,6 +137,19 @@
                         ng-click="editCell($event, zone, 'header_left_side')"
                         ng-if="exists('header_left_side', columns)">
                         {{zone.header_left_side || lang.insertName}}
+                    </td>
+                    <td class="no-wrap" md-cell ng-if="exists('croud', columns)" ng-show="isAdmin">
+                        <md-input-container md-no-float class="md-block">
+                            <md-select ng-model="maxPeopleActive" ng-change="updateMaxPeopleActive(zone, maxPeopleActive)"
+                                       aria-label="Seleziona ruolo">
+                                <md-option ng-selected="{{zone.max_people_active === 1}}" ng-value=1>{{lang.yes |
+                                    uppercase}}
+                                </md-option>
+                                <md-option ng-selected="{{zone.max_people_active === 0}}" ng-value=0>{{lang.no |
+                                    uppercase}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
                     </td>
                     <td md-cell ng-show="isAdmin" ng-click="deleteRow(zone)"><img src="img/icons/delete_trash_24.png" alt="{{lang.deleteTag}}"
                                                                 title="{{lang.deleteTag}}"></td>

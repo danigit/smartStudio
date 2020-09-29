@@ -689,7 +689,30 @@
             return (element.x_pos > zone.x_left && element.x_pos < zone.x_right && element.y_pos > zone.y_up && element.y_pos < zone.y_down);
         }
 
+        canvas_service.getLocationTags = (location) => {
 
+            let tempTotalTags = 0;
+            return new Promise(resole => {
+                newSocketService.getData('get_all_tags', {}, allTags => {
+                    newSocketService.getData('get_anchors_by_location', {
+                        location: location
+                    }, locationAnchors => {
+
+                        // computing the total number of tags in location
+                        locationAnchors.result.forEach(a => {
+                            allTags.result.filter(t => !t.radio_switched_off).forEach(t => {
+
+                                if(t.anchor_id === a.id.toString()){
+                                    tempTotalTags++;
+                                }
+                            })
+                        });
+
+                        resole(tempTotalTags);
+                    })
+                })
+            })
+        }
 
 
 

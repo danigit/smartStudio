@@ -1235,11 +1235,11 @@ class webSocketServer implements MessageComponentInterface{
                 break;
             }
             //activating max_people alert
-            case 'insert_max_people_alert':{
-                $result['action'] = 'insert_max_people_alert';
+            case 'update_max_people_active':{
+                $result['action'] = 'update_max_people_active';
                 $result['session_state'] = $this->isSessionEnded($decoded_message['data']);
 
-                $query = $this->connection->insert_max_people_alert($decoded_message['data']['zone_id'], $decoded_message['data']['value']);
+                $query = $this->connection->update_max_people_active($decoded_message['data']['zone_id'], $decoded_message['data']['zone_field'], $decoded_message['data']['field_value']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 
