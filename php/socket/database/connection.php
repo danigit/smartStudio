@@ -4467,19 +4467,20 @@ class Connection
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
+
     /**
      * Function that change the value of max_people_alert to 1 
      * @param $zone_id
      * @param $zone_color
      * @return db_errors|int|mysqli_stmt
      */
-    function insert_max_people_alert($zone_id, $value)
+    function update_max_people_active($zone_id, $zone_field, $field_value)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = "UPDATE zone SET MAX_PEOPLE_ALERT = ? WHERE ID = ?";
-            $statement = $this->execute_selecting($this->query, 'is', $value, $zone_id);
+            $this->query = "UPDATE zone SET " . strtoupper($zone_field) . " = ? WHERE ID = ?";
+            $statement = $this->execute_selecting($this->query, 'is', (int)$field_value, $zone_id);
 
             if ($statement instanceof db_errors) {
                 mysqli_close($this->connection);
@@ -4489,15 +4490,16 @@ class Connection
                 return new db_errors(db_errors::$ERROR_ON_CHANGING_FIELD);
             }
 
-            $this->result = $this->connection->affected_rows;
+            $aff_rows = $this->connection->affected_rows;
 
             mysqli_close($this->connection);
 
-            return $this->result;
+            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
     }
+
     /**
      * Function that change the value of a tag field
      * @param $zone_id

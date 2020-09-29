@@ -143,6 +143,7 @@
                 canvasCtrl.defaultFloor = [dataService.userFloors.find(f => f.name === newValue)];
 
             canvasCtrl.floorData.defaultFloorName = canvasCtrl.defaultFloor[0].name;
+            canvasCtrl.floorData.defaultFloorId = canvasCtrl.defaultFloor[0].id;
             dataService.defaultFloorName = canvasCtrl.defaultFloor[0].name;
             canvasCtrl.floorData.gridSpacing = canvasCtrl.defaultFloor[0].map_spacing;
             canvasCtrl.floorData.floor_image_map = canvasCtrl.defaultFloor[0].image_map;
@@ -1492,40 +1493,27 @@
                             console.log('updating the emergency zone...');
 
                         let tempTotalPresent = 0;
-                        let tempTotalTags = 0;
-                        newSocketService.getData('get_anchors_by_floor_and_location', {
-                            floor: canvasCtrl.floorData.defaultFloorName,
-                            location: canvasCtrl.floorData.location
-                        }, response =>{
-                            let emergencyAnchors = response.result.filter(a => a.emergency_zone === 1);
-
+                        
+                        canvasCtrl.floors.forEach(f => {
                             newSocketService.getData('get_tags_by_floor_and_location', {
-                                floor: canvasCtrl.defaultFloor[0].id,
+                                floor: f.id,
                                 location: canvasCtrl.floorData.location
                             }, floorTags => {
-                                newSocketService.getData('get_floor_zones', {
-                                    floor: canvasCtrl.floorData.defaultFloorName,
-                                    location: canvasCtrl.floorData.location,
-                                    user: dataService.user.username
-                                }, floorZones => {
-                                    newSocketService.getData('get_all_tags', {}, allTags => {
-                                        newSocketService.getData('get_anchors_by_location', {location: canvasCtrl.floorData.location}, locationAnchors => {
-                                            locationAnchors.result.forEach(a => {
-                                                allTags.result.filter(t => !t.radio_switched_off).forEach(t => {
+                                newSocketService.getData('get_floor_zones', {floor: f.name, location: canvasCtrl.floorData.location, user: dataService.user.username}, floorZones => {
+                                    newSocketService.getData('get_anchors_by_floor_and_location', {
+                                        floor: f.name,
+                                        location: canvasCtrl.floorData.location
+                                    }, locationAnchors => {
 
-                                                    if(t.anchor_id === a.id.toString()){
-                                                        tempTotalTags++;
-                                                    }
-                                                })
-                                            });
+                                        let emergencyAnchors = locationAnchors.result.filter(a => a.emergency_zone === 1);
 
-                                            if(emergencyAnchors.length === 0){
-                                                for (var member in $scope.anchorsInfo) delete $scope.anchorsInfo[member];
-                                            }
+                                        if(emergencyAnchors.length === 0){
+                                            for (var member in $scope.anchorsInfo) delete $scope.anchorsInfo[member];
+                                        }
 
+                                        canvasService.getLocationTags(canvasCtrl.floorData.location).then(tempTotalTags => {
                                             emergencyAnchors.forEach(a => {
 
-                                                console.log("inside for loop")
                                                 let anchorTags = floorTags.result.filter(ft => !ft.radio_switched_off && ft.anchor_id === a.id);
                                                 let anchorZone = floorZones.result.find(z => canvasService.isElementInsideZone(a, z));
                                                 
@@ -1537,6 +1525,7 @@
                                                     zoneMax: tempTotalTags,
                                                     anchorData: [anchorTags.length, tempTotalTags - anchorTags.length],
                                                 };
+                                                
                                                 tempTotalPresent += anchorTags.length;
                                             })
 
@@ -1549,6 +1538,7 @@
                                             $scope.totalZones = tempTotalTags;
                                             $scope.totalPresent = tempTotalPresent;
                                         })
+
                                     })
                                 })
                             })

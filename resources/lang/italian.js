@@ -424,7 +424,8 @@ function languageController($scope) {
         evacuationBeforePresent: '',
         evacuationAfterTotal: '',
         noAnchors: 'Nessuna ancora presente',
-        floorName: 'Nome piano'
+        floorName: 'Nome piano',
+        croud: 'Assembramenti'
     }
 }
 

@@ -3427,9 +3427,10 @@
                     $scope.isOutdoor = false;
                     $scope.tableEmptyZone = false;
                     $scope.isUserManager = dataService.isUserManager;
-                    $scope.items = ['name', 'x_left', 'x_right', 'y_up', 'y_down', 'max_people', 'color', 'priority', 'header_order', 'header_left_side'];
+                    $scope.items = ['name', 'x_left', 'x_right', 'y_up', 'y_down', 'max_people', 'color', 'priority', 'header_order', 'header_left_side', 'croud'];
                     $scope.columns = [];
                     $scope.zonesTable = [];
+                    $scope.maxPeopleActive = '';
                     $scope.query = {
                         limitOptions: [500, 15, 10, 5],
                         order: 'name',
@@ -3465,6 +3466,20 @@
                             $scope.tableEmptyZone = response.result.length === 0;
                             $scope.$apply();
                         });
+                    };
+
+                    $scope.updateMaxPeopleActive = (zone, maxPeopleActive) => {
+
+                        if(zone.max_people_active !== maxPeopleActive){
+                            newSocketService.getData('update_max_people_active', {
+                                zone_id: zone.id,
+                                zone_field: 'max_people_active',
+                                field_value: maxPeopleActive
+                            }, (response) => {
+                                dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                zone.max_people_active = maxPeopleActive;
+                            });
+                        }
                     };
 
                     updateZoneTable();
@@ -4153,9 +4168,11 @@
                                 field_value: anchorEvac
                             }, (response) => {
                                 dataService.showMessage($mdToast, lang.fieldChanged, lang.fieldNotChanged, response.result !== 0);
+                                anchor.emergency_zone = anchorEvac;
                             });
                         }
                     };
+
                     /**
                      * Fuction that control if the permitted assets are changed
                      * @param anchor
