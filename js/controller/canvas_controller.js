@@ -348,6 +348,11 @@
                                         if (floorZones.result.length > 0 && dataService.switch.showZones) {
                                             canvasCtrl.floorData.floorZones = floorZones.result;
 
+<<<<<<< HEAD
+=======
+                                           
+
+>>>>>>> 80799d7a9d92b6301b6ee44eba0b336d84d05244
                                             // ordering the zones according to the priority of each one
                                             orderedZones = floorZones.result.sort((z1, z2) => (z1.priority < z2.priority) ? 1 : -1);
                                             
