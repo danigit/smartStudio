@@ -351,15 +351,14 @@
                             //if the tag has a location then I go in the location
                             else {
                                 // closing the alarms table
-                                $mdDialog.hide();
                                 newSocketService.getData('save_location', { location: indoorTag.location_name }, (response) => {
-                                    if (!response.session_state)
-                                        window.location.reload();
 
                                     if (response.result === 'location_saved') {
                                         service.defaultFloorName = indoorTag.floor_name;
                                         service.locationFromClick = indoorTag.location_name;
                                         $state.go('canvas');
+
+                                        $mdDialog.hide();
                                     }
                                 });
                             }
@@ -396,7 +395,6 @@
                                 constantUpdateNotifications(map);
                             break;
                         case 'canvas':
-                            console.log('restarting canvas');
                             if (service.canvasInterval === undefined)
                                 constantUpdateNotifications();
                     }

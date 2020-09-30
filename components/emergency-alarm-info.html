@@ -94,13 +94,24 @@
 
                 <div ng-if="isAnchorsEmpty === 1">{{lang.noAnchors}}</div>
 
-                <div ng-if="isAnchorsEmpty === 2" layout="row" class="text-center font-x-large text-bold color-red">
-                  <p class="width-100">{{lang.evacuationBeforePresent}} {{totalPresent}} {{lang.evacuationTotal}} {{totalZones}} {{lang.evacuationAfterTotal}}</p>
+                <div ng-if="isAnchorsEmpty === 2" layout="column" class="text-center font-x-large text-bold color-red">
+                    <div layout="row">
+                        <p class="width-100">{{lang.evacuationBeforePresent}} {{totalPresent}} {{lang.evacuationTotal}} {{totalZones}} {{lang.evacuationAfterTotal}}</p>
+                    </div>
+            
+                    <div layout="row" layout-align="center center" class="padding-top-3-px">
+                        <md-select ng-model="empty" ng-if="lostTags.length > 0" placeholder="{{lang.lostTags}}" class="margin-none">
+                            <md-option ng-value="tag" ng-disabled="$index + 1" ng-repeat="tag in lostTags track by $index">
+                                <img src="img/icons/offline_tags_alert_red_24.png" class="margin-right-10-px" alt="{{lang.offlineTags}}" 
+                                title="{{lang.offlineTags}}"><span class="font-large vertical-align-super">{{tag.name}}</span>
+                            </md-option>
+                        </md-select>
+                    </div>
                 </div>
             </div>
         </div>
         <div ng-if="isAnchorsEmpty === 2" layout="row" layout-align="center center">
-            <div class="margin-left-20-px">
+            <div >
                 <md-button ng-click="sendEvacuation()" id="evacuation-button" ng-class="evacuation_button" class="md-raised color-white margin-auto margin-top-20-px">{{evacuation_value}}</md-button>
             </div>
         </div>

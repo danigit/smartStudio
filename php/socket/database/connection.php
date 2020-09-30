@@ -2944,7 +2944,7 @@ class Connection
 
         if ($this->connection) {
             $this->query = 'SELECT anchor.ID, anchor.MAC, anchor.NAME, X_POS, Y_POS, Z_POS, anchor.RADIUS, IP, RSSI_THRESHOLD, IN_COUNT, OUT_COUNT, PROXIMITY, anchor_types.ID AS ANCHOR_TYPE_ID, anchor_types.DESCRIPTION, PERMITTED_ASSET, IS_OFFLINE, 
-                        EMERGENCY_ZONE, NEIGHBORS, BATTERY_STATUS, FLOOR_ID, floor.NAME AS FLOOR_NAME, l.NAME AS LOCATION_NAME FROM anchor JOIN floor ON anchor.FLOOR_ID = floor.ID JOIN location l ON floor.LOCATION_ID = l.ID
+                        EMERGENCY_ZONE, NEIGHBORS, BATTERY_STATUS, BATTERY_LEVEL, FLOOR_ID, floor.NAME AS FLOOR_NAME, l.NAME AS LOCATION_NAME FROM anchor JOIN floor ON anchor.FLOOR_ID = floor.ID JOIN location l ON floor.LOCATION_ID = l.ID
                         JOIN anchor_types ON anchor.TYPE = anchor_types.ID WHERE floor.NAME = ? AND l.NAME = ? ORDER BY anchor.NAME';
 
             $statement = $this->execute_selecting($this->query, 'ss', $floor, $location);
@@ -2963,7 +2963,7 @@ class Connection
                 $result_array[] = array('id' => $row['ID'], 'mac' => $row['MAC'], 'name' => $row['NAME'], 'x_pos' => $row['X_POS'], "y_pos" => $row['Y_POS'],
                     'z_pos' => $row['Z_POS'], 'radius' => $row['RADIUS'], 'ip' => $row['IP'], 'rssi' => $row['RSSI_THRESHOLD'], 'in_count' => $row['IN_COUNT'], 'out_count' => $row['OUT_COUNT'], 'proximity' => $row['PROXIMITY'],
                     'anchor_type_id' => $row['ANCHOR_TYPE_ID'], 'type' => $row['DESCRIPTION'], 'permitted_asset' => $row['PERMITTED_ASSET'], 'is_offline' => $row['IS_OFFLINE'], 'emergency_zone' => $row['EMERGENCY_ZONE'],
-                    'neighbors' => $row['NEIGHBORS'], 'battery_status' => $row['BATTERY_STATUS'], 'floor_id' => $row['FLOOR_ID'], 'floor_name' => $row['FLOOR_NAME'], 'location_name' => $row['LOCATION_NAME']);
+                    'neighbors' => $row['NEIGHBORS'], 'battery_status' => $row['BATTERY_STATUS'], 'battery_level' => $row['BATTERY_LEVEL'], 'floor_id' => $row['FLOOR_ID'], 'floor_name' => $row['FLOOR_NAME'], 'location_name' => $row['LOCATION_NAME']);
             }
 
             mysqli_close($this->connection);
@@ -3142,7 +3142,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT t.ID, t.NAME, tt.DESCRIPTION AS TYPE, t.X_POS, t.Y_POS, t.TIME, t.BATTERY_STATUS, t.GPS_NORTH_DEGREE, t.MAN_DOWN, t.GPS_EAST_DEGREE,
+            $this->query = 'SELECT t.ID, t.NAME, tt.DESCRIPTION AS TYPE, t.X_POS, t.Y_POS, t.TIME, t.BATTERY_STATUS, t.BATTERY_LEVEL, t.TEMPERATURE, t.GPS_NORTH_DEGREE, t.MAN_DOWN, t.GPS_EAST_DEGREE,
                         t.MAN_DOWN_DISABLED, t.MAN_DOWN_TACITATED, t.SOS, t.MAN_IN_QUOTE, t.CALL_ME_ALARM, t.RADIO_SWITCHED_OFF, t.DIAGNOSTIC_REQUEST, 
                         t.INSIDE_ZONE, t.IS_EXIT, floor.NAME AS FLOOR_NAME, floor.IMAGE_MAP, anchor.NAME AS ANCHOR_NAME, tt.ID AS TYPE_ID, tt.SLEEP_TIME_INDOOR, tt.SLEEP_TIME_OUTDOOR, tt.ICON_NAME,
                         dress_alarm.HELMET_DPI, dress_alarm.BELT_DPI, dress_alarm.GLOVE_DPI, dress_alarm.SHOE_DPI, l.NAME AS LOCATION_NAME, l.LONGITUDE AS LOCATION_LONGITUDE, l.LATITUDE AS LOCATION_LATITUDE
@@ -3165,7 +3165,7 @@ class Connection
             while ($row = mysqli_fetch_assoc($this->result)) {
                 $result_array[] = array('id' => $row['ID'], 'name' => $row['NAME'], 'type_name' => $row['TYPE'], 'x_pos' => $row['X_POS'], 'y_pos' => $row['Y_POS'],
                     'gps_north_degree' => $row['GPS_NORTH_DEGREE'], 'gps_east_degree' => $row['GPS_EAST_DEGREE'], 'radio_switched_off' => $row['RADIO_SWITCHED_OFF'],
-                    'battery_status' => $row['BATTERY_STATUS'], 'man_down' => $row['MAN_DOWN'],
+                    'battery_status' => $row['BATTERY_STATUS'], 'battery_level' => $row['BATTERY_LEVEL'], 'temperature' => $row['TEMPERATURE'], 'man_down' => $row['MAN_DOWN'],
                     'man_down_disabled' => $row['MAN_DOWN_DISABLED'], 'man_down_tacitated' => $row['MAN_DOWN_TACITATED'],
                     'sos' => $row['SOS'], 'man_in_quote' => $row['MAN_IN_QUOTE'], 'call_me_alarm' => $row['CALL_ME_ALARM'],
                     'diagnostic_request' => $row['DIAGNOSTIC_REQUEST'],

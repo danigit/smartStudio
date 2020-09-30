@@ -139,17 +139,7 @@
 
         //watching the floor selection button
         $scope.$watch('canvasCtrl.floorData.defaultFloorName', (newValue) => {
-            if (newValue !== undefined)
-                canvasCtrl.defaultFloor = [dataService.userFloors.find(f => f.name === newValue)];
-
-            canvasCtrl.floorData.defaultFloorName = canvasCtrl.defaultFloor[0].name;
-            canvasCtrl.floorData.defaultFloorId = canvasCtrl.defaultFloor[0].id;
-            dataService.defaultFloorName = canvasCtrl.defaultFloor[0].name;
-            canvasCtrl.floorData.gridSpacing = canvasCtrl.defaultFloor[0].map_spacing;
-            canvasCtrl.floorData.floor_image_map = canvasCtrl.defaultFloor[0].image_map;
-            canvasImage.src = floorPath + canvasCtrl.floorData.floor_image_map;
-
-            context.clearRect(0, 0, canvas.width, canvas.height);
+            canvasService.changeFloor(canvas, context, canvasCtrl, canvasImage, newValue);
 
             if (dataService.canvasInterval === undefined) {
                 constantUpdateCanvas();
@@ -261,6 +251,9 @@
             let tagClouds = [];
             let singleTags = [];
             let canvasDrawned = false;
+            
+            canvasService.setDefaultFloor(canvasCtrl);
+            canvasService.changeFloor(canvas, context, canvasCtrl, canvasImage, dataService.defaultFloorName);
 
             // starting the continuous update of the canvas
             dataService.canvasInterval = $interval(function() {
@@ -1475,6 +1468,7 @@
                     $scope.totalPresent = 0;
                     $scope.totalZones = 0;
                     $scope.isAnchorsEmpty = 0;
+                    $scope.lostTags = [];
 
                     let evacuation_on = false;
 
@@ -1493,6 +1487,7 @@
                             console.log('updating the emergency zone...');
 
                         let tempTotalPresent = 0;
+                        let tempAnchorTags = [];
                         
                         canvasCtrl.floors.forEach(f => {
                             newSocketService.getData('get_tags_by_floor_and_location', {
@@ -1517,13 +1512,15 @@
                                                 let anchorTags = floorTags.result.filter(ft => !ft.radio_switched_off && ft.anchor_id === a.id);
                                                 let anchorZone = floorZones.result.find(z => canvasService.isElementInsideZone(a, z));
                                                 
+                                                tempAnchorTags.push(...anchorTags);
+
                                                 $scope.anchorsInfo[a.id] = {
                                                     anchorName: a.name, 
                                                     anchorFloor: a.floor_name, 
                                                     zone: anchorZone !== undefined ? anchorZone.name : lang.noZone, 
                                                     anchorTags: anchorTags, 
-                                                    zoneMax: tempTotalTags,
-                                                    anchorData: [anchorTags.length, tempTotalTags - anchorTags.length],
+                                                    zoneMax: tempTotalTags.length,
+                                                    anchorData: [anchorTags.length, tempTotalTags.length - anchorTags.length],
                                                 };
                                                 
                                                 tempTotalPresent += anchorTags.length;
@@ -1535,7 +1532,8 @@
                                                 $scope.isAnchorsEmpty = 1;
                                             }
 
-                                            $scope.totalZones = tempTotalTags;
+                                            $scope.lostTags = tempTotalTags.filter(t => !tempAnchorTags.some(tat => tat.id === t.id));
+                                            $scope.totalZones = tempTotalTags.length;
                                             $scope.totalPresent = tempTotalPresent;
                                         })
 
