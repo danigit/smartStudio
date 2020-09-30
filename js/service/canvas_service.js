@@ -23,6 +23,21 @@
             }
         };
 
+        canvas_service.changeFloor = (canvas, context, canvasCtrl, canvasImage, newValue) => {
+
+            if (newValue !== undefined)
+                canvasCtrl.defaultFloor = [dataService.userFloors.find(f => f.name === newValue)];
+
+            canvasCtrl.floorData.defaultFloorName = canvasCtrl.defaultFloor[0].name;
+            canvasCtrl.floorData.defaultFloorId = canvasCtrl.defaultFloor[0].id;
+            dataService.defaultFloorName = canvasCtrl.defaultFloor[0].name;
+            canvasCtrl.floorData.gridSpacing = canvasCtrl.defaultFloor[0].map_spacing;
+            canvasCtrl.floorData.floor_image_map = canvasCtrl.defaultFloor[0].image_map;
+            canvasImage.src = floorPath + canvasCtrl.floorData.floor_image_map;
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
         /**
          * Function that draws the grid on the canvas
          * @param canvasWidth
@@ -691,7 +706,7 @@
 
         canvas_service.getLocationTags = (location) => {
 
-            let tempTotalTags = 0;
+            let tempTotalTags = [];
             return new Promise(resole => {
                 newSocketService.getData('get_all_tags', {}, allTags => {
                     newSocketService.getData('get_anchors_by_location', {
@@ -703,7 +718,7 @@
                             allTags.result.filter(t => !t.radio_switched_off).forEach(t => {
 
                                 if(t.anchor_id === a.id.toString()){
-                                    tempTotalTags++;
+                                    tempTotalTags.push(t);
                                 }
                             })
                         });

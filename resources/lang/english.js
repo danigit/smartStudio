@@ -416,7 +416,8 @@ function languageController($scope) {
         evacuationAfterTotal: '',
         noAnchors: '',
         floorName: '',
-        croud: ''
+        croud: '',
+        vbatt: ''
     }
 }
 

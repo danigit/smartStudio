@@ -1865,6 +1865,7 @@
                     let updateTagsTable = () => {
                         dataService.getUserTags().then(response => {
                             $scope.tags = response;
+                            console.log($scope.tags);
 
                             response.forEach(function(tag) {
                                 let tagId = tag.id;
@@ -4113,7 +4114,7 @@
                     $scope.permitteds = [];
                     $scope.anchorTypes = [];
                     $scope.selectedType = null;
-                    $scope.items = ['name', 'x_pos', 'y_pos', 'z_pos', 'floor', 'radius', 'ip', 'battery', 'state', 'rssi', 'proximity', 'type', 'mac', 'permiteds', 'evac'];
+                    $scope.items = ['name', 'x_pos', 'y_pos', 'z_pos', 'floor', 'radius', 'ip', 'battery', 'vbatt', 'state', 'rssi', 'proximity', 'type', 'mac', 'permiteds', 'evac'];
                     $scope.columns = [];
 
                     $scope.query = {

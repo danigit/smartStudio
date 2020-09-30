@@ -59,6 +59,8 @@
                     <th md-column ng-if="exists('ip', columns)"><span class="color-darkcyan">{{lang.ip}}</span></th>
                     <th md-column ng-if="exists('battery', columns)"><span class="color-darkcyan">{{lang.batteryLevel | uppercase}}</span>
                     </th>
+                    <th md-column ng-if="exists('vbatt', columns)"><span class="color-darkcyan">{{lang.vbatt | uppercase}}</span>
+                    </th>
                     <th md-column ng-if="exists('state', columns)"><span class="color-darkcyan">{{lang.anchorState | uppercase}}</span>
                     </th>
                     <th md-column md-numeric="" ng-if="exists('rssi', columns)"><span class="color-darkcyan">{{lang.rssi | uppercase}}</span>
@@ -130,7 +132,10 @@
                                                                                         ng-src="{{anchor.anchor.battery_status ? 'img/icons/battery_empty_24.png'
                                                             : 'img/icons/battery_full_24.png'}}">
                     </td>
-
+                    <td md-cell class="no-wrap"
+                        ng-class="{'md-placeholder': !anchor.anchor.battery_level.toString()}" ng-if="exists('vbatt', columns)">
+                        {{anchor.anchor.battery_level / 1000 + " V" || lang.insertValue}}
+                    </td>
                     <td class="no-wrap" md-cell ng-if="exists('state', columns)"><span
                             ng-class="{'color-green': !anchor.anchor.is_offline, 'color-red': anchor.anchor.is_offline}">{{(anchor.anchor.is_offline ? (lang.offline | uppercase) : (lang.online | uppercase))}}</span>
                     </td>

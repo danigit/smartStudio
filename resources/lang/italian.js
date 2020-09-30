@@ -425,7 +425,8 @@ function languageController($scope) {
         evacuationAfterTotal: '',
         noAnchors: 'Nessuna ancora presente',
         floorName: 'Nome piano',
-        croud: 'Assembramenti'
+        croud: 'Assembramenti',
+        vbatt: 'Voltaggio batteria'
     }
 }
 
