@@ -476,7 +476,7 @@
                                                         canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(anchorsByFloorAndLocation.result);
                                                     }
 
-                                                    // drawing the zones
+                                                    // drawing the zones on canvas
                                                     canvasCtrl.floorData.floorZones.forEach((zone) => {
                                                         canvasService.drawZoneRect({
                                                             x: zone.x_left,
