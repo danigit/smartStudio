@@ -345,18 +345,18 @@
             return zones.filter(z => (coords.x > z.topLeft.x && coords.x < z.bottomRight.x && coords.y > z.topLeft.y && coords.y < z.bottomRight.y))
         };
 
-        canvas_service.drawZones = (zones, drawedZones, context, floorWidth, width, height, drawingOn, alpha) => {
+        canvas_service.drawZones = (zones, drawedZones, context, floorWidth, width, height, drawingOn, zoneName, alpha) => {
             zones.forEach((zone) => {
-                drawZoneRect({
+                canvas_service.drawZoneRect({
                     x : zone.x_left,
                     y : zone.y_up,
                     xx: zone.x_right,
                     yy: zone.y_down
-                }, context, floorWidth, width, height, zone.color, drawingOn, alpha);
+                }, context, floorWidth, width, height, zone.color, drawingOn, zoneName, alpha);
             });
 
             drawedZones.forEach((zone) => {
-                drawZoneRectFromDrawing({
+                canvas_service.drawZoneRectFromDrawing({
                     x : zone.topLeft.x,
                     y : zone.topLeft.y,
                     xx: zone.bottomRight.x,
@@ -410,7 +410,7 @@
          * @param drawingOn
          * @param alpha
          */
-        canvas_service.drawZoneRect = (begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, drawingOn, alpha) => {
+        canvas_service.drawZoneRect = (begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, drawingOn, zoneName, alpha) => {
             let realHeight = (floorWidth * canvasHeight) / canvasWidth;
 
             let virtualPositionTop    = scaleIconSize(begin.x, begin.y, floorWidth, realHeight, canvasWidth, canvasHeight);
@@ -431,6 +431,9 @@
             drawingContext.stroke();
             drawingContext.closePath();
 
+            drawingContext.beginPath();
+            drawingContext.fillStyle = 'black';
+            drawingContext.fillText(zoneName, virtualPositionTop.width | 0 + 5, virtualPositionTop.height | 0 + 10);
         };
 
         /**
@@ -729,6 +732,7 @@
             })
         }
 
+        
 
 
 
