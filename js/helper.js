@@ -308,72 +308,6 @@ function drawRect(begin, drawingContext) {
     drawingContext.closePath();
 }
 
-/**
- * Function that draws a rectangle on the canvas
- * @param begin
- * @param drawingContext
- * @param floorWidth
- * @param canvasWidth
- * @param canvasHeight
- * @param color
- * @param drawingOn
- * @param alpha
- */
-// drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
-function drawZoneRect(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, drawingOn, zoneName, alpha) {
-    let realHeight = (floorWidth * canvasHeight) / canvasWidth;
-
-    let virtualPositionTop    = scaleIconSize(begin.x, begin.y, floorWidth, realHeight, canvasWidth, canvasHeight);
-    let virtualPositionBottom = scaleIconSize(begin.xx, begin.yy, floorWidth, realHeight, canvasWidth, canvasHeight);
-
-    let width  = virtualPositionBottom.width - virtualPositionTop.width;
-    let height = virtualPositionBottom.height - virtualPositionTop.height;
-
-    drawingContext.beginPath();
-    if (drawingOn) {
-        drawingContext.fillStyle = 'black';
-        drawingContext.fillRect(virtualPositionTop.width - 5, virtualPositionTop.height - 5, 10, 10);
-    }
-    
-    drawingContext.globalAlpha = alpha;
-    drawingContext.fillStyle   = color;
-    drawingContext.fillRect(virtualPositionTop.width | 0, virtualPositionTop.height | 0, width | 0, height | 0);
-    drawingContext.globalAlpha = 1.0;
-    drawingContext.stroke();
-    drawingContext.closePath();
-
-    drawingContext.beginPath();
-    drawingContext.fillStyle = 'black';
-    drawingContext.fillText(zoneName, virtualPositionTop.width | 0 + 5, virtualPositionTop.height | 0 + 10);
-}
-
-/**
- * Function that draws a rectangle on the canvas
- * @param begin
- * @param drawingContext
- * @param floorWidth
- * @param canvasWidth
- * @param canvasHeight
- * @param color
- * @param alpha
- */
-// drawIcon(objects[index], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, false);
-function drawZoneRectFromDrawing(begin, drawingContext, floorWidth, canvasWidth, canvasHeight, color, alpha) {
-
-    let width  = begin.xx - begin.x;
-    let height = begin.yy - begin.y;
-
-    drawingContext.beginPath();
-    drawingContext.fillStyle = 'black';
-    drawingContext.fillRect(begin.x - 5, begin.y - 5, 10, 10);
-    drawingContext.globalAlpha = alpha;
-    drawingContext.fillStyle = color;
-    drawingContext.fillRect(begin.x, begin.y, width, height);
-    drawingContext.globalAlpha = 1.0;
-    drawingContext.stroke();
-    drawingContext.closePath();
-}
-
 function findZone(coords, zones, floor, canvasWidth, canvasHeight) {
     let findedZones = [];
     let realcoords = scaleSizeFromVirtualToReal(floor, canvasWidth, canvasHeight, coords.x, coords.y);
@@ -444,4 +378,4 @@ let displayListCluster = (tag, index) => {
 };
 
 // version number
-const UPDATE_VERSION = "3.43.0";
+const UPDATE_VERSION = "3.44.0";

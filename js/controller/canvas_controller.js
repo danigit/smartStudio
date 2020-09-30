@@ -96,6 +96,7 @@
                 canvasCtrl.showOfflineTagsIcon = false;
                 canvasCtrl.showOfflineAnchorsIcon = false;
                 canvasCtrl.showEngineOffIcon = false;
+                canvasCtrl.zonesFull = false;
                 canvasCtrl.speedDial.clickedButton = 'horizontal';
                 canvasCtrl.drawingImage = 'horizontal-line.png';
                 drawedZones = [];
@@ -122,7 +123,7 @@
 
                     if (zones !== null)
                         zones.forEach((zone) => {
-                            drawZoneRect({
+                            canvasService.drawZoneRect({
                                 x: zone.x_left,
                                 y: zone.y_up,
                                 xx: zone.x_right,
@@ -251,6 +252,7 @@
             let tagClouds = [];
             let singleTags = [];
             let canvasDrawned = false;
+            let orderedZones = [];
             
             canvasService.setDefaultFloor(canvasCtrl);
             canvasService.changeFloor(canvas, context, canvasCtrl, canvasImage, dataService.defaultFloorName);
@@ -268,14 +270,7 @@
                 bufferCanvas.width = canvasImage.naturalWidth;
                 bufferCanvas.height = canvasImage.naturalHeight;
 
-                // deleting the previous canvas, drawing a new one  and drawing border
-                canvasService.updateCanvas(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasImage);
-
-                // showing or hiding the grid on the canvas
-                if (dataService.switch.showGrid) {
-                    // drawing the canvas grid
-                    canvasService.drawDashedLine(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width);
-                }
+                
 
                 // getting all the tags
                 newSocketService.getData('get_all_tags', {}, (response) => {
@@ -353,18 +348,11 @@
                                         if (floorZones.result.length > 0 && dataService.switch.showZones) {
                                             canvasCtrl.floorData.floorZones = floorZones.result;
 
-                                            // ordering the zones according to the priority of each one
-                                            let orderedZones = floorZones.result.sort((z1, z2) => (z1.priority < z2.priority) ? 1 : -1);
-                                            // drawing the zones
-                                            orderedZones.forEach((zone) => {
-                                                drawZoneRect({
-                                                    x: zone.x_left,
-                                                    y: zone.y_up,
-                                                    xx: zone.x_right,
-                                                    yy: zone.y_down
-                                                }, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, zone.color, false, zone.name, alpha);
-                                            });
+                                           
 
+                                            // ordering the zones according to the priority of each one
+                                            orderedZones = floorZones.result.sort((z1, z2) => (z1.priority < z2.priority) ? 1 : -1);
+                                            
                                             // ordering the zones in the header according to the header order of each one
                                             let headerSortedZones = floorZones.result.filter(z => z.work_process_id !== null)
                                                 .sort((z1, z2) => (z1.header_order > z2.header_order) ? 1 : -1);
@@ -452,13 +440,7 @@
 
                                             dataService.anchors = anchorsByFloorAndLocation.result;
 
-                                            // if there are anchors to be drawn I drawn them
-                                            if (anchorsByFloorAndLocation.result.length > 0) {
-                                                loadAndDrawImagesOnCanvas(anchorsByFloorAndLocation.result, 'anchors', bufferCanvas, bufferContext, dataService.switch.showAnchors);
-                                                canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(anchorsByFloorAndLocation.result);
-                                            }
-
-                                            // getting the cameras for the floor and the location
+                                                                                        // getting the cameras for the floor and the location
                                             newSocketService.getData('get_cameras_by_floor_and_location', {
                                                 floor: canvasCtrl.floorData.defaultFloorName,
                                                 location: canvasCtrl.floorData.location
@@ -475,6 +457,31 @@
                                                     floor: canvasCtrl.defaultFloor[0].id,
                                                     location: canvasCtrl.floorData.location
                                                 }, (tagsByFloorAndLocation) => {
+
+                                                    // deleting the previous canvas, drawing a new one  and drawing border
+                                                    canvasService.updateCanvas(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasImage);
+
+                                                    // showing or hiding the grid on the canvas
+                                                    if (dataService.switch.showGrid) {
+                                                        // drawing the canvas grid
+                                                        canvasService.drawDashedLine(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width);
+                                                    }
+
+                                                    // if there are anchors to be drawn I drawn them
+                                                    if (anchorsByFloorAndLocation.result.length > 0) {
+                                                        loadAndDrawImagesOnCanvas(anchorsByFloorAndLocation.result, 'anchors', bufferCanvas, bufferContext, dataService.switch.showAnchors);
+                                                        canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(anchorsByFloorAndLocation.result);
+                                                    }
+
+                                                    // drawing the zones
+                                                    orderedZones.forEach((zone) => {
+                                                        canvasService.drawZoneRect({
+                                                            x: zone.x_left,
+                                                            y: zone.y_up,
+                                                            xx: zone.x_right,
+                                                            yy: zone.y_down
+                                                        }, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, zone.color, false, zone.name, alpha);
+                                                    });
 
                                                     dataService.floorTags = tagsByFloorAndLocation.result;
 
@@ -880,7 +887,7 @@
                     canvasService.updateDrawingCanvas(dataService, drawedLines, canvas.width, canvas.height, context, canvasImage, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width, canvasCtrl.switch.showDrawing, false);
 
                     // drawing the old zones
-                    canvasService.drawZones(zones, drawedZones, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, true, alpha);
+                    canvasService.drawZones(zones, drawedZones, context, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, true, '', alpha);
                 }
 
                 // selecting the thing that I have to draw
@@ -903,7 +910,7 @@
                     case 'draw_zone':
                         {
                             if (dragingStarted === 1) {
-                                drawZoneRectFromDrawing({
+                                canvasService.drawZoneRectFromDrawing({
                                     x: prevClick.x,
                                     y: prevClick.y,
                                     xx: canvas.canvasMouseClickCoords(event).x,
@@ -918,7 +925,7 @@
                             if (zoneToModify !== undefined) {
                                 drawedZones = drawedZones.filter(z => !angular.equals(zoneToModify, z));
                                 zones = zones.filter(z => z.id !== zoneToModify.id);
-                                drawZoneRectFromDrawing({
+                                canvasService.drawZoneRectFromDrawing({
                                     x: zoneToModify.bottomRight.x,
                                     y: zoneToModify.bottomRight.y,
                                     xx: canvas.canvasMouseClickCoords(event).x,
@@ -1542,22 +1549,6 @@
                             })
                         })
                     }, EMERGENCY_WINDOW_UPDATE_TIME);
-
-                    // newSocketService.getData('get_emergency_info', {
-                    //     location: dataService.location.name,
-                    //     floor: floor
-                    // }, (response) => {
-                    //     if (!response.session_state)
-                    //         window.location.reload();
-
-                    //     $scope.safeTags = response.result;
-                    //     $scope.unsafeTags = tags.filter(t => !response.result.some(i => i.tag_name === t.name));
-
-                    //     $scope.men.safe = response.result.length;
-                    //     $scope.men.unsafe = tags.length - response.result.length;
-
-                    //     $scope.data = [$scope.men.safe, $scope.men.unsafe];
-                    // });
 
                     newSocketService.getData('get_evacuation', {}, (response) => {
                         if (response.result == 1) {
