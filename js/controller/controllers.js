@@ -4161,6 +4161,22 @@
                         });
                     };
 
+                    $scope.showAnchorIcon = (anchor) => {
+
+                        console.log(anchor)
+                        if(anchor.anchor_type_id === 5){
+                            if(anchor.is_offline){
+                                return 'img/icons/tags/access_anchor_offline_32.png';
+                            } else{
+                                return 'img/icons/tags/access_anchor_online_32.png';
+                            }
+                        } else if(anchor.is_offline){
+                            return 'img/icons/tags/anchor_offline_16.png';
+                        } else{
+                            return 'img/icons/tags/anchor_online_16.png';
+                        }
+                    }
+
                     $scope.updateAnchorEvac = (anchor, anchorEvac) => {
                         if(anchor.emergency_zone !== anchorEvac){
                             newSocketService.getData('update_anchor_evac', {

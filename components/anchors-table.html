@@ -81,7 +81,7 @@
                     ng-repeat="anchor in anchors | orderBy: query.order | limitTo: query.limit: (query.page -1 ) * query.limit">
                     <td md-cell><img alt="{{lang.anchorState}}" title="{{lang.anchorState}}"
                                      aria-label="{{lang.anchorState}}"
-                                     ng-src="{{anchor.anchor.is_offline ? 'img/icons/tags/anchor_offline_16.png' : 'img/icons/tags/anchor_online_16.png'}}">
+                                     ng-src="{{showAnchorIcon(anchor.anchor)}}">
                     </td>
 
                     <td md-cell class="no-wrap" ng-click="editCell($event, anchor.anchor, 'name')"
