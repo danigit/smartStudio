@@ -663,7 +663,7 @@
                             canvasService.drawIcon(objects[index], context, image, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, false);
                         })
                 }
-            })
+            }
         };
 
         $scope.showFullZones = () => {
