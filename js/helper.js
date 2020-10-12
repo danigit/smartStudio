@@ -377,5 +377,48 @@ let displayListCluster = (tag, index) => {
     }
 };
 
+function loadAnchorsImages (){
+    let anchorTypes = ['access_anchor_online_32.png', 'access_anchor_offline_32.png', 'anchor_online_16.png', 'anchor_offline_16.png'];
+    let i;
+
+    for(i = 0; i < anchorTypes.length; i++){
+        const img = new Image();
+        anchorsImages.push({type: anchorTypes[i], img: img});
+        img.src = tagsIconPath + anchorTypes[i];
+    }
+}
+loadAnchorsImages();
+
+function loadCamerasImages (){
+    let cameraTypes = ['camera_online_16.png', 'camera_offline_16.png'];
+    let i;
+
+    for(i = 0; i < cameraTypes.length; i++){
+        const img = new Image();
+        camerasImages.push({type: cameraTypes[i], img: img});
+        img.src = tagsIconPath + cameraTypes[i];
+    }
+}
+loadCamerasImages();
+
+function loadTagsImages (){
+    let tagTypes = ['cumulative_tags_all_32.png', 'cumulative_tags_half_alert_32.png', 
+                       'cumulative_tags_all_alert_32.png', 'cumulative_tags_offline_alert_32.png',
+                       'cumulative_tags_offline_online_32.png', 'cumulative_tags_offline_32.png',
+                       'cumulative_tags_32.png', 'sos_24.png', 'man_down_24.png', 'battery_low_24.png',
+                       'helmet_dpi_24.png', 'belt_dpi_24.png', 'glove_dpi_24.png', 'shoe_dpi_24.png', 
+                       'man_down_disabled_24.png', 'man_down_tacitated_24.png', 'man_in_quote_24.png', 
+                       'call_me_alarm_24.png', 'offline_tag_24.png', 'online_tag_24.png',
+                       'Col.png', 'Colatori_sos.png', 'Colatori_man_down.png'];
+    let i;
+
+    for(i = 0; i < tagTypes.length; i++){
+        const img = new Image();
+        tagsImages.push({type: tagTypes[i], img: img});
+        img.src = tagsIconPath + tagTypes[i];
+    }
+}
+loadTagsImages();
+
 // version number
-const UPDATE_VERSION = "3.45.0";
+const UPDATE_VERSION = "3.45.1";

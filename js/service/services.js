@@ -54,6 +54,9 @@
         service.alarmsInterval = undefined;
         service.reconnectSocket = null;
         service.isInHome = false;
+        service.floorZones = [];
+        service.locationFloors = [];
+        service.allLocations = [];
         service.switch = {
             showFullscreen: false,
         };
@@ -1525,7 +1528,8 @@
         };
 
         //controlling the alarms and setting the alarm icon
-        service.assigningTagImage = (tag, image) => {
+        service.assigningTagImage = (tag) => {
+
             let category_name_alarm = '';
             let category_name_offline = '';
             let category_name_no_alarm = '';
@@ -1538,82 +1542,83 @@
 
             if (tag.sos) {
                 if (isCategoryAndImageNotNull(tag)) {
-                    image.src = tagsIconPath + category_name_alarm + '_sos.png';
+                    return tagsImages.find(i => i.type === category_name_alarm + '_sos.png').img;
                 } else {
-                    image.src = tagsIconPath + 'sos_24.png';
+                    return tagsImages.find(i => i.type === 'sos_24.png').img;
                 }
             } else if (tag.man_down) {
                 if (isCategoryAndImageNotNull(tag)) {
-                    image.src = tagsIconPath + category_name_alarm + '.png';
+                    console.log(category_name_alarm)
+                    return tagsImages.find(i => i.type === category_name_alarm + '_man_down.png').img;
                 } else {
-                    image.src = tagsIconPath + 'man_down_24.png';
+                    return tagsImages.find(i => i.type === 'man_down_24.png').img;
                 }
             } else if (tag.battery_status) {
                 if (isCategoryAndImageNotNull(tag)) {
-                    image.src = tagsIconPath + category_name_alarm + '.png';
+                    return tagsImages.find(i => i.type === category_name_alarm + '_battery_status.png').img;
                 } else {
-                    image.src = tagsIconPath + 'battery_low_24.png';
+                    return tagsImages.find(i => i.type === 'battery_low_24.png').img;
                 }
             } else if (tag.helmet_dpi) {
                 if (isCategoryAndImageNotNull(tag)) {
-                    image.src = tagsIconPath + category_name_alarm + '.png';
+                    return tagsImages.find(i => i.type === category_name_alarm + '_helmet_dpi.png').img;
                 } else {
-                    image.src = tagsIconPath + 'helmet_dpi_24.png';
+                    return tagsImages.find(i => i.type === 'helmet_dpi_24.png').img;
                 }
             } else if (tag.belt_dpi) {
                 if (isCategoryAndImageNotNull(tag)) {
-                    image.src = tagsIconPath + category_name_alarm + '.png';
+                    return tagsImages.find(i => i.type === category_name_alarm + '_belt_dpi.png').img;
                 } else {
-                    image.src = tagsIconPath + 'belt_dpi_24.png';
+                    return tagsImages.find(i => i.type === 'belt_dpi_24.png').img;
                 }
             } else if (tag.glove_dpi) {
                 if (isCategoryAndImageNotNull(tag)) {
-                    image.src = tagsIconPath + category_name_alarm + '.png';
+                    return tagsImages.find(i => i.type === category_name_alarm + '_glove_dpi.png').img;
                 } else {
-                    image.src = tagsIconPath + 'glove_dpi_24.png';
+                    return tagsImages.find(i => i.type === 'glove_dpi_24.png').img;
                 }
             } else if (tag.shoe_dpi) {
                 if (isCategoryAndImageNotNull(tag)) {
-                    image.src = tagsIconPath + category_name_alarm + '.png';
+                    return tagsImages.find(i => i.type === category_name_alarm + '_shoe_dpi.png').img;
                 } else {
-                    image.src = tagsIconPath + 'shoe_dpi_24.png';
+                    return tagsImages.find(i => i.type === 'shoe_dpi_24.png').img;
                 }
             } else if (tag.man_down_disabled) {
                 if (isCategoryAndImageNotNull(tag)) {
-                    image.src = tagsIconPath + category_name_alarm + '.png';
+                    return tagsImages.find(i => i.type === category_name_alarm + '_man_down_disabled.png').img;
                 } else {
-                    image.src = tagsIconPath + 'man_down_disabled_24.png';
+                    return tagsImages.find(i => i.type === 'man_down_disabled_24.png').img;
                 }
             } else if (tag.man_down_tacitated) {
                 if (isCategoryAndImageNotNull(tag)) {
-                    image.src = tagsIconPath + category_name_alarm + '.png';
+                    return tagsImages.find(i => i.type === category_name_alarm + '_man_down_tacitated.png').img;
                 } else {
-                    image.src = tagsIconPath + 'man_down_tacitated_24.png';
+                    return tagsImages.find(i => i.type === 'man_down_tacitated_24.png').img;
                 }
             } else if (tag.man_in_quote) {
                 if (isCategoryAndImageNotNull(tag)) {
-                    image.src = tagsIconPath + category_name_alarm + '.png';
+                    return tagsImages.find(i => i.type === category_name_alarm + '_man_in_quote.png').img;
                 } else {
-                    image.src = tagsIconPath + 'man_in_quote_24.png';
+                    return tagsImages.find(i => i.type === 'man_in_quote_24.png').img;
                 }
             } else if (tag.call_me_alarm) {
                 if (isCategoryAndImageNotNull(tag)) {
-                    image.src = tagsIconPath + category_name_alarm + '.png';
+                    return tagsImages.find(i => i.type === category_name_alarm + '_call_me_alarm.png').img;
                 } else {
-                    image.src = tagsIconPath + 'call_me_alarm_24.png';
+                    return tagsImages.find(i => i.type === 'call_me_alarm_24.png').img;
                 }
             } else {
                 if (isCategoryAndImageNotNull(tag)) {
                     if (service.isTagOffline(tag)) {
-                        image.src = tagsIconPath + category_name_offline + '.png';
+                        return tagsImages.find(i => i.type === category_name_offline + '.png').img;
                     } else {
-                        image.src = tagsIconPath + category_name_no_alarm + '.png';
+                        return tagsImages.find(i => i.type === category_name_no_alarm + '.png').img;
                     }
                 } else {
                     if (service.isTagOffline(tag)) {
-                        image.src = tagsIconPath + 'offline_tag_24.png';
+                        return tagsImages.find(i => i.type === 'offline_tag_24.png').img;
                     } else {
-                        image.src = tagsIconPath + 'online_tag_24.png';
+                        return tagsImages.find(i => i.type === 'online_tag_24.png').img;
                     }
                 }
             }
