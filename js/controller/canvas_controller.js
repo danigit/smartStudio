@@ -438,7 +438,7 @@
 
                                             dataService.anchors = anchorsByFloorAndLocation.result;
 
-                                                                                        // getting the cameras for the floor and the location
+                                            // getting the cameras for the floor and the location
                                             newSocketService.getData('get_cameras_by_floor_and_location', {
                                                 floor: canvasCtrl.floorData.defaultFloorName,
                                                 location: canvasCtrl.floorData.location
@@ -465,12 +465,6 @@
                                                         canvasService.drawDashedLine(bufferCanvas.width, bufferCanvas.height, bufferContext, canvasCtrl.defaultFloor[0].map_spacing, canvasCtrl.defaultFloor[0].width);
                                                     }
 
-                                                    // if there are anchors to be drawn I drawn them
-                                                    if (anchorsByFloorAndLocation.result.length > 0) {
-                                                        loadAndDrawImagesOnCanvas(anchorsByFloorAndLocation.result, 'anchors', bufferCanvas, bufferContext, dataService.switch.showAnchors);
-                                                        canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(anchorsByFloorAndLocation.result);
-                                                    }
-
                                                     // drawing the zones on canvas
                                                     canvasCtrl.floorData.floorZones.forEach((zone) => {
                                                         canvasService.drawZoneRect({
@@ -481,135 +475,140 @@
                                                         }, bufferContext, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, zone.color, false, zone.name, alpha);
                                                     });
 
-                                                    dataService.floorTags = tagsByFloorAndLocation.result;
+                                                    // if there are anchors to be drawn I drawn them
+                                                    canvasCtrl.showOfflineAnchorsIcon = dataService.checkIfAnchorsAreOffline(anchorsByFloorAndLocation.result);
+                                                    loadAndDrawImagesOnCanvas(anchorsByFloorAndLocation.result, 'anchors', bufferCanvas, bufferContext, dataService.switch.showAnchors)
+                                                        .then(response => {
+                                                            dataService.floorTags = tagsByFloorAndLocation.result;
 
-                                                    floorZones.result.forEach(fz => {
-                                                        let tagsInZone = 0;
+                                                            floorZones.result.forEach(fz => {
+                                                                let tagsInZone = 0;
 
-                                                        tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off).forEach(lt => {
+                                                                tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off).forEach(lt => {
 
-                                                                if (canvasService.isElementInsideZone(lt, fz)){
-                                                                    tagsInZone++;
-                                                                }
-                                                        })
-                                                    })
-
-                                                    // showing the legend button
-                                                    canvasCtrl.showCategoriesButton = dataService.hasTagCategory(tagsByFloorAndLocation.result);
-
-                                                    // getting only the turned on tags and the tags that are no superated the second delta T
-                                                    visibleTags = tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off && !dataService.hasTagSuperatedSecondDelta(t));
-
-                                                    // creating the clouds
-                                                    cloudAndSinle = canvasService.createClouds(visibleTags);
-
-                                                    // separating the single and clouded tags
-                                                    tagClouds = cloudAndSinle.clouds;
-                                                    singleTags = cloudAndSinle.single;
-
-                                                    // loading the images for the clouds
-                                                    canvasService.loadTagCloudsImages(tagClouds, (images) => {
-
-                                                        // control if the tags have to be displayed
-                                                        if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
-                                                            // drawing the clouds on the canvas
-                                                            images.forEach(function(image, index) {
-                                                                if (image !== null) {
-                                                                    canvasService.drawCloudIcon(tagClouds[index][0], bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[index].length);
-                                                                }
-                                                            });
-                                                        }
-                                                        // control if the tags have to be displayed
-                                                        else if (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) {
-                                                            // drawing the tags only if there is at least one in alarm
-                                                            if (dataService.checkIfTagsHaveAlarms(visibleTags)) {
-                                                                images.forEach(function(image, index) {
-                                                                    if (image !== null) {
-                                                                        canvasService.drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[index].length);
-                                                                    }
-                                                                });
-                                                            }
-                                                        }
-                                                        // controll if the user is a generic user and showing anly clouds with alarms
-                                                        else if (!(canvasCtrl.isAdmin && canvasCtrl.isTracker && canvasCtrl.isUserManager)){
-                                                            images.forEach(function(image, index) {
-                                                                if (image !== null && image.alarm) {
-                                                                    canvasService.drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[index].length);
-                                                                }
-                                                            });
-                                                        }
-
-                                                        // loading the images for the single tags
-                                                        canvasService.loadTagSingleImages(singleTags, (images) => {
-
-                                                            // controlling if the tags have to be shown
-                                                            if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
-                                                                singleTags.forEach((tag, index) => {
-                                                                    if (dataService.checkIfTagHasAlarmNoBattery(tag)) {
-                                                                        canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
-                                                                            if (alarmsCounts[index] > alarms.length - 1)
-                                                                                alarmsCounts[index] = 0;
-
-                                                                            canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-
-                                                                            // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
-                                                                            context.drawImage(bufferCanvas, 0, 0);
-                                                                            canvasDrawned = true;
-                                                                        });
-                                                                    }
-                                                                    // drawing the tag without alarm
-                                                                    else {
-                                                                        if (tag.battery_status && dataService.hasTagReaperedAfterOffline(tag)) {
-                                                                            let img = new Image();
-                                                                            img.src = tagsIconPath + 'offline_tag_24.png';
-                                                                            canvasService.drawIcon(tag, bufferContext, img, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                        } else {
-                                                                            canvasService.drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                        if (canvasService.isElementInsideZone(lt, fz)){
+                                                                            tagsInZone++;
                                                                         }
-                                                                    }
                                                                 })
-                                                            }
-                                                            // controlling if the tags have to be displayed
-                                                            else if (canvasCtrl.isUserManager && dataService.checkIfTagsHaveAlarms(visibleTags)) {
-                                                                singleTags.forEach((tag, index) => {
-                                                                    if (dataService.checkIfTagHasAlarm(tag)) {
-                                                                        canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
-                                                                            if (alarmsCounts[index] > alarms.length - 1)
-                                                                                alarmsCounts[index] = 0;
+                                                            })
 
-                                                                            canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                            context.drawImage(bufferCanvas, 0, 0);
-                                                                            canvasDrawned = true;
+                                                            // showing the legend button
+                                                            canvasCtrl.showCategoriesButton = dataService.hasTagCategory(tagsByFloorAndLocation.result);
+
+                                                            // getting only the turned on tags and the tags that are no superated the second delta T
+                                                            visibleTags = tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off && !dataService.hasTagSuperatedSecondDelta(t));
+
+                                                            // creating the clouds
+                                                            cloudAndSinle = canvasService.createClouds(visibleTags);
+
+                                                            // separating the single and clouded tags
+                                                            tagClouds = cloudAndSinle.clouds;
+                                                            singleTags = cloudAndSinle.single;
+
+                                                            // loading the images for the clouds
+                                                            canvasService.loadTagCloudsImages(tagClouds, (images) => {
+
+                                                                // control if the tags have to be displayed
+                                                                if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
+                                                                    // drawing the clouds on the canvas
+                                                                    images.forEach(function(image, index) {
+                                                                        if (image !== null) {
+                                                                            canvasService.drawCloudIcon(tagClouds[index][0], bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[index].length);
+                                                                        }
+                                                                    });
+                                                                }
+                                                                // control if the tags have to be displayed
+                                                                else if (canvasCtrl.isUserManager && dataService.switch.showOutdoorTags) {
+                                                                    // drawing the tags only if there is at least one in alarm
+                                                                    if (dataService.checkIfTagsHaveAlarms(visibleTags)) {
+                                                                        images.forEach(function(image, index) {
+                                                                            if (image !== null) {
+                                                                                canvasService.drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[index].length);
+                                                                            }
                                                                         });
                                                                     }
-                                                                    // drawing the tag without alarm
-                                                                    else if (dataService.switch.showOutdoorTags){
-                                                                        canvasService.drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                }
+                                                                // controll if the user is a generic user and showing anly clouds with alarms
+                                                                else if (!(canvasCtrl.isAdmin && canvasCtrl.isTracker && canvasCtrl.isUserManager)){
+                                                                    images.forEach(function(image, index) {
+                                                                        if (image !== null && image.alarm) {
+                                                                            canvasService.drawCloudIcon(tagClouds[index][0], bufferContext, image, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, tagClouds[index].length);
+                                                                        }
+                                                                    });
+                                                                }
+
+                                                                // loading the images for the single tags
+                                                                canvasService.loadTagSingleImages(singleTags, (images) => {
+
+                                                                    // controlling if the tags have to be shown
+                                                                    if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
+                                                                        singleTags.forEach((tag, index) => {
+                                                                            if (dataService.checkIfTagHasAlarmNoBattery(tag)) {
+                                                                                canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
+                                                                                    if (alarmsCounts[index] > alarms.length - 1)
+                                                                                        alarmsCounts[index] = 0;
+
+                                                                                    canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+
+                                                                                    // drawing the canvas if not already drawned and if all the tag icons have been drawned on the canvas
+                                                                                    context.drawImage(bufferCanvas, 0, 0);
+                                                                                    canvasDrawned = true;
+                                                                                });
+                                                                            }
+                                                                            // drawing the tag without alarm
+                                                                            else {
+                                                                                if (tag.battery_status && dataService.hasTagReaperedAfterOffline(tag)) {
+                                                                                    let img = new Image();
+                                                                                    img.src = tagsIconPath + 'offline_tag_24.png';
+                                                                                    canvasService.drawIcon(tag, bufferContext, img, canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                } else {
+                                                                                    canvasService.drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                }
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                    // controlling if the tags have to be displayed
+                                                                    else if (canvasCtrl.isUserManager && dataService.checkIfTagsHaveAlarms(visibleTags)) {
+                                                                        singleTags.forEach((tag, index) => {
+                                                                            if (dataService.checkIfTagHasAlarm(tag)) {
+                                                                                canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
+                                                                                    if (alarmsCounts[index] > alarms.length - 1)
+                                                                                        alarmsCounts[index] = 0;
+
+                                                                                    canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                    context.drawImage(bufferCanvas, 0, 0);
+                                                                                    canvasDrawned = true;
+                                                                                });
+                                                                            }
+                                                                            // drawing the tag without alarm
+                                                                            else if (dataService.switch.showOutdoorTags){
+                                                                                canvasService.drawIcon(tag, bufferContext, images[index], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                context.drawImage(bufferCanvas, 0, 0);
+                                                                                canvasDrawned = true;
+                                                                            }
+                                                                        })
+                                                                    }
+                                                                    // controlling if the user is a generic user and showing anly the alarm tags
+                                                                    else if (!(canvasCtrl.isAdmin && canvasCtrl.isTracker && canvasCtrl.isUserManager)){
+                                                                        singleTags.forEach((tag, index) => {
+                                                                            if (dataService.checkIfTagHasAlarmNoBattery(tag)) {
+                                                                                canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
+                                                                                    if (alarmsCounts[index] > alarms.length - 1)
+                                                                                        alarmsCounts[index] = 0;
+
+                                                                                    canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
+                                                                                    context.drawImage(bufferCanvas, 0, 0);
+                                                                                    canvasDrawned = true;
+                                                                                });
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                    // controlling if the canvas has been already drawned, if not I drawn it
+                                                                    if (!canvasDrawned) {
                                                                         context.drawImage(bufferCanvas, 0, 0);
-                                                                        canvasDrawned = true;
-                                                                    }
-                                                                })
-                                                            }
-                                                            // controlling if the user is a generic user and showing anly the alarm tags
-                                                            else if (!(canvasCtrl.isAdmin && canvasCtrl.isTracker && canvasCtrl.isUserManager)){
-                                                                singleTags.forEach((tag, index) => {
-                                                                    if (dataService.checkIfTagHasAlarmNoBattery(tag)) {
-                                                                        canvasService.loadAlarmImages(dataService.getTagAlarms(tag), (alarms) => {
-                                                                            if (alarmsCounts[index] > alarms.length - 1)
-                                                                                alarmsCounts[index] = 0;
-
-                                                                            canvasService.drawIcon(tag, bufferContext, alarms[alarmsCounts[index]++], canvasCtrl.defaultFloor[0].width, bufferCanvas.width, bufferCanvas.height, true);
-                                                                            context.drawImage(bufferCanvas, 0, 0);
-                                                                            canvasDrawned = true;
-                                                                        });
                                                                     }
                                                                 });
-                                                            }
-                                                            // controlling if the canvas has been already drawned, if not I drawn it
-                                                            if (!canvasDrawned) {
-                                                                context.drawImage(bufferCanvas, 0, 0);
-                                                            }
-                                                        });
+                                                            });
                                                     });
                                                 });
                                             });
@@ -645,27 +644,33 @@
          * @param hasToBeDrawn
          */
         let loadAndDrawImagesOnCanvas = (objects, objectType, canvas, context, hasToBeDrawn) => {
-            // controll if the elements have to be drawned
-            if (hasToBeDrawn) {
-                // controlling if I have to draw anchors
-                if (objectType === 'anchors') {
-                    // loading anchors images
-                    canvasService.loadAnchorsImages(objects, (images) => {
-                        images.forEach(function(image, index) {
-                            canvasService.drawIcon(objects[index], context, image, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, false);
-                        })
-                    });
+            return new Promise(resolve => {
+
+                // controll if the elements have to be drawned
+                if (hasToBeDrawn) {
+                    // controlling if I have to draw anchors
+                    if (objectType === 'anchors' && objects.length > 0) {
+
+                        // loading anchors images
+                        canvasService.loadAnchorsImages(objects, (images) => {
+                            images.forEach(function(image, index) {
+                                canvasService.drawIcon(objects[index], context, image, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, false);
+                            })
+                            resolve(true);
+                        });
+                    }
+
+                    // controlling if I have to draw cameras
+                    else if (objectType === 'cameras') {
+                        // loading the cameras images
+                        canvasService.loadCamerasImages(objects, (images) => {
+                            images.forEach(function(image, index) {
+                                canvasService.drawIcon(objects[index], context, image, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, false);
+                            })
+                        });
+                    }
                 }
-                // controlling if I have to draw cameras
-                else if (objectType === 'cameras') {
-                    // loading the cameras images
-                    canvasService.loadCamerasImages(objects, (images) => {
-                        images.forEach(function(image, index) {
-                            canvasService.drawIcon(objects[index], context, image, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, false);
-                        })
-                    });
-                }
-            }
+            })
         };
 
         $scope.showFullZones = () => {

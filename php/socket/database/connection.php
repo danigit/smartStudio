@@ -5131,7 +5131,7 @@ class Connection
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'SELECT SAFE_MON_STATUS, TIME_REST, DESCRIPTION, COLOR, IS_ACTIVE_SAFEMON, IS_ACTIVE_TIME_REST FROM rtls JOIN safemon ON SAFE_MON_STATUS = safemon.ID ';
+            $this->query = 'SELECT SAFE_MON_STATUS, TIME_REST, DESCRIPTION, COLOR, IS_ACTIVESAFEMON, IS_ACTIVE_TIME_REST FROM rtls JOIN safemon ON SAFE_MON_STATUS = safemon.ID ';
 
             $this->result = $this->connection->query($this->query);
 
