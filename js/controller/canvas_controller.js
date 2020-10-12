@@ -484,29 +484,29 @@
 
                                                     if(tagsByFloorAndLocation.result.length > 0) dataService.floorTags = tagsByFloorAndLocation.result;
 
-                                                    floorZones.result.forEach(fz => {
-                                                        let tagsInZone = 0;
+                                                            floorZones.result.forEach(fz => {
+                                                                let tagsInZone = 0;
 
-                                                        tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off).forEach(lt => {
+                                                                tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off).forEach(lt => {
 
-                                                                if (canvasService.isElementInsideZone(lt, fz)){
-                                                                    tagsInZone++;
-                                                                }
-                                                        })
-                                                    })
+                                                                        if (canvasService.isElementInsideZone(lt, fz)){
+                                                                            tagsInZone++;
+                                                                        }
+                                                                })
+                                                            })
 
-                                                    // showing the legend button
-                                                    canvasCtrl.showCategoriesButton = dataService.hasTagCategory(tagsByFloorAndLocation.result);
+                                                            // showing the legend button
+                                                            canvasCtrl.showCategoriesButton = dataService.hasTagCategory(tagsByFloorAndLocation.result);
 
-                                                    // getting only the turned on tags and the tags that are no superated the second delta T
-                                                    visibleTags = tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off && !dataService.hasTagSuperatedSecondDelta(t));
+                                                            // getting only the turned on tags and the tags that are no superated the second delta T
+                                                            visibleTags = tagsByFloorAndLocation.result.filter(t => !t.radio_switched_off && !dataService.hasTagSuperatedSecondDelta(t));
 
-                                                    // creating the clouds
-                                                    cloudAndSinle = canvasService.createClouds(visibleTags);
+                                                            // creating the clouds
+                                                            cloudAndSinle = canvasService.createClouds(visibleTags);
 
-                                                    // separating the single and clouded tags
-                                                    tagClouds = cloudAndSinle.clouds;
-                                                    singleTags = cloudAndSinle.single;
+                                                            // separating the single and clouded tags
+                                                            tagClouds = cloudAndSinle.clouds;
+                                                            singleTags = cloudAndSinle.single;
 
                                                     // loading the images for the clouds
                                                     let cloudImages = canvasService.loadTagCloudsImages(tagClouds);
@@ -663,7 +663,7 @@
                             canvasService.drawIcon(objects[index], context, image, canvasCtrl.defaultFloor[0].width, canvas.width, canvas.height, false);
                         })
                 }
-            }
+            })
         };
 
         $scope.showFullZones = () => {
