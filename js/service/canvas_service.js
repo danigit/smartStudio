@@ -174,14 +174,9 @@
             return Math.hypot(x_dist, y_dist);
         };
 
-        canvas_service.loadTagCloudsImages = (tagClouds, onAllLoaded) => {
-            if (tagClouds.length === 0){
-                onAllLoaded([]);
-            }
+        canvas_service.loadTagCloudsImages = (tagClouds) => {
 
-            let i, numLoading = tagClouds.length;
-            const onload = () => --numLoading === 0 && onAllLoaded(images);
-            const result = {};
+            let i;
             const images = [];
 
             for(i = 0; i < tagClouds.length; i++) {
@@ -189,32 +184,36 @@
                 let tagState = canvas_service.checkTagsStateAlarmNoAlarmOffline(tagClouds[i]);
 
                 const img = new Image();
-                images.push(img);
 
                 if (tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
-                    img.src = tagsIconPath + 'cumulative_tags_all_32.png'
+                    img = anchorsImages.find(i => i.type === 'cumulative_tags_all_32.png');
                     img.alarm = false;
+                    images.push(img);
                 } else if (tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
-                    img.src = tagsIconPath + 'cumulative_tags_half_alert_32.png';
+                    img = anchorsImages.find(i => i.type === 'cumulative_tags_half_alert_32.png');
                     img.alarm = true;
+                    images.push(img);
                 } else if (tagState.withAlarm && !tagState.withoutAlarm && !tagState.offline) {
-                    img.src = tagsIconPath + 'cumulative_tags_all_alert_32.png'
+                    img = anchorsImages.find(i => i.type === 'cumulative_tags_all_alert_32.png');
                     img.alarm = true;
+                    images.push(img);
                 } else if (tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
-                    img.src = tagsIconPath + 'cumulative_tags_offline_alert_32.png'
+                    img = anchorsImages.find(i => i.type === 'cumulative_tags_offline_alert_32.png');
                     img.alarm = true;
+                    images.push(img);
                 } else if (!tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
-                    img.src = tagsIconPath + 'cumulative_tags_offline_online_32.png'
-                    img.alarm = false;
+                    img = anchorsImages.find(i => i.type === 'cumulative_tags_offline_online_32.png');
+                    img.alarm = true;
+                    images.push(img);
                 } else if (!tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
-                    img.src = tagsIconPath + 'cumulative_tags_offline_32.png'
-                    img.alarm = false;
+                    img = anchorsImages.find(i => i.type === 'cumulative_tags_offline_32.png');
+                    img.alarm = true;
+                    images.push(img);
                 } else if (!tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
-                    img.src = tagsIconPath + 'cumulative_tags_32.png'
-                    img.alarm = false;
+                    img = anchorsImages.find(i => i.type === 'cumulative_tags_32.png');
+                    img.alarm = true;
+                    images.push(img);
                 }
-
-                img.onload = onload;
             }
 
             return images;
@@ -255,19 +254,13 @@
          * @param onAllLoaded
          * @returns {[]}
          */
-        canvas_service.loadTagSingleImages = (singleTags, onAllLoaded) => {
-            if (singleTags.length === 0) {
-                onAllLoaded([])
-            }
+        canvas_service.loadTagSingleImages = (singleTags) => {
 
-            let i, numLoading = singleTags.length;
+            let i;
             const images      = [];
-            const onload      = () => --numLoading === 0 && onAllLoaded(images);
             for (i = 0; i < singleTags.length; i++) {
-                const img = new Image();
-                images.push(img);
                 // if (dataService.checkIfTagHasAlarm(singleTags[i])) {
-                dataService.assigningTagImage(singleTags[i], img);
+                images.push(dataService.assigningTagImage(singleTags[i]));
                 // } else if (dataService.isTagOffline(singleTags[i])) {
                 //     dataService.assigningTagImage(singleTags[i], img);
                 //     img.src = tagsIconPath + 'offline_tag_24.png';
@@ -275,7 +268,6 @@
                 //     dataService.assigningTagImage(singleTags[i], img);
                 // img.src = tagsIconPath + 'online_tag_24.png';
                 // }
-                img.onload = onload;
             }
             return images;
         };
@@ -586,27 +578,26 @@
          * @param onAllLoaded
          * @returns {[]}
          */
-        canvas_service.loadAnchorsImages = (anchors, onAllLoaded) => {
-            let i, numLoading = anchors.length;
-            const onload = () => --numLoading === 0 && onAllLoaded(images);
+        canvas_service.loadAnchorsImages = (anchors) => {
             const images = [];
+            let i;
+
             for(i = 0; i < anchors.length; i++){
-                const img = new Image();
-                images.push(img);
                 if (anchors[i].anchor_type_id === 5){
                     if(!anchors[i].is_offline){
-                        img.src = tagsIconPath + 'access_anchor_online_32.png';
+                        images.push(anchorsImages.find(i => i.type === 'access_anchor_online_32.png'))
                     }else if(anchors[i].is_offline){
-                        img.src = tagsIconPath + 'access_anchor_offline_32.png';
+                        images.push(anchorsImages.find(i => i.type === 'access_anchor_offline_32.png'))
                     }
                 }else{
-                    if (!anchors[i].is_offline)
-                        img.src = tagsIconPath + 'anchor_online_16.png';
-                    else if (anchors[i].is_offline)
-                        img.src = tagsIconPath + 'anchor_offline_16.png';
+                    if (!anchors[i].is_offline){
+                        images.push(anchorsImages.find(img => img.type === 'anchor_online_16.png'))
+                    }else if (anchors[i].is_offline){
+                        images.push(anchorsImages.find(img => img.type === 'anchor_offline_16.png'))
+                    }
                 }
-                img.onload = onload;
             }
+            console.log(images);
             return images;
         };
 
@@ -616,19 +607,15 @@
          * @param cameras
          * @param onAllLoaded
          */
-        canvas_service.loadCamerasImages = (cameras, onAllLoaded) => {
-            let i, numLoading = cameras.length;
-            const onload = () => --numLoading === 0 && onAllLoaded(images);
+        canvas_service.loadCamerasImages = (cameras) => {
+            let i;
             const images = [];
             for(i = 0; i < cameras.length; i++){
                 const img = new Image();
-                images.push(img);
                 if (!cameras[i].is_offline)
-                    img.src = tagsIconPath + 'camera_online_16.png';
+                    images.push(camerasImages.find(img => img.type === 'camera_online_16.png'))
                 else if (cameras[i].is_offline)
-                    img.src = tagsIconPath + 'camera_offline_16.png';
-
-                img.onload = onload;
+                    images.push(camerasImages.find(img => img.type === 'camera_offline_16.png'))
             }
             return images;
         };
@@ -731,40 +718,5 @@
                 })
             })
         }
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 })();

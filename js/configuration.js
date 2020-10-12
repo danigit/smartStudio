@@ -11,6 +11,10 @@ const SHOW_PARTNER_LOGO = true;
 // the time before closing the socket if no message arrives
 const MESSAGE_WAITING_TIME = 30000;
 
+let anchorsImages = [];
+let camerasImages = [];
+let tagsImages = [];
+
 let UPDATED = false;
 
 let socketServer = new WebSocket(SOCKET_PATH);
