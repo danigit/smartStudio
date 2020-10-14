@@ -177,40 +177,40 @@
         canvas_service.loadTagCloudsImages = (tagClouds) => {
 
             let i;
-            const images = [];
+            let images = [];
 
             for(i = 0; i < tagClouds.length; i++) {
 
                 let tagState = canvas_service.checkTagsStateAlarmNoAlarmOffline(tagClouds[i]);
 
-                const img = new Image();
+                let img = new Image();
 
                 if (tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
-                    img = anchorsImages.find(i => i.type === 'cumulative_tags_all_32.png');
+                    img = tagsImages.find(i => i.type === 'cumulative_tags_all_32.png').img;
                     img.alarm = false;
                     images.push(img);
                 } else if (tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
-                    img = anchorsImages.find(i => i.type === 'cumulative_tags_half_alert_32.png');
+                    img = tagsImages.find(i => i.type === 'cumulative_tags_half_alert_32.png').img;
                     img.alarm = true;
                     images.push(img);
                 } else if (tagState.withAlarm && !tagState.withoutAlarm && !tagState.offline) {
-                    img = anchorsImages.find(i => i.type === 'cumulative_tags_all_alert_32.png');
+                    img = tagsImages.find(i => i.type === 'cumulative_tags_all_alert_32.png').img;
                     img.alarm = true;
                     images.push(img);
                 } else if (tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
-                    img = anchorsImages.find(i => i.type === 'cumulative_tags_offline_alert_32.png');
+                    img = tagsImages.find(i => i.type === 'cumulative_tags_offline_alert_32.png').img;
                     img.alarm = true;
                     images.push(img);
                 } else if (!tagState.withAlarm && tagState.withoutAlarm && tagState.offline) {
-                    img = anchorsImages.find(i => i.type === 'cumulative_tags_offline_online_32.png');
+                    img = tagsImages.find(i => i.type === 'cumulative_tags_offline_online_32.png').img;
                     img.alarm = true;
                     images.push(img);
                 } else if (!tagState.withAlarm && !tagState.withoutAlarm && tagState.offline) {
-                    img = anchorsImages.find(i => i.type === 'cumulative_tags_offline_32.png');
+                    img = tagsImages.find(i => i.type === 'cumulative_tags_offline_32.png').img;
                     img.alarm = true;
                     images.push(img);
                 } else if (!tagState.withAlarm && tagState.withoutAlarm && !tagState.offline) {
-                    img = anchorsImages.find(i => i.type === 'cumulative_tags_32.png');
+                    img = tagsImages.find(i => i.type === 'cumulative_tags_32.png').img;
                     img.alarm = true;
                     images.push(img);
                 }
@@ -257,7 +257,7 @@
         canvas_service.loadTagSingleImages = (singleTags) => {
 
             let i;
-            const images      = [];
+            let images      = [];
             for (i = 0; i < singleTags.length; i++) {
                 // if (dataService.checkIfTagHasAlarm(singleTags[i])) {
                 images.push(dataService.assigningTagImage(singleTags[i]));
@@ -579,7 +579,7 @@
          * @returns {[]}
          */
         canvas_service.loadAnchorsImages = (anchors) => {
-            const images = [];
+            let images = [];
             let i;
 
             for(i = 0; i < anchors.length; i++){
@@ -597,7 +597,6 @@
                     }
                 }
             }
-            console.log(images);
             return images;
         };
 
@@ -609,9 +608,8 @@
          */
         canvas_service.loadCamerasImages = (cameras) => {
             let i;
-            const images = [];
+            let images = [];
             for(i = 0; i < cameras.length; i++){
-                const img = new Image();
                 if (!cameras[i].is_offline)
                     images.push(camerasImages.find(img => img.type === 'camera_online_16.png'))
                 else if (cameras[i].is_offline)
