@@ -1339,7 +1339,7 @@
                         tags: dataService.allTags,
                         events: null,
                         selectedTag: null,
-                        selectedEvent: null
+                        selectedHistoryEvent: null
                     };
 
                     $scope.query = {
@@ -1357,16 +1357,23 @@
                     $scope.deleteHistory = () => {
                         let fromDate = $filter('date')($scope.history.fromDate, 'yyyy-MM-dd');
                         let toDate = $filter('date')($scope.history.toDate, 'yyyy-MM-dd');
-
-                        newSocketService.getData('delete_history', { fromDate: fromDate, toDate: toDate }, (response) => {
+                        let selectedTag = $scope.history.selectedTag;
+                        let selectedEvent = $scope.history.selectedHistoryEvent;
+                        
+                        newSocketService.getData('delete_history', { 
+                            fromDate: fromDate, 
+                            toDate: toDate, 
+                            tag: selectedTag != null && selectedTag != "QUALSIASI" ? selectedTag.id : selectedTag,
+                            event: selectedEvent != null && selectedEvent != "QUALSIASI" ? selectedEvent.id : selectedEvent
+                        }, (response) => {
 
                             if (response.result !== 0) {
                                 //TODO add toast
                                 newSocketService.getData('get_history', {
                                     fromDate: fromDate,
                                     toDate: toDate,
-                                    tag: $scope.history.selectedTag,
-                                    event: $scope.history.selectedEvent
+                                    tag: selectedTag != null && selectedTag != "QUALSIASI" ? selectedTag.id : selectedTag,
+                                    event: selectedEvent != null && selectedEvent != "QUALSIASI" ? selectedEvent.id : selectedEvent
                                 }, (history) => {
                                     //TODO add toast
                                     $scope.historyRows = dataService.getProtocol(history.result);
@@ -1377,10 +1384,9 @@
                         });
                     };
 
-                    $scope.$watchGroup(['history.fromDate', 'history.toDate', 'history.selectedTag', 'history.selectedEvent'], function(newValues) {
+                    $scope.$watchGroup(['history.fromDate', 'history.toDate', 'history.selectedTag', 'history.selectedHistoryEvent'], function(newValues) {
                         let fromDate = $filter('date')(newValues[0], 'yyyy-MM-dd');
                         let toDate = $filter('date')(newValues[1], 'yyyy-MM-dd');
-
 
                         newSocketService.getData('get_events', {}, (response) => {
 
@@ -1390,12 +1396,11 @@
                         newSocketService.getData('get_history', {
                             fromDate: fromDate,
                             toDate: toDate,
-                            tag: newValues[2],
-                            event: newValues[3]
+                            tag: newValues[2] != null && newValues[2] != "QUALSIASI" ? newValues[2].name : newValues[2],
+                            event: newValues[3] != null && newValues[3] != "QUALSIASI" ? newValues[3].description : newValues[3]
                         }, (response) => {
 
                             dataService.filterHistory(response.result).then((history) => {
-                                console.log(history)
                                 $scope.historyRows = dataService.getProtocol(history);
                                 $scope.query['limitOptions'] = [500, 15, 10, 5];
                                 $scope.query['limitOptions'].push(history.length);
@@ -1487,7 +1492,6 @@
                         events: null,
                         selectedTag: null,
                         selectedAnchor: null,
-                        selectedEvent: null
                     };
 
                     $scope.query = {

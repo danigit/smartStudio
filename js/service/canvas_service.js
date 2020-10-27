@@ -611,9 +611,9 @@
             let images = [];
             for(i = 0; i < cameras.length; i++){
                 if (!cameras[i].is_offline)
-                    images.push(camerasImages.find(img => img.type === 'camera_online_16.png'))
+                    images.push(camerasImages.find(img => img.type === 'camera_online_24.png'))
                 else if (cameras[i].is_offline)
-                    images.push(camerasImages.find(img => img.type === 'camera_offline_16.png'))
+                    images.push(camerasImages.find(img => img.type === 'camera_offline_24.png'))
             }
             return images;
         };

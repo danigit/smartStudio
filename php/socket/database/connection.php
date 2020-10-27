@@ -2800,28 +2800,85 @@ class Connection
      * @param $toDate
      * @return db_errors|int|mysqli_stmt
      */
-    function delete_history($fromDate, $toDate)
+    function delete_history($fromDate, $toDate, $tag, $event)
     {
         $this->connection = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 
         if ($this->connection) {
-            $this->query = 'DELETE FROM history WHERE history.TIME BETWEEN ? AND ?';
+            if(($tag == null && $event == null) || ($tag == "QUALSIASI" && $event == "QUALSIASI")){
+                $this->query = 'DELETE FROM history WHERE history.TIME BETWEEN ? AND ?';
 
-            $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
+                $statement = $this->execute_selecting($this->query, 'ss', $fromDate, $toDate);
 
-            if ($statement instanceof db_errors) {
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $statement;
+                } else if ($statement == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+                }
+
+                $aff_rows = $statement->affected_rows;
+
                 mysqli_close($this->connection);
-                return $statement;
-            } else if ($statement == false) {
+
+                return $aff_rows;
+            } else if($tag != null && $tag != "QUALSIASI" && ($event == null || $event == "QUALSIASI")) {
+                $this->query = 'DELETE FROM history WHERE TAG_ID = ? AND history.TIME BETWEEN ? AND ?';
+
+                $statement = $this->execute_selecting($this->query, 'iss', $tag, $fromDate, $toDate);
+
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $statement;
+                } else if ($statement == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+                }
+
+                $aff_rows = $statement->affected_rows;
+
                 mysqli_close($this->connection);
-                return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+
+                return $aff_rows;
+            } else if($event != null && $event != "QUALSIASI" && ($tag == null || $tag == "QUALSIASI")){
+
+                $this->query = 'DELETE FROM history WHERE EVENT_ID = ? AND history.TIME BETWEEN ? AND ?';
+
+                $statement = $this->execute_selecting($this->query, 'iss', $event, $fromDate, $toDate);
+
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $statement;
+                } else if ($statement == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+                }
+
+                $aff_rows = $statement->affected_rows;
+
+                mysqli_close($this->connection);
+
+                return $aff_rows;
+            } else if($tag != null && $tag != "QUALSIASI" && $event != null && $event != "QUALSIASI"){
+                $this->query = 'DELETE FROM history WHERE TAG_ID = ? AND EVENT_ID = ? AND history.TIME BETWEEN ? AND ?';
+
+                $statement = $this->execute_selecting($this->query, 'iiss', $tag, $event, $fromDate, $toDate);
+
+                if ($statement instanceof db_errors) {
+                    mysqli_close($this->connection);
+                    return $statement;
+                } else if ($statement == false) {
+                    mysqli_close($this->connection);
+                    return new db_errors(db_errors::$ERROR_ON_DELETING_MAC);
+                }
+
+                $aff_rows = $statement->affected_rows;
+
+                mysqli_close($this->connection);
+
+                return $aff_rows;
             }
-
-            $aff_rows = $statement->affected_rows;
-
-            mysqli_close($this->connection);
-
-            return $aff_rows;
         }
 
         return new db_errors(db_errors::$CONNECTION_ERROR);
