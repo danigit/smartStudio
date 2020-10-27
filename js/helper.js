@@ -390,7 +390,7 @@ function loadAnchorsImages (){
 loadAnchorsImages();
 
 function loadCamerasImages (){
-    let cameraTypes = ['camera_online_16.png', 'camera_offline_16.png'];
+    let cameraTypes = ['camera_online_24.png', 'camera_offline_24.png'];
     let i;
 
     for(i = 0; i < cameraTypes.length; i++){
@@ -421,4 +421,4 @@ function loadTagsImages (){
 loadTagsImages();
 
 // version number
-const UPDATE_VERSION = "3.45.2";
+const UPDATE_VERSION = "3.46.0";

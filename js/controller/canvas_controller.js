@@ -543,7 +543,6 @@
                                                     // loading the images for the single tags
                                                     let singleTagsImages = canvasService.loadTagSingleImages(singleTags)
 
-                                                    console.log(singleTagsImages)
                                                         // controlling if the tags have to be shown
                                                         if (canvasCtrl.isAdmin || canvasCtrl.isTracker) {
                                                             singleTags.forEach((tag, index) => {

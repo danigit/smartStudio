@@ -986,7 +986,7 @@ class webSocketServer implements MessageComponentInterface{
                 $toDate = $decoded_message['data']['toDate'];
                 $toDate = date('Y-m-d', strtotime($toDate . '+1 days'));
                 
-                $query = $this->connection->delete_history($fromDate, $toDate);
+                $query = $this->connection->delete_history($fromDate, $toDate, $decoded_message['data']['tag'], $decoded_message['data']['event']);
 
                 ($query instanceof db_errors) ? $result['result'] = $query->getErrorName() : $result['result'] = $query;
 

@@ -45,7 +45,7 @@
 
                         <md-select ng-model="history.selectedTag">
                             <md-option ng-value="QUALSIASI">{{lang.anything | uppercase}}</md-option>
-                            <md-option ng-repeat="tag in history.tags" ng-value="tag.name">
+                            <md-option ng-repeat="tag in history.tags" ng-value="tag">
                                 {{tag.name}}
                             </md-option>
                         </md-select>
@@ -56,10 +56,10 @@
 
                         <label>{{lang.eventType}}</label>
 
-                        <md-select ng-model="history.selectedEvent">
+                        <md-select ng-model="history.selectedHistoryEvent">
                             <md-option ng-value="QUALSIASI">{{lang.anything | uppercase}}</md-option>
-                            <md-option ng-repeat="event in history.events" ng-value="event.description">
-                                {{event.description}}
+                            <md-option ng-repeat="eventHistory in history.events" track by $index ng-value="eventHistory">
+                                {{eventHistory.description}}
                             </md-option>
                         </md-select>
                     </md-input-container>
