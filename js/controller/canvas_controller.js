@@ -142,8 +142,10 @@
         $scope.$watch('canvasCtrl.floorData.defaultFloorName', (newValue) => {
             canvasService.changeFloor(canvas, context, canvasCtrl, canvasImage, newValue);
 
+            canvasCtrl.floorData.floorZones = [];
+            
             if (dataService.canvasInterval === undefined) {
-                constantUpdateCanvas();
+                constantUpdateCanvas(); 
             }
         });
 
@@ -214,8 +216,9 @@
             };
 
             //constantly updating the canvas
-            if (dataService.canvasInterval === undefined)
+            if (dataService.canvasInterval === undefined){
                 constantUpdateCanvas();
+            }
 
         };
 
@@ -343,6 +346,7 @@
                                         location: canvasCtrl.floorData.location,
                                         user: dataService.user.username
                                     }, (floorZones) => {
+
                                         // getting the div where to show the headers of the working zones
                                         if(floorZones.result.length > 0) dataService.floorZones = floorZones.result;
 
