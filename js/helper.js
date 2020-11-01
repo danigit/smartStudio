@@ -421,4 +421,4 @@ function loadTagsImages (){
 loadTagsImages();
 
 // version number
-const UPDATE_VERSION = "3.46.0";
+const UPDATE_VERSION = "3.46.1";
